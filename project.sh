@@ -14,7 +14,7 @@ elif ! head -1 "$PIP" | grep -q "$(pwd)"; then
     python3 -m venv "$VENV"
 fi
 
-$PIP install -e . --quiet
+#$PIP install -e . --quiet
 $PIP install regix --upgrade --quiet
 #$PIP install pyqual --upgrade --quiet
 $PIP install prefact --upgrade --quiet

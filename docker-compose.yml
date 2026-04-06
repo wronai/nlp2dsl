@@ -2,11 +2,11 @@ version: "3.8"
 
 services:
 
-  # ── API + DSL Engine ─────────────────────────────────────────
+  # ── API Gateway + Workflow Engine ────────────────────────────
   backend:
     build: ./backend
     ports:
-      - "8000:8000"
+      - "8010:8000"
     environment:
       - WORKER_URL=http://worker:8000
       - NLP_SERVICE_URL=http://nlp-service:8002
@@ -20,17 +20,41 @@ services:
         condition: service_started
     restart: unless-stopped
 
-  # ── NLP → DSL Pipeline ──────────────────────────────────────
+  # ── NLP → DSL Pipeline (LiteLLM) ────────────────────────────
   nlp-service:
     build: ./nlp-service
     ports:
       - "8002:8002"
     environment:
-      # Tryb rules działa bez klucza API (MVP)
-      # Odkomentuj jedną linię aby włączyć LLM:
-      # - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      # ── LLM Provider (odkomentuj JEDNĄ sekcję) ──────────────
+
+      # OpenRouter (domyślny)
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - LLM_MODEL=${LLM_MODEL:-openrouter/openai/gpt-5-mini}
+
+      # OpenAI
       # - OPENAI_API_KEY=${OPENAI_API_KEY}
-      # - OLLAMA_URL=http://ollama:11434
+      # - LLM_MODEL=gpt-4o-mini
+
+      # Anthropic
+      # - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      # - LLM_MODEL=claude-sonnet-4-20250514
+
+      # Ollama (lokalny)
+      # - OLLAMA_API_BASE=http://ollama:11434
+      # - LLM_MODEL=ollama/llama3
+
+      # Groq
+      # - GROQ_API_KEY=${GROQ_API_KEY}
+      # - LLM_MODEL=groq/llama-3.1-8b-instant
+
+      # Together
+      # - TOGETHER_API_KEY=${TOGETHER_API_KEY}
+      # - LLM_MODEL=together_ai/meta-llama/Llama-3-8b-chat-hf
+
+      # ── LLM Settings ────────────────────────────────────────
+      - LLM_TEMPERATURE=0
+      - LLM_MAX_TOKENS=1024
       - LLM_FALLBACK_THRESHOLD=0.5
     restart: unless-stopped
 
@@ -38,7 +62,7 @@ services:
   worker:
     build: ./worker
     ports:
-      - "8001:8000"
+      - "8004:8000"
     restart: unless-stopped
 
   # ── Database ─────────────────────────────────────────────────

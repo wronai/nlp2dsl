@@ -23,7 +23,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .schemas import NLPRequest, NLPResult, DialogResponse, ConversationResponse, ActionFormSchema
 from .parser_rules import parse_rules
-from .parser_llm import parse_llm, _detect_provider
+from .parser_llm import parse_llm, _detect_provider, LLM_MODEL
 from .mapper import map_to_dsl
 from .registry import ACTIONS_REGISTRY
 from .orchestrator import (
@@ -114,7 +114,9 @@ async def health():
     return {
         "status": "ok",
         "service": "nlp-service",
+        "llm_engine": "litellm",
         "llm_provider": llm_provider if llm_provider != "none" else "disabled (rules only)",
+        "llm_model": LLM_MODEL if llm_provider != "none" else None,
         "actions": list(ACTIONS_REGISTRY.keys()),
     }
 

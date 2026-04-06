@@ -1,0 +1,25 @@
+flowchart TD
+
+    %% Entry points (blue)
+    classDef entry fill:#4dabf7,stroke:#1971c2,color:#fff
+
+    subgraph Core
+        backend__app__main__health["health"]
+        backend__app__workflow__list_actions["list_actions"]
+        backend__app__workflow__get_history["get_history"]
+        backend__app__workflow__get_workflow["get_workflow"]
+        backend__app__workflow__workflow_from_text["workflow_from_text"]
+        backend__app__workflow__chat_start["chat_start"]
+        backend__app__workflow__chat_message["chat_message"]
+        backend__app__workflow__chat_get_state["chat_get_state"]
+        backend__app__workflow__actions_schema["actions_schema"]
+        backend__app__workflow__action_schema["action_schema"]
+        nlp_service__app__parser_rules__parse_rules["parse_rules"]
+        nlp_service__app__parser_rules___extract_entities{{_extract_entities CC=21}}
+        nlp_service__app__parser_rules___set_entity["_set_entity"]
+        nlp_service__app__registry__get_action_by_alias["get_action_by_alias"]
+        nlp_service__app__orchestrator__start_conversation["start_conversation"]
+        ...["+17 more"]
+    end
+
+    class backend__app__main__health,backend__app__workflow__list_actions,backend__app__workflow__get_history,backend__app__workflow__get_workflow,backend__app__workflow__workflow_from_text,backend__app__workflow__chat_start,backend__app__workflow__chat_message,backend__app__workflow__chat_get_state,backend__app__workflow__actions_schema,backend__app__workflow__action_schema entry

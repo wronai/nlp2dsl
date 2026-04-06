@@ -1,0 +1,24 @@
+# redup/duplication | 1 groups | 13f 2182L | 2026-04-06
+
+SUMMARY:
+  files_scanned: 13
+  total_lines:   2182
+  dup_groups:    1
+  dup_fragments: 3
+  saved_lines:   30
+  scan_ms:       6223
+
+DUPLICATES[1] (ranked by impact):
+  [bb1b98bb10e4cfc0]   STRU  generate_email_from_text  L=15 N=3 saved=30 sim=1.00
+      examples/basic/email/main.py:0-14  (generate_email_from_text)
+      examples/basic/invoice/main.py:0-14  (generate_invoice_from_text)
+      examples/advanced/report-and-notify/main.py:0-14  (generate_composite_from_text)
+
+REFACTOR[1] (ranked by priority):
+  [1] ○ extract_function   → examples/utils/generate_email_from_text.py
+      WHY: 3 occurrences of 15-line block across 3 files — saves 30 lines
+      FILES: examples/advanced/report-and-notify/main.py, examples/basic/email/main.py, examples/basic/invoice/main.py
+
+METRICS-TARGET:
+  dup_groups:  1 → 0
+  saved_lines: 30 lines recoverable

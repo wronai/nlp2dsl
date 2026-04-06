@@ -1,0 +1,42 @@
+# vallm batch | 59f | 20✓ 2⚠ 5✗ | 2026-04-06
+
+SUMMARY:
+  scanned: 59  passed: 20 (33.9%)  warnings: 2  errors: 5  unsupported: 34
+
+WARNINGS[2]{path,score}:
+  examples/conversation-flow/main.py,0.97
+    issues[2]{rule,severity,message,line}:
+      complexity.cyclomatic,warning,_handle_response has cyclomatic complexity 16 (max: 15),56
+      complexity.lizard_cc,warning,_handle_response: CC=16 exceeds limit 15,56
+  nlp-service/app/parser_rules.py,0.97
+    issues[2]{rule,severity,message,line}:
+      complexity.cyclomatic,warning,_extract_entities has cyclomatic complexity 21 (max: 15),120
+      complexity.lizard_cc,warning,_extract_entities: CC=21 exceeds limit 15,120
+
+ERRORS[5]{path,score}:
+  examples/scheduled-report/main.py,0.00
+    issues[1]{rule,severity,message,line}:
+      syntax.parse,error,SyntaxError: unterminated string literal (detected at line 151),151
+  backend/app/main.py,0.68
+    issues[3]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'fastapi' not found,10
+      python.import.resolvable,error,Module 'fastapi.middleware.cors' not found,11
+      python.import.resolvable,error,Module 'app.workflow' not found,13
+  nlp-service/app/main.py,0.83
+    issues[2]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'fastapi' not found,21
+      python.import.resolvable,error,Module 'fastapi.middleware.cors' not found,22
+  worker/worker.py,0.89
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'fastapi' not found,15
+  backend/app/workflow.py,0.94
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'fastapi' not found,14
+
+UNSUPPORTED[6]{bucket,count}:
+  *.md,19
+  Dockerfile*,3
+  *.txt,4
+  *.yml,1
+  *.example,1
+  other,6

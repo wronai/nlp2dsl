@@ -1,0 +1,60 @@
+# Opcjonalne serwisy dla przykładów NLP2DSL
+# Użyj: docker compose -f docker-compose.yml up -d <service>
+
+version: "3.8"
+
+services:
+  # ── SMTP Mock Server ────────────────────────────────────────
+  # Do testowania wysyłania e-maili i faktur
+  smtp-mock:
+    image: mailhog/mailhog:latest
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Web UI
+    profiles:
+      - email
+      - invoice
+
+  # ── Redis (dla cache i kolejek) ───────────────────────────────
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    profiles:
+      - cache
+      - scheduled
+
+  # ── PostgreSQL (dla historii workflow) ───────────────────────
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: example
+      POSTGRES_PASSWORD: example
+      POSTGRES_DB: examples
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg_examples_data:/var/lib/postgresql/data
+    profiles:
+      - history
+      - conversation
+
+  # ── MinIO (S3 compatible storage dla raportów) ───────────────
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    ports:
+      - "9000:9000"  # API
+      - "9001:9001"  # Console
+    volumes:
+      - minio_data:/data
+    profiles:
+      - storage
+      - reports
+
+volumes:
+  pg_examples_data:
+  minio_data:

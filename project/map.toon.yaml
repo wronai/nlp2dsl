@@ -1,0 +1,117 @@
+# nlp2dsl | 14f 1881L | shell:1,python:13 | 2026-04-06
+# stats: 53 func | 0 cls | 14 mod | CC̄=3.6 | critical:1 | cycles:0
+# alerts[5]: CC _extract_entities=21; fan-out _extract_entities=19; fan-out _process_message=16; fan-out run_workflow=16; fan-out workflow_from_text=16
+# hotspots[5]: _extract_entities fan=19; run_workflow fan=16; workflow_from_text fan=16; _process_message fan=16; chat_message fan=15
+# evolution: baseline
+# Keys: M=modules, D=details, i=imports, e=exports, c=classes, f=functions, m=methods
+M[14]:
+  backend/app/__init__.py,0
+  backend/app/main.py,42
+  backend/app/schemas.py,67
+  backend/app/workflow.py,324
+  nlp-service/app/__init__.py,0
+  nlp-service/app/main.py,228
+  nlp-service/app/mapper.py,187
+  nlp-service/app/orchestrator.py,236
+  nlp-service/app/parser_llm.py,184
+  nlp-service/app/parser_rules.py,192
+  nlp-service/app/registry.py,162
+  nlp-service/app/schemas.py,109
+  project.sh,35
+  worker/worker.py,115
+D:
+  nlp-service/app/parser_rules.py:
+    e: parse_rules,_detect_actions,_resolve_intent,_extract_entities,_set_entity
+    parse_rules(text)
+    _detect_actions(text_lower)
+    _resolve_intent(actions)
+    _extract_entities(text;text_lower)
+    _set_entity(entities;field;value)
+  nlp-service/app/orchestrator.py:
+    e: start_conversation,continue_conversation,get_conversation,get_action_form,_process_message,_merge_into_state
+    start_conversation(text)
+    continue_conversation(conversation_id;text)
+    get_conversation(conversation_id)
+    get_action_form(action)
+    _process_message(state;text)
+    _merge_into_state(state;nlp)
+  nlp-service/app/parser_llm.py:
+    e: parse_llm,_detect_provider,_parse_json_response
+    parse_llm(text)
+    _detect_provider()
+    _parse_json_response(raw)
+  backend/app/workflow.py:
+    e: list_actions,run_workflow,get_history,get_workflow,workflow_from_text,chat_start,chat_message,chat_get_state,actions_schema,action_schema
+    list_actions()
+    run_workflow(req)
+    get_history()
+    get_workflow(workflow_id)
+    workflow_from_text(body)
+    chat_start(body)
+    chat_message(body)
+    chat_get_state(conversation_id)
+    actions_schema()
+    action_schema(action)
+  nlp-service/app/mapper.py:
+    e: map_to_dsl,_resolve_actions,_build_config,_get_field_mapping,_make_name,_build_prompt
+    map_to_dsl(nlp)
+    _resolve_actions(intent)
+    _build_config(action;entities)
+    _get_field_mapping(action)
+    _make_name(intent;actions)
+    _build_prompt(missing)
+  nlp-service/app/main.py:
+    e: parse_text,text_to_dsl,list_actions,health,chat_start,chat_message,chat_state,actions_schema,action_schema,_run_parser
+    parse_text(req)
+    text_to_dsl(req)
+    list_actions()
+    health()
+    chat_start(body)
+    chat_message(body)
+    chat_state(conversation_id)
+    actions_schema()
+    action_schema(action)
+    _run_parser(req)
+  nlp-service/app/registry.py:
+    e: get_action_by_alias,get_trigger,get_required_fields,get_defaults
+    get_action_by_alias(text)
+    get_trigger(text)
+    get_required_fields(action)
+    get_defaults(action)
+  worker/worker.py:
+    e: action,handle_send_invoice,handle_send_email,handle_generate_report,handle_crm_update,handle_notify_slack,execute_step,health
+    action(name)
+    handle_send_invoice(config)
+    handle_send_email(config)
+    handle_generate_report(config)
+    handle_crm_update(config)
+    handle_notify_slack(config)
+    execute_step(step)
+    health()
+  backend/app/main.py:
+    e: health
+    health()
+  project.sh:
+  backend/app/__init__.py:
+  nlp-service/app/__init__.py:
+  nlp-service/app/schemas.py:
+    e: NLPIntent,NLPEntities,NLPResult,DSLStep,WorkflowDSL,DialogResponse,NLPRequest,ConversationState,FieldSchema,ActionFormSchema,ConversationResponse
+    NLPIntent(BaseModel):
+    NLPEntities(BaseModel):
+    NLPResult(BaseModel):
+    DSLStep(BaseModel):
+    WorkflowDSL(BaseModel):
+    DialogResponse(BaseModel):
+    NLPRequest(BaseModel):
+    ConversationState(BaseModel):  # Stan rozmowy — akumuluje dane między turami dialogu...
+    FieldSchema(BaseModel):
+    ActionFormSchema(BaseModel):
+    ConversationResponse(BaseModel):
+  backend/app/schemas.py:
+    e: StepStatus,Step,RunWorkflowRequest,StepResult,WorkflowResult,ActionInfo
+    StepStatus(str,Enum):
+    Step(BaseModel):  # Pojedynczy krok workflow — deklaratywny opis akcji...
+    RunWorkflowRequest(BaseModel):  # Żądanie uruchomienia workflow — DSL biznesowy...
+    StepResult(BaseModel):
+    WorkflowResult(BaseModel):
+    ActionInfo(BaseModel):  # Opis dostępnej akcji (do listowania w GUI / API)...

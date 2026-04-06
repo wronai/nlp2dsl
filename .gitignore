@@ -1,3 +1,9 @@
+.env.example
+examples/01-invoice/.env.example
+examples/02-email/.env.example
+examples/03-report-and-notify/.env.example
+examples/04-scheduled-report/.env.example
+examples/05-conversation-flow/.env.example
 __pycache__/
 *.pyc
 .env

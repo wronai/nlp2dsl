@@ -128,6 +128,29 @@ def get_action_form(action: str) -> ActionFormSchema | None:
 
 def _process_message(state: ConversationState, text: str) -> ConversationResponse:
     """Core orchestration: parse → merge → validate → respond."""
+    
+    # 0. Check for execution commands first
+    exec_triggers = ["uruchom", "execute", "wykonaj", "start", "run"]
+    if text.lower().strip() in exec_triggers:
+        if state.status == "ready" and state.dsl:
+            # Execute the workflow
+            state.status = "completed"
+            msg = f"Workflow {state.dsl.name} uruchomiony."
+            state.history.append({"role": "assistant", "text": msg})
+            return ConversationResponse(
+                conversation_id=state.id,
+                status="completed",
+                message=msg,
+                dsl=state.dsl,
+            )
+        else:
+            msg = "Nie ma gotowego workflow do uruchomienia. Uzupełnij najpierw wszystkie dane."
+            state.history.append({"role": "assistant", "text": msg})
+            return ConversationResponse(
+                conversation_id=state.id,
+                status="in_progress",
+                message=msg,
+            )
 
     # 1. NLP extraction
     nlp = parse_rules(text)

@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.3] - 2026-04-06
+
+### Docs
+- Update README.md
+- Update docs/README.md
+- Update examples/01-invoice/README.md
+- Update examples/02-email/README.md
+- Update examples/03-report-and-notify/README.md
+- Update examples/04-scheduled-report/README.md
+- Update examples/05-conversation-flow/README.md
+- Update examples/README.md
+- Update project/README.md
+- Update project/context.md
+
+### Other
+- Update .env.example
+- Update examples/01-invoice/.env.example
+- Update examples/01-invoice/Dockerfile
+- Update examples/01-invoice/main.py
+- Update examples/01-invoice/requirements.txt
+- Update examples/01-invoice/run.sh
+- Update examples/02-email/.env.example
+- Update examples/02-email/Dockerfile
+- Update examples/02-email/main.py
+- Update examples/02-email/requirements.txt
+- ... and 36 more files
+
 ## [0.0.2] - 2026-04-06
 
 ### Docs

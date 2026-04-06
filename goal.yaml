@@ -1,5 +1,5 @@
 # goal.yaml - Goal configuration file
-# Generated: 2026-04-06 09:51:06
+# Generated: 2026-04-06 10:13:25
 # Documentation: https://github.com/wronai/goal#configuration
 #
 # This file configures Goal's behavior for:
@@ -20,6 +20,7 @@ versioning:
   strategy: semver
   files:
   - VERSION
+  - venv/lib/python3.13/site-packages/matplotlib/__init__.py:__version__
   bump_rules:
     patch: 10
     minor: 50

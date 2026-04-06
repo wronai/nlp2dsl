@@ -1,0 +1,55 @@
+# nlp2dsl | 53 func | 9f | 1881L | python | 2026-04-06
+
+HEALTH:
+  CC̄=3.6  critical=3 (limit:10)  dup=0  cycles=0
+
+ALERTS[10]:
+  !!  cc_exceeded      _extract_entities = 21 (limit:15)
+  !!  high_fan_out     _extract_entities = 19 (limit:10)
+  !!  high_fan_out     run_workflow = 16 (limit:10)
+  !!  high_fan_out     workflow_from_text = 16 (limit:10)
+  !!  high_fan_out     _process_message = 16 (limit:10)
+  !!  high_fan_out     chat_message = 15 (limit:10)
+  !   high_fan_out     map_to_dsl = 14 (limit:10)
+  !   high_fan_out     parse_llm = 11 (limit:10)
+  !   high_fan_out     parse_rules = 10 (limit:10)
+  !   high_fan_out     _parse_json_response = 10 (limit:10)
+
+MODULES[14] (top by size):
+  M[backend/app/workflow.py] 324L C:0 F:10 CC↑8 D:0 (python)
+  M[nlp-service/app/orchestrator.py] 236L C:0 F:6 CC↑14 D:1 (python)
+  M[nlp-service/app/main.py] 228L C:0 F:10 CC↑7 D:0 (python)
+  M[nlp-service/app/parser_rules.py] 192L C:0 F:5 CC↑21 D:2 (python)
+  M[nlp-service/app/mapper.py] 187L C:0 F:6 CC↑8 D:2 (python)
+  M[nlp-service/app/parser_llm.py] 184L C:0 F:3 CC↑10 D:1 (python)
+  M[nlp-service/app/registry.py] 162L C:0 F:4 CC↑5 D:3 (python)
+  M[worker/worker.py] 115L C:0 F:8 CC↑2 D:0 (python)
+  M[nlp-service/app/schemas.py] 109L C:11 F:0 CC↑0 D:0 (python)
+  M[backend/app/schemas.py] 67L C:6 F:0 CC↑0 D:0 (python)
+  M[backend/app/main.py] 42L C:0 F:1 CC↑1 D:0 (python)
+  M[project.sh] 35L C:0 F:0 CC↑0 D:0 (shell)
+  M[backend/app/__init__.py] 0L C:0 F:0 CC↑0 D:0 (python)
+  M[nlp-service/app/__init__.py] 0L C:0 F:0 CC↑0 D:0 (python)
+  LANGS: python:13/shell:1
+
+HOTSPOTS[9]:
+  ★ _extract_entities fan=19  // Extract entities from text using regex and keywords.
+  ★ run_workflow fan=16  // Uruchamia workflow — iteruje po krokach DSL i deleguje
+każdy krok do kontenera w
+  ★ workflow_from_text fan=16  // Pełny pipeline: tekst → NLP → DSL → wykonanie.
+
+Użytkownik mówi np.:
+  "Wyślij f
+  ★ _process_message fan=16  // Analysis pipeline, 16 stages
+  ★ chat_message fan=15  // Kontynuuj konwersację — uzupełnij brakujące dane.
+
+Body: {"conversation_id": "ab
+
+REFACTOR[4]:
+  [1] M/L Split _extract_entities (CC=21 → target CC<10)
+  [2] M/M Reduce _extract_entities fan-out (currently 19)
+  [3] M/M Reduce run_workflow fan-out (currently 16)
+  [4] M/M Reduce workflow_from_text fan-out (currently 16)
+
+EVOLUTION:
+  2026-04-06 CC̄=3.6 crit=3 1881L // Automated analysis

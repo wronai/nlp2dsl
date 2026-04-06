@@ -1,0 +1,4 @@
+requests>=2.31.0
+python-dotenv>=1.0.0
+schedule>=1.2.0
+boto3>=1.26.0  # dla S3/MinIO

@@ -1,0 +1,54 @@
+# code2llm | 14f 1881L | python:13,shell:1 | 2026-04-06
+# CC̄=3.6 | critical:1/69 | dups:0 | cycles:0
+
+HEALTH[2]:
+  🟡 CC    _handle_response CC=16 (limit:15)
+  🟡 CC    _extract_entities CC=21 (limit:15)
+
+REFACTOR[1]:
+  1. split 2 high-CC methods  (CC>15)
+
+PIPELINES[36]:
+  [1] Src [health]: health
+      PURITY: 100% pure
+  [2] Src [list_actions]: list_actions
+      PURITY: 100% pure
+  [3] Src [get_history]: get_history
+      PURITY: 100% pure
+  [4] Src [get_workflow]: get_workflow
+      PURITY: 100% pure
+  [5] Src [workflow_from_text]: workflow_from_text → run_workflow
+      PURITY: 100% pure
+
+LAYERS:
+  nlp-service/                    CC̄=4.5    ←in:0  →out:0
+  │ orchestrator               236L  0C    6m  CC=14     ←1
+  │ main                       228L  0C   10m  CC=7      ←0
+  │ !! parser_rules               192L  0C    5m  CC=21     ←2
+  │ mapper                     187L  0C    6m  CC=8      ←2
+  │ parser_llm                 184L  0C    3m  CC=10     ←1
+  │ registry                   162L  0C    4m  CC=5      ←3
+  │ schemas                    109L  11C    0m  CC=0.0    ←0
+  │ __init__                     0L  0C    0m  CC=0.0    ←0
+  │
+  backend/                        CC̄=2.9    ←in:0  →out:0
+  │ workflow                   324L  0C   10m  CC=8      ←0
+  │ schemas                     67L  6C    0m  CC=0.0    ←0
+  │ main                        42L  0C    1m  CC=1      ←0
+  │ __init__                     0L  0C    0m  CC=0.0    ←0
+  │
+  worker/                         CC̄=1.1    ←in:0  →out:0
+  │ worker                     115L  0C    8m  CC=2      ←0
+  │
+  ./                              CC̄=0.0    ←in:0  →out:0
+  │ project.sh                  35L  0C    0m  CC=0.0    ←0
+  │
+  ── zero ──
+     backend/app/__init__.py                   0L
+     nlp-service/app/__init__.py               0L
+
+COUPLING: no cross-package imports detected
+
+EXTERNAL:
+  validation: run `vallm batch .` → validation.toon
+  duplication: run `redup scan .` → duplication.toon
