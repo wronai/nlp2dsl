@@ -191,6 +191,84 @@ async def action_schema(action: str):
     return form
 
 
+# ── Settings API ─────────────────────────────────────────────
+
+
+from .settings import settings_manager
+from .system_executor import execute_system_action, SYSTEM_EXECUTORS
+
+
+@app.get("/settings")
+async def get_settings():
+    """Pokaż wszystkie ustawienia systemu."""
+    return {
+        "settings": settings_manager.get_all(),
+        "schema": settings_manager.describe(),
+    }
+
+
+@app.get("/settings/{section}")
+async def get_settings_section(section: str):
+    """Pokaż ustawienia sekcji (llm, nlp, worker, file_access)."""
+    data = settings_manager.get_section(section)
+    if not data:
+        raise HTTPException(status_code=404, detail=f"Section '{section}' not found")
+    return {"section": section, "settings": data}
+
+
+@app.put("/settings/{section}")
+async def update_settings_section(section: str, body: dict):
+    """Zaktualizuj ustawienia sekcji."""
+    try:
+        result = settings_manager.update_section(section, body)
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.put("/settings")
+async def set_setting(body: dict):
+    """Zmień pojedyncze ustawienie. Body: {"path": "llm.model", "value": "gpt-4o"}"""
+    path = body.get("path", "")
+    value = body.get("value")
+    if not path:
+        raise HTTPException(status_code=400, detail="Field 'path' is required")
+    try:
+        result = settings_manager.set(path, value)
+        return result
+    except (ValueError, AttributeError) as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/settings/reset")
+async def reset_settings(body: dict = {}):
+    """Resetuj ustawienia. Body: {"section": "llm"} lub {} dla wszystkich."""
+    section = body.get("section")
+    return settings_manager.reset(section)
+
+
+# ── System Execution API ─────────────────────────────────────
+
+
+@app.post("/system/execute")
+async def system_execute(body: dict):
+    """
+    Wykonaj akcję systemową bezpośrednio.
+    Body: {"action": "system_file_list", "config": {"directory": "."}}
+    """
+    action = body.get("action", "")
+    config = body.get("config", {})
+
+    if action not in SYSTEM_EXECUTORS:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unknown system action: '{action}'. Available: {list(SYSTEM_EXECUTORS.keys())}",
+        )
+
+    result = await execute_system_action(action, config)
+    return result
+
+
 # ── Internal ──────────────────────────────────────────────────
 
 

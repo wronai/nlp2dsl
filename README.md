@@ -189,10 +189,6 @@ mvp-automation/
 2. `worker/worker.py` — dodaj handler `@action("nazwa")`
 3. `docker compose up --build`
 
-## Licencja
-
-MIT
-
 
 ## License
 

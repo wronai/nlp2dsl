@@ -91,6 +91,153 @@ ACTIONS_REGISTRY: dict[str, dict] = {
             "wiadomość": "message",
         },
     },
+
+    # ── System / Settings ─────────────────────────────────────
+
+    "system_settings_get": {
+        "description": "Pokaż aktualne ustawienia systemu",
+        "category": "system",
+        "required": [],
+        "optional": {"section": "all"},
+        "aliases": [
+            "pokaż ustawienia", "ustawienia", "settings", "konfiguracja",
+            "pokaż konfigurację", "show settings", "show config",
+            "jakie ustawienia", "jaki model", "jaki provider",
+        ],
+        "param_aliases": {
+            "llm": "section=llm",
+            "nlp": "section=nlp",
+            "worker": "section=worker",
+            "plik": "section=file_access",
+        },
+    },
+    "system_settings_set": {
+        "description": "Zmień ustawienie systemu",
+        "category": "system",
+        "required": ["setting_path", "setting_value"],
+        "optional": {},
+        "aliases": [
+            "zmień ustawienie", "zmień model", "zmień provider",
+            "zmień temperaturę", "change setting", "set model",
+            "zmień tryb", "przełącz na", "użyj modelu",
+            "ustaw model", "ustaw tryb", "ustaw temperaturę",
+        ],
+        "param_aliases": {
+            "model": "setting_path=llm.model",
+            "temperatura": "setting_path=llm.temperature",
+            "provider": "setting_path=llm.provider",
+            "tryb": "setting_path=nlp.default_mode",
+            "timeout": "setting_path=worker.timeout_seconds",
+        },
+    },
+    "system_settings_reset": {
+        "description": "Resetuj ustawienia do domyślnych",
+        "category": "system",
+        "required": [],
+        "optional": {"section": "all"},
+        "aliases": [
+            "resetuj ustawienia", "reset settings", "przywróć domyślne",
+            "domyślne ustawienia", "reset config",
+        ],
+        "param_aliases": {},
+    },
+
+    # ── File Operations ───────────────────────────────────────
+
+    "system_file_read": {
+        "description": "Odczytaj plik z projektu",
+        "category": "system",
+        "required": ["file_path"],
+        "optional": {"line_start": 0, "line_end": 0},
+        "aliases": [
+            "odczytaj plik", "otwórz plik", "read file",
+            "pokaż kod", "wyświetl plik", "cat", "view file",
+            "co jest w pliku", "pokaż zawartość pliku",
+            "pokaż ten plik",
+        ],
+        "param_aliases": {},
+    },
+    "system_file_write": {
+        "description": "Zapisz / edytuj plik w projekcie",
+        "category": "system",
+        "required": ["file_path", "content"],
+        "optional": {"mode": "write"},
+        "aliases": [
+            "zapisz plik", "edytuj plik", "zmień plik", "write file",
+            "nadpisz plik", "utwórz plik", "create file",
+            "zmodyfikuj", "popraw plik",
+        ],
+        "param_aliases": {
+            "dopisz": "mode=append",
+            "nadpisz": "mode=write",
+        },
+    },
+    "system_file_list": {
+        "description": "Listuj pliki w katalogu projektu",
+        "category": "system",
+        "required": [],
+        "optional": {"directory": ".", "pattern": "*"},
+        "aliases": [
+            "listuj pliki", "pokaż pliki", "list files", "ls",
+            "jakie pliki", "struktura projektu", "tree",
+            "pokaż katalog", "pokaż strukturę",
+        ],
+        "param_aliases": {},
+    },
+
+    # ── Registry Management ───────────────────────────────────
+
+    "system_registry_list": {
+        "description": "Pokaż zarejestrowane akcje i ich parametry",
+        "category": "system",
+        "required": [],
+        "optional": {"category": "all"},
+        "aliases": [
+            "pokaż akcje", "lista akcji", "list actions", "jakie akcje",
+            "co umiesz", "co potrafisz", "dostępne akcje", "help",
+            "pomoc", "capabilities",
+        ],
+        "param_aliases": {
+            "systemowe": "category=system",
+            "biznesowe": "category=business",
+        },
+    },
+    "system_registry_add": {
+        "description": "Dodaj nową akcję do rejestru",
+        "category": "system",
+        "required": ["action_name", "action_description"],
+        "optional": {"required_fields": [], "aliases": []},
+        "aliases": [
+            "dodaj akcję", "nowa akcja", "zarejestruj akcję",
+            "add action", "register action", "create action",
+        ],
+        "param_aliases": {},
+    },
+    "system_registry_edit": {
+        "description": "Edytuj istniejącą akcję w rejestrze",
+        "category": "system",
+        "required": ["action_name"],
+        "optional": {"action_description": None, "required_fields": None, "aliases": None},
+        "aliases": [
+            "edytuj akcję", "zmień akcję", "edit action",
+            "modyfikuj akcję", "update action",
+        ],
+        "param_aliases": {},
+    },
+
+    # ── System Status ─────────────────────────────────────────
+
+    "system_status": {
+        "description": "Pokaż status systemu (health, wersja, statystyki)",
+        "category": "system",
+        "required": [],
+        "optional": {},
+        "aliases": [
+            "status", "status systemu", "system status", "health",
+            "jak działa system", "diagnostyka", "info",
+        ],
+        "param_aliases": {},
+    },
 }
 
 
@@ -103,6 +250,18 @@ COMPOSITE_INTENTS: dict[str, list[str]] = {
     "report_and_notify": ["generate_report", "notify_slack"],
     "full_invoice_flow": ["send_invoice", "send_email", "notify_slack"],
     "full_report_flow": ["generate_report", "send_email", "notify_slack"],
+}
+
+# ── Action categories ─────────────────────────────────────────
+
+SYSTEM_ACTIONS = {
+    name for name, meta in ACTIONS_REGISTRY.items()
+    if meta.get("category") == "system"
+}
+
+BUSINESS_ACTIONS = {
+    name for name in ACTIONS_REGISTRY
+    if name not in SYSTEM_ACTIONS
 }
 
 

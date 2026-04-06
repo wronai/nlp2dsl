@@ -28,7 +28,7 @@ from .schemas import (
 )
 from .parser_rules import parse_rules
 from .mapper import map_to_dsl
-from .registry import ACTIONS_REGISTRY, COMPOSITE_INTENTS, get_trigger
+from .registry import ACTIONS_REGISTRY, COMPOSITE_INTENTS, SYSTEM_ACTIONS, get_trigger
 
 log = logging.getLogger("orchestrator")
 
@@ -51,6 +51,19 @@ FIELD_TYPES: dict[str, dict] = {
     "format":      {"type": "select",  "label": "Format", "options": ["pdf", "csv", "xlsx"]},
     "entity":      {"type": "select",  "label": "Typ encji CRM", "options": ["contact", "client", "lead", "deal"]},
     "data":        {"type": "string",  "label": "Dane (JSON)"},
+    # ── System fields ──
+    "setting_path":       {"type": "string",  "label": "Ścieżka ustawienia (np. llm.model)"},
+    "setting_value":      {"type": "string",  "label": "Nowa wartość"},
+    "section":            {"type": "select",  "label": "Sekcja ustawień", "options": ["all", "llm", "nlp", "worker", "file_access"]},
+    "file_path":          {"type": "string",  "label": "Ścieżka pliku"},
+    "content":            {"type": "string",  "label": "Treść pliku"},
+    "directory":          {"type": "string",  "label": "Katalog"},
+    "pattern":            {"type": "string",  "label": "Wzorzec (np. *.py)"},
+    "mode":               {"type": "select",  "label": "Tryb zapisu", "options": ["write", "append"]},
+    "action_name":        {"type": "string",  "label": "Nazwa akcji"},
+    "action_description": {"type": "string",  "label": "Opis akcji"},
+    "required_fields":    {"type": "string",  "label": "Wymagane pola (przecinkami)"},
+    "aliases":            {"type": "string",  "label": "Aliasy (przecinkami)"},
 }
 
 
@@ -128,29 +141,6 @@ def get_action_form(action: str) -> ActionFormSchema | None:
 
 def _process_message(state: ConversationState, text: str) -> ConversationResponse:
     """Core orchestration: parse → merge → validate → respond."""
-    
-    # 0. Check for execution commands first
-    exec_triggers = ["uruchom", "execute", "wykonaj", "start", "run"]
-    if text.lower().strip() in exec_triggers:
-        if state.status == "ready" and state.dsl:
-            # Execute the workflow
-            state.status = "completed"
-            msg = f"Workflow {state.dsl.name} uruchomiony."
-            state.history.append({"role": "assistant", "text": msg})
-            return ConversationResponse(
-                conversation_id=state.id,
-                status="completed",
-                message=msg,
-                dsl=state.dsl,
-            )
-        else:
-            msg = "Nie ma gotowego workflow do uruchomienia. Uzupełnij najpierw wszystkie dane."
-            state.history.append({"role": "assistant", "text": msg})
-            return ConversationResponse(
-                conversation_id=state.id,
-                status="in_progress",
-                message=msg,
-            )
 
     # 1. NLP extraction
     nlp = parse_rules(text)
@@ -161,12 +151,43 @@ def _process_message(state: ConversationState, text: str) -> ConversationRespons
 
     # 3. Resolve actions for current intent
     if not state.intent or state.intent == "unknown":
-        msg = "Nie rozpoznałem intencji. Jaką automatyzację chcesz stworzyć? Np. faktura, raport, email, powiadomienie Slack."
+        msg = (
+            "Nie rozpoznałem intencji. Jaką automatyzację chcesz stworzyć?\n"
+            "Np. faktura, raport, email, powiadomienie Slack.\n"
+            "Komendy systemowe: ustawienia, pokaż pliki, status, pomoc."
+        )
         state.history.append({"role": "assistant", "text": msg})
         return ConversationResponse(
             conversation_id=state.id,
             status="in_progress",
             message=msg,
+        )
+
+    # 3b. System actions — execute immediately, no DSL
+    if state.intent in SYSTEM_ACTIONS:
+        from .system_executor import SYSTEM_EXECUTORS
+
+        config = {k: v for k, v in state.entities.items() if v is not None and k != "_trigger"}
+
+        executor = SYSTEM_EXECUTORS.get(state.intent)
+        if executor:
+            try:
+                inner_result = executor(config)
+                result = {"action": state.intent, "status": "completed", "result": inner_result}
+            except Exception as e:
+                result = {"action": state.intent, "status": "failed", "error": str(e)}
+        else:
+            result = {"action": state.intent, "status": "failed", "error": "Executor not found"}
+
+        state.status = "done"
+        msg = _format_system_result(state.intent, result)
+        state.history.append({"role": "assistant", "text": msg})
+
+        return ConversationResponse(
+            conversation_id=state.id,
+            status="done",
+            message=msg,
+            dsl=None,
         )
 
     # 4. Try to build DSL
@@ -234,3 +255,68 @@ def _merge_into_state(state: ConversationState, nlp: NLPResult):
     trigger = get_trigger(full_text)
     if trigger != "manual":
         state.entities["_trigger"] = trigger
+
+
+# ── System result formatting ─────────────────────────────────
+
+
+def _format_system_result(intent: str, result: dict) -> str:
+    """Format system action result as human-readable message."""
+    import json
+
+    if result.get("status") == "failed":
+        return f"Błąd: {result.get('error', 'nieznany')}"
+
+    inner = result.get("result", result)
+
+    if intent == "system_status":
+        return (
+            f"System v{inner.get('version', '?')}\n"
+            f"LLM: {inner.get('llm_provider', '?')} / {inner.get('llm_model', '?')}\n"
+            f"NLP: tryb {inner.get('nlp_mode', '?')}\n"
+            f"Akcje: {inner.get('actions_business', 0)} biznesowych + {inner.get('actions_system', 0)} systemowych"
+        )
+
+    if intent == "system_settings_get":
+        settings = inner.get("settings", inner)
+        return f"Ustawienia:\n{json.dumps(settings, indent=2, ensure_ascii=False)}"
+
+    if intent == "system_settings_set":
+        return f"Zmieniono {inner.get('path', '?')}: {inner.get('old', '?')} → {inner.get('new', '?')}"
+
+    if intent == "system_settings_reset":
+        return f"Ustawienia zresetowane: {inner.get('reset', 'all')}"
+
+    if intent == "system_file_read":
+        if inner.get("error"):
+            return f"Błąd: {inner['error']}"
+        return (
+            f"Plik: {inner.get('file_path', '?')} ({inner.get('size_kb', '?')} KB, {inner.get('lines', '?')} linii)\n"
+            f"---\n{inner.get('content', '')[:2000]}"
+        )
+
+    if intent == "system_file_write":
+        if inner.get("error"):
+            return f"Błąd: {inner['error']}"
+        return f"Zapisano: {inner.get('file_path', '?')} ({inner.get('size_kb', '?')} KB)"
+
+    if intent == "system_file_list":
+        files = inner.get("files", [])
+        lines = [f"Pliki w {inner.get('directory', '?')} ({inner.get('count', 0)}):"]
+        for f in files[:30]:
+            lines.append(f"  {f['path']} ({f['size_kb']} KB)")
+        return "\n".join(lines)
+
+    if intent == "system_registry_list":
+        actions = inner.get("actions", {})
+        lines = [f"Zarejestrowane akcje ({inner.get('count', 0)}):"]
+        for name, meta in actions.items():
+            cat = meta.get("category", "business")
+            req = ", ".join(meta.get("required", []))
+            lines.append(f"  [{cat}] {name}: {meta['description']} (required: {req or 'brak'})")
+        return "\n".join(lines)
+
+    if intent in ("system_registry_add", "system_registry_edit"):
+        return f"Rejestr zaktualizowany: {json.dumps(inner, ensure_ascii=False)}"
+
+    return json.dumps(inner, indent=2, ensure_ascii=False)

@@ -322,3 +322,65 @@ async def action_schema(action: str):
     if resp.status_code != 200:
         raise HTTPException(status_code=resp.status_code, detail=resp.text)
     return resp.json()
+
+
+# ── Settings (proxy to nlp-service) ──────────────────────────
+
+
+@router.get("/settings")
+async def get_settings():
+    """Pokaż wszystkie ustawienia systemu."""
+    async with AsyncClient(timeout=10.0) as client:
+        resp = await client.get(f"{NLP_SERVICE_URL}/settings")
+    return resp.json()
+
+
+@router.get("/settings/{section}")
+async def get_settings_section(section: str):
+    """Pokaż ustawienia sekcji."""
+    async with AsyncClient(timeout=10.0) as client:
+        resp = await client.get(f"{NLP_SERVICE_URL}/settings/{section}")
+    if resp.status_code != 200:
+        raise HTTPException(status_code=resp.status_code, detail=resp.text)
+    return resp.json()
+
+
+@router.put("/settings/{section}")
+async def update_settings_section(section: str, body: dict):
+    """Zaktualizuj ustawienia sekcji."""
+    async with AsyncClient(timeout=10.0) as client:
+        resp = await client.put(f"{NLP_SERVICE_URL}/settings/{section}", json=body)
+    if resp.status_code != 200:
+        raise HTTPException(status_code=resp.status_code, detail=resp.text)
+    return resp.json()
+
+
+@router.put("/settings")
+async def set_setting(body: dict):
+    """Zmień ustawienie. Body: {"path": "llm.model", "value": "gpt-4o"}"""
+    async with AsyncClient(timeout=10.0) as client:
+        resp = await client.put(f"{NLP_SERVICE_URL}/settings", json=body)
+    if resp.status_code != 200:
+        raise HTTPException(status_code=resp.status_code, detail=resp.text)
+    return resp.json()
+
+
+@router.post("/settings/reset")
+async def reset_settings(body: dict = {}):
+    """Resetuj ustawienia."""
+    async with AsyncClient(timeout=10.0) as client:
+        resp = await client.post(f"{NLP_SERVICE_URL}/settings/reset", json=body)
+    return resp.json()
+
+
+# ── System Execution (proxy) ─────────────────────────────────
+
+
+@router.post("/system/execute")
+async def system_execute(body: dict):
+    """Wykonaj akcję systemową. Body: {"action": "system_file_list", "config": {}}"""
+    async with AsyncClient(timeout=30.0) as client:
+        resp = await client.post(f"{NLP_SERVICE_URL}/system/execute", json=body)
+    if resp.status_code != 200:
+        raise HTTPException(status_code=resp.status_code, detail=resp.text)
+    return resp.json()

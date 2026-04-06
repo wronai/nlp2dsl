@@ -55,6 +55,32 @@ FORMAT_KEYWORDS = {"pdf": "pdf", "csv": "csv", "excel": "xlsx", "xlsx": "xlsx"}
 
 SLACK_CHANNEL_PATTERN = re.compile(r"#[\w-]+")
 
+# ── System patterns ───────────────────────────────────────────
+
+FILE_PATH_PATTERN = re.compile(
+    r"(?:^|[\s\"'])([a-zA-Z0-9_./-]+\.\w{1,5})(?:[\s\"']|$)"
+)
+
+SETTING_PATH_PATTERN = re.compile(
+    r"(llm\.(?:model|provider|temperature|max_tokens|fallback_threshold)"
+    r"|nlp\.(?:default_mode|default_language|confidence_threshold)"
+    r"|worker\.(?:timeout_seconds|retry_count|fail_fast)"
+    r"|file_access\.(?:max_file_size_kb))"
+)
+
+MODEL_NAMES = {
+    "gpt-5-mini": "openrouter/openai/gpt-5-mini",
+    "gpt-4o-mini": "gpt-4o-mini",
+    "gpt-4o": "gpt-4o",
+    "gpt-4": "gpt-4",
+    "claude-sonnet": "claude-sonnet-4-20250514",
+    "claude": "claude-sonnet-4-20250514",
+    "llama3": "ollama/llama3",
+    "llama": "ollama/llama3",
+    "mistral": "mistral/mistral-small-latest",
+    "groq": "groq/llama-3.1-8b-instant",
+}
+
 
 # ── Main parser ───────────────────────────────────────────────
 
@@ -88,15 +114,34 @@ def parse_rules(text: str) -> NLPResult:
 
 
 def _detect_actions(text_lower: str) -> list[str]:
-    """Detect all action matches in text."""
-    found = []
+    """Detect all action matches in text. Prefers longest alias match."""
+    scores: dict[str, int] = {}  # action → longest alias length
+
     for action_name, meta in ACTIONS_REGISTRY.items():
         for alias in meta["aliases"]:
             if alias in text_lower:
-                if action_name not in found:
-                    found.append(action_name)
-                break
-    return found
+                current_score = scores.get(action_name, 0)
+                if len(alias) > current_score:
+                    scores[action_name] = len(alias)
+
+    if not scores:
+        return []
+
+    # Sort by score descending — highest-scoring action first
+    sorted_actions = sorted(scores.keys(), key=lambda a: scores[a], reverse=True)
+
+    # If top action is system and has much higher score, return only it
+    if len(sorted_actions) >= 2:
+        top_score = scores[sorted_actions[0]]
+        second_score = scores[sorted_actions[1]]
+        top_cat = ACTIONS_REGISTRY[sorted_actions[0]].get("category", "business")
+        second_cat = ACTIONS_REGISTRY[sorted_actions[1]].get("category", "business")
+
+        # Same category system actions with overlapping aliases — pick best
+        if top_cat == "system" and second_cat == "system" and top_score > second_score:
+            return [sorted_actions[0]]
+
+    return sorted_actions
 
 
 def _resolve_intent(actions: list[str]) -> str:
@@ -165,6 +210,42 @@ def _extract_entities(text: str, text_lower: str) -> NLPEntities:
                     field, value = target.split("=", 1)
                     _set_entity(entities, field, value)
                 # else: alias_key maps to a field name — value comes from text
+
+    # ── System entity extraction ──────────────────────────────
+
+    # File path
+    file_match = FILE_PATH_PATTERN.search(text)
+    if file_match and not entities.file_path:
+        entities.file_path = file_match.group(1)
+
+    # Setting path (explicit like "llm.model")
+    setting_match = SETTING_PATH_PATTERN.search(text)
+    if setting_match and not entities.setting_path:
+        entities.setting_path = setting_match.group(1)
+
+    # Model name detection → setting_value
+    for model_alias, model_full in MODEL_NAMES.items():
+        if model_alias in text_lower:
+            if not entities.setting_value:
+                entities.setting_value = model_full
+            if not entities.setting_path:
+                entities.setting_path = "llm.model"
+            break
+
+    # Numeric value after "na" / "do" / "=" for settings
+    if not entities.setting_value:
+        val_match = re.search(r"(?:na|do|=)\s*([0-9.]+)", text_lower)
+        if val_match:
+            entities.setting_value = val_match.group(1)
+
+    # Mode keywords for settings
+    mode_keywords = {"rules": "rules", "llm": "llm", "auto": "auto"}
+    for kw, mode_val in mode_keywords.items():
+        if f"tryb {kw}" in text_lower or f"mode {kw}" in text_lower:
+            if not entities.setting_value:
+                entities.setting_value = mode_val
+            if not entities.setting_path:
+                entities.setting_path = "nlp.default_mode"
 
     # Fallback recipient heuristics
     if not entities.to:

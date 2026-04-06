@@ -31,6 +31,21 @@ class NLPEntities(BaseModel):
     format: Optional[str] = None
     entity: Optional[str] = None
     data: Optional[dict] = None
+    # ── System entities ──
+    setting_path: Optional[str] = None      # np. "llm.model"
+    setting_value: Optional[str] = None     # np. "gpt-4o-mini"
+    section: Optional[str] = None           # np. "llm", "nlp", "worker"
+    file_path: Optional[str] = None         # np. "worker/worker.py"
+    content: Optional[str] = None           # treść pliku
+    directory: Optional[str] = None         # katalog
+    pattern: Optional[str] = None           # glob pattern
+    line_start: Optional[int] = None
+    line_end: Optional[int] = None
+    mode: Optional[str] = None              # "write" | "append"
+    action_name: Optional[str] = None       # nazwa nowej akcji
+    action_description: Optional[str] = None
+    required_fields: Optional[list[str]] = None
+    aliases: Optional[list[str]] = None
 
 
 class NLPResult(BaseModel):
