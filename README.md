@@ -32,15 +32,17 @@ Użytkownik (tekst / głos / GUI)
 ## Szybki start
 
 ```bash
-git clone <repo-url> && cd mvp-automation
+git clone <repo-url> && cd nlp2dsl
+cp .env.example .env
+# Uzupełnij klucze API (opcjonalne - system działa z parserem reguł)
 docker compose up --build
 ```
 
 | Serwis | URL | Opis |
 |--------|-----|------|
-| Backend API | http://localhost:8000/docs | Gateway + workflow engine |
+| Backend API | http://localhost:8010/docs | Gateway + workflow engine |
 | NLP Service | http://localhost:8002/docs | NLP + conversation + schema |
-| Worker | http://localhost:8001/docs | Executory akcji |
+| Worker | http://localhost:8004/docs | Executory akcji |
 
 ## Conversation Loop (AI Dialog)
 
@@ -49,9 +51,14 @@ System prowadzi konwersację, dopytuje o brakujące dane i generuje dynamiczny f
 ### Rozpocznij rozmowę
 
 ```bash
-curl -X POST http://localhost:8000/workflow/chat/start \
+# Tekst
+curl -X POST http://localhost:8010/workflow/chat/start \
   -H "Content-Type: application/json" \
   -d '{"text": "Chcę wysłać fakturę"}'
+
+# Audio (STT via Deepgram)
+curl -X POST http://localhost:8010/workflow/chat/start \
+  -F "audio=@nagranie.wav"
 ```
 
 Odpowiedź (brakujące dane):
@@ -75,15 +82,21 @@ Odpowiedź (brakujące dane):
 ### Uzupełnij dane
 
 ```bash
-curl -X POST http://localhost:8000/workflow/chat/message \
+# Tekst
+curl -X POST http://localhost:8010/workflow/chat/message \
   -H "Content-Type: application/json" \
   -d '{"conversation_id": "a1b2c3d4e5f6", "text": "1500 PLN na klient@firma.pl"}'
+
+# Audio (STT via Deepgram)
+curl -X POST http://localhost:8010/workflow/chat/message \
+  -F "conversation_id=a1b2c3d4e5f6" \
+  -F "audio=@odpowiedz.wav"
 ```
 
 ### Uruchom workflow
 
 ```bash
-curl -X POST http://localhost:8000/workflow/chat/message \
+curl -X POST http://localhost:8010/workflow/chat/message \
   -H "Content-Type: application/json" \
   -d '{"conversation_id": "a1b2c3d4e5f6", "text": "uruchom"}'
 ```
@@ -94,10 +107,10 @@ Backend generuje schematy formularzy dynamicznie z rejestru akcji:
 
 ```bash
 # Wszystkie akcje
-curl http://localhost:8000/workflow/actions/schema
+curl http://localhost:8010/workflow/actions/schema
 
 # Konkretna akcja
-curl http://localhost:8000/workflow/actions/schema/send_invoice
+curl http://localhost:8010/workflow/actions/schema/send_invoice
 ```
 
 Frontend renderuje formularze automatycznie z tych schematów — zero ręcznych formularzy.
@@ -106,12 +119,12 @@ Frontend renderuje formularze automatycznie z tych schematów — zero ręcznych
 
 ```bash
 # Generuj DSL
-curl -X POST http://localhost:8000/workflow/from-text \
+curl -X POST http://localhost:8010/workflow/from-text \
   -H "Content-Type: application/json" \
   -d '{"text": "Co tydzień generuj raport sprzedaży w PDF i wyślij email do manager@firma.pl"}'
 
 # Generuj + wykonaj
-curl -X POST http://localhost:8000/workflow/from-text \
+curl -X POST http://localhost:8010/workflow/from-text \
   -H "Content-Type: application/json" \
   -d '{"text": "Wyślij fakturę na 1500 PLN do klient@firma.pl", "execute": true}'
 ```
@@ -119,7 +132,7 @@ curl -X POST http://localhost:8000/workflow/from-text \
 ## Bezpośrednie uruchomienie DSL (JSON)
 
 ```bash
-curl -X POST http://localhost:8000/workflow/run \
+curl -X POST http://localhost:8010/workflow/run \
   -H "Content-Type: application/json" \
   -d '{
     "name": "invoice_and_email",
@@ -152,18 +165,126 @@ curl -X POST http://localhost:8000/workflow/run \
 | `llm` | LLM API (OpenAI / Anthropic / Ollama) |
 | `auto` | Rules first, LLM fallback |
 
-Konfiguracja LLM w `docker-compose.yml` (odkomentuj):
-```yaml
-- ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
-- OPENAI_API_KEY=${OPENAI_API_KEY}
-- OLLAMA_URL=http://ollama:11434
+## Speech-to-Text (Deepgram)
+
+System obsługuje wejście głosowe w Conversation Loop:
+
+```bash
+# Konfiguracja w .env
+DEEPGRAM_API_KEY=
+
+# Użycie
+curl -X POST http://localhost:8010/workflow/chat/start \
+  -F "audio=@nagranie.wav"
 ```
+
+### Obsługiwane formaty audio:
+- WAV, MP3, M4A, OGG, FLAC
+- Język: polski (domyślny), konfigurowalny
+- Model: nova-3-general (Deepgram)
+
+### Streaming STT:
+Dla konwersacji w czasie rzeczywistym użyj WebSocket:
+```python
+from audio_parser import StreamingSTT
+
+stt = StreamingSTT(language="pl")
+await stt.start()
+await stt.send_audio(chunk)
+transcript = await stt.get_transcript()
+```
+
+## Voice Chat UI (PWA)
+
+System zawiera gotowy interfejs webowy z obsługą głosową:
+
+```bash
+# Otwórz w przeglądarce
+http://localhost:8002/chat
+```
+
+### Funkcje:
+- 🎤 **Voice input** - kliknij Start Voice i mów
+- 📝 **Text input** - wpisz wiadomość ręcznie
+- 🔄 **Real-time** - WebSocket streaming
+- 📱 **PWA** - instaluj jako aplikację mobilną/desktopową
+
+### Automatyczny start:
+```html
+<!-- Auto-connect i auto-voice na onload -->
+<body onload="initVoice()">
+```
+
+### Kiosk mode (desktop/embedded):
+```bash
+# Chrome kiosk
+chrome --kiosk --autoplay-policy=no-user-gesture-required http://localhost:8002/chat
+
+# Electron app
+npm install electron
+# main.js: win.loadURL('http://localhost:8002/chat')
+```
+
+## Tauri desktop wrapper
+
+Jeśli chcesz desktopową powłokę zamiast samej przeglądarki, użyj wrappera w `tauri-wrapper/`.
+Ten projekt otwiera istniejący backendowy ekran `/chat`, więc nie duplikuje logiki STT/TTS.
+
+```bash
+cd tauri-wrapper
+npm install
+npm run dev
+```
+
+Build instalatora / paczki desktopowej:
+
+```bash
+npm run build
+```
+
+Konfiguracja LLM:
+
+1. Skopiuj `.env.example` → `.env`
+2. Uzupełnij klucz API wybranego providera:
+
+```env
+# OpenRouter (domyślny)
+OPENROUTER_API_KEY=
+LLM_MODEL=openrouter/openai/gpt-5-mini
+
+# Speech-to-Text (Deepgram)
+DEEPGRAM_API_KEY=
+
+# Lub OpenAI
+OPENAI_API_KEY=
+LLM_MODEL=gpt-4o-mini
+
+# Lub Anthropic
+ANTHROPIC_API_KEY=
+LLM_MODEL=claude-sonnet-4-...
+
+# Lub Ollama (lokalny)
+OLLAMA_API_BASE=http://localhost:11434
+LLM_MODEL=ollama/llama3
+```
+
+Zmienne są automatycznie przekazywane do kontenerów w `docker-compose.yml`.
 
 ## Struktura projektu
 
 ```
-mvp-automation/
+nlp2dsl/
 ├── docker-compose.yml
+├── .env.example                 # Konfiguracja LLM i serwisów
+├── examples/                    # Przykłady użycia
+│   ├── 01-invoice/
+│   ├── 02-email/
+│   ├── 03-report-and-notify/
+│   ├── 04-scheduled-report/
+│   ├── 05-conversation-flow/
+│   ├── README.md
+│   ├── EXECUTION_REPORT.md
+│   └── MISSING_CONFIGURATION.md
 ├── backend/                     # API Gateway + Workflow Engine
 │   └── app/
 │       ├── main.py
@@ -180,7 +301,63 @@ mvp-automation/
 │       └── orchestrator.py      # Conversation loop + schema-driven UI
 ├── worker/                      # Imperatywne executory
 │   └── worker.py
+├── tauri-wrapper/               # Desktop wrapper Tauri dla `/chat`
 └── README.md
+```
+
+## Przykłady użycia
+
+Zobacz `examples/README.md` dla pełnej listy przykładów:
+
+```bash
+# Uruchom wszystkie przykłady
+cd examples
+for dir in */; do
+    echo "Testing $dir"
+    cd "$dir"
+    python3 main.py
+    cd - > /dev/null
+done
+```
+
+### Dostępne przykłady:
+
+| Przykład | Link | Opis | Koncepcje |
+|----------|------|------|-----------|
+| **01-invoice** | [📁 examples/01-invoice/](examples/01-invoice/) | Wysyłanie faktur z kwotą i odbiorcą | One-shot API, DSL |
+| **02-email** | [📁 examples/02-email/](examples/02-email/) | Różne sposoby wysyłania e-maili | Aliasy komend, parametry |
+| **03-report-and-notify** | [📁 examples/03-report-and-notify/](examples/03-report-and-notify/) | Raporty + powiadomienia na wiele kanałów | Composite intents, multi-step |
+| **04-scheduled-report** | [📁 examples/04-scheduled-report/](examples/04-scheduled-report/) | Zaplanowane raporty (daily/weekly/monthly) | Triggers, schedule |
+| **05-conversation-flow** | [📁 examples/05-conversation-flow/](examples/05-conversation-flow/) | Pełny cykl konwersacyjny od startu do wykonania | Chat API, state management |
+
+#### Szybki start z przykładami:
+```bash
+cd examples/01-invoice
+python3 main.py
+```
+
+## Obsługa błędów i fallback
+
+System jest odporny na brakującą konfigurację:
+
+- **Brak kluczy LLM**: Automatycznie używa parsera reguł
+- **Brak Redis**: In-memory storage (utrata danych przy restarcie)
+- **Brak bazy**: Ograniczone funkcje (brak historii)
+- **Mock integracje**: Worker zwraca symulowane odpowiedzi
+
+Szczegóły w `examples/MISSING_CONFIGURATION.md`.
+
+## Docker i .env
+
+Każdy przykład zawiera:
+- `Dockerfile` - konteneryzacja
+- `requirements.txt` - zależności Python
+- `.env.example` - szablon konfiguracji
+
+Opcjonalne serwisy pomocnicze:
+```bash
+docker compose -f examples/docker-compose.yml --profile email up -d smtp-mock
+docker compose -f examples/docker-compose.yml --profile storage up -d minio
 ```
 
 ## Dodanie nowej akcji

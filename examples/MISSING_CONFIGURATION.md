@@ -192,7 +192,7 @@ LLM_MODEL=rules  # Wymuś parser reguł
 ### 2. Konfiguracja produkcyjna:
 ```env
 # Pełne funkcje
-OPENROUTER_API_KEY=sk-or-...
+OPENROUTER_API_KEY=
 REDIS_URL=redis://localhost:6379/0
 WORKER_URL=http://worker:8000
 NLP_SERVICE_URL=http://nlp-service:8002
@@ -242,7 +242,7 @@ docker compose stop postgres
 ### Scenariusz 3: Pełna konfiguracja
 ```bash
 # Konfiguracja
-OPENROUTER_API_KEY=sk-or-...
+OPENROUTER_API_KEY=
 REDIS_URL=redis://localhost:6379/0
 # + wszystkie kontenery
 

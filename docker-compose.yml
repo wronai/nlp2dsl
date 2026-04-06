@@ -56,6 +56,17 @@ services:
       - LLM_TEMPERATURE=0
       - LLM_MAX_TOKENS=1024
       - LLM_FALLBACK_THRESHOLD=0.5
+
+      # ── Speech-to-Text (Deepgram) ─────────────────────────────
+      - DEEPGRAM_API_KEY=${DEEPGRAM_API_KEY}
+
+      # ── Persistence (Redis) ──────────────────────────────────
+      - REDIS_URL=redis://redis:6379/0
+      - CONVERSATION_TTL=3600
+    depends_on:
+      - redis
+    volumes:
+      - ./nlp-service/static:/app/static:ro
     restart: unless-stopped
 
   # ── Imperative Worker ────────────────────────────────────────

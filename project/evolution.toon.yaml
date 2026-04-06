@@ -1,18 +1,26 @@
-# code2llm/evolution | 53 func | 9f | 2026-04-06
+# code2llm/evolution | 139 func | 20f | 2026-04-06
 
-NEXT[1] (ranked by impact):
-  [1] !  SPLIT-FUNC      _extract_entities  CC=21  fan=19
-      WHY: CC=21 exceeds 15
-      EFFORT: ~1h  IMPACT: 399
+NEXT[3] (ranked by impact):
+  [1] !! SPLIT-FUNC      _extract_entities  CC=36  fan=26
+      WHY: CC=36 exceeds 15
+      EFFORT: ~1h  IMPACT: 936
+
+  [2] !  SPLIT-FUNC      _process_message  CC=17  fan=18
+      WHY: CC=17 exceeds 15
+      EFFORT: ~1h  IMPACT: 306
+
+  [3] !  SPLIT-FUNC      _format_system_result  CC=16  fan=7
+      WHY: CC=16 exceeds 15
+      EFFORT: ~1h  IMPACT: 112
 
 
 RISKS[0]: none
 
 METRICS-TARGET:
-  CC̄:          3.6 → ≤2.5
-  max-CC:      21 → ≤10
+  CC̄:          3.3 → ≤2.3
+  max-CC:      36 → ≤18
   god-modules: 0 → 0
-  high-CC(≥15): 1 → ≤0
+  high-CC(≥15): 3 → ≤1
   hub-types:   0 → ≤0
 
 PATTERNS (language parser shared logic):
@@ -40,4 +48,4 @@ PATTERNS (language parser shared logic):
     - Standardized FunctionInfo/ClassInfo models
 
 HISTORY:
-  (first run — no previous data)
+  prev CC̄=3.6 → now CC̄=3.3

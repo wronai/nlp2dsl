@@ -1,42 +1,54 @@
-# vallm batch | 59f | 20✓ 2⚠ 5✗ | 2026-04-06
+# vallm batch | 99f | 36✓ 3⚠ 6✗ | 2026-04-06
 
 SUMMARY:
-  scanned: 59  passed: 20 (33.9%)  warnings: 2  errors: 5  unsupported: 34
+  scanned: 99  passed: 36 (36.4%)  warnings: 3  errors: 6  unsupported: 57
 
-WARNINGS[2]{path,score}:
-  examples/conversation-flow/main.py,0.97
+WARNINGS[3]{path,score}:
+  nlp-service/app/orchestrator.py,0.96
+    issues[3]{rule,severity,message,line}:
+      complexity.cyclomatic,warning,_process_message has cyclomatic complexity 17 (max: 15),149
+      complexity.cyclomatic,warning,_format_system_result has cyclomatic complexity 16 (max: 15),270
+      complexity.lizard_cc,warning,_process_message: CC=17 exceeds limit 15,149
+  examples/05-conversation-flow/main.py,0.97
     issues[2]{rule,severity,message,line}:
       complexity.cyclomatic,warning,_handle_response has cyclomatic complexity 16 (max: 15),56
       complexity.lizard_cc,warning,_handle_response: CC=16 exceeds limit 15,56
   nlp-service/app/parser_rules.py,0.97
     issues[2]{rule,severity,message,line}:
-      complexity.cyclomatic,warning,_extract_entities has cyclomatic complexity 21 (max: 15),120
-      complexity.lizard_cc,warning,_extract_entities: CC=21 exceeds limit 15,120
+      complexity.cyclomatic,warning,_extract_entities has cyclomatic complexity 36 (max: 15),165
+      complexity.lizard_cc,warning,_extract_entities: CC=36 exceeds limit 15,165
 
-ERRORS[5]{path,score}:
-  examples/scheduled-report/main.py,0.00
-    issues[1]{rule,severity,message,line}:
-      syntax.parse,error,SyntaxError: unterminated string literal (detected at line 151),151
+ERRORS[6]{path,score}:
   backend/app/main.py,0.68
     issues[3]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'fastapi' not found,10
       python.import.resolvable,error,Module 'fastapi.middleware.cors' not found,11
       python.import.resolvable,error,Module 'app.workflow' not found,13
-  nlp-service/app/main.py,0.83
-    issues[2]{rule,severity,message,line}:
+  backend/app/db/postgres.py,0.79
+    issues[4]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'sqlalchemy' not found,14
+      python.import.resolvable,error,Module 'sqlalchemy.dialects.postgresql' not found,15
+      python.import.resolvable,error,Module 'sqlalchemy.ext.asyncio' not found,16
+      python.import.resolvable,error,Module 'sqlalchemy.orm' not found,17
+  nlp-service/app/main.py,0.82
+    issues[3]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'fastapi' not found,21
       python.import.resolvable,error,Module 'fastapi.middleware.cors' not found,22
+      python.import.resolvable,error,Module 'fastapi.responses' not found,23
   worker/worker.py,0.89
     issues[1]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'fastapi' not found,15
+  nlp-service/app/store/redis_store.py,0.93
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'redis.asyncio' not found,16
   backend/app/workflow.py,0.94
     issues[1]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'fastapi' not found,14
 
 UNSUPPORTED[6]{bucket,count}:
-  *.md,19
-  Dockerfile*,3
-  *.txt,4
-  *.yml,1
-  *.example,1
-  other,6
+  *.md,23
+  Dockerfile*,8
+  *.txt,9
+  *.yml,2
+  *.example,6
+  other,9

@@ -1,0 +1,14 @@
+{
+  "name": "mvp-voice-chat-wrapper",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Tauri desktop wrapper for the existing FastAPI voice chat UI",
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "icon": "tauri icon"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^1.5.0"
+  }
+}

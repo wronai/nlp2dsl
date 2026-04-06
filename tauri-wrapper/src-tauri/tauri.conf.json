@@ -1,0 +1,43 @@
+{
+  "build": {
+    "beforeBuildCommand": "",
+    "beforeDevCommand": "",
+    "devPath": "http://localhost:8002/chat",
+    "distDir": "../dist"
+  },
+  "package": {
+    "productName": "MVP Voice Chat",
+    "version": "0.1.0"
+  },
+  "tauri": {
+    "allowlist": {
+      "all": false,
+      "shell": {
+        "open": true
+      },
+      "http": {
+        "request": true
+      }
+    },
+    "bundle": {
+      "active": true,
+      "identifier": "com.wronai.mvpvoicechat",
+      "targets": "all",
+      "icon": [
+        "icons/icon.svg"
+      ]
+    },
+    "security": {
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; media-src 'self' blob: data:; connect-src 'self' http://localhost:8002 ws://localhost:8002;"
+    },
+    "windows": [
+      {
+        "title": "MVP Voice Chat",
+        "width": 1280,
+        "height": 900,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+[package]
+name = "mvp_voice_chat_wrapper"
+version = "0.1.0"
+description = "Desktop wrapper for the existing FastAPI voice chat UI"
+authors = ["Cascade"]
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "1", features = [] }
+
+[dependencies]
+tauri = { version = "1", features = [ "http-request", "shell-open"] }
+
+[features]
+default = []
+custom-protocol = ["tauri/custom-protocol"]

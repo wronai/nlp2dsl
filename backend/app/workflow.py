@@ -22,6 +22,7 @@ from .schemas import (
     StepStatus,
     WorkflowResult,
 )
+from .db import create_workflow_repo
 
 log = logging.getLogger("workflow-engine")
 router = APIRouter(prefix="/workflow", tags=["workflow"])
@@ -29,9 +30,7 @@ router = APIRouter(prefix="/workflow", tags=["workflow"])
 WORKER_URL = os.getenv("WORKER_URL", "http://worker:8000")
 NLP_SERVICE_URL = os.getenv("NLP_SERVICE_URL", "http://nlp-service:8002")
 
-# ── In-memory store (MVP — zamień na Postgres w produkcji) ────
-
-_history: dict[str, WorkflowResult] = {}
+_repo = create_workflow_repo()
 
 
 # ── Registry dostępnych akcji ─────────────────────────────────
@@ -126,7 +125,15 @@ async def run_workflow(req: RunWorkflowRequest):
             # fail-fast: jeśli krok padł, przerwij workflow
             if step_result.status == StepStatus.FAILED:
                 result.status = StepStatus.FAILED
-                _history[workflow_id] = result
+                await _repo.save_run(
+                    workflow_id=workflow_id,
+                    name=req.name,
+                    status=result.status.value,
+                    data={
+                        "trigger": req.trigger or "manual",
+                        "steps": [s.model_dump() for s in result.steps],
+                    },
+                )
                 raise HTTPException(
                     status_code=400,
                     detail={
@@ -137,24 +144,32 @@ async def run_workflow(req: RunWorkflowRequest):
                 )
 
     result.status = StepStatus.COMPLETED
-    _history[workflow_id] = result
+    await _repo.save_run(
+        workflow_id=workflow_id,
+        name=req.name,
+        status=result.status.value,
+        data={
+            "trigger": req.trigger or "manual",
+            "steps": [s.model_dump() for s in result.steps],
+        },
+    )
     log.info("✔ Workflow '%s' [%s] completed", req.name, workflow_id)
     return result
 
 
-@router.get("/history", response_model=list[WorkflowResult])
+@router.get("/history")
 async def get_history():
     """Zwraca historię wykonanych workflow."""
-    return list(_history.values())
+    return await _repo.list_runs()
 
 
-@router.get("/history/{workflow_id}", response_model=WorkflowResult)
+@router.get("/history/{workflow_id}")
 async def get_workflow(workflow_id: str):
     """Zwraca szczegóły konkretnego workflow."""
-    wf = _history.get(workflow_id)
-    if not wf:
+    run = await _repo.get_run(workflow_id)
+    if not run:
         raise HTTPException(status_code=404, detail="Workflow not found")
-    return wf
+    return run
 
 
 # ── NLP Integration ──────────────────────────────────────────

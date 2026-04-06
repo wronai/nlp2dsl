@@ -18,8 +18,9 @@ from __future__ import annotations
 import logging
 import os
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 
 from .schemas import NLPRequest, NLPResult, DialogResponse, ConversationResponse, ActionFormSchema
 from .parser_rules import parse_rules
@@ -33,6 +34,8 @@ from .orchestrator import (
     get_action_form,
     FIELD_TYPES,
 )
+from .store.factory import get_conversation_store
+from .audio_parser import stt_audio, is_stt_available, StreamingSTT
 
 logging.basicConfig(
     level=logging.INFO,
@@ -111,12 +114,15 @@ async def list_actions():
 @app.get("/health")
 async def health():
     llm_provider = _detect_provider()
+    store = get_conversation_store()
     return {
         "status": "ok",
         "service": "nlp-service",
         "llm_engine": "litellm",
         "llm_provider": llm_provider if llm_provider != "none" else "disabled (rules only)",
         "llm_model": LLM_MODEL if llm_provider != "none" else None,
+        "conversation_store": type(store).__name__,
+        "active_conversations": await store.count(),
         "actions": list(ACTIONS_REGISTRY.keys()),
     }
 
@@ -125,41 +131,102 @@ async def health():
 
 
 @app.post("/chat/start", response_model=ConversationResponse)
-async def chat_start(body: dict):
+async def chat_start(
+    text: str = Form(default=""),
+    audio: UploadFile = File(default=None),
+):
     """
     Rozpocznij nową konwersację. System rozpoznaje intencję i dopytuje o brakujące dane.
 
-    Body: {"text": "Wyślij fakturę na 1500 PLN"}
-    """
-    text = body.get("text", "")
-    if not text.strip():
-        raise HTTPException(status_code=400, detail="Field 'text' is required")
+    Obsługuje:
+    - Tekst: Form field "text"
+    - Audio: UploadFile (STT via Deepgram)
 
-    return start_conversation(text)
+    Examples:
+        # Tekst
+        curl -X POST -F "text=Wyślij fakturę" http://localhost:8002/chat/start
+
+        # Audio
+        curl -X POST -F "audio=@file.wav" http://localhost:8002/chat/start
+    """
+    # Audio input (STT)
+    if audio:
+        if not is_stt_available():
+            raise HTTPException(
+                status_code=503,
+                detail="STT not available. Set DEEPGRAM_API_KEY.",
+            )
+        audio_bytes = await audio.read()
+        transcript = await stt_audio(audio_bytes)
+        if not transcript:
+            raise HTTPException(
+                status_code=422,
+                detail="Failed to transcribe audio",
+            )
+        text = transcript
+        log.info("STT transcript: %s", text)
+
+    # Text input
+    if not text.strip():
+        raise HTTPException(
+            status_code=400,
+            detail="Field 'text' or 'audio' is required",
+        )
+
+    return await start_conversation(text)
 
 
 @app.post("/chat/message", response_model=ConversationResponse)
-async def chat_message(body: dict):
+async def chat_message(
+    conversation_id: str = Form(...),
+    text: str = Form(default=""),
+    audio: UploadFile = File(default=None),
+):
     """
     Kontynuuj rozmowę — uzupełnij brakujące dane.
 
-    Body: {"conversation_id": "abc123", "text": "klient@firma.pl"}
+    Obsługuje:
+    - Tekst: Form field "text"
+    - Audio: UploadFile (STT via Deepgram)
+
+    Examples:
+        # Tekst
+        curl -X POST -F "conversation_id=abc123" -F "text=1500 PLN" http://localhost:8002/chat/message
+
+        # Audio
+        curl -X POST -F "conversation_id=abc123" -F "audio=@file.wav" http://localhost:8002/chat/message
     """
-    cid = body.get("conversation_id", "")
-    text = body.get("text", "")
+    # Audio input (STT)
+    if audio:
+        if not is_stt_available():
+            raise HTTPException(
+                status_code=503,
+                detail="STT not available. Set DEEPGRAM_API_KEY.",
+            )
+        audio_bytes = await audio.read()
+        transcript = await stt_audio(audio_bytes)
+        if not transcript:
+            raise HTTPException(
+                status_code=422,
+                detail="Failed to transcribe audio",
+            )
+        text = transcript
+        log.info("STT transcript: %s", text)
 
-    if not cid:
-        raise HTTPException(status_code=400, detail="Field 'conversation_id' is required")
+    # Text input
     if not text.strip():
-        raise HTTPException(status_code=400, detail="Field 'text' is required")
+        raise HTTPException(
+            status_code=400,
+            detail="Field 'text' or 'audio' is required",
+        )
 
-    return continue_conversation(cid, text)
+    return await continue_conversation(conversation_id, text)
 
 
 @app.get("/chat/{conversation_id}")
 async def chat_state(conversation_id: str):
     """Pobierz aktualny stan konwersacji."""
-    state = get_conversation(conversation_id)
+    state = await get_conversation(conversation_id)
     if not state:
         raise HTTPException(status_code=404, detail="Conversation not found")
     return state.model_dump()
@@ -304,3 +371,99 @@ async def _run_parser(req: NLPRequest) -> NLPResult:
             return llm_result
 
     return rules_result
+
+
+# ── WebSocket Voice Chat ───────────────────────────────────────
+
+
+@app.websocket("/ws/chat/{conversation_id}")
+async def websocket_chat(websocket: WebSocket, conversation_id: str):
+    """
+    WebSocket endpoint dla voice chat w czasie rzeczywistym.
+    
+    Flow:
+    1. Klient łączy się przez WebSocket
+    2. Wysyła audio chunks (binary)
+    3. Server streamuje do Deepgram (STT)
+    4. Transkrypcja → NLP → DSL
+    5. Opcjonalnie: TTS response → audio blob
+    
+    Example:
+        const ws = new WebSocket('ws://localhost:8002/ws/chat/demo');
+        navigator.mediaDevices.getUserMedia({audio: true}).then(stream => {
+            const mediaRecorder = new MediaRecorder(stream);
+            mediaRecorder.ondataavailable = e => ws.send(e.data);
+            mediaRecorder.start(250);  // 250ms chunks
+        });
+    """
+    await websocket.accept()
+    log.info("WebSocket connected: %s", conversation_id)
+    
+    streaming_stt = None
+    transcript_buffer = []
+    
+    try:
+        # Initialize streaming STT if available
+        if is_stt_available():
+            streaming_stt = StreamingSTT(language="pl")
+            await streaming_stt.start()
+            log.info("Streaming STT started for conversation: %s", conversation_id)
+        
+        while True:
+            # Receive audio data
+            data = await websocket.receive_bytes()
+            
+            if streaming_stt:
+                # Stream to Deepgram
+                await streaming_stt.send_audio(data)
+                
+                # Get transcript
+                transcript = await streaming_stt.get_transcript()
+                if transcript and transcript not in transcript_buffer:
+                    transcript_buffer.append(transcript)
+                    log.info("Transcript: %s", transcript)
+                    
+                    # Process with NLP
+                    response = await continue_conversation(conversation_id, transcript)
+                    
+                    # Send response
+                    await websocket.send_json({
+                        "type": "transcript",
+                        "text": transcript,
+                        "response": response.model_dump(),
+                    })
+            else:
+                # Fallback: batch STT
+                transcript = await stt_audio(data)
+                if transcript:
+                    response = await continue_conversation(conversation_id, transcript)
+                    await websocket.send_json({
+                        "type": "transcript",
+                        "text": transcript,
+                        "response": response.model_dump(),
+                    })
+    
+    except WebSocketDisconnect:
+        log.info("WebSocket disconnected: %s", conversation_id)
+    except Exception as e:
+        log.exception("WebSocket error: %s", e)
+    finally:
+        if streaming_stt:
+            final_transcript = await streaming_stt.stop()
+            log.info("Final transcript: %s", final_transcript)
+
+
+@app.get("/chat", response_class=HTMLResponse)
+async def chat_ui():
+    """Serwuj chat UI z voice support."""
+    import pathlib
+    static_dir = pathlib.Path(__file__).parent.parent / "static"
+    chat_html = static_dir / "chat.html"
+    
+    if chat_html.exists():
+        return HTMLResponse(content=chat_html.read_text(), status_code=200)
+    else:
+        return HTMLResponse(
+            content="<html><body><h1>Chat UI not found</h1><p>Create static/chat.html</p></body></html>",
+            status_code=404,
+        )

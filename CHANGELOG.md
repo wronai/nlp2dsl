@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.4] - 2026-04-06
+
+### Docs
+- Update README.md
+- Update docs/README.md
+- Update docs/migration-persistence.md
+- Update examples/MISSING_CONFIGURATION.md
+- Update project/README.md
+- Update project/context.md
+- Update tauri-wrapper/README.md
+
+### Other
+- Update .env.example
+- Update backend/app/db/__init__.py
+- Update backend/app/db/memory.py
+- Update backend/app/db/postgres.py
+- Update backend/app/workflow.py
+- Update backend/requirements.txt
+- Update nlp-service/app/audio_parser.py
+- Update nlp-service/app/main.py
+- Update nlp-service/app/orchestrator.py
+- Update nlp-service/app/store/__init__.py
+- ... and 29 more files
+
 ## [0.0.3] - 2026-04-06
 
 ### Docs

@@ -4,22 +4,22 @@ flowchart TD
     classDef entry fill:#4dabf7,stroke:#1971c2,color:#fff
 
     subgraph Core
+        tauri_wrapper__src_tauri__src__main__main["main"]
         backend__app__main__health["health"]
-        backend__app__workflow__list_actions["list_actions"]
-        backend__app__workflow__get_history["get_history"]
-        backend__app__workflow__get_workflow["get_workflow"]
-        backend__app__workflow__workflow_from_text["workflow_from_text"]
-        backend__app__workflow__chat_start["chat_start"]
-        backend__app__workflow__chat_message["chat_message"]
-        backend__app__workflow__chat_get_state["chat_get_state"]
-        backend__app__workflow__actions_schema["actions_schema"]
-        backend__app__workflow__action_schema["action_schema"]
-        nlp_service__app__parser_rules__parse_rules["parse_rules"]
-        nlp_service__app__parser_rules___extract_entities{{_extract_entities CC=21}}
-        nlp_service__app__parser_rules___set_entity["_set_entity"]
-        nlp_service__app__registry__get_action_by_alias["get_action_by_alias"]
-        nlp_service__app__orchestrator__start_conversation["start_conversation"]
-        ...["+17 more"]
+        backend__app__db__memory__MemoryWorkflowRepo__save_run["save_run"]
+        backend__app__db__memory__MemoryWorkflowRepo__update_run_status["update_run_status"]
+        backend__app__db__memory__MemoryWorkflowRepo__get_run["get_run"]
+        backend__app__db__memory__MemoryWorkflowRepo__list_runs["list_runs"]
+        backend__app__db__memory__MemoryWorkflowRepo__count_runs["count_runs"]
+        backend__app__db__WorkflowRepo__save_run["save_run"]
+        backend__app__db__WorkflowRepo__update_run_status["update_run_status"]
+        backend__app__db__WorkflowRepo__get_run["get_run"]
+        backend__app__db__WorkflowRepo__list_runs["list_runs"]
+        backend__app__db__WorkflowRepo__count_runs["count_runs"]
+        backend__app__db__create_workflow_repo["create_workflow_repo"]
+        backend__app__db__postgres__WorkflowRunModel__to_dict["to_dict"]
+        backend__app__db__postgres__PostgresWorkflowRepo___ensure_tables["_ensure_tables"]
+        ...["+92 more"]
     end
 
-    class backend__app__main__health,backend__app__workflow__list_actions,backend__app__workflow__get_history,backend__app__workflow__get_workflow,backend__app__workflow__workflow_from_text,backend__app__workflow__chat_start,backend__app__workflow__chat_message,backend__app__workflow__chat_get_state,backend__app__workflow__actions_schema,backend__app__workflow__action_schema entry
+    class tauri_wrapper__src_tauri__src__main__main,backend__app__main__health,backend__app__db__memory__MemoryWorkflowRepo__save_run,backend__app__db__memory__MemoryWorkflowRepo__update_run_status,backend__app__db__memory__MemoryWorkflowRepo__get_run,backend__app__db__memory__MemoryWorkflowRepo__list_runs,backend__app__db__memory__MemoryWorkflowRepo__count_runs,backend__app__db__WorkflowRepo__save_run,backend__app__db__WorkflowRepo__update_run_status,backend__app__db__WorkflowRepo__get_run entry

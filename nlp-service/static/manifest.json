@@ -1,0 +1,30 @@
+{
+    "name": "NLP2DSL Voice Chat",
+    "short_name": "Voice Chat",
+    "description": "Rozmawiaj naturalnie - system zrozumie i wykona automatyzacje",
+    "start_url": "/chat",
+    "display": "standalone",
+    "background_color": "#1a1a2e",
+    "theme_color": "#00d9ff",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "/static/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/static/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": ["productivity", "utilities"],
+    "lang": "pl",
+    "scope": "/",
+    "permissions": [
+        "audioCapture"
+    ]
+}

@@ -1,0 +1,146 @@
+"""
+PostgresWorkflowRepo — persystencja workflow w PostgreSQL.
+
+Tabele tworzą się automatycznie przy starcie (create_all).
+Używa asyncpg + SQLAlchemy async dla nieblokujących operacji.
+"""
+
+from __future__ import annotations
+
+import logging
+from datetime import datetime
+from typing import Optional
+
+from sqlalchemy import Column, String, DateTime, text
+from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
+from sqlalchemy.orm import DeclarativeBase
+
+from . import WorkflowRepo
+
+log = logging.getLogger("db.postgres")
+
+
+class Base(DeclarativeBase):
+    pass
+
+
+class WorkflowRunModel(Base):
+    __tablename__ = "workflow_runs"
+
+    id = Column(String(32), primary_key=True)
+    name = Column(String(255), nullable=False, index=True)
+    status = Column(String(32), nullable=False, index=True)
+    trigger = Column(String(32), default="manual")
+    steps = Column(JSONB, default=list)
+    created_at = Column(DateTime, default=datetime.utcnow, index=True)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def to_dict(self) -> dict:
+        return {
+            "workflow_id": self.id,
+            "name": self.name,
+            "status": self.status,
+            "trigger": self.trigger,
+            "steps": self.steps or [],
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
+        }
+
+
+class PostgresWorkflowRepo(WorkflowRepo):
+
+    def __init__(self, database_url: str):
+        if database_url.startswith("postgresql://"):
+            database_url = database_url.replace("postgresql://", "postgresql+asyncpg://", 1)
+
+        self._engine = create_async_engine(
+            database_url,
+            echo=False,
+            pool_size=5,
+            max_overflow=10,
+            pool_pre_ping=True,
+        )
+        self._session_factory = async_sessionmaker(
+            self._engine,
+            class_=AsyncSession,
+            expire_on_commit=False,
+        )
+        self._initialized = False
+        log.info("Postgres workflow repo created: %s", database_url.split("@")[-1])
+
+    async def _ensure_tables(self):
+        if self._initialized:
+            return
+        async with self._engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+        self._initialized = True
+        log.info("Database tables ensured")
+
+    async def save_run(self, workflow_id: str, name: str, status: str, data: dict) -> None:
+        await self._ensure_tables()
+
+        async with self._session_factory() as session:
+            run = WorkflowRunModel(
+                id=workflow_id,
+                name=name,
+                status=status,
+                trigger=data.get("trigger", "manual"),
+                steps=data.get("steps", []),
+                created_at=datetime.utcnow(),
+            )
+            session.add(run)
+            await session.commit()
+            log.debug("Saved workflow run %s (%s)", workflow_id, name)
+
+    async def update_run_status(self, workflow_id: str, status: str) -> None:
+        await self._ensure_tables()
+
+        async with self._session_factory() as session:
+            await session.execute(
+                text("UPDATE workflow_runs SET status = :status, updated_at = :now WHERE id = :id"),
+                {"status": status, "now": datetime.utcnow(), "id": workflow_id},
+            )
+            await session.commit()
+
+    async def get_run(self, workflow_id: str) -> Optional[dict]:
+        await self._ensure_tables()
+
+        async with self._session_factory() as session:
+            result = await session.get(WorkflowRunModel, workflow_id)
+            if result:
+                return result.to_dict()
+            return None
+
+    async def list_runs(self, limit: int = 50, offset: int = 0) -> list[dict]:
+        await self._ensure_tables()
+
+        async with self._session_factory() as session:
+            result = await session.execute(
+                text(
+                    "SELECT * FROM workflow_runs ORDER BY created_at DESC LIMIT :limit OFFSET :offset"
+                ),
+                {"limit": limit, "offset": offset},
+            )
+            rows = result.mappings().all()
+            return [
+                {
+                    "workflow_id": r["id"],
+                    "name": r["name"],
+                    "status": r["status"],
+                    "trigger": r["trigger"],
+                    "steps": r["steps"],
+                    "created_at": r["created_at"].isoformat() if r["created_at"] else None,
+                }
+                for r in rows
+            ]
+
+    async def count_runs(self) -> int:
+        await self._ensure_tables()
+
+        async with self._session_factory() as session:
+            result = await session.execute(text("SELECT COUNT(*) FROM workflow_runs"))
+            return result.scalar() or 0
+
+    async def close(self):
+        await self._engine.dispose()

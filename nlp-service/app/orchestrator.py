@@ -29,12 +29,11 @@ from .schemas import (
 from .parser_rules import parse_rules
 from .mapper import map_to_dsl
 from .registry import ACTIONS_REGISTRY, COMPOSITE_INTENTS, SYSTEM_ACTIONS, get_trigger
+from .store.factory import get_conversation_store
 
 log = logging.getLogger("orchestrator")
 
-# ── In-memory conversation store (MVP — Redis w produkcji) ────
-
-_conversations: dict[str, ConversationState] = {}
+_store = get_conversation_store()
 
 
 # ── Field type inference ──────────────────────────────────────
@@ -70,34 +69,42 @@ FIELD_TYPES: dict[str, dict] = {
 # ── Public API ────────────────────────────────────────────────
 
 
-def start_conversation(text: str) -> ConversationResponse:
+async def start_conversation(text: str) -> ConversationResponse:
     """Rozpocznij nową rozmowę od pierwszej wiadomości użytkownika."""
     state = ConversationState(id=uuid4().hex[:12])
     state.history.append({"role": "user", "text": text})
 
-    _conversations[state.id] = state
+    result = _process_message(state, text)
+    await _store.save(state.id, state.model_dump())
+    return result
 
-    return _process_message(state, text)
 
+async def continue_conversation(conversation_id: str, text: str) -> ConversationResponse:
+    """Kontynuuj istniejącą rozmowę — użytkownik uzupełnia brakujące dane.
 
-def continue_conversation(conversation_id: str, text: str) -> ConversationResponse:
-    """Kontynuuj istniejącą rozmowę — użytkownik uzupełnia brakujące dane."""
-    state = _conversations.get(conversation_id)
-    if not state:
-        return ConversationResponse(
-            conversation_id=conversation_id,
-            status="error",
-            message="Nie znaleziono rozmowy. Zacznij nową przez /chat/start.",
-        )
+    Jeśli rozmowa jeszcze nie istnieje, tworzona jest lazily, aby UI desktopowe
+    i WebSocket mogły rozpocząć dialog bez wcześniejszego /chat/start.
+    """
+    raw = await _store.get(conversation_id)
+    if not raw:
+        log.info("Conversation %s not found; creating new state lazily", conversation_id)
+        state = ConversationState(id=conversation_id)
+    else:
+        state = ConversationState(**raw)
 
     state.history.append({"role": "user", "text": text})
 
-    return _process_message(state, text)
+    result = _process_message(state, text)
+    await _store.save(state.id, state.model_dump())
+    return result
 
 
-def get_conversation(conversation_id: str) -> ConversationState | None:
+async def get_conversation(conversation_id: str) -> ConversationState | None:
     """Pobierz stan rozmowy."""
-    return _conversations.get(conversation_id)
+    raw = await _store.get(conversation_id)
+    if raw:
+        return ConversationState(**raw)
+    return None
 
 
 def get_action_form(action: str) -> ActionFormSchema | None:
