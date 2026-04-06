@@ -1,45 +1,10 @@
-# Python
-.env.local
-.env.example
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
+*.pyc
+.env
+.venv/
 *.egg-info/
-*.egg
 dist/
 build/
-.eggs/
-
-# Virtual environments
-.venv/
-venv/
-env/
-
-# IDE
 .idea/
 .vscode/
-*.swp
-*.swo
-*~
-.DS_Store
-
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/
-.mypy_cache/
-
-# Lint
-.ruff_cache/
-
-# prollama runtime
-.prollama/
-*.log
-
-# Docker
-docker-compose.override.yml
-
-# Environment variables
-.env
-test_content_filter.py
+*.db

@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.2] - 2026-04-06
+
+### Docs
+- Update README.md
+- Update articles/adaptive-hypernet.md
+- Update articles/conceptual-hcm.md
+- Update articles/cure-core-hox-v2.md
+- Update articles/drm-module-advanced.md
+- Update articles/flow-network.md
+- Update articles/hilbert-net.md
+- Update articles/mvp-automation-platform.md
+- Update articles/universal-binary-tensor.md
+
+### Other
+- Update .gitignore
+
 ## [0.0.1] - 2026-04-06
 
 ### Docs
