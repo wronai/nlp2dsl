@@ -1,0 +1,75 @@
+version: "3.8"
+
+services:
+
+  # ── API + DSL Engine ─────────────────────────────────────────
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      - WORKER_URL=http://worker:8000
+      - NLP_SERVICE_URL=http://nlp-service:8002
+      - POSTGRES_URL=postgresql://app:app@postgres:5432/automation
+    depends_on:
+      postgres:
+        condition: service_healthy
+      worker:
+        condition: service_started
+      nlp-service:
+        condition: service_started
+    restart: unless-stopped
+
+  # ── NLP → DSL Pipeline ──────────────────────────────────────
+  nlp-service:
+    build: ./nlp-service
+    ports:
+      - "8002:8002"
+    environment:
+      # Tryb rules działa bez klucza API (MVP)
+      # Odkomentuj jedną linię aby włączyć LLM:
+      # - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      # - OPENAI_API_KEY=${OPENAI_API_KEY}
+      # - OLLAMA_URL=http://ollama:11434
+      - LLM_FALLBACK_THRESHOLD=0.5
+    restart: unless-stopped
+
+  # ── Imperative Worker ────────────────────────────────────────
+  worker:
+    build: ./worker
+    ports:
+      - "8001:8000"
+    restart: unless-stopped
+
+  # ── Database ─────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: automation
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  # ── Cache / Queue ────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+  # ── (Opcjonalnie) Lokalny LLM ───────────────────────────────
+  # ollama:
+  #   image: ollama/ollama:latest
+  #   ports:
+  #     - "11434:11434"
+  #   volumes:
+  #     - ollama_data:/root/.ollama
+
+volumes:
+  pgdata:
+  # ollama_data:

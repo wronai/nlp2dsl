@@ -1,0 +1,162 @@
+"""
+ACTIONS_REGISTRY — źródło prawdy.
+
+Każda akcja definiuje:
+  - required: pola wymagane do wygenerowania DSL
+  - optional: pola opcjonalne z wartościami domyślnymi
+  - aliases: słowa kluczowe (PL + EN) do dopasowania z NLP
+  - description: opis dla GUI / API
+  - param_aliases: mapowanie synonimów NLP → nazwy parametrów
+"""
+
+ACTIONS_REGISTRY: dict[str, dict] = {
+    "send_invoice": {
+        "description": "Generuje i wysyła fakturę",
+        "required": ["amount", "to"],
+        "optional": {"currency": "PLN"},
+        "aliases": [
+            "faktura", "fakturę", "invoice", "rachunek",
+            "wyślij fakturę", "wystaw fakturę", "send invoice",
+        ],
+        "param_aliases": {
+            "kwota": "amount",
+            "suma": "amount",
+            "cena": "amount",
+            "waluta": "currency",
+            "odbiorca": "to",
+            "klient": "to",
+            "do": "to",
+            "adresat": "to",
+        },
+    },
+    "send_email": {
+        "description": "Wysyła e-mail",
+        "required": ["to"],
+        "optional": {"subject": "Automatyczna wiadomość", "body": ""},
+        "aliases": [
+            "email", "e-mail", "mail", "maila",
+            "wyślij email", "wyślij maila", "send email",
+            "wiadomość", "napisz",
+        ],
+        "param_aliases": {
+            "temat": "subject",
+            "treść": "body",
+            "do": "to",
+            "odbiorca": "to",
+        },
+    },
+    "generate_report": {
+        "description": "Generuje raport PDF/CSV",
+        "required": ["report_type"],
+        "optional": {"format": "pdf"},
+        "aliases": [
+            "raport", "report", "zestawienie", "sprawozdanie",
+            "generuj raport", "zrób raport", "generate report",
+        ],
+        "param_aliases": {
+            "typ": "report_type",
+            "rodzaj": "report_type",
+            "sprzedaż": "report_type=sales",
+            "hr": "report_type=hr",
+            "finanse": "report_type=finance",
+            "format": "format",
+            "pdf": "format=pdf",
+            "csv": "format=csv",
+        },
+    },
+    "crm_update": {
+        "description": "Aktualizuje rekord w CRM",
+        "required": ["entity"],
+        "optional": {"data": {}},
+        "aliases": [
+            "crm", "aktualizuj crm", "update crm",
+            "dodaj do crm", "wpis crm",
+        ],
+        "param_aliases": {
+            "kontakt": "entity=contact",
+            "klient": "entity=client",
+            "lead": "entity=lead",
+        },
+    },
+    "notify_slack": {
+        "description": "Wysyła powiadomienie Slack",
+        "required": ["channel"],
+        "optional": {"message": "Automatyczne powiadomienie"},
+        "aliases": [
+            "slack", "powiadomienie", "powiadom", "notify",
+            "wyślij na slack", "notify slack", "slack notification",
+        ],
+        "param_aliases": {
+            "kanał": "channel",
+            "wiadomość": "message",
+        },
+    },
+}
+
+
+# ── Composite intents (multi-step) ───────────────────────────
+
+COMPOSITE_INTENTS: dict[str, list[str]] = {
+    "invoice_and_notify": ["send_invoice", "notify_slack"],
+    "invoice_and_email": ["send_invoice", "send_email"],
+    "report_and_email": ["generate_report", "send_email"],
+    "report_and_notify": ["generate_report", "notify_slack"],
+    "full_invoice_flow": ["send_invoice", "send_email", "notify_slack"],
+    "full_report_flow": ["generate_report", "send_email", "notify_slack"],
+}
+
+
+# ── Trigger aliases ───────────────────────────────────────────
+
+TRIGGER_ALIASES: dict[str, str] = {
+    "codziennie": "daily",
+    "co dzień": "daily",
+    "daily": "daily",
+    "co tydzień": "weekly",
+    "tygodniowo": "weekly",
+    "weekly": "weekly",
+    "co poniedziałek": "weekly",
+    "co miesiąc": "monthly",
+    "miesięcznie": "monthly",
+    "monthly": "monthly",
+    "ręcznie": "manual",
+    "manual": "manual",
+    "na żądanie": "manual",
+    "jednorazowo": "once",
+}
+
+
+def get_action_by_alias(text: str) -> str | None:
+    """Dopasuj tekst do akcji po aliasach."""
+    text_lower = text.lower()
+    best_match = None
+    best_length = 0
+
+    for action_name, meta in ACTIONS_REGISTRY.items():
+        for alias in meta["aliases"]:
+            if alias in text_lower and len(alias) > best_length:
+                best_match = action_name
+                best_length = len(alias)
+
+    return best_match
+
+
+def get_trigger(text: str) -> str:
+    """Wykryj trigger z tekstu."""
+    text_lower = text.lower()
+    for alias, trigger in TRIGGER_ALIASES.items():
+        if alias in text_lower:
+            return trigger
+    return "manual"
+
+
+def get_required_fields(action: str) -> list[str]:
+    """Zwróć wymagane pola dla akcji."""
+    meta = ACTIONS_REGISTRY.get(action, {})
+    return meta.get("required", [])
+
+
+def get_defaults(action: str) -> dict:
+    """Zwróć domyślne wartości opcjonalnych pól."""
+    meta = ACTIONS_REGISTRY.get(action, {})
+    return dict(meta.get("optional", {}))
