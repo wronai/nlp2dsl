@@ -5,7 +5,7 @@ Przykład tworzenia zaplanowanych raportów z różnymi harmonogramami.
 
 import json
 import sys
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any
 
 import requests
@@ -46,7 +46,7 @@ def create_scheduled_report(
             "config": {
                 "to": email_to,
                 "subject": f"Automatyczny raport {report_type}",
-                "body": f"Raport {report_type} wygenerowany automatycznie dnia {datetime.now().strftime('%Y-%m-%d')}."
+                "body": f"Raport {report_type} wygenerowany automatycznie dnia {datetime.now(UTC).strftime('%Y-%m-%d')}."
             }
         })
 
@@ -80,7 +80,7 @@ def create_scheduled_from_text(text: str) -> dict[str, Any]:
     return response.json()
 
 
-def main():
+def main() -> None:
     """Główna funkcja przykładu."""
 
     print("=== Przykład: Zaplanowane Raporty ===\n")

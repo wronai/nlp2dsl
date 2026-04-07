@@ -2,9 +2,9 @@
 Workflow router — /workflow/run, /workflow/history/*, /workflow/actions, /workflow/from-text.
 """
 
-from __future__ import annotations
-
 import logging
+from http import HTTPStatus
+from typing import Any
 
 from fastapi import APIRouter, HTTPException
 from httpx import AsyncClient
@@ -16,7 +16,7 @@ from app.schemas import ActionInfo, RunWorkflowRequest, Step, WorkflowResult
 log = logging.getLogger("router.workflow")
 router = APIRouter(prefix="/workflow", tags=["workflow"])
 
-
+_PROXY_TIMEOUT_SECONDS: float = float("30.0")
 ACTIONS_REGISTRY: list[ActionInfo] = [
     ActionInfo(name="send_invoice",   description="Generuje i wysyła fakturę",       config_schema={"to": "str", "amount": "float", "currency": "str"}),
     ActionInfo(name="send_email",     description="Wysyła e-mail",                   config_schema={"to": "str", "subject": "str", "body": "str"}),
@@ -27,34 +27,34 @@ ACTIONS_REGISTRY: list[ActionInfo] = [
 
 
 @router.get("/actions", response_model=list[ActionInfo])
-async def list_actions():
+async def list_actions() -> list[ActionInfo]:
     """Zwraca listę dostępnych akcji (DSL vocabulary)."""
     return ACTIONS_REGISTRY
 
 
 @router.post("/run", response_model=WorkflowResult)
-async def run_workflow_endpoint(req: RunWorkflowRequest):
+async def run_workflow_endpoint(req: RunWorkflowRequest) -> WorkflowResult:
     """Uruchamia workflow — iteruje po krokach DSL i deleguje każdy krok do workera."""
     return await run_workflow(req)
 
 
 @router.get("/history")
-async def get_history():
+async def get_history() -> list[dict]:
     """Zwraca historię wykonanych workflow."""
     return await _repo.list_runs()
 
 
 @router.get("/history/{workflow_id}")
-async def get_workflow(workflow_id: str):
+async def get_workflow(workflow_id: str) -> dict[str, Any]:
     """Zwraca szczegóły konkretnego workflow."""
     run = await _repo.get_run(workflow_id)
     if not run:
-        raise HTTPException(status_code=404, detail="Workflow not found")
+        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="Workflow not found")
     return run
 
 
 @router.post("/from-text")
-async def workflow_from_text(body: dict):
+async def workflow_from_text(body: dict) -> dict[str, Any]:
     """
     Pełny pipeline: tekst → NLP → DSL → (opcjonalne) wykonanie.
 
@@ -65,9 +65,9 @@ async def workflow_from_text(body: dict):
     execute = body.get("execute", False)
 
     if not text.strip():
-        raise HTTPException(status_code=400, detail="Field 'text' is required")
+        raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail="Field 'text' is required")
 
-    async with AsyncClient(timeout=30.0, headers={"X-Request-ID": get_request_id()}) as client:
+    async with AsyncClient(timeout=_PROXY_TIMEOUT_SECONDS, headers={"X-Request-ID": get_request_id()}) as client:
         nlp_resp = await client.post(f"{NLP_SERVICE_URL}/nlp/to-dsl", json={"text": text, "mode": mode})
 
     if not nlp_resp.is_success:

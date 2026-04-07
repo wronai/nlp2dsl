@@ -9,12 +9,10 @@ Użycie:
   store = get_conversation_store()
 """
 
-from __future__ import annotations
-
 import logging
 
-from . import ConversationStore
-from .memory import MemoryConversationStore
+from app.store import ConversationStore
+from app.store.memory import MemoryConversationStore
 
 log = logging.getLogger("store.factory")
 
@@ -33,7 +31,7 @@ def get_conversation_store() -> ConversationStore:
 
     if redis_url:
         try:
-            from .redis_store import RedisConversationStore
+            from app.store.redis_store import RedisConversationStore
             _instance = RedisConversationStore(redis_url=redis_url, default_ttl=conv_ttl)
             log.info("Using RedisConversationStore (TTL=%ds)", conv_ttl)
         except Exception as e:

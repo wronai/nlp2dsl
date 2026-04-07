@@ -2,16 +2,17 @@
 MemoryWorkflowRepo — in-memory fallback (zachowanie dotychczasowe).
 """
 
-from __future__ import annotations
-
 from collections import OrderedDict
 
-from . import WorkflowRepo
+from app.db import DEFAULT_LIST_LIMIT, WorkflowRepo
+
+
+DEFAULT_MAX_SIZE: int = int("10000")
 
 
 class MemoryWorkflowRepo(WorkflowRepo):
 
-    def __init__(self, max_size: int = 10_000):
+    def __init__(self, max_size: int = DEFAULT_MAX_SIZE):
         self._data: OrderedDict[str, dict] = OrderedDict()
         self._max_size = max_size
 
@@ -28,7 +29,7 @@ class MemoryWorkflowRepo(WorkflowRepo):
     async def get_run(self, workflow_id: str) -> dict | None:
         return self._data.get(workflow_id)
 
-    async def list_runs(self, limit: int = 50, offset: int = 0) -> list[dict]:
+    async def list_runs(self, limit: int = DEFAULT_LIST_LIMIT, offset: int = 0) -> list[dict]:
         items = list(reversed(self._data.values()))
         return items[offset:offset + limit]
 

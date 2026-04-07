@@ -8,21 +8,25 @@ Patches the global _store to use a test-local store instance.
 from __future__ import annotations
 
 import pytest
-
 from app.orchestrator import (
-    start_conversation,
-    continue_conversation,
-    get_conversation,
-    get_action_form,
-    _process_message,
     _merge_into_state,
+    continue_conversation,
+    get_action_form,
+    get_conversation,
+    start_conversation,
 )
-from app.schemas import ConversationState, ConversationResponse, NLPResult, NLPIntent, NLPEntities
+from app.schemas import (
+    ConversationResponse,
+    ConversationState,
+    NLPEntities,
+    NLPIntent,
+    NLPResult,
+)
 from app.store.memory import MemoryConversationStore
 
 
 @pytest.fixture(autouse=True)
-def _patch_store(monkeypatch):
+def _patch_store(monkeypatch) -> None:
     """Replace orchestrator's _store with a fresh MemoryConversationStore per test."""
     import app.orchestrator as orch_mod
     store = MemoryConversationStore()
@@ -36,7 +40,7 @@ class TestStartConversation:
     """Starting a new conversation from initial user text."""
 
     @pytest.mark.asyncio
-    async def test_start_conversation_complete(self):
+    async def test_start_conversation_complete(self) -> None:
         """Complete input → status 'ready' with DSL."""
         resp = await start_conversation(
             "Wyślij fakturę na 1500 PLN do klient@firma.pl"
@@ -48,7 +52,7 @@ class TestStartConversation:
         assert resp.dsl.steps[0].action == "send_invoice"
 
     @pytest.mark.asyncio
-    async def test_start_conversation_incomplete(self):
+    async def test_start_conversation_incomplete(self) -> None:
         """Incomplete input → status 'in_progress' asking for missing data."""
         resp = await start_conversation("Wyślij fakturę")
         assert resp.status == "in_progress"
@@ -57,7 +61,7 @@ class TestStartConversation:
         assert resp.missing or "kwotę" in resp.message.lower() or "Podaj" in resp.message
 
     @pytest.mark.asyncio
-    async def test_start_conversation_unknown(self):
+    async def test_start_conversation_unknown(self) -> None:
         """Unrecognized text → in_progress with help message."""
         resp = await start_conversation("zrób coś fajnego")
         assert resp.status == "in_progress"
@@ -71,7 +75,7 @@ class TestContinueConversation:
     """Multi-turn dialog: providing missing data in follow-up messages."""
 
     @pytest.mark.asyncio
-    async def test_continue_conversation(self):
+    async def test_continue_conversation(self) -> None:
         """Two-turn dialog: start incomplete → provide email → ready."""
         # Turn 1: incomplete invoice
         resp1 = await start_conversation("Wyślij fakturę na 500 PLN")
@@ -85,7 +89,7 @@ class TestContinueConversation:
         assert resp2.dsl is not None
 
     @pytest.mark.asyncio
-    async def test_continue_conversation_lazy_create(self):
+    async def test_continue_conversation_lazy_create(self) -> None:
         """Continuing a non-existent conversation creates one lazily."""
         resp = await continue_conversation("nonexistent_id", "Wyślij fakturę na 100 PLN do a@b.pl")
         assert resp.conversation_id == "nonexistent_id"
@@ -99,14 +103,14 @@ class TestSystemCommands:
     """System actions executed directly (no DSL generation)."""
 
     @pytest.mark.asyncio
-    async def test_system_command_status(self):
+    async def test_system_command_status(self) -> None:
         """'status' triggers immediate system result."""
         resp = await start_conversation("status systemu")
         assert resp.status == "done"
         assert resp.message is not None
 
     @pytest.mark.asyncio
-    async def test_system_command_settings(self):
+    async def test_system_command_settings(self) -> None:
         """'pokaż ustawienia' → system_settings_get → done."""
         resp = await start_conversation("pokaż ustawienia")
         assert resp.status == "done"
@@ -120,7 +124,7 @@ class TestGetConversation:
     """Retrieving stored conversation state."""
 
     @pytest.mark.asyncio
-    async def test_get_conversation_exists(self):
+    async def test_get_conversation_exists(self) -> None:
         """After start, conversation is retrievable."""
         resp = await start_conversation("faktura na 200 PLN do x@y.pl")
         state = await get_conversation(resp.conversation_id)
@@ -128,7 +132,7 @@ class TestGetConversation:
         assert state.id == resp.conversation_id
 
     @pytest.mark.asyncio
-    async def test_get_conversation_not_found(self):
+    async def test_get_conversation_not_found(self) -> None:
         """Non-existent conversation → None."""
         state = await get_conversation("does_not_exist")
         assert state is None
@@ -140,7 +144,7 @@ class TestGetConversation:
 class TestGetActionForm:
     """Schema-driven UI form generation."""
 
-    def test_action_form_send_invoice(self):
+    def test_action_form_send_invoice(self) -> None:
         """send_invoice → form with amount, to, currency fields."""
         form = get_action_form("send_invoice")
         assert form is not None
@@ -149,7 +153,7 @@ class TestGetActionForm:
         assert "amount" in field_names
         assert "to" in field_names
 
-    def test_action_form_nonexistent(self):
+    def test_action_form_nonexistent(self) -> None:
         """Unknown action → None."""
         form = get_action_form("nonexistent_action")
         assert form is None
@@ -161,7 +165,7 @@ class TestGetActionForm:
 class TestMergeIntoState:
     """Internal entity merging logic."""
 
-    def test_merge_updates_intent(self):
+    def test_merge_updates_intent(self) -> None:
         """New NLP result updates state intent."""
         state = ConversationState(id="test")
         nlp = NLPResult(
@@ -172,7 +176,7 @@ class TestMergeIntoState:
         assert state.intent == "send_invoice"
         assert state.entities["amount"] == 100.0
 
-    def test_merge_preserves_existing(self):
+    def test_merge_preserves_existing(self) -> None:
         """New NLP with None fields doesn't overwrite existing entities."""
         state = ConversationState(id="test", entities={"amount": 500.0, "to": "a@b.pl"})
         state.intent = "send_invoice"

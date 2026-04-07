@@ -82,7 +82,7 @@ def generate_composite_from_text(text: str) -> dict[str, Any]:
     return response.json()
 
 
-def main():
+def main() -> None:
     """Główna funkcja przykładu."""
 
     print("=== Przykład: Raport i Powiadomienia ===\n")

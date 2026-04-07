@@ -7,8 +7,6 @@ Trzy warstwy:
   3. DialogResponse — obsługa brakujących danych
 """
 
-from __future__ import annotations
-
 from pydantic import BaseModel, Field
 
 # ── NLP Output ────────────────────────────────────────────────

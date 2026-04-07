@@ -6,15 +6,13 @@ Schemat kluczy:
   conv:index              ZSET (score=timestamp, member=conversation_id)
 """
 
-from __future__ import annotations
-
 import json
 import logging
 import time
 
 import redis.asyncio as aioredis
 
-from . import ConversationStore
+from app.store import ConversationStore
 
 log = logging.getLogger("store.redis")
 

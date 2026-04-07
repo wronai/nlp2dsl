@@ -5,19 +5,19 @@ Tabele tworzą się automatycznie przy starcie (create_all).
 Używa asyncpg + SQLAlchemy async dla nieblokujących operacji.
 """
 
-from __future__ import annotations
-
 import logging
-from datetime import datetime
+from datetime import UTC, datetime
 
 from sqlalchemy import Column, DateTime, String, text
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
 
-from . import WorkflowRepo
+from app.db import DEFAULT_LIST_LIMIT, WorkflowRepo
 
 log = logging.getLogger("db.postgres")
+
+MAX_NAME_LENGTH: int = int("255")
 
 
 class Base(DeclarativeBase):
@@ -28,12 +28,12 @@ class WorkflowRunModel(Base):
     __tablename__ = "workflow_runs"
 
     id = Column(String(32), primary_key=True)
-    name = Column(String(255), nullable=False, index=True)
+    name = Column(String(MAX_NAME_LENGTH), nullable=False, index=True)
     status = Column(String(32), nullable=False, index=True)
     trigger = Column(String(32), default="manual")
     steps = Column(JSONB, default=list)
-    created_at = Column(DateTime, default=datetime.utcnow, index=True)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(UTC), index=True)
+    updated_at = Column(DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC))
 
     def to_dict(self) -> dict:
         return {
@@ -68,7 +68,7 @@ class PostgresWorkflowRepo(WorkflowRepo):
         self._initialized = False
         log.info("Postgres workflow repo created: %s", database_url.split("@")[-1])
 
-    async def _ensure_tables(self):
+    async def _ensure_tables(self) -> None:
         if self._initialized:
             return
         async with self._engine.begin() as conn:
@@ -86,7 +86,7 @@ class PostgresWorkflowRepo(WorkflowRepo):
                 status=status,
                 trigger=data.get("trigger", "manual"),
                 steps=data.get("steps", []),
-                created_at=datetime.utcnow(),
+                created_at=datetime.now(UTC),
             )
             session.add(run)
             await session.commit()
@@ -98,7 +98,7 @@ class PostgresWorkflowRepo(WorkflowRepo):
         async with self._session_factory() as session:
             await session.execute(
                 text("UPDATE workflow_runs SET status = :status, updated_at = :now WHERE id = :id"),
-                {"status": status, "now": datetime.utcnow(), "id": workflow_id},
+                {"status": status, "now": datetime.now(UTC), "id": workflow_id},
             )
             await session.commit()
 
@@ -111,7 +111,7 @@ class PostgresWorkflowRepo(WorkflowRepo):
                 return result.to_dict()
             return None
 
-    async def list_runs(self, limit: int = 50, offset: int = 0) -> list[dict]:
+    async def list_runs(self, limit: int = DEFAULT_LIST_LIMIT, offset: int = 0) -> list[dict]:
         await self._ensure_tables()
 
         async with self._session_factory() as session:
@@ -141,5 +141,5 @@ class PostgresWorkflowRepo(WorkflowRepo):
             result = await session.execute(text("SELECT COUNT(*) FROM workflow_runs"))
             return result.scalar() or 0
 
-    async def close(self):
+    async def close(self) -> None:
         await self._engine.dispose()

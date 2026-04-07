@@ -10,7 +10,9 @@ W produkcji: podmień simulate_* na prawdziwe integracje
 
 import asyncio
 import logging
-from datetime import datetime
+from collections.abc import Callable
+from datetime import UTC, datetime
+from typing import Any
 
 from fastapi import FastAPI, HTTPException
 from logging_setup import RequestIDMiddleware, setup_logging
@@ -27,9 +29,9 @@ app.add_middleware(RequestIDMiddleware)
 ACTION_HANDLERS = {}
 
 
-def action(name: str):
+def action(name: str) -> Callable[[Callable], Callable]:
     """Dekorator rejestrujący handler akcji."""
-    def decorator(fn):
+    def decorator(fn: Callable) -> Callable:
         ACTION_HANDLERS[name] = fn
         return fn
     return decorator
@@ -43,7 +45,7 @@ async def handle_send_invoice(config: dict) -> dict:
     log.info("⚡ Generating invoice → %s, amount: %s",
              config.get("to", "?"), config.get("amount", "?"))
     await asyncio.sleep(0.5)  # symulacja
-    invoice_id = f"INV-{datetime.utcnow().strftime('%Y%m%d%H%M%S')}"
+    invoice_id = f"INV-{datetime.now(UTC).strftime('%Y%m%d%H%M%S')}"
     log.info("✅ Invoice %s created", invoice_id)
     return {"invoice_id": invoice_id, "sent_to": config.get("to")}
 
@@ -63,7 +65,7 @@ async def handle_generate_report(config: dict) -> dict:
     fmt = config.get("format", "pdf")
     log.info("📊 Generating %s report (%s)…", report_type, fmt)
     await asyncio.sleep(1.0)
-    filename = f"report_{report_type}_{datetime.utcnow().strftime('%Y%m%d')}.{fmt}"
+    filename = f"report_{report_type}_{datetime.now(UTC).strftime('%Y%m%d')}.{fmt}"
     log.info("✅ Report ready: %s", filename)
     return {"filename": filename, "type": report_type}
 
@@ -134,7 +136,7 @@ async def handle_generate_code(config: dict) -> dict:
 
 
 @app.post("/execute")
-async def execute_step(step: dict):
+async def execute_step(step: dict) -> dict[str, Any]:
     """Wykonuje pojedynczy krok workflow."""
     step_id = step.get("step_id", "?")
     action_name = step.get("action")
@@ -154,5 +156,5 @@ async def execute_step(step: dict):
 
 
 @app.get("/health")
-async def health():
+async def health() -> dict[str, Any]:
     return {"status": "ok", "service": "worker", "actions": list(ACTION_HANDLERS.keys())}

@@ -12,18 +12,17 @@ Konfiguracja (env vars):
   DEEPGRAM_LANGUAGE — język (default: pl)
 """
 
-from __future__ import annotations
-
 import logging
 
 import httpx
 
-from .config import settings
+from app.config import settings
 
 log = logging.getLogger("nlp.audio")
 
 # ── Deepgram Config ───────────────────────────────────────────
 
+DEEPGRAM_TIMEOUT_SECONDS: float = float("30.0")
 DEEPGRAM_API_KEY = settings.deepgram_api_key
 DEEPGRAM_MODEL = settings.deepgram_model
 DEEPGRAM_LANGUAGE = settings.deepgram_language
@@ -62,7 +61,7 @@ async def stt_audio(audio_bytes: bytes, language: str = None) -> str | None:
         # Transcribe
         log.info("Transcribing audio (%d bytes, lang=%s)", len(audio_bytes), lang)
 
-        async with httpx.AsyncClient(timeout=30.0) as client:
+        async with httpx.AsyncClient(timeout=DEEPGRAM_TIMEOUT_SECONDS) as client:
             response = await client.post(url, headers=headers, content=audio_bytes)
 
             if not response.is_success:
@@ -128,12 +127,12 @@ class StreamingSTT:
         self.transcript_buffer = []
         log.warning("StreamingSTT not fully implemented - use stt_audio for batch processing")
 
-    async def start(self):
+    async def start(self) -> bool:
         """Start streaming connection."""
         log.warning("StreamingSTT.start() not implemented")
         return False
 
-    async def send_audio(self, audio_chunk: bytes):
+    async def send_audio(self, audio_chunk: bytes) -> None:
         """Send audio chunk to streaming connection."""
         # Fallback: batch process
         transcript = await stt_audio(audio_chunk, self.language)

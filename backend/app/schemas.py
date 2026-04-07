@@ -5,8 +5,6 @@ Użytkownik opisuje CO chce zrobić (kroki workflow),
 system sam tłumaczy to na imperatywne wykonanie w kontenerach.
 """
 
-from __future__ import annotations
-
 from datetime import datetime
 from enum import Enum
 from typing import Any

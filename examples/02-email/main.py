@@ -51,7 +51,7 @@ def generate_email_from_text(text: str) -> dict[str, Any]:
     return response.json()
 
 
-def main():
+def main() -> None:
     """Główna funkcja przykładu."""
 
     print("=== Przykład: Wysyłanie E-maila ===\n")
@@ -93,7 +93,7 @@ def main():
     if execution.get("status") == "completed":
         step = execution["steps"][0]
         if step.get("status") == "completed":
-            print(f"\n🎉 E-mail wysłany pomyślnie!")
+            print("\n🎉 E-mail wysłany pomyślnie!")
         else:
             print(f"\n❌ Błąd: {step.get('error')}")
     else:

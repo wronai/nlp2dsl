@@ -1,37 +1,84 @@
-# redup/duplication | 3 groups | 24f 4144L | 2026-04-06
+# redup/duplication | 10 groups | 33f 5054L | 2026-04-07
 
 SUMMARY:
-  files_scanned: 24
-  total_lines:   4144
-  dup_groups:    3
-  dup_fragments: 8
-  saved_lines:   54
-  scan_ms:       7244
+  files_scanned: 33
+  total_lines:   5054
+  dup_groups:    10
+  dup_fragments: 27
+  saved_lines:   203
+  scan_ms:       2882
 
-DUPLICATES[3] (ranked by impact):
-  [bb1b98bb10e4cfc0] ! STRU  create_scheduled_from_text  L=15 N=4 saved=45 sim=1.00
-      examples/04-scheduled-report/main.py:0-14  (create_scheduled_from_text)
+DUPLICATES[10] (ranked by impact):
+  [1899ff8e67d31c77] ! STRU  setup_logging  L=25 N=3 saved=50 sim=1.00
+      nlp-service/app/logging_setup.py:0-24  (setup_logging)
+      backend/app/logging_setup.py:0-24  (setup_logging)
+      worker/logging_setup.py:0-24  (setup_logging)
+  [ce00be02a9b12238] ! STRU  generate_invoice_from_text  L=15 N=4 saved=45 sim=1.00
       examples/01-invoice/main.py:0-14  (generate_invoice_from_text)
+      examples/04-scheduled-report/main.py:0-14  (create_scheduled_from_text)
       examples/02-email/main.py:0-14  (generate_email_from_text)
       examples/03-report-and-notify/main.py:0-14  (generate_composite_from_text)
-  [89ba96f9b0838ff8]   STRU  get_run  L=5 N=2 saved=5 sim=1.00
-      backend/app/db/__init__.py:0-4  (get_run)
+  [a58ac04d8adce867]   EXAC  format  L=14 N=3 saved=28 sim=1.00
+      nlp-service/app/logging_setup.py:0-13  (format)
+      backend/app/logging_setup.py:0-13  (format)
+      worker/logging_setup.py:0-13  (format)
+  [ffd95d6b2707ba43]   EXAC  dispatch  L=11 N=3 saved=22 sim=1.00
+      nlp-service/app/logging_setup.py:0-10  (dispatch)
+      backend/app/logging_setup.py:0-10  (dispatch)
+      worker/logging_setup.py:0-10  (dispatch)
+  [4d91ac34f83096c0]   STRU  action_schema  L=11 N=3 saved=22 sim=1.00
+      backend/app/routers/settings.py:0-10  (action_schema)
+      backend/app/routers/settings.py:0-10  (get_settings_section)
+      backend/app/routers/chat.py:0-10  (chat_get_state)
+  [09dab9b354c8767d]   STRU  parse_text  L=13 N=2 saved=13 sim=1.00
+      nlp-service/app/main.py:0-12  (parse_text)
+      backend/app/routers/workflow.py:0-6  (run_workflow_endpoint)
+  [a62bc534c778f738]   EXAC  get_request_id  L=5 N=3 saved=10 sim=1.00
+      nlp-service/app/logging_setup.py:0-4  (get_request_id)
+      backend/app/logging_setup.py:0-4  (get_request_id)
+      worker/logging_setup.py:0-4  (get_request_id)
+  [3f5cfdf7288a2da1]   STRU  get  L=5 N=2 saved=5 sim=1.00
       nlp-service/app/store/__init__.py:0-4  (get)
-  [0d971b028084c102]   STRU  get  L=4 N=2 saved=4 sim=1.00
+      backend/app/db/__init__.py:0-4  (get_run)
+  [59e25ab8745014ff]   STRU  get  L=4 N=2 saved=4 sim=1.00
       nlp-service/app/store/memory.py:0-3  (get)
       backend/app/db/memory.py:0-3  (get_run)
+  [956ee70a7d2178ec]   STRU  close  L=4 N=2 saved=4 sim=1.00
+      nlp-service/app/store/redis_store.py:0-3  (close)
+      backend/app/db/postgres.py:0-3  (close)
 
-REFACTOR[3] (ranked by priority):
-  [1] ○ extract_function   → examples/utils/create_scheduled_from_text.py
+REFACTOR[10] (ranked by priority):
+  [1] ● extract_function   → utils/setup_logging.py
+      WHY: 3 occurrences of 25-line block across 3 files — saves 50 lines
+      FILES: backend/app/logging_setup.py, nlp-service/app/logging_setup.py, worker/logging_setup.py
+  [2] ○ extract_function   → examples/utils/generate_invoice_from_text.py
       WHY: 4 occurrences of 15-line block across 4 files — saves 45 lines
       FILES: examples/01-invoice/main.py, examples/02-email/main.py, examples/03-report-and-notify/main.py, examples/04-scheduled-report/main.py
-  [2] ○ extract_function   → utils/get_run.py
+  [3] ● extract_class      → utils/format.py
+      WHY: 3 occurrences of 14-line block across 3 files — saves 28 lines
+      FILES: backend/app/logging_setup.py, nlp-service/app/logging_setup.py, worker/logging_setup.py
+  [4] ● extract_class      → utils/dispatch.py
+      WHY: 3 occurrences of 11-line block across 3 files — saves 22 lines
+      FILES: backend/app/logging_setup.py, nlp-service/app/logging_setup.py, worker/logging_setup.py
+  [5] ○ extract_function   → backend/app/routers/utils/action_schema.py
+      WHY: 3 occurrences of 11-line block across 2 files — saves 22 lines
+      FILES: backend/app/routers/chat.py, backend/app/routers/settings.py
+  [6] ○ extract_function   → utils/parse_text.py
+      WHY: 2 occurrences of 13-line block across 2 files — saves 13 lines
+      FILES: backend/app/routers/workflow.py, nlp-service/app/main.py
+  [7] ● extract_function   → utils/get_request_id.py
+      WHY: 3 occurrences of 5-line block across 3 files — saves 10 lines
+      FILES: backend/app/logging_setup.py, nlp-service/app/logging_setup.py, worker/logging_setup.py
+  [8] ○ extract_function   → utils/get.py
       WHY: 2 occurrences of 5-line block across 2 files — saves 5 lines
       FILES: backend/app/db/__init__.py, nlp-service/app/store/__init__.py
-  [3] ○ extract_function   → utils/get.py
+  [9] ○ extract_function   → utils/get.py
       WHY: 2 occurrences of 4-line block across 2 files — saves 4 lines
       FILES: backend/app/db/memory.py, nlp-service/app/store/memory.py
+  [10] ○ extract_function   → utils/close.py
+      WHY: 2 occurrences of 4-line block across 2 files — saves 4 lines
+      FILES: backend/app/db/postgres.py, nlp-service/app/store/redis_store.py
 
 METRICS-TARGET:
-  dup_groups:  3 → 0
-  saved_lines: 54 lines recoverable
+  dup_groups:  10 → 0
+  saved_lines: 203 lines recoverable

@@ -4,12 +4,11 @@ Chat router — /workflow/chat/start, /workflow/chat/message, /workflow/chat/{id
 Proxy do nlp-service z opcjonalnym auto-execute przy "uruchom".
 """
 
-from __future__ import annotations
-
 import logging
+from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
-from httpx import AsyncClient
+from httpx import AsyncClient, Response
 
 from app.engine import NLP_SERVICE_URL, run_workflow
 from app.logging_setup import get_request_id
@@ -18,8 +17,10 @@ from app.schemas import RunWorkflowRequest, Step
 log = logging.getLogger("router.chat")
 router = APIRouter(prefix="/workflow", tags=["chat"])
 
+_PROXY_TIMEOUT_SECONDS: float = float("30.0")
 
-async def _proxy_chat_payload(request: Request, endpoint: str):
+
+async def _proxy_chat_payload(request: Request, endpoint: str) -> tuple[Response, dict[str, Any]]:
     """Forward JSON or form-data payloads to the NLP service chat endpoints."""
     content_type = request.headers.get("content-type", "").lower()
 
@@ -38,7 +39,7 @@ async def _proxy_chat_payload(request: Request, endpoint: str):
             else:
                 data[key] = value
 
-        async with AsyncClient(timeout=30.0, headers={"X-Request-ID": get_request_id()}) as client:
+        async with AsyncClient(timeout=_PROXY_TIMEOUT_SECONDS, headers={"X-Request-ID": get_request_id()}) as client:
             resp = await client.post(f"{NLP_SERVICE_URL}{endpoint}", data=data, files=files or None)
         return resp, data
 
@@ -46,13 +47,13 @@ async def _proxy_chat_payload(request: Request, endpoint: str):
     if not isinstance(body, dict):
         body = {}
 
-    async with AsyncClient(timeout=30.0, headers={"X-Request-ID": get_request_id()}) as client:
+    async with AsyncClient(timeout=_PROXY_TIMEOUT_SECONDS, headers={"X-Request-ID": get_request_id()}) as client:
         resp = await client.post(f"{NLP_SERVICE_URL}{endpoint}", data=body)
     return resp, body
 
 
 @router.post("/chat/start")
-async def chat_start(request: Request):
+async def chat_start(request: Request) -> dict[str, Any]:
     """
     Rozpocznij konwersację AI → DSL.
 
@@ -65,7 +66,7 @@ async def chat_start(request: Request):
 
 
 @router.post("/chat/message")
-async def chat_message(request: Request):
+async def chat_message(request: Request) -> dict[str, Any]:
     """
     Kontynuuj konwersację — uzupełnij brakujące dane.
 
@@ -97,9 +98,9 @@ async def chat_message(request: Request):
 
 
 @router.get("/chat/{conversation_id}")
-async def chat_get_state(conversation_id: str):
+async def chat_get_state(conversation_id: str) -> dict[str, Any]:
     """Pobierz stan konwersacji."""
-    async with AsyncClient(timeout=10.0, headers={"X-Request-ID": get_request_id()}) as client:
+    async with AsyncClient(timeout=float("10.0"), headers={"X-Request-ID": get_request_id()}) as client:
         resp = await client.get(f"{NLP_SERVICE_URL}/chat/{conversation_id}")
     if not resp.is_success:
         raise HTTPException(status_code=resp.status_code, detail=resp.text)

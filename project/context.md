@@ -4,22 +4,18 @@
 
 - **Project**: /home/tom/github/wronai/nlp2dsl
 - **Primary Language**: python
-- **Languages**: python: 28, shell: 6, rust: 1
+- **Languages**: python: 42, shell: 9, rust: 1, javascript: 1
 - **Analysis Mode**: static
-- **Total Functions**: 160
-- **Total Classes**: 33
-- **Modules**: 35
-- **Entry Points**: 115
+- **Total Functions**: 200
+- **Total Classes**: 43
+- **Modules**: 53
+- **Entry Points**: 153
 
 ## Architecture by Module
 
 ### nlp-service.app.main
-- **Functions**: 18
+- **Functions**: 20
 - **File**: `main.py`
-
-### backend.app.workflow
-- **Functions**: 17
-- **File**: `workflow.py`
 
 ### nlp-service.app.system_executor
 - **Functions**: 13
@@ -35,14 +31,27 @@
 - **Classes**: 3
 - **File**: `postgres.py`
 
+### worker.worker
+- **Functions**: 9
+- **File**: `worker.py`
+
+### tauri-wrapper.scripts.dev
+- **Functions**: 8
+- **File**: `dev.js`
+
 ### nlp-service.app.audio_parser
 - **Functions**: 8
 - **Classes**: 1
 - **File**: `audio_parser.py`
 
-### worker.worker
+### nlp-service.app.code_generator
 - **Functions**: 8
-- **File**: `worker.py`
+- **Classes**: 1
+- **File**: `code_generator.py`
+
+### backend.app.routers.settings
+- **Functions**: 7
+- **File**: `settings.py`
 
 ### examples.05-conversation-flow.main
 - **Functions**: 7
@@ -68,39 +77,32 @@
 - **Classes**: 1
 - **File**: `__init__.py`
 
+### backend.app.logging_setup
+- **Functions**: 6
+- **Classes**: 2
+- **File**: `logging_setup.py`
+
+### nlp-service.app.logging_setup
+- **Functions**: 6
+- **Classes**: 2
+- **File**: `logging_setup.py`
+
 ### nlp-service.app.mapper
 - **Functions**: 6
 - **File**: `mapper.py`
 
+### worker.logging_setup
+- **Functions**: 6
+- **Classes**: 2
+- **File**: `logging_setup.py`
+
+### backend.app.routers.workflow
+- **Functions**: 5
+- **File**: `workflow.py`
+
 ### nlp-service.app.parser_rules
 - **Functions**: 5
 - **File**: `parser_rules.py`
-
-### nlp-service.app.store.memory
-- **Functions**: 5
-- **Classes**: 1
-- **File**: `memory.py`
-
-### nlp-service.app.registry
-- **Functions**: 4
-- **File**: `registry.py`
-
-### nlp-service.app.store
-- **Functions**: 4
-- **Classes**: 1
-- **File**: `__init__.py`
-
-### examples.04-scheduled-report.main
-- **Functions**: 3
-- **File**: `main.py`
-
-### examples.01-invoice.main
-- **Functions**: 3
-- **File**: `main.py`
-
-### examples.03-report-and-notify.main
-- **Functions**: 3
-- **File**: `main.py`
 
 ## Key Entry Points
 
@@ -114,19 +116,19 @@ Main execution flows into the system:
 > Główna funkcja przykładu.
 - **Calls**: print, print, print, print, examples.04-scheduled-report.main.create_scheduled_report, print, print, print
 
+### backend.app.routers.workflow.workflow_from_text
+> Pełny pipeline: tekst → NLP → DSL → (opcjonalne) wykonanie.
+
+Body: {"text": "...", "mode": "auto|rules|llm", "execute": true|false}
+- **Calls**: router.post, body.get, body.get, body.get, nlp_resp.json, text.strip, HTTPException, AsyncClient
+
 ### examples.03-report-and-notify.main.main
 > Główna funkcja przykładu.
 - **Calls**: print, print, examples.03-report-and-notify.main.generate_report_and_notify, print, print, requests.get, print, examples.03-report-and-notify.main.generate_composite_from_text
 
-### backend.app.workflow.workflow_from_text
-> Pełny pipeline: tekst → NLP → DSL → wykonanie.
-
-Użytkownik mówi np.:
-  "Wyślij fakturę na 1500 PLN do klient@firma.pl i powiadom na Slacku"
-
-System:
- 
-- **Calls**: router.post, body.get, body.get, body.get, nlp_resp.json, text.strip, HTTPException, AsyncClient
+### examples.code_generation_examples.test_direct_code_generation
+> Test direct code generation via nlp-service API.
+- **Calls**: print, print, requests.post, requests.get, response.json, print, print, print
 
 ### nlp-service.app.main.websocket_chat
 > WebSocket endpoint dla voice chat w czasie rzeczywistym.
@@ -145,17 +147,28 @@ Flow:
 > Główna funkcja przykładu.
 - **Calls**: print, examples.01-invoice.main.generate_invoice_from_text, print, print, print, print, examples.01-invoice.main.send_invoice, print
 
+### examples.code_generation_examples.test_conversation_flow
+> Test code generation through conversation flow.
+- **Calls**: print, requests.post, response.json, result.get, print, print, result.get, print
+
 ### nlp-service.app.system_executor._exec_file_read
 - **Calls**: config.get, nlp-service.app.system_executor._validate_file_path, None.read_text, config.get, config.get, None.exists, None.is_file, content.split
 
-### backend.app.workflow.chat_message
+### backend.app.routers.chat.chat_message
 > Kontynuuj konwersację — uzupełnij brakujące dane.
 
 Body: {"conversation_id": "abc", "text": "klient@firma.pl"}
-- **Calls**: router.post, resp.json, None.lower, backend.app.workflow._proxy_chat_payload, HTTPException, any, result.get, body.get
+- **Calls**: router.post, resp.json, None.lower, backend.app.routers.chat._proxy_chat_payload, HTTPException, any, result.get, body.get
 
 ### nlp-service.app.system_executor._exec_file_list
 - **Calls**: config.get, config.get, sorted, candidate.exists, Path, resolved.rglob, str, len
+
+### worker.worker.handle_generate_code
+- **Calls**: worker.worker.action, config.get, config.get, config.get, config.get, ValueError, httpx.AsyncClient, response.raise_for_status
+
+### examples.code_generation_examples.test_via_workflow
+> Test code generation through the workflow API.
+- **Calls**: print, requests.post, response.json, print, print, print, print, print
 
 ### examples.05-conversation-flow.main.ConversationFlow.run_demo
 > Uruchom demonstracyjny flow.
@@ -163,6 +176,18 @@ Body: {"conversation_id": "abc", "text": "klient@firma.pl"}
 
 ### nlp-service.app.system_executor._exec_registry_edit
 - **Calls**: config.get, config.get, changes.append, config.get, isinstance, changes.append, config.get, isinstance
+
+### examples.code_generation_examples.test_worker_execution
+> Test actual code generation through worker.
+- **Calls**: print, requests.post, response.json, print, print, print, print, print
+
+### nlp-service.app.code_generator.CodeGenerator.generate_code
+> Generate code in the specified language.
+
+Args:
+    description: Natural language description of what to generate
+    language: Target programming lan
+- **Calls**: self._build_prompt, None.message.content.strip, list, litellm.acompletion, None.format, self._split_code_and_tests, log.exception, SUPPORTED_LANGUAGES.keys
 
 ### nlp-service.app.main.chat_message
 > Kontynuuj rozmowę — uzupełnij brakujące dane.
@@ -198,47 +223,30 @@ Obsługuje:
 > Wykonuje pojedynczy krok workflow.
 - **Calls**: app.post, step.get, step.get, step.get, ACTION_HANDLERS.get, log.info, HTTPException, handler
 
+### backend.app.db.postgres.PostgresWorkflowRepo.save_run
+- **Calls**: self._ensure_tables, self._session_factory, WorkflowRunModel, session.add, log.debug, session.commit, data.get, data.get
+
 ### examples.05-conversation-flow.main.ConversationFlow.run_interactive
 > Uruchom tryb interaktywny.
 - **Calls**: print, print, None.strip, text.lower, self.start, self.send_message, print, print
+
+### backend.app.logging_setup.setup_logging
+> Replace root logger handlers with a JSONFormatter handler.
+
+Reads LOG_LEVEL from BackendSettings (default INFO). Call once at startup.
+- **Calls**: level.upper, getattr, logging.StreamHandler, handler.setFormatter, logging.getLogger, root.handlers.clear, root.addHandler, root.setLevel
+
+### nlp-service.app.logging_setup.setup_logging
+> Replace root logger handlers with a JSONFormatter handler.
+
+Reads LOG_LEVEL from NLPServiceSettings (default INFO). Call once at startup.
+- **Calls**: level.upper, getattr, logging.StreamHandler, handler.setFormatter, logging.getLogger, root.handlers.clear, root.addHandler, root.setLevel
 
 ### nlp-service.app.system_executor._exec_registry_list
 - **Calls**: config.get, ACTIONS_REGISTRY.items, meta.get, len, meta.get, list, None.keys, meta.get
 
 ### worker.worker.handle_send_invoice
 - **Calls**: worker.worker.action, log.info, log.info, config.get, config.get, asyncio.sleep, config.get, None.strftime
-
-### backend.app.db.postgres.PostgresWorkflowRepo.save_run
-- **Calls**: self._ensure_tables, self._session_factory, WorkflowRunModel, session.add, log.debug, session.commit, data.get, data.get
-
-### worker.worker.handle_send_email
-- **Calls**: worker.worker.action, log.info, log.info, config.get, config.get, asyncio.sleep, config.get, config.get
-
-### worker.worker.handle_generate_report
-- **Calls**: worker.worker.action, config.get, config.get, log.info, log.info, asyncio.sleep, None.strftime, datetime.utcnow
-
-### examples.05-conversation-flow.main.ConversationFlow.send_message
-> Wyślij wiadomość w istniejącej konwersacji.
-- **Calls**: print, requests.post, response.raise_for_status, response.json, self.history.append, self._handle_response, ValueError
-
-### nlp-service.app.main.health
-- **Calls**: app.get, nlp-service.app.parser_llm._detect_provider, nlp-service.app.store.factory.get_conversation_store, list, type, store.count, ACTIONS_REGISTRY.keys
-
-### nlp-service.app.main.set_setting
-> Zmień pojedyncze ustawienie. Body: {"path": "llm.model", "value": "gpt-4o"}
-- **Calls**: app.put, body.get, body.get, HTTPException, settings_manager.set, HTTPException, str
-
-### nlp-service.app.main.system_execute
-> Wykonaj akcję systemową bezpośrednio.
-Body: {"action": "system_file_list", "config": {"directory": "."}}
-- **Calls**: app.post, body.get, body.get, HTTPException, nlp-service.app.system_executor.execute_system_action, list, SYSTEM_EXECUTORS.keys
-
-### nlp-service.app.settings.SettingsManager.reset
-> Reset settings to defaults.
-- **Calls**: None.isoformat, self._save, SystemSettings, setattr, SystemSettings, getattr, datetime.utcnow
-
-### nlp-service.app.settings.SettingsManager._load
-- **Calls**: Path, path.exists, json.loads, SystemSettings, log.info, path.read_text, log.warning
 
 ## Process Flows
 
@@ -257,45 +265,46 @@ main [examples.04-scheduled-report.main]
 
 ### Flow 3: workflow_from_text
 ```
-workflow_from_text [backend.app.workflow]
+workflow_from_text [backend.app.routers.workflow]
 ```
 
-### Flow 4: websocket_chat
+### Flow 4: test_direct_code_generation
+```
+test_direct_code_generation [examples.code_generation_examples]
+```
+
+### Flow 5: websocket_chat
 ```
 websocket_chat [nlp-service.app.main]
   └─ →> is_stt_available
 ```
 
-### Flow 5: _exec_file_read
+### Flow 6: test_conversation_flow
+```
+test_conversation_flow [examples.code_generation_examples]
+```
+
+### Flow 7: _exec_file_read
 ```
 _exec_file_read [nlp-service.app.system_executor]
   └─> _validate_file_path
 ```
 
-### Flow 6: chat_message
+### Flow 8: chat_message
 ```
-chat_message [backend.app.workflow]
+chat_message [backend.app.routers.chat]
   └─> _proxy_chat_payload
 ```
 
-### Flow 7: _exec_file_list
+### Flow 9: _exec_file_list
 ```
 _exec_file_list [nlp-service.app.system_executor]
 ```
 
-### Flow 8: run_demo
+### Flow 10: handle_generate_code
 ```
-run_demo [examples.05-conversation-flow.main.ConversationFlow]
-```
-
-### Flow 9: _exec_registry_edit
-```
-_exec_registry_edit [nlp-service.app.system_executor]
-```
-
-### Flow 10: chat_start
-```
-chat_start [nlp-service.app.main]
+handle_generate_code [worker.worker]
+  └─> action
 ```
 
 ## Key Classes
@@ -309,6 +318,11 @@ chat_start [nlp-service.app.main]
 - **Methods**: 8
 - **Key Methods**: backend.app.db.postgres.PostgresWorkflowRepo.__init__, backend.app.db.postgres.PostgresWorkflowRepo._ensure_tables, backend.app.db.postgres.PostgresWorkflowRepo.save_run, backend.app.db.postgres.PostgresWorkflowRepo.update_run_status, backend.app.db.postgres.PostgresWorkflowRepo.get_run, backend.app.db.postgres.PostgresWorkflowRepo.list_runs, backend.app.db.postgres.PostgresWorkflowRepo.count_runs, backend.app.db.postgres.PostgresWorkflowRepo.close
 - **Inherits**: WorkflowRepo
+
+### nlp-service.app.code_generator.CodeGenerator
+> Generates code in multiple programming languages using LLM.
+- **Methods**: 8
+- **Key Methods**: nlp-service.app.code_generator.CodeGenerator.__init__, nlp-service.app.code_generator.CodeGenerator._get_api_key, nlp-service.app.code_generator.CodeGenerator._build_prompt, nlp-service.app.code_generator.CodeGenerator.generate_code, nlp-service.app.code_generator.CodeGenerator._extract_class_name, nlp-service.app.code_generator.CodeGenerator._split_code_and_tests, nlp-service.app.code_generator.CodeGenerator.get_supported_languages, nlp-service.app.code_generator.CodeGenerator.get_language_info
 
 ### nlp-service.app.store.redis_store.RedisConversationStore
 - **Methods**: 7
@@ -348,61 +362,78 @@ Placeholder - requires WebSocket implementation.
 - **Key Methods**: nlp-service.app.store.ConversationStore.get, nlp-service.app.store.ConversationStore.save, nlp-service.app.store.ConversationStore.delete, nlp-service.app.store.ConversationStore.count
 - **Inherits**: ABC
 
+### backend.app.logging_setup.JSONFormatter
+> Emit log records as single-line JSON objects.
+- **Methods**: 2
+- **Key Methods**: backend.app.logging_setup.JSONFormatter.__init__, backend.app.logging_setup.JSONFormatter.format
+- **Inherits**: logging.Formatter
+
+### backend.app.logging_setup.RequestIDMiddleware
+> Generate or forward X-Request-ID for every HTTP request.
+
+- Reads X-Request-ID from incoming headers
+- **Methods**: 2
+- **Key Methods**: backend.app.logging_setup.RequestIDMiddleware.__init__, backend.app.logging_setup.RequestIDMiddleware.dispatch
+- **Inherits**: BaseHTTPMiddleware
+
+### nlp-service.app.logging_setup.JSONFormatter
+> Emit log records as single-line JSON objects.
+- **Methods**: 2
+- **Key Methods**: nlp-service.app.logging_setup.JSONFormatter.__init__, nlp-service.app.logging_setup.JSONFormatter.format
+- **Inherits**: logging.Formatter
+
+### nlp-service.app.logging_setup.RequestIDMiddleware
+> Generate or forward X-Request-ID for every HTTP request.
+
+- Reads X-Request-ID from incoming headers
+- **Methods**: 2
+- **Key Methods**: nlp-service.app.logging_setup.RequestIDMiddleware.__init__, nlp-service.app.logging_setup.RequestIDMiddleware.dispatch
+- **Inherits**: BaseHTTPMiddleware
+
+### worker.logging_setup.JSONFormatter
+> Emit log records as single-line JSON objects.
+- **Methods**: 2
+- **Key Methods**: worker.logging_setup.JSONFormatter.__init__, worker.logging_setup.JSONFormatter.format
+- **Inherits**: logging.Formatter
+
+### worker.logging_setup.RequestIDMiddleware
+> Generate or forward X-Request-ID for every HTTP request.
+
+- Reads X-Request-ID from incoming headers
+- **Methods**: 2
+- **Key Methods**: worker.logging_setup.RequestIDMiddleware.__init__, worker.logging_setup.RequestIDMiddleware.dispatch
+- **Inherits**: BaseHTTPMiddleware
+
 ### backend.app.db.postgres.WorkflowRunModel
 - **Methods**: 1
 - **Key Methods**: backend.app.db.postgres.WorkflowRunModel.to_dict
 - **Inherits**: Base
 
-### backend.app.schemas.StepStatus
+### backend.app.db.postgres.Base
 - **Methods**: 0
-- **Inherits**: str, Enum
+- **Inherits**: DeclarativeBase
 
-### backend.app.schemas.Step
-> Pojedynczy krok workflow — deklaratywny opis akcji.
+### backend.app.config.BackendSettings
 - **Methods**: 0
-- **Inherits**: BaseModel
+- **Inherits**: BaseSettings
 
-### backend.app.schemas.RunWorkflowRequest
-> Żądanie uruchomienia workflow — DSL biznesowy.
+### nlp-service.app.config.NLPServiceSettings
 - **Methods**: 0
-- **Inherits**: BaseModel
-
-### backend.app.schemas.StepResult
-- **Methods**: 0
-- **Inherits**: BaseModel
-
-### backend.app.schemas.WorkflowResult
-- **Methods**: 0
-- **Inherits**: BaseModel
-
-### backend.app.schemas.ActionInfo
-> Opis dostępnej akcji (do listowania w GUI / API).
-- **Methods**: 0
-- **Inherits**: BaseModel
-
-### nlp-service.app.schemas.NLPIntent
-- **Methods**: 0
-- **Inherits**: BaseModel
-
-### nlp-service.app.schemas.NLPEntities
-- **Methods**: 0
-- **Inherits**: BaseModel
-
-### nlp-service.app.schemas.NLPResult
-- **Methods**: 0
-- **Inherits**: BaseModel
-
-### nlp-service.app.schemas.DSLStep
-- **Methods**: 0
-- **Inherits**: BaseModel
+- **Inherits**: BaseSettings
 
 ## Data Transformation Functions
 
 Key functions that process and transform data:
 
+### backend.app.logging_setup.JSONFormatter.format
+- **Output to**: json.dumps, time.strftime, _request_id.get, record.getMessage, self.formatException
+
 ### nlp-service.app.parser_rules.parse_rules
 > Parse text using rules — no LLM needed.
 - **Output to**: text.lower, nlp-service.app.parser_rules._detect_actions, nlp-service.app.parser_rules._resolve_intent, nlp-service.app.parser_rules._extract_entities, nlp-service.app.registry.get_trigger
+
+### nlp-service.app.logging_setup.JSONFormatter.format
+- **Output to**: json.dumps, time.strftime, _request_id.get, record.getMessage, self.formatException
 
 ### nlp-service.app.orchestrator._process_message
 > Core orchestration: parse → merge → validate → respond.
@@ -425,6 +456,9 @@ Nie generuje DSL — tylko rozumie język naturalny.
 > Validate and resolve file path against allowed paths.
 - **Output to**: str, any, None.suffix.lower, None.resolve, PermissionError
 
+### worker.logging_setup.JSONFormatter.format
+- **Output to**: json.dumps, time.strftime, _request_id.get, record.getMessage, self.formatException
+
 ### nlp-service.app.parser_llm.parse_llm
 > Parse text using LLM via LiteLLM.
 - **Output to**: nlp-service.app.parser_llm._detect_provider, log.info, log.debug, nlp-service.app.parser_llm._parse_json_response, NLPResult
@@ -438,45 +472,45 @@ Nie generuje DSL — tylko rozumie język naturalny.
 Functions exposed as public API (no underscore prefix):
 
 - `examples.04-scheduled-report.main.main` - 28 calls
+- `backend.app.routers.workflow.workflow_from_text` - 26 calls
 - `examples.03-report-and-notify.main.main` - 26 calls
-- `backend.app.workflow.workflow_from_text` - 25 calls
+- `examples.code_generation_examples.test_direct_code_generation` - 23 calls
 - `nlp-service.app.main.websocket_chat` - 23 calls
-- `backend.app.workflow.run_workflow` - 22 calls
+- `backend.app.engine.run_workflow` - 22 calls
 - `examples.02-email.main.main` - 22 calls
 - `examples.01-invoice.main.main` - 21 calls
-- `backend.app.workflow.chat_message` - 17 calls
+- `examples.code_generation_examples.test_conversation_flow` - 19 calls
+- `backend.app.routers.chat.chat_message` - 17 calls
 - `nlp-service.app.mapper.map_to_dsl` - 17 calls
+- `worker.worker.handle_generate_code` - 17 calls
 - `nlp-service.app.parser_llm.parse_llm` - 16 calls
+- `examples.code_generation_examples.test_via_workflow` - 15 calls
 - `examples.05-conversation-flow.main.ConversationFlow.run_demo` - 15 calls
 - `nlp-service.app.audio_parser.stt_audio` - 14 calls
+- `examples.code_generation_examples.test_worker_execution` - 13 calls
+- `nlp-service.app.code_generator.CodeGenerator.generate_code` - 13 calls
 - `nlp-service.app.main.chat_message` - 13 calls
 - `nlp-service.app.orchestrator.get_action_form` - 12 calls
 - `nlp-service.app.main.chat_start` - 12 calls
 - `nlp-service.app.settings.SettingsManager.set` - 11 calls
+- `tauri-wrapper.scripts.dev.main` - 10 calls
 - `nlp-service.app.parser_rules.parse_rules` - 10 calls
 - `nlp-service.app.settings.SettingsManager.update_section` - 10 calls
 - `worker.worker.execute_step` - 10 calls
-- `examples.04-scheduled-report.main.create_scheduled_report` - 9 calls
-- `examples.05-conversation-flow.main.ConversationFlow.run_interactive` - 9 calls
-- `nlp-service.app.store.factory.get_conversation_store` - 9 calls
-- `worker.worker.handle_send_invoice` - 9 calls
 - `backend.app.db.postgres.PostgresWorkflowRepo.save_run` - 9 calls
+- `examples.05-conversation-flow.main.ConversationFlow.run_interactive` - 9 calls
+- `examples.04-scheduled-report.main.create_scheduled_report` - 9 calls
+- `backend.app.logging_setup.setup_logging` - 9 calls
+- `nlp-service.app.logging_setup.setup_logging` - 9 calls
+- `worker.worker.handle_send_invoice` - 9 calls
+- `worker.logging_setup.setup_logging` - 9 calls
 - `examples.03-report-and-notify.main.generate_report_and_notify` - 8 calls
 - `nlp-service.app.orchestrator.continue_conversation` - 8 calls
 - `worker.worker.handle_send_email` - 8 calls
 - `worker.worker.handle_generate_report` - 8 calls
-- `tauri-wrapper.src-tauri.src.main.grant_media_permissions` - 7 calls
+- `backend.app.db.postgres.PostgresWorkflowRepo.list_runs` - 7 calls
 - `examples.05-conversation-flow.main.ConversationFlow.send_message` - 7 calls
 - `nlp-service.app.main.health` - 7 calls
-- `nlp-service.app.main.set_setting` - 7 calls
-- `nlp-service.app.main.system_execute` - 7 calls
-- `nlp-service.app.settings.SettingsManager.reset` - 7 calls
-- `backend.app.db.postgres.PostgresWorkflowRepo.list_runs` - 7 calls
-- `tauri-wrapper.src-tauri.src.main.main` - 6 calls
-- `examples.05-conversation-flow.main.ConversationFlow.start` - 6 calls
-- `examples.05-conversation-flow.main.main` - 6 calls
-- `nlp-service.app.orchestrator.start_conversation` - 6 calls
-- `nlp-service.app.main.chat_ui` - 6 calls
 
 ## System Interactions
 
@@ -489,10 +523,14 @@ graph TD
     _handle_response --> print
     main --> print
     main --> create_scheduled_rep
-    main --> generate_report_and_
     workflow_from_text --> post
     workflow_from_text --> get
     workflow_from_text --> json
+    main --> generate_report_and_
+    test_direct_code_gen --> print
+    test_direct_code_gen --> post
+    test_direct_code_gen --> get
+    test_direct_code_gen --> json
     websocket_chat --> websocket
     websocket_chat --> info
     websocket_chat --> accept
@@ -500,20 +538,16 @@ graph TD
     websocket_chat --> StreamingSTT
     main --> send_email
     main --> generate_invoice_fro
+    test_conversation_fl --> print
+    test_conversation_fl --> post
+    test_conversation_fl --> json
+    test_conversation_fl --> get
     _exec_file_read --> get
     _exec_file_read --> _validate_file_path
     _exec_file_read --> read_text
     chat_message --> post
     chat_message --> json
     chat_message --> lower
-    chat_message --> _proxy_chat_payload
-    chat_message --> HTTPException
-    _exec_file_list --> get
-    _exec_file_list --> sorted
-    _exec_file_list --> exists
-    _exec_file_list --> Path
-    run_demo --> print
-    run_demo --> start
 ```
 
 ## Reverse Engineering Guidelines

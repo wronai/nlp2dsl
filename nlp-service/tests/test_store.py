@@ -8,10 +8,8 @@ ConversationState integration.
 from __future__ import annotations
 
 import pytest
-
-from app.store.memory import MemoryConversationStore
 from app.schemas import ConversationState
-
+from app.store.memory import MemoryConversationStore
 
 # ── MemoryConversationStore CRUD ────────────────────────────────
 
@@ -24,47 +22,47 @@ class TestMemoryStoreCRUD:
         """Fresh in-memory store per test."""
         return MemoryConversationStore()
 
-    async def test_save_and_get(self, store):
+    async def test_save_and_get(self, store) -> None:
         """Save a state dict, retrieve it by ID."""
         state = {"id": "abc", "intent": "send_invoice", "entities": {"amount": 100}}
         await store.save("abc", state)
         result = await store.get("abc")
         assert result == state
 
-    async def test_get_nonexistent(self, store):
+    async def test_get_nonexistent(self, store) -> None:
         """Get non-existent conversation → None."""
         result = await store.get("missing")
         assert result is None
 
-    async def test_save_overwrites(self, store):
+    async def test_save_overwrites(self, store) -> None:
         """Save same ID twice → latest value wins."""
         await store.save("abc", {"version": 1})
         await store.save("abc", {"version": 2})
         result = await store.get("abc")
         assert result["version"] == 2
 
-    async def test_delete(self, store):
+    async def test_delete(self, store) -> None:
         """Delete existing conversation."""
         await store.save("abc", {"id": "abc"})
         await store.delete("abc")
         assert await store.get("abc") is None
 
-    async def test_delete_nonexistent(self, store):
+    async def test_delete_nonexistent(self, store) -> None:
         """Delete non-existent conversation → no error."""
         await store.delete("missing")  # Should not raise
 
-    async def test_count_empty(self, store):
+    async def test_count_empty(self, store) -> None:
         """Empty store → count 0."""
         assert await store.count() == 0
 
-    async def test_count_after_saves(self, store):
+    async def test_count_after_saves(self, store) -> None:
         """Count reflects number of stored conversations."""
         await store.save("a", {"id": "a"})
         await store.save("b", {"id": "b"})
         await store.save("c", {"id": "c"})
         assert await store.count() == 3
 
-    async def test_count_after_delete(self, store):
+    async def test_count_after_delete(self, store) -> None:
         """Count decreases after delete."""
         await store.save("a", {"id": "a"})
         await store.save("b", {"id": "b"})
@@ -82,7 +80,7 @@ class TestSerializationRoundtrip:
     def store(self):
         return MemoryConversationStore()
 
-    async def test_conversation_state_roundtrip(self, store):
+    async def test_conversation_state_roundtrip(self, store) -> None:
         """ConversationState → model_dump → save → get → ConversationState."""
         original = ConversationState(id="round1")
         original.intent = "send_invoice"
@@ -105,7 +103,7 @@ class TestSerializationRoundtrip:
         assert restored.status == original.status
         assert len(restored.history) == 2
 
-    async def test_complex_entities_roundtrip(self, store):
+    async def test_complex_entities_roundtrip(self, store) -> None:
         """Entities with various types survive roundtrip."""
         data = {
             "id": "complex1",
@@ -131,7 +129,7 @@ class TestSerializationRoundtrip:
 class TestStoreFactory:
     """get_conversation_store() factory behavior."""
 
-    def test_factory_returns_memory_without_redis(self, monkeypatch):
+    def test_factory_returns_memory_without_redis(self, monkeypatch) -> None:
         """Without REDIS_URL → MemoryConversationStore."""
         monkeypatch.delenv("REDIS_URL", raising=False)
 
@@ -145,7 +143,7 @@ class TestStoreFactory:
         # Clean up singleton
         factory_mod._instance = None
 
-    def test_factory_singleton(self, monkeypatch):
+    def test_factory_singleton(self, monkeypatch) -> None:
         """Factory returns the same instance on repeated calls."""
         monkeypatch.delenv("REDIS_URL", raising=False)
 
@@ -159,7 +157,7 @@ class TestStoreFactory:
         # Clean up singleton
         factory_mod._instance = None
 
-    def test_factory_falls_back_on_bad_redis(self, monkeypatch):
+    def test_factory_falls_back_on_bad_redis(self, monkeypatch) -> None:
         """Invalid REDIS_URL → graceful fallback to MemoryConversationStore."""
         monkeypatch.setenv("REDIS_URL", "redis://invalid-host-that-does-not-exist:9999")
 
@@ -181,7 +179,7 @@ class TestStoreFactory:
 class TestStoreIsolation:
     """Multiple store instances are isolated."""
 
-    async def test_separate_instances_isolated(self):
+    async def test_separate_instances_isolated(self) -> None:
         """Two MemoryConversationStore instances don't share data."""
         store_a = MemoryConversationStore()
         store_b = MemoryConversationStore()

@@ -5,8 +5,6 @@ Używa LLM do generowania kodu na podstawie opisu w języku naturalnym.
 Obsługuje: Python, JavaScript, Java, C++, Go, Rust, PHP, Ruby.
 """
 
-from __future__ import annotations
-
 import logging
 import os
 from typing import Any
@@ -25,9 +23,7 @@ SUPPORTED_LANGUAGES = {
         "template": """# Generated Python code
 {code}
 
-if __name__ == "__main__":
-    # Example usage
-    pass
+# Example usage
 """,
         "style": "PEP 8 compliant, with type hints where appropriate"
     },
@@ -125,7 +121,7 @@ class CodeGenerator:
     def __init__(self):
         self.model = os.getenv("LLM_MODEL", "openrouter/openai/gpt-5-mini")
         self.api_key = self._get_api_key()
-        self.max_tokens = 4000
+        self.max_tokens = int("4000")
 
     def _get_api_key(self) -> str | None:
         """Get API key based on model provider."""
@@ -158,7 +154,7 @@ Requirements:
         if context:
             prompt += f"\nAdditional context: {context}\n"
 
-        prompt += f"\nGenerate only the code block without markdown formatting."
+        prompt += "\nGenerate only the code block without markdown formatting."
 
         return prompt
 

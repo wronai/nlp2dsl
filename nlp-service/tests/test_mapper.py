@@ -7,17 +7,13 @@ Tests real mapping logic: NLPResult → WorkflowDSL / DialogResponse.
 from __future__ import annotations
 
 import pytest
-
-from app.mapper import map_to_dsl, _resolve_actions, _build_config, _make_name
+from app.mapper import _resolve_actions, map_to_dsl
+from app.registry import ACTIONS_REGISTRY, BUSINESS_ACTIONS
 from app.schemas import (
-    NLPResult,
-    NLPIntent,
     NLPEntities,
-    DialogResponse,
-    WorkflowDSL,
+    NLPIntent,
+    NLPResult,
 )
-from app.registry import ACTIONS_REGISTRY, BUSINESS_ACTIONS, COMPOSITE_INTENTS
-
 
 # ── Complete mapping ─────────────────────────────────────────────
 
@@ -25,7 +21,7 @@ from app.registry import ACTIONS_REGISTRY, BUSINESS_ACTIONS, COMPOSITE_INTENTS
 class TestMapCompleteDSL:
     """Cases where all required fields are present → complete DSL."""
 
-    def test_map_complete_invoice(self):
+    def test_map_complete_invoice(self) -> None:
         """Full invoice NLPResult → complete WorkflowDSL with 1 step."""
         nlp = NLPResult(
             intent=NLPIntent(intent="send_invoice", confidence=0.9),
@@ -41,7 +37,7 @@ class TestMapCompleteDSL:
         assert step.config["amount"] == 1500.0
         assert step.config["to"] == "klient@firma.pl"
 
-    def test_map_complete_email(self):
+    def test_map_complete_email(self) -> None:
         """Email with recipient → complete DSL."""
         nlp = NLPResult(
             intent=NLPIntent(intent="send_email", confidence=0.8),
@@ -60,7 +56,7 @@ class TestMapCompleteDSL:
 class TestMapIncomplete:
     """Cases where required fields are missing → DialogResponse with prompt."""
 
-    def test_map_incomplete_invoice(self):
+    def test_map_incomplete_invoice(self) -> None:
         """Invoice without amount/email → incomplete with missing_fields."""
         nlp = NLPResult(
             intent=NLPIntent(intent="send_invoice", confidence=0.7),
@@ -81,7 +77,7 @@ class TestMapIncomplete:
 class TestMapComposite:
     """Composite intent mapping (multi-step workflows)."""
 
-    def test_map_composite_report_email(self):
+    def test_map_composite_report_email(self) -> None:
         """report_and_email → 2-step DSL (generate_report + send_email)."""
         nlp = NLPResult(
             intent=NLPIntent(intent="report_and_email", confidence=0.9),
@@ -104,7 +100,7 @@ class TestMapComposite:
 class TestMapUnknown:
     """Unknown intent → error response."""
 
-    def test_map_unknown_intent(self):
+    def test_map_unknown_intent(self) -> None:
         """Unrecognized intent → status 'error' with message."""
         nlp = NLPResult(
             intent=NLPIntent(intent="unknown", confidence=0.2),
@@ -115,7 +111,7 @@ class TestMapUnknown:
         assert dialog.status == "error"
         assert dialog.prompt_user is not None
 
-    def test_map_nonexistent_intent(self):
+    def test_map_nonexistent_intent(self) -> None:
         """Completely fabricated intent → error."""
         nlp = NLPResult(
             intent=NLPIntent(intent="teleport_to_moon", confidence=0.1),
@@ -131,7 +127,7 @@ class TestMapUnknown:
 class TestMapDefaults:
     """Optional fields receive default values from registry."""
 
-    def test_map_with_defaults(self):
+    def test_map_with_defaults(self) -> None:
         """Invoice with amount+to but no currency → default PLN."""
         nlp = NLPResult(
             intent=NLPIntent(intent="send_invoice", confidence=0.9),
@@ -150,7 +146,7 @@ class TestMapDefaults:
 class TestMapTrigger:
     """Trigger extracted from raw_text propagates to DSL."""
 
-    def test_map_trigger_propagation(self):
+    def test_map_trigger_propagation(self) -> None:
         """Weekly trigger in text → workflow.trigger == 'weekly'."""
         nlp = NLPResult(
             intent=NLPIntent(intent="generate_report", confidence=0.9),
@@ -168,7 +164,7 @@ class TestMapTrigger:
 class TestMapSystemAction:
     """System intents should not map to DSL (no steps for system actions)."""
 
-    def test_map_system_action_settings(self):
+    def test_map_system_action_settings(self) -> None:
         """system_settings_get has no required fields → complete but 0-step DSL or handled elsewhere."""
         nlp = NLPResult(
             intent=NLPIntent(intent="system_settings_get", confidence=0.9),
@@ -190,7 +186,7 @@ class TestMapAllBusinessActions:
     _ENTITY_FIELDS = set(NLPEntities.model_fields.keys())
 
     @pytest.mark.parametrize("action_name", sorted(BUSINESS_ACTIONS))
-    def test_map_all_business_actions(self, action_name):
+    def test_map_all_business_actions(self, action_name) -> None:
         """Each business action with all required fields → complete DSL (if fields exist in NLPEntities)."""
         meta = ACTIONS_REGISTRY[action_name]
         # Build entities with dummy values for required fields
@@ -234,22 +230,22 @@ class TestMapAllBusinessActions:
 class TestResolveActions:
     """_resolve_actions helper tests."""
 
-    def test_resolve_direct_action(self):
+    def test_resolve_direct_action(self) -> None:
         """Direct action name → single-item list."""
         assert _resolve_actions("send_invoice") == ["send_invoice"]
 
-    def test_resolve_composite_intent(self):
+    def test_resolve_composite_intent(self) -> None:
         """Named composite → list of constituent actions."""
         actions = _resolve_actions("invoice_and_notify")
         assert "send_invoice" in actions
         assert "notify_slack" in actions
 
-    def test_resolve_dynamic_composite(self):
+    def test_resolve_dynamic_composite(self) -> None:
         """Dynamic _and_ composite → resolved parts."""
         actions = _resolve_actions("send_invoice_and_send_email")
         assert "send_invoice" in actions
         assert "send_email" in actions
 
-    def test_resolve_unknown(self):
+    def test_resolve_unknown(self) -> None:
         """Unknown intent → empty list."""
         assert _resolve_actions("teleport") == []

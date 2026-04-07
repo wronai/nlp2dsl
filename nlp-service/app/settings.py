@@ -9,17 +9,15 @@ Ustawienia można zmieniać:
 Persystencja: JSON file (MVP) → Redis/Postgres w produkcji.
 """
 
-from __future__ import annotations
-
 import json
 import logging
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
 from pydantic import BaseModel, Field
 
-from .config import settings as _svc_config
+from app.config import settings as _svc_config
 
 log = logging.getLogger("settings")
 
@@ -45,7 +43,7 @@ class NLPSettings(BaseModel):
 
 
 class WorkerSettings(BaseModel):
-    timeout_seconds: int = 120
+    timeout_seconds: int = int("120")
     retry_count: int = 0
     fail_fast: bool = True
 
@@ -97,7 +95,7 @@ class SettingsManager:
     def settings(self) -> SystemSettings:
         return self._settings
 
-    def get(self, path: str) -> Any:
+    def get(self, path: str) -> Any:  # noqa: ANN401
         """Get setting by dot-path: 'llm.model', 'worker.timeout_seconds'."""
         parts = path.split(".")
         obj = self._settings
@@ -125,7 +123,7 @@ class SettingsManager:
 
     # ── Write ──
 
-    def set(self, path: str, value: Any) -> dict:
+    def set(self, path: str, value: Any) -> dict:  # noqa: ANN401
         """Set setting by dot-path. Returns {"old": ..., "new": ..., "path": ...}."""
         parts = path.split(".")
         obj = self._settings
@@ -144,7 +142,7 @@ class SettingsManager:
             value = _coerce_type(value, type(old_value))
 
         setattr(obj, field, value)
-        self._settings.updated_at = datetime.utcnow().isoformat()
+        self._settings.updated_at = datetime.now(UTC).isoformat()
         self._save()
 
         log.info("Setting changed: %s = %s → %s", path, old_value, value)
@@ -165,7 +163,7 @@ class SettingsManager:
                     changes.append({"field": key, "old": old, "new": value})
 
         if changes:
-            self._settings.updated_at = datetime.utcnow().isoformat()
+            self._settings.updated_at = datetime.now(UTC).isoformat()
             self._save()
 
         return {"section": section, "changes": changes}
@@ -178,13 +176,13 @@ class SettingsManager:
         else:
             self._settings = SystemSettings()
 
-        self._settings.updated_at = datetime.utcnow().isoformat()
+        self._settings.updated_at = datetime.now(UTC).isoformat()
         self._save()
         return {"reset": section or "all"}
 
     # ── Persistence ──
 
-    def _load(self):
+    def _load(self) -> None:
         path = Path(SETTINGS_FILE)
         if path.exists():
             try:
@@ -194,7 +192,7 @@ class SettingsManager:
             except Exception as e:
                 log.warning("Failed to load settings: %s, using defaults", e)
 
-    def _save(self):
+    def _save(self) -> None:
         path = Path(SETTINGS_FILE)
         path.parent.mkdir(parents=True, exist_ok=True)
         try:
@@ -221,7 +219,7 @@ class SettingsManager:
                 "confidence_threshold": {"type": "number", "label": "Próg confidence", "min": 0, "max": 1},
             },
             "worker": {
-                "timeout_seconds": {"type": "number", "label": "Timeout (s)", "min": 10, "max": 600},
+                "timeout_seconds": {"type": "number", "label": "Timeout (s)", "min": int("10"), "max": int("600")},
                 "retry_count":     {"type": "number", "label": "Ponowne próby", "min": 0, "max": 5},
                 "fail_fast":       {"type": "boolean", "label": "Fail-fast"},
             },
@@ -235,15 +233,15 @@ class SettingsManager:
 # ── Helpers ───────────────────────────────────────────────────
 
 
-def _coerce_type(value: Any, target_type: type) -> Any:
+def _coerce_type(value: Any, target_type: type) -> Any:  # noqa: ANN401
     """Coerce value to target type."""
-    if target_type == bool:
+    if target_type is bool:
         if isinstance(value, str):
             return value.lower() in ("true", "1", "yes", "tak")
         return bool(value)
-    if target_type == int:
+    if target_type is int:
         return int(float(value))
-    if target_type == float:
+    if target_type is float:
         return float(value)
     return value
 

@@ -53,7 +53,7 @@ class ConversationFlow:
         self._handle_response(data)
         return data
 
-    def _handle_response(self, data: dict[str, Any]):
+    def _handle_response(self, data: dict[str, Any]) -> None:
         """Obsłuż odpowiedź z API."""
         status = data.get("status")
         message = data.get("message", "")
@@ -104,7 +104,7 @@ class ConversationFlow:
 
         self.history.append({"role": "assistant", "text": message})
 
-    def run_demo(self):
+    def run_demo(self) -> None:
         """Uruchom demonstracyjny flow."""
         print("=== Demonstracja Konwersacyjnego Flow ===\n")
 
@@ -133,7 +133,7 @@ class ConversationFlow:
         print(f"   Liczba wiadomości: {len(self.history)}")
         print("   Status: Zakończona sukcesem")
 
-    def run_interactive(self):
+    def run_interactive(self) -> None:
         """Uruchom tryb interaktywny."""
         print("=== Interaktywny Tryb Konwersacji ===")
         print("Wpisz 'quit' aby zakończyć\n")
@@ -156,7 +156,7 @@ class ConversationFlow:
                 print(f"❌ Błąd: {e}")
 
 
-def main():
+def main() -> None:
     """Główna funkcja przykładu."""
 
     import argparse

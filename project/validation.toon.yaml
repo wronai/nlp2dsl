@@ -1,73 +1,186 @@
-# vallm batch | 107f | 36✓ 2⚠ 13✗ | 2026-04-06
+# vallm batch | 154f | 61✓ 3⚠ 29✗ | 2026-04-07
 
 SUMMARY:
-  scanned: 107  passed: 36 (33.6%)  warnings: 2  errors: 13  unsupported: 58
+  scanned: 154  passed: 61 (39.6%)  warnings: 3  errors: 29  unsupported: 64
 
-WARNINGS[2]{path,score}:
+WARNINGS[3]{path,score}:
   nlp-service/app/orchestrator.py,0.96
     issues[3]{rule,severity,message,line}:
-      complexity.cyclomatic,warning,_process_message has cyclomatic complexity 17 (max: 15),149
-      complexity.cyclomatic,warning,_format_system_result has cyclomatic complexity 16 (max: 15),270
-      complexity.lizard_cc,warning,_process_message: CC=17 exceeds limit 15,149
+      complexity.cyclomatic,warning,_process_message has cyclomatic complexity 17 (max: 15),150
+      complexity.cyclomatic,warning,_format_system_result has cyclomatic complexity 16 (max: 15),271
+      complexity.lizard_cc,warning,_process_message: CC=17 exceeds limit 15,150
+  examples/05-conversation-flow/main.py,0.97
+    issues[2]{rule,severity,message,line}:
+      complexity.cyclomatic,warning,_handle_response has cyclomatic complexity 16 (max: 15),56
+      complexity.lizard_cc,warning,_handle_response: CC=16 exceeds limit 15,56
   nlp-service/app/parser_rules.py,0.97
     issues[2]{rule,severity,message,line}:
-      complexity.cyclomatic,warning,_extract_entities has cyclomatic complexity 36 (max: 15),165
-      complexity.lizard_cc,warning,_extract_entities: CC=36 exceeds limit 15,165
+      complexity.cyclomatic,warning,_extract_entities has cyclomatic complexity 36 (max: 15),166
+      complexity.lizard_cc,warning,_extract_entities: CC=36 exceeds limit 15,166
 
-ERRORS[13]{path,score}:
-  backend/app/main.py,0.68
+ERRORS[29]{path,score}:
+  backend/tests/test_config.py,0.61
+    issues[10]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'app.config' not found,16
+      python.import.resolvable,error,Module 'app.config' not found,22
+      python.import.resolvable,error,Module 'app.config' not found,28
+      python.import.resolvable,error,Module 'app.config' not found,34
+      python.import.resolvable,error,Module 'app.config' not found,44
+      python.import.resolvable,error,Module 'app.config' not found,50
+      python.import.resolvable,error,Module 'app.config' not found,56
+      python.import.resolvable,error,Module 'app.config' not found,62
+      python.import.resolvable,error,Module 'app.config' not found,71
+      python.import.resolvable,error,Module 'app.engine' not found,80
+  nlp-service/tests/test_system_executor.py,0.62
+    issues[15]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'app.registry' not found,11
+      python.import.resolvable,error,Module 'app.settings' not found,12
+      python.import.resolvable,error,Module 'app.system_executor' not found,13
+      python.import.resolvable,error,Module 'app.system_executor' not found,221
+      python.import.resolvable,error,Module 'app.system_executor' not found,238
+      python.import.resolvable,error,Module 'app.system_executor' not found,252
+      python.import.resolvable,error,Module 'app.system_executor' not found,269
+      python.import.resolvable,error,Module 'app.system_executor' not found,281
+      python.import.resolvable,error,Module 'app.system_executor' not found,295
+      python.import.resolvable,error,Module 'app.system_executor' not found,314
+      python.import.resolvable,error,Module 'app.system_executor' not found,342
+      python.import.resolvable,error,Module 'app.system_executor' not found,351
+      python.import.resolvable,error,Module 'app.system_executor' not found,365
+      python.import.resolvable,error,Module 'app.system_executor' not found,379
+      python.import.resolvable,error,Module 'app.system_executor' not found,386
+  backend/app/db/__init__.py,0.68
     issues[3]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'fastapi' not found,10
-      python.import.resolvable,error,Module 'fastapi.middleware.cors' not found,11
-      python.import.resolvable,error,Module 'app.workflow' not found,13
-  backend/app/db/postgres.py,0.79
+      python.import.resolvable,error,Module 'app.config' not found,42
+      python.import.resolvable,error,Module 'app.db.memory' not found,47
+      python.import.resolvable,error,Module 'app.db.postgres' not found,45
+  backend/app/db/postgres.py,0.69
+    issues[5]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'sqlalchemy' not found,11
+      python.import.resolvable,error,Module 'sqlalchemy.dialects.postgresql' not found,12
+      python.import.resolvable,error,Module 'sqlalchemy.ext.asyncio' not found,13
+      python.import.resolvable,error,Module 'sqlalchemy.orm' not found,14
+      python.import.resolvable,error,Module 'app.db' not found,16
+  nlp-service/tests/test_store.py,0.69
+    issues[5]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'app.schemas' not found,11
+      python.import.resolvable,error,Module 'app.store.memory' not found,12
+      python.import.resolvable,error,Module 'app.store.factory' not found,137
+      python.import.resolvable,error,Module 'app.store.factory' not found,150
+      python.import.resolvable,error,Module 'app.store.factory' not found,164
+  nlp-service/tests/test_orchestrator.py,0.71
     issues[4]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'sqlalchemy' not found,14
-      python.import.resolvable,error,Module 'sqlalchemy.dialects.postgresql' not found,15
-      python.import.resolvable,error,Module 'sqlalchemy.ext.asyncio' not found,16
-      python.import.resolvable,error,Module 'sqlalchemy.orm' not found,17
-  nlp-service/app/main.py,0.82
+      python.import.resolvable,error,Module 'app.orchestrator' not found,11
+      python.import.resolvable,error,Module 'app.schemas' not found,18
+      python.import.resolvable,error,Module 'app.store.memory' not found,25
+      python.import.resolvable,error,Module 'app.orchestrator' not found,31
+  nlp-service/app/main.py,0.72
+    issues[13]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'app.audio_parser' not found,32
+      python.import.resolvable,error,Module 'app.code_generator' not found,33
+      python.import.resolvable,error,Module 'app.config' not found,34
+      python.import.resolvable,error,Module 'app.logging_setup' not found,35
+      python.import.resolvable,error,Module 'app.mapper' not found,36
+      python.import.resolvable,error,Module 'app.orchestrator' not found,37
+      python.import.resolvable,error,Module 'app.parser_llm' not found,43
+      python.import.resolvable,error,Module 'app.parser_rules' not found,44
+      python.import.resolvable,error,Module 'app.registry' not found,45
+      python.import.resolvable,error,Module 'app.schemas' not found,46
+      python.import.resolvable,error,Module 'app.settings' not found,53
+      python.import.resolvable,error,Module 'app.store.factory' not found,54
+      python.import.resolvable,error,Module 'app.system_executor' not found,55
+  backend/app/main.py,0.73
+    issues[5]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'app.logging_setup' not found,14
+      python.import.resolvable,error,Module 'app.routers.chat' not found,15
+      python.import.resolvable,error,Module 'app.routers.settings' not found,16
+      python.import.resolvable,error,Module 'app.routers.system' not found,17
+      python.import.resolvable,error,Module 'app.routers.workflow' not found,18
+  backend/tests/test_persistence.py,0.74
     issues[3]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'fastapi' not found,21
-      python.import.resolvable,error,Module 'fastapi.middleware.cors' not found,22
-      python.import.resolvable,error,Module 'fastapi.responses' not found,23
-  nlp-service/app/parser_llm.py,0.86
+      python.import.resolvable,error,Module 'app.db.memory' not found,11
+      python.import.resolvable,error,Module 'app.db' not found,169
+      python.import.resolvable,error,Module 'app.db' not found,182
+  nlp-service/tests/test_mapper.py,0.74
+    issues[3]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'app.mapper' not found,10
+      python.import.resolvable,error,Module 'app.registry' not found,11
+      python.import.resolvable,error,Module 'app.schemas' not found,12
+  nlp-service/tests/test_parser_rules.py,0.74
+    issues[3]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'app.parser_rules' not found,10
+      python.import.resolvable,error,Module 'app.schemas' not found,11
+      python.import.resolvable,error,Module 'app.registry' not found,198
+  backend/app/db/memory.py,0.79
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'app.db' not found,7
+  backend/tests/test_logging.py,0.80
+    issues[6]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'app.logging_setup' not found,18
+      python.import.resolvable,error,Module 'app.logging_setup' not found,36
+      python.import.resolvable,error,Module 'app.logging_setup' not found,55
+      python.import.resolvable,error,Module 'app.logging_setup' not found,72
+      python.import.resolvable,error,Module 'app.logging_setup' not found,110
+      python.import.resolvable,error,Module 'app.logging_setup' not found,119
+  backend/app/routers/chat.py,0.84
+    issues[3]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'app.engine' not found,15
+      python.import.resolvable,error,Module 'app.logging_setup' not found,16
+      python.import.resolvable,error,Module 'app.schemas' not found,17
+  backend/app/routers/workflow.py,0.84
+    issues[3]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'app.engine' not found,13
+      python.import.resolvable,error,Module 'app.logging_setup' not found,14
+      python.import.resolvable,error,Module 'app.schemas' not found,15
+  nlp-service/app/store/factory.py,0.86
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'app.config' not found,30
+  nlp-service/tests/conftest.py,0.86
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'app.store.memory' not found,11
+  nlp-service/tests/test_registry.py,0.86
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'app.registry' not found,10
+  backend/app/routers/settings.py,0.88
     issues[2]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'litellm' not found,30
-      python.import.resolvable,error,Module 'litellm' not found,31
-  backend/app/workflow.py,0.88
+      python.import.resolvable,error,Module 'app.engine' not found,15
+      python.import.resolvable,error,Module 'app.logging_setup' not found,16
+  backend/app/routers/system.py,0.88
     issues[2]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'fastapi' not found,14
-      python.import.resolvable,error,Module 'httpx' not found,15
-  examples/01-invoice/main.py,0.89
+      python.import.resolvable,error,Module 'app.engine' not found,15
+      python.import.resolvable,error,Module 'app.logging_setup' not found,16
+  tests/e2e/test_websocket.py,0.88
+    issues[2]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'websockets' not found,17
+      python.import.resolvable,error,Module 'websockets.connection' not found,18
+  backend/tests/conftest.py,0.89
     issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'requests' not found,7
-  examples/02-email/main.py,0.89
+      python.import.resolvable,error,Module 'app.main' not found,11
+  tests/e2e/test_chat_ui.py,0.89
     issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'requests' not found,7
-  examples/03-report-and-notify/main.py,0.89
+      python.import.resolvable,error,Module 'playwright.async_api' not found,24
+  worker/tests/test_worker.py,0.89
     issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'requests' not found,7
-  worker/worker.py,0.89
+      python.import.resolvable,error,Module 'worker' not found,12
+  nlp-service/app/store/redis_store.py,0.91
     issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'fastapi' not found,15
-  examples/04-scheduled-report/main.py,0.91
+      python.import.resolvable,error,Module 'redis.asyncio' not found,15
+  test_code_generation.py,0.93
     issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'requests' not found,7
-  examples/05-conversation-flow/main.py,0.91
+      python.import.resolvable,error,Module 'code_generator' not found,16
+  tests/e2e/conftest.py,0.94
     issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'requests' not found,7
-  nlp-service/app/audio_parser.py,0.91
+      python.import.resolvable,error,Module 'playwright.async_api' not found,18
+  worker/worker.py,0.95
     issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'httpx' not found,21
-  nlp-service/app/store/redis_store.py,0.93
+      python.import.resolvable,error,Module 'logging_setup' not found,18
+  worker/logging_setup.py,0.96
     issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'redis.asyncio' not found,16
+      python.import.resolvable,error,Module 'config' not found,89
 
 UNSUPPORTED[6]{bucket,count}:
-  *.md,24
+  *.md,25
   Dockerfile*,8
-  *.txt,9
+  *.txt,10
   *.yml,2
   *.example,6
-  other,9
+  other,13

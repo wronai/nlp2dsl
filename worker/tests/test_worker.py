@@ -7,9 +7,9 @@ Uses httpx.AsyncClient with ASGI transport (no real server needed).
 from __future__ import annotations
 
 import pytest
-from httpx import AsyncClient, ASGITransport
+from httpx import ASGITransport, AsyncClient
 
-from worker import app, ACTION_HANDLERS
+from worker import ACTION_HANDLERS, app
 
 
 @pytest.fixture
@@ -27,7 +27,7 @@ class TestWorkerHealth:
     """Worker health endpoint."""
 
     @pytest.mark.asyncio
-    async def test_health(self, client: AsyncClient):
+    async def test_health(self, client: AsyncClient) -> None:
         """GET /health → 200 with actions list."""
         resp = await client.get("/health")
         assert resp.status_code == 200
@@ -45,7 +45,7 @@ class TestExecuteActions:
     """POST /execute — action execution."""
 
     @pytest.mark.asyncio
-    async def test_execute_send_invoice(self, client: AsyncClient):
+    async def test_execute_send_invoice(self, client: AsyncClient) -> None:
         """Execute send_invoice → completed with invoice_id."""
         resp = await client.post(
             "/execute",
@@ -62,7 +62,7 @@ class TestExecuteActions:
         assert data["result"]["sent_to"] == "klient@firma.pl"
 
     @pytest.mark.asyncio
-    async def test_execute_send_email(self, client: AsyncClient):
+    async def test_execute_send_email(self, client: AsyncClient) -> None:
         """Execute send_email → completed."""
         resp = await client.post(
             "/execute",
@@ -78,7 +78,7 @@ class TestExecuteActions:
         assert data["result"]["sent_to"] == "user@example.com"
 
     @pytest.mark.asyncio
-    async def test_execute_generate_report(self, client: AsyncClient):
+    async def test_execute_generate_report(self, client: AsyncClient) -> None:
         """Execute generate_report → completed with filename."""
         resp = await client.post(
             "/execute",
@@ -94,7 +94,7 @@ class TestExecuteActions:
         assert "filename" in data["result"]
 
     @pytest.mark.asyncio
-    async def test_execute_notify_slack(self, client: AsyncClient):
+    async def test_execute_notify_slack(self, client: AsyncClient) -> None:
         """Execute notify_slack → completed."""
         resp = await client.post(
             "/execute",
@@ -110,7 +110,7 @@ class TestExecuteActions:
         assert data["result"]["channel"] == "#general"
 
     @pytest.mark.asyncio
-    async def test_execute_unknown_action(self, client: AsyncClient):
+    async def test_execute_unknown_action(self, client: AsyncClient) -> None:
         """Unknown action → 400 error."""
         resp = await client.post(
             "/execute",
@@ -130,11 +130,11 @@ class TestExecuteActions:
 class TestActionRegistry:
     """ACTION_HANDLERS dict validation."""
 
-    def test_handlers_registered(self):
+    def test_handlers_registered(self) -> None:
         """At least 5 action handlers registered."""
         assert len(ACTION_HANDLERS) >= 5
 
-    def test_all_handlers_callable(self):
+    def test_all_handlers_callable(self) -> None:
         """All registered handlers are async callables."""
         for name, handler in ACTION_HANDLERS.items():
             assert callable(handler), f"Handler for '{name}' not callable"

@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.5] - 2026-04-07
+
+### Docs
+- Update docs/README.md
+- Update project/README.md
+- Update project/context.md
+
+### Other
+- Update backend/app/config.py
+- Update backend/app/db/__init__.py
+- Update backend/app/db/memory.py
+- Update backend/app/db/postgres.py
+- Update backend/app/engine.py
+- Update backend/app/logging_setup.py
+- Update backend/app/main.py
+- Update backend/app/routers/chat.py
+- Update backend/app/routers/settings.py
+- Update backend/app/routers/system.py
+- ... and 55 more files
+
 ## [0.0.4] - 2026-04-06
 
 ### Docs

@@ -4,19 +4,18 @@ Workflow Engine — tłumaczy deklaratywny DSL na imperatywne wykonanie.
 Współdzielony moduł: run_workflow() + _repo singleton używany przez wszystkie routery.
 """
 
-from __future__ import annotations
-
 import logging
-from datetime import datetime
+from http import HTTPStatus
+from datetime import UTC, datetime
 from uuid import uuid4
 
 from fastapi import HTTPException
 from httpx import AsyncClient
 
-from .config import settings
-from .db import create_workflow_repo
-from .logging_setup import get_request_id
-from .schemas import (
+from app.config import settings
+from app.db import create_workflow_repo
+from app.logging_setup import get_request_id
+from app.schemas import (
     RunWorkflowRequest,
     StepResult,
     StepStatus,
@@ -27,13 +26,15 @@ log = logging.getLogger("workflow-engine")
 
 WORKER_URL = settings.worker_url
 NLP_SERVICE_URL = settings.nlp_service_url
+WORKFLOW_ID_LENGTH: int = int("12")
+WORKFLOW_TIMEOUT_SECONDS: float = float("120.0")
 
 _repo = create_workflow_repo()
 
 
 async def run_workflow(req: RunWorkflowRequest) -> WorkflowResult:
     """Uruchamia workflow — iteruje po krokach DSL i deleguje do workera."""
-    workflow_id = uuid4().hex[:12]
+    workflow_id = uuid4().hex[:WORKFLOW_ID_LENGTH]
     result = WorkflowResult(
         workflow_id=workflow_id,
         name=req.name,
@@ -44,13 +45,13 @@ async def run_workflow(req: RunWorkflowRequest) -> WorkflowResult:
 
     trace_headers = {"X-Request-ID": get_request_id()}
 
-    async with AsyncClient(timeout=120.0, headers=trace_headers) as client:
+    async with AsyncClient(timeout=WORKFLOW_TIMEOUT_SECONDS, headers=trace_headers) as client:
         for step in req.steps:
             step_result = StepResult(
                 step_id=step.id,
                 action=step.action,
                 status=StepStatus.RUNNING,
-                started_at=datetime.utcnow(),
+                started_at=datetime.now(UTC),
             )
 
             try:
@@ -70,7 +71,7 @@ async def run_workflow(req: RunWorkflowRequest) -> WorkflowResult:
                 step_result.error = str(exc)
                 log.exception("✗ Step %s exception", step.id)
 
-            step_result.finished_at = datetime.utcnow()
+            step_result.finished_at = datetime.now(UTC)
             result.steps.append(step_result)
 
             if step_result.status == StepStatus.FAILED:
@@ -82,7 +83,7 @@ async def run_workflow(req: RunWorkflowRequest) -> WorkflowResult:
                     data={"trigger": req.trigger or "manual", "steps": [s.model_dump(mode="json") for s in result.steps]},
                 )
                 raise HTTPException(
-                    status_code=400,
+                    status_code=HTTPStatus.BAD_REQUEST,
                     detail={"workflow_id": workflow_id, "failed_step": step.id, "error": step_result.error},
                 )
 

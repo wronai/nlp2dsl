@@ -9,17 +9,15 @@ Używa regex + słownika aliasów do wyodrębnienia:
 Wystarczający na MVP, fallback gdy LLM niedostępny.
 """
 
-from __future__ import annotations
-
 import logging
 import re
 
-from .registry import (
+from app.registry import (
     ACTIONS_REGISTRY,
     COMPOSITE_INTENTS,
     get_trigger,
 )
-from .schemas import NLPEntities, NLPIntent, NLPResult
+from app.schemas import NLPEntities, NLPIntent, NLPResult
 
 log = logging.getLogger("nlp.rules")
 
@@ -264,7 +262,7 @@ def _extract_entities(text: str, text_lower: str) -> NLPEntities:
     return entities
 
 
-def _set_entity(entities: NLPEntities, field: str, value: str):
+def _set_entity(entities: NLPEntities, field: str, value: str) -> None:
     """Set entity field if not already set."""
     current = getattr(entities, field, None)
     if current is None:

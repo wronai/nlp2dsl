@@ -12,13 +12,11 @@ Usage (in worker.py):
   app.add_middleware(RequestIDMiddleware)
 """
 
-from __future__ import annotations
-
 import json
 import logging
 import time
+from collections.abc import Callable
 from contextvars import ContextVar
-from typing import Callable
 from uuid import uuid4
 
 from fastapi import Request, Response

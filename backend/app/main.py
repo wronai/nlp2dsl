@@ -6,6 +6,8 @@ do wykonywalnych procesów (imperatywnych) w kontenerach Docker.
 """
 
 
+from typing import Any
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -42,5 +44,5 @@ app.include_router(system_router)
 
 
 @app.get("/health")
-async def health():
+async def health() -> dict[str, Any]:
     return {"status": "ok", "service": "backend"}

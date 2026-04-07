@@ -1,25 +1,30 @@
-# code2llm/evolution | 140 func | 20f | 2026-04-06
+# code2llm/evolution | 170 func | 28f | 2026-04-07
 
-NEXT[3] (ranked by impact):
-  [1] !! SPLIT-FUNC      _extract_entities  CC=36  fan=26
+NEXT[4] (ranked by impact):
+  [1] !! SPLIT           nlp-service/app/main.py
+      WHY: 520L, 0 classes, max CC=10
+      EFFORT: ~4h  IMPACT: 5200
+
+  [2] !! SPLIT-FUNC      _extract_entities  CC=36  fan=26
       WHY: CC=36 exceeds 15
       EFFORT: ~1h  IMPACT: 936
 
-  [2] !  SPLIT-FUNC      _process_message  CC=17  fan=18
+  [3] !  SPLIT-FUNC      _process_message  CC=17  fan=18
       WHY: CC=17 exceeds 15
       EFFORT: ~1h  IMPACT: 306
 
-  [3] !  SPLIT-FUNC      _format_system_result  CC=16  fan=7
+  [4] !  SPLIT-FUNC      _format_system_result  CC=16  fan=7
       WHY: CC=16 exceeds 15
       EFFORT: ~1h  IMPACT: 112
 
 
-RISKS[0]: none
+RISKS[1]:
+  ⚠ Splitting nlp-service/app/main.py may break 20 import paths
 
 METRICS-TARGET:
-  CC̄:          3.3 → ≤2.3
+  CC̄:          3.1 → ≤2.2
   max-CC:      36 → ≤18
-  god-modules: 0 → 0
+  god-modules: 1 → 0
   high-CC(≥15): 3 → ≤1
   hub-types:   0 → ≤0
 
@@ -48,4 +53,4 @@ PATTERNS (language parser shared logic):
     - Standardized FunctionInfo/ClassInfo models
 
 HISTORY:
-  prev CC̄=3.3 → now CC̄=3.3
+  prev CC̄=3.1 → now CC̄=3.1

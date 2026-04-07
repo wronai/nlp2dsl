@@ -7,11 +7,10 @@ Mocks external HTTP calls to worker and nlp-service.
 
 from __future__ import annotations
 
-from unittest.mock import AsyncMock, patch, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from httpx import AsyncClient, Response
-
 
 # ── Health ───────────────────────────────────────────────────────
 
@@ -20,7 +19,7 @@ class TestHealthEndpoint:
     """Backend health check."""
 
     @pytest.mark.asyncio
-    async def test_health_endpoint(self, client: AsyncClient):
+    async def test_health_endpoint(self, client: AsyncClient) -> None:
         """GET /health → 200 with status ok."""
         resp = await client.get("/health")
         assert resp.status_code == 200
@@ -36,7 +35,7 @@ class TestWorkflowActions:
     """GET /workflow/actions endpoint."""
 
     @pytest.mark.asyncio
-    async def test_workflow_actions(self, client: AsyncClient):
+    async def test_workflow_actions(self, client: AsyncClient) -> None:
         """GET /workflow/actions → list of available actions."""
         resp = await client.get("/workflow/actions")
         assert resp.status_code == 200
@@ -49,7 +48,7 @@ class TestWorkflowActions:
             assert "description" in action
 
     @pytest.mark.asyncio
-    async def test_workflow_actions_contains_invoice(self, client: AsyncClient):
+    async def test_workflow_actions_contains_invoice(self, client: AsyncClient) -> None:
         """Actions list includes send_invoice."""
         resp = await client.get("/workflow/actions")
         names = [a["name"] for a in resp.json()]
@@ -74,7 +73,7 @@ class TestRunWorkflow:
     """POST /workflow/run endpoint."""
 
     @pytest.mark.asyncio
-    async def test_run_workflow(self, client: AsyncClient):
+    async def test_run_workflow(self, client: AsyncClient) -> None:
         """Successful single-step workflow execution."""
         mock_resp = _mock_worker_response(
             json_data={"step_id": "step1", "status": "completed", "result": {"invoice_id": "INV-001"}}
@@ -102,7 +101,7 @@ class TestRunWorkflow:
             assert len(data["steps"]) == 1
 
     @pytest.mark.asyncio
-    async def test_run_workflow_step_failure(self, client: AsyncClient):
+    async def test_run_workflow_step_failure(self, client: AsyncClient) -> None:
         """Failed step → 400 with error details."""
         mock_resp = _mock_worker_response(status_code=500)
         mock_resp.text = "Internal Server Error"
@@ -131,7 +130,7 @@ class TestWorkflowHistory:
     """GET /workflow/history endpoint."""
 
     @pytest.mark.asyncio
-    async def test_workflow_history(self, client: AsyncClient):
+    async def test_workflow_history(self, client: AsyncClient) -> None:
         """GET /workflow/history → list (possibly empty)."""
         resp = await client.get("/workflow/history")
         assert resp.status_code == 200
@@ -145,7 +144,7 @@ class TestFromText:
     """POST /workflow/from-text endpoint."""
 
     @pytest.mark.asyncio
-    async def test_from_text_complete(self, client: AsyncClient):
+    async def test_from_text_complete(self, client: AsyncClient) -> None:
         """Complete NLP response → returns DSL."""
         mock_nlp_resp = MagicMock(spec=Response)
         mock_nlp_resp.status_code = 200
@@ -176,7 +175,7 @@ class TestFromText:
             assert "dsl" in data
 
     @pytest.mark.asyncio
-    async def test_from_text_incomplete(self, client: AsyncClient):
+    async def test_from_text_incomplete(self, client: AsyncClient) -> None:
         """Incomplete NLP response → returns missing fields."""
         mock_nlp_resp = MagicMock(spec=Response)
         mock_nlp_resp.status_code = 200
@@ -204,7 +203,7 @@ class TestFromText:
             assert "missing_fields" in data
 
     @pytest.mark.asyncio
-    async def test_from_text_empty(self, client: AsyncClient):
+    async def test_from_text_empty(self, client: AsyncClient) -> None:
         """Empty text → 400."""
         resp = await client.post("/workflow/from-text", json={"text": ""})
         assert resp.status_code == 400

@@ -7,9 +7,10 @@ implementację na podstawie env POSTGRES_URL:
   - unset  → MemoryWorkflowRepo (fallback)
 """
 
-from __future__ import annotations
-
 from abc import ABC, abstractmethod
+
+
+DEFAULT_LIST_LIMIT: int = int("50")
 
 
 class WorkflowRepo(ABC):
@@ -28,7 +29,7 @@ class WorkflowRepo(ABC):
         ...
 
     @abstractmethod
-    async def list_runs(self, limit: int = 50, offset: int = 0) -> list[dict]:
+    async def list_runs(self, limit: int = DEFAULT_LIST_LIMIT, offset: int = 0) -> list[dict]:
         ...
 
     @abstractmethod
@@ -41,7 +42,7 @@ def create_workflow_repo() -> WorkflowRepo:
     from app.config import settings
     pg_url = settings.postgres_url
     if pg_url:
-        from .postgres import PostgresWorkflowRepo
+        from app.db.postgres import PostgresWorkflowRepo
         return PostgresWorkflowRepo(pg_url)
-    from .memory import MemoryWorkflowRepo
+    from app.db.memory import MemoryWorkflowRepo
     return MemoryWorkflowRepo()

@@ -8,13 +8,13 @@ import json
 import logging
 
 import pytest
-from httpx import AsyncClient, ASGITransport
+from httpx import ASGITransport, AsyncClient
 
 
 class TestJSONFormatter:
     """JSONFormatter emits valid JSON with expected fields."""
 
-    def test_format_produces_json(self):
+    def test_format_produces_json(self) -> None:
         from app.logging_setup import JSONFormatter
         formatter = JSONFormatter(service="test-svc")
         record = logging.LogRecord(
@@ -32,7 +32,7 @@ class TestJSONFormatter:
         assert "ts" in doc
         assert "request_id" in doc
 
-    def test_format_includes_exception(self):
+    def test_format_includes_exception(self) -> None:
         from app.logging_setup import JSONFormatter
         formatter = JSONFormatter(service="test-svc")
         try:
@@ -51,7 +51,7 @@ class TestJSONFormatter:
         assert "exc" in doc
         assert "ValueError" in doc["exc"]
 
-    def test_format_service_name(self):
+    def test_format_service_name(self) -> None:
         from app.logging_setup import JSONFormatter
         formatter = JSONFormatter(service="my-service")
         record = logging.LogRecord(
@@ -69,8 +69,8 @@ class TestRequestIDMiddleware:
 
     @pytest.fixture
     def test_app(self):
-        from fastapi import FastAPI
         from app.logging_setup import RequestIDMiddleware
+        from fastapi import FastAPI
 
         inner = FastAPI()
         inner.add_middleware(RequestIDMiddleware)
@@ -81,7 +81,7 @@ class TestRequestIDMiddleware:
 
         return inner
 
-    async def test_response_has_request_id_header(self, test_app):
+    async def test_response_has_request_id_header(self, test_app) -> None:
         transport = ASGITransport(app=test_app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             resp = await client.get("/ping")
@@ -89,13 +89,13 @@ class TestRequestIDMiddleware:
         assert "x-request-id" in resp.headers
         assert len(resp.headers["x-request-id"]) > 0
 
-    async def test_client_request_id_is_forwarded(self, test_app):
+    async def test_client_request_id_is_forwarded(self, test_app) -> None:
         transport = ASGITransport(app=test_app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             resp = await client.get("/ping", headers={"X-Request-ID": "trace-abc-123"})
         assert resp.headers["x-request-id"] == "trace-abc-123"
 
-    async def test_new_id_generated_without_header(self, test_app):
+    async def test_new_id_generated_without_header(self, test_app) -> None:
         transport = ASGITransport(app=test_app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             r1 = await client.get("/ping")
@@ -106,8 +106,8 @@ class TestRequestIDMiddleware:
 class TestSetupLogging:
     """setup_logging() installs JSONFormatter on root logger."""
 
-    def test_setup_logging_installs_json_handler(self):
-        from app.logging_setup import setup_logging, JSONFormatter
+    def test_setup_logging_installs_json_handler(self) -> None:
+        from app.logging_setup import JSONFormatter, setup_logging
         setup_logging(service="setup-test")
 
         root = logging.getLogger()
@@ -115,7 +115,7 @@ class TestSetupLogging:
         handler = root.handlers[0]
         assert isinstance(handler.formatter, JSONFormatter)
 
-    def test_setup_logging_respects_log_level(self):
+    def test_setup_logging_respects_log_level(self) -> None:
         from app.logging_setup import setup_logging
         setup_logging(service="level-test", level="WARNING")
 

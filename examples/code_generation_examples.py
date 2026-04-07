@@ -12,8 +12,10 @@ import requests
 # Base URLs
 NLP_SERVICE_URL = "http://localhost:8002"
 BACKEND_URL = "http://localhost:8010"
+CODE_PREVIEW_LEN: int = 300
 
-def test_direct_code_generation():
+
+def test_direct_code_generation() -> None:
     """Test direct code generation via nlp-service API."""
     print("=== Direct Code Generation API ===\n")
 
@@ -27,7 +29,7 @@ def test_direct_code_generation():
 
     try:
         response = requests.post(f"{NLP_SERVICE_URL}/code/generate", json=payload)
-        if response.status_code == 200:
+        if response.ok:
             result = response.json()
             print("✅ Python code generated successfully")
             print(f"Language: {result['language']}")
@@ -35,7 +37,7 @@ def test_direct_code_generation():
             if result.get('tests'):
                 print(f"Tests included: {len(result['tests'])} characters")
             print("\nGenerated code preview:")
-            print(result['code'][:300] + "..." if len(result['code']) > 300 else result['code'])
+            print(result['code'][:CODE_PREVIEW_LEN] + "..." if len(result['code']) > CODE_PREVIEW_LEN else result['code'])
         else:
             print(f"❌ Error: {response.status_code} - {response.text}")
     except requests.exceptions.ConnectionError:
@@ -46,7 +48,7 @@ def test_direct_code_generation():
     # Test getting supported languages
     try:
         response = requests.get(f"{NLP_SERVICE_URL}/code/languages")
-        if response.status_code == 200:
+        if response.ok:
             result = response.json()
             print("Supported languages:")
             for lang, info in result['info'].items():
@@ -56,7 +58,7 @@ def test_direct_code_generation():
     except requests.exceptions.ConnectionError:
         print("❌ Cannot connect to nlp-service")
 
-def test_via_workflow():
+def test_via_workflow() -> None:
     """Test code generation through the workflow API."""
     print("\n=== Code Generation via Workflow ===\n")
 
@@ -68,7 +70,7 @@ def test_via_workflow():
 
     try:
         response = requests.post(f"{BACKEND_URL}/workflow/from-text", json=payload)
-        if response.status_code == 200:
+        if response.ok:
             result = response.json()
             print("✅ DSL generated successfully")
             print(f"Intent: {result.get('intent', {}).get('intent')}")
@@ -82,7 +84,7 @@ def test_via_workflow():
     except requests.exceptions.ConnectionError:
         print("❌ Cannot connect to backend. Make sure it's running on port 8010")
 
-def test_conversation_flow():
+def test_conversation_flow() -> None:
     """Test code generation through conversation flow."""
     print("\n=== Code Generation via Conversation ===\n")
 
@@ -93,7 +95,7 @@ def test_conversation_flow():
             data={"text": "Chcę napisać program w Javie"}
         )
 
-        if response.status_code == 200:
+        if response.ok:
             result = response.json()
             conv_id = result.get('conversation_id')
             print(f"✅ Conversation started: {conv_id}")
@@ -111,7 +113,7 @@ def test_conversation_flow():
                     }
                 )
 
-                if response.status_code == 200:
+                if response.ok:
                     result = response.json()
                     print(f"\nResponse: {result.get('message')}")
 
@@ -123,7 +125,7 @@ def test_conversation_flow():
     except requests.exceptions.ConnectionError:
         print("❌ Cannot connect to nlp-service")
 
-def test_worker_execution():
+def test_worker_execution() -> None:
     """Test actual code generation through worker."""
     print("\n=== Code Generation via Worker ===\n")
 
@@ -140,7 +142,7 @@ def test_worker_execution():
 
     try:
         response = requests.post("http://localhost:8004/execute", json=payload)
-        if response.status_code == 200:
+        if response.ok:
             result = response.json()
             print("✅ Code generated via worker")
             print(f"Status: {result['status']}")

@@ -21,8 +21,6 @@ Konfiguracja (env vars):
   OPENROUTER_API_KEY, OPENAI_API_KEY, ANTHROPIC_API_KEY, itp.
 """
 
-from __future__ import annotations
-
 import json
 import logging
 import os
@@ -30,9 +28,11 @@ import os
 import litellm
 from litellm import acompletion
 
-from .schemas import NLPEntities, NLPIntent, NLPResult
+from app.schemas import NLPEntities, NLPIntent, NLPResult
 
 log = logging.getLogger("nlp.llm")
+
+LLM_RESPONSE_PREVIEW_LEN: int = int("200")
 
 # ── LiteLLM config ───────────────────────────────────────────
 
@@ -122,7 +122,7 @@ async def parse_llm(text: str) -> NLPResult:
         response = await acompletion(**kwargs)
 
         raw = response.choices[0].message.content
-        log.debug("LLM raw response: %s", raw[:200])
+        log.debug("LLM raw response: %s", raw[:LLM_RESPONSE_PREVIEW_LEN])
 
         parsed = _parse_json_response(raw)
 
@@ -133,7 +133,7 @@ async def parse_llm(text: str) -> NLPResult:
             raw_text=text,
         )
 
-    except Exception as exc:
+    except Exception:
         log.exception("LLM parsing failed (model=%s), returning unknown intent", model)
         return NLPResult(
             intent=NLPIntent(intent="unknown", confidence=0.0),
@@ -172,7 +172,7 @@ def _parse_json_response(raw: str) -> dict:
 
     if cleaned.startswith("```"):
         lines = cleaned.split("\n")
-        lines = [l for l in lines if not l.strip().startswith("```")]
+        lines = [ln for ln in lines if not ln.strip().startswith("```")]
         cleaned = "\n".join(lines).strip()
 
     start = cleaned.find("{")

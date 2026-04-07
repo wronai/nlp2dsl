@@ -13,9 +13,9 @@ Endpoints:
   GET  /health        → status
 """
 
-from __future__ import annotations
-
+from http import HTTPStatus
 import logging
+from typing import Any
 
 from fastapi import (
     FastAPI,
@@ -29,27 +29,30 @@ from fastapi import (
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 
-from .audio_parser import StreamingSTT, is_stt_available, stt_audio
-from .config import settings as _svc_settings
-from .logging_setup import RequestIDMiddleware, setup_logging
-from .mapper import map_to_dsl
-from .orchestrator import (
+from app.audio_parser import StreamingSTT, is_stt_available, stt_audio
+from app.code_generator import code_generator
+from app.config import settings as _svc_settings
+from app.logging_setup import RequestIDMiddleware, setup_logging
+from app.mapper import map_to_dsl
+from app.orchestrator import (
     continue_conversation,
     get_action_form,
     get_conversation,
     start_conversation,
 )
-from .parser_llm import LLM_MODEL, _detect_provider, parse_llm
-from .parser_rules import parse_rules
-from .registry import ACTIONS_REGISTRY
-from .schemas import (
+from app.parser_llm import LLM_MODEL, _detect_provider, parse_llm
+from app.parser_rules import parse_rules
+from app.registry import ACTIONS_REGISTRY
+from app.schemas import (
     ActionFormSchema,
     ConversationResponse,
     DialogResponse,
     NLPRequest,
     NLPResult,
 )
-from .store.factory import get_conversation_store
+from app.settings import settings_manager
+from app.store.factory import get_conversation_store
+from app.system_executor import SYSTEM_EXECUTORS, execute_system_action
 
 setup_logging(service="nlp-service")
 log = logging.getLogger("nlp-service")
@@ -78,7 +81,7 @@ LLM_FALLBACK_THRESHOLD = _svc_settings.llm_fallback_threshold
 
 
 @app.post("/nlp/parse", response_model=NLPResult)
-async def parse_text(req: NLPRequest):
+async def parse_text(req: NLPRequest) -> NLPResult:
     """
     Etap 1: tekst → intent + entities.
     Nie generuje DSL — tylko rozumie język naturalny.
@@ -87,7 +90,7 @@ async def parse_text(req: NLPRequest):
 
 
 @app.post("/nlp/to-dsl", response_model=DialogResponse)
-async def text_to_dsl(req: NLPRequest):
+async def text_to_dsl(req: NLPRequest) -> DialogResponse:
     """
     Pełny pipeline: tekst → NLP → DSL.
     Zwraca gotowy workflow lub listę brakujących pól.
@@ -96,7 +99,7 @@ async def text_to_dsl(req: NLPRequest):
 
     if nlp_result.intent.intent == "unknown":
         raise HTTPException(
-            status_code=422,
+            status_code=HTTPStatus.UNPROCESSABLE_ENTITY,
             detail={
                 "error": "Nie rozpoznano intencji",
                 "text": req.text,
@@ -108,7 +111,7 @@ async def text_to_dsl(req: NLPRequest):
 
 
 @app.get("/nlp/actions")
-async def list_actions():
+async def list_actions() -> dict[str, Any]:
     """Zwraca rejestr akcji z aliasami (vocabulary DSL)."""
     result = {}
     for name, meta in ACTIONS_REGISTRY.items():
@@ -122,7 +125,7 @@ async def list_actions():
 
 
 @app.get("/health")
-async def health():
+async def health() -> dict[str, Any]:
     llm_provider = _detect_provider()
     store = get_conversation_store()
     return {
@@ -144,7 +147,7 @@ async def health():
 async def chat_start(
     text: str = Form(default=""),
     audio: UploadFile = File(default=None),
-):
+) -> ConversationResponse:
     """
     Rozpocznij nową konwersację. System rozpoznaje intencję i dopytuje o brakujące dane.
 
@@ -163,14 +166,14 @@ async def chat_start(
     if audio:
         if not is_stt_available():
             raise HTTPException(
-                status_code=503,
+                status_code=HTTPStatus.SERVICE_UNAVAILABLE,
                 detail="STT not available. Set DEEPGRAM_API_KEY.",
             )
         audio_bytes = await audio.read()
         transcript = await stt_audio(audio_bytes)
         if not transcript:
             raise HTTPException(
-                status_code=422,
+                status_code=HTTPStatus.UNPROCESSABLE_ENTITY,
                 detail="Failed to transcribe audio",
             )
         text = transcript
@@ -179,7 +182,7 @@ async def chat_start(
     # Text input
     if not text.strip():
         raise HTTPException(
-            status_code=400,
+            status_code=HTTPStatus.BAD_REQUEST,
             detail="Field 'text' or 'audio' is required",
         )
 
@@ -191,7 +194,7 @@ async def chat_message(
     conversation_id: str = Form(...),
     text: str = Form(default=""),
     audio: UploadFile = File(default=None),
-):
+) -> ConversationResponse:
     """
     Kontynuuj rozmowę — uzupełnij brakujące dane.
 
@@ -210,14 +213,14 @@ async def chat_message(
     if audio:
         if not is_stt_available():
             raise HTTPException(
-                status_code=503,
+                status_code=HTTPStatus.SERVICE_UNAVAILABLE,
                 detail="STT not available. Set DEEPGRAM_API_KEY.",
             )
         audio_bytes = await audio.read()
         transcript = await stt_audio(audio_bytes)
         if not transcript:
             raise HTTPException(
-                status_code=422,
+                status_code=HTTPStatus.UNPROCESSABLE_ENTITY,
                 detail="Failed to transcribe audio",
             )
         text = transcript
@@ -226,7 +229,7 @@ async def chat_message(
     # Text input
     if not text.strip():
         raise HTTPException(
-            status_code=400,
+            status_code=HTTPStatus.BAD_REQUEST,
             detail="Field 'text' or 'audio' is required",
         )
 
@@ -234,11 +237,11 @@ async def chat_message(
 
 
 @app.get("/chat/{conversation_id}")
-async def chat_state(conversation_id: str):
+async def chat_state(conversation_id: str) -> dict[str, Any]:
     """Pobierz aktualny stan konwersacji."""
     state = await get_conversation(conversation_id)
     if not state:
-        raise HTTPException(status_code=404, detail="Conversation not found")
+        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="Conversation not found")
     return state.model_dump()
 
 
@@ -246,7 +249,7 @@ async def chat_state(conversation_id: str):
 
 
 @app.get("/actions/schema")
-async def actions_schema():
+async def actions_schema() -> dict[str, Any]:
     """
     Zwraca pełny schemat formularzy dla wszystkich akcji.
     Frontend generuje UI dynamicznie z tego schematu.
@@ -260,24 +263,19 @@ async def actions_schema():
 
 
 @app.get("/actions/schema/{action}", response_model=ActionFormSchema)
-async def action_schema(action: str):
+async def action_schema(action: str) -> ActionFormSchema:
     """Zwraca schemat formularza dla konkretnej akcji."""
     form = get_action_form(action)
     if not form:
-        raise HTTPException(status_code=404, detail=f"Action '{action}' not found")
+        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail=f"Action '{action}' not found")
     return form
 
 
 # ── Settings API ─────────────────────────────────────────────
 
 
-from .code_generator import code_generator
-from .settings import settings_manager
-from .system_executor import SYSTEM_EXECUTORS, execute_system_action
-
-
 @app.get("/settings")
-async def get_settings():
+async def get_settings() -> dict[str, Any]:
     """Pokaż wszystkie ustawienia systemu."""
     return {
         "settings": settings_manager.get_all(),
@@ -286,38 +284,38 @@ async def get_settings():
 
 
 @app.get("/settings/{section}")
-async def get_settings_section(section: str):
+async def get_settings_section(section: str) -> dict[str, Any]:
     """Pokaż ustawienia sekcji (llm, nlp, worker, file_access)."""
     data = settings_manager.get_section(section)
     if not data:
-        raise HTTPException(status_code=404, detail=f"Section '{section}' not found")
+        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail=f"Section '{section}' not found")
     return {"section": section, "settings": data}
 
 
 @app.put("/settings/{section}")
-async def update_settings_section(section: str, body: dict):
+async def update_settings_section(section: str, body: dict) -> dict[str, Any]:
     """Zaktualizuj ustawienia sekcji."""
     try:
         return settings_manager.update_section(section, body)
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail=str(e))
 
 
 @app.put("/settings")
-async def set_setting(body: dict):
+async def set_setting(body: dict) -> dict[str, Any]:
     """Zmień pojedyncze ustawienie. Body: {"path": "llm.model", "value": "gpt-4o"}"""
     path = body.get("path", "")
     value = body.get("value")
     if not path:
-        raise HTTPException(status_code=400, detail="Field 'path' is required")
+        raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail="Field 'path' is required")
     try:
         return settings_manager.set(path, value)
     except (ValueError, AttributeError) as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail=str(e))
 
 
 @app.post("/settings/reset")
-async def reset_settings(body: dict = {}):
+async def reset_settings(body: dict = {}) -> dict[str, Any]:
     """Resetuj ustawienia. Body: {"section": "llm"} lub {} dla wszystkich."""
     section = body.get("section")
     return settings_manager.reset(section)
@@ -327,7 +325,7 @@ async def reset_settings(body: dict = {}):
 
 
 @app.post("/system/execute")
-async def system_execute(body: dict):
+async def system_execute(body: dict) -> dict[str, Any]:
     """
     Wykonaj akcję systemową bezpośrednio.
     Body: {"action": "system_file_list", "config": {"directory": "."}}
@@ -337,7 +335,7 @@ async def system_execute(body: dict):
 
     if action not in SYSTEM_EXECUTORS:
         raise HTTPException(
-            status_code=400,
+            status_code=HTTPStatus.BAD_REQUEST,
             detail=f"Unknown system action: '{action}'. Available: {list(SYSTEM_EXECUTORS.keys())}",
         )
 
@@ -348,7 +346,7 @@ async def system_execute(body: dict):
 
 
 @app.post("/code/generate")
-async def generate_code(body: dict):
+async def generate_code(body: dict) -> dict[str, Any]:
     """
     Generuje kod w wybranym języku programowania.
 
@@ -366,7 +364,7 @@ async def generate_code(body: dict):
 
     if not description:
         raise HTTPException(
-            status_code=400,
+            status_code=HTTPStatus.BAD_REQUEST,
             detail="Field 'description' is required"
         )
 
@@ -380,7 +378,7 @@ async def generate_code(body: dict):
 
 
 @app.get("/code/languages")
-async def get_supported_languages():
+async def get_supported_languages() -> dict[str, Any]:
     """Zwraca listę obsługiwanych języków programowania."""
     return {
         "languages": code_generator.get_supported_languages(),
@@ -403,7 +401,7 @@ async def _run_parser(req: NLPRequest) -> NLPResult:
         provider = _detect_provider()
         if provider == "none":
             raise HTTPException(
-                status_code=503,
+                status_code=HTTPStatus.SERVICE_UNAVAILABLE,
                 detail="No LLM provider configured. Set OPENAI_API_KEY, ANTHROPIC_API_KEY, or OLLAMA_URL.",
             )
         return await parse_llm(req.text)
@@ -430,7 +428,7 @@ async def _run_parser(req: NLPRequest) -> NLPResult:
 
 
 @app.websocket("/ws/chat/{conversation_id}")
-async def websocket_chat(websocket: WebSocket, conversation_id: str):
+async def websocket_chat(websocket: WebSocket, conversation_id: str) -> None:
     """
     WebSocket endpoint dla voice chat w czasie rzeczywistym.
 
@@ -507,15 +505,15 @@ async def websocket_chat(websocket: WebSocket, conversation_id: str):
 
 
 @app.get("/chat", response_class=HTMLResponse)
-async def chat_ui():
+async def chat_ui() -> HTMLResponse:
     """Serwuj chat UI z voice support."""
     import pathlib
     static_dir = pathlib.Path(__file__).parent.parent / "static"
     chat_html = static_dir / "chat.html"
 
     if chat_html.exists():
-        return HTMLResponse(content=chat_html.read_text(), status_code=200)
+        return HTMLResponse(content=chat_html.read_text(), status_code=HTTPStatus.OK)
     return HTMLResponse(
         content="<html><body><h1>Chat UI not found</h1><p>Create static/chat.html</p></body></html>",
-        status_code=404,
+        status_code=HTTPStatus.NOT_FOUND,
     )

@@ -8,9 +8,7 @@ and mock conversation store for orchestrator tests.
 from __future__ import annotations
 
 import pytest
-
 from app.store.memory import MemoryConversationStore
-
 
 # ── Sample texts for NLP parsing ─────────────────────────────────
 

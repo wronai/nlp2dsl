@@ -8,18 +8,16 @@ LLM NIGDY nie generuje finalnego DSL.
 Mapper gwarantuje: przewidywalność, debugowalność, kontrolę.
 """
 
-from __future__ import annotations
-
 import logging
 
-from .registry import (
+from app.registry import (
     ACTIONS_REGISTRY,
     COMPOSITE_INTENTS,
     get_defaults,
     get_required_fields,
     get_trigger,
 )
-from .schemas import DialogResponse, DSLStep, NLPEntities, NLPResult, WorkflowDSL
+from app.schemas import DialogResponse, DSLStep, NLPEntities, NLPResult, WorkflowDSL
 
 log = logging.getLogger("nlp.mapper")
 
@@ -159,7 +157,7 @@ def _make_name(intent: str, actions: list[str]) -> str:
         return intent
     if len(actions) == 1:
         return f"auto_{actions[0]}"
-    return "auto_" + "_and_".join(actions)
+    return f"auto_{'_and_'.join(actions)}"
 
 
 def _build_prompt(missing: list[str]) -> str:

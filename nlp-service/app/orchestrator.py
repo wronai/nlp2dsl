@@ -11,15 +11,13 @@ Conversation flow:
     └──────── pytanie (rules/LLM) ←────────────┘
 """
 
-from __future__ import annotations
-
 import logging
 from uuid import uuid4
 
-from .mapper import map_to_dsl
-from .parser_rules import parse_rules
-from .registry import ACTIONS_REGISTRY, SYSTEM_ACTIONS, get_trigger
-from .schemas import (
+from app.mapper import map_to_dsl
+from app.parser_rules import parse_rules
+from app.registry import ACTIONS_REGISTRY, SYSTEM_ACTIONS, get_trigger
+from app.schemas import (
     ActionFormSchema,
     ConversationResponse,
     ConversationState,
@@ -28,12 +26,15 @@ from .schemas import (
     NLPIntent,
     NLPResult,
 )
-from .store.factory import get_conversation_store
+from app.store.factory import get_conversation_store
 
 log = logging.getLogger("orchestrator")
 
 _store = get_conversation_store()
 
+_CONVERSATION_ID_LENGTH: int = int("12")
+_SYSTEM_RESULT_PREVIEW_LENGTH: int = int("2000")
+_SYSTEM_FILE_LIST_LIMIT: int = int("30")
 _MIN_INTENT_CONFIDENCE: float = 0.5
 
 
@@ -72,7 +73,7 @@ FIELD_TYPES: dict[str, dict] = {
 
 async def start_conversation(text: str) -> ConversationResponse:
     """Rozpocznij nową rozmowę od pierwszej wiadomości użytkownika."""
-    state = ConversationState(id=uuid4().hex[:12])
+    state = ConversationState(id=uuid4().hex[:_CONVERSATION_ID_LENGTH])
     state.history.append({"role": "user", "text": text})
 
     result = _process_message(state, text)
@@ -173,7 +174,7 @@ def _process_message(state: ConversationState, text: str) -> ConversationRespons
 
     # 3b. System actions — execute immediately, no DSL
     if state.intent in SYSTEM_ACTIONS:
-        from .system_executor import SYSTEM_EXECUTORS
+        from app.system_executor import SYSTEM_EXECUTORS
 
         config = {k: v for k, v in state.entities.items() if v is not None and k != "_trigger"}
 
@@ -244,7 +245,7 @@ def _process_message(state: ConversationState, text: str) -> ConversationRespons
     )
 
 
-def _merge_into_state(state: ConversationState, nlp: NLPResult):
+def _merge_into_state(state: ConversationState, nlp: NLPResult) -> None:
     """Merge NLP result into conversation state (accumulate entities)."""
 
     # Update intent if we got a better one
@@ -300,7 +301,7 @@ def _format_system_result(intent: str, result: dict) -> str:
             return f"Błąd: {inner['error']}"
         return (
             f"Plik: {inner.get('file_path', '?')} ({inner.get('size_kb', '?')} KB, {inner.get('lines', '?')} linii)\n"
-            f"---\n{inner.get('content', '')[:2000]}"
+            f"---\n{inner.get('content', '')[:_SYSTEM_RESULT_PREVIEW_LENGTH]}"
         )
 
     if intent == "system_file_write":
@@ -311,7 +312,7 @@ def _format_system_result(intent: str, result: dict) -> str:
     if intent == "system_file_list":
         files = inner.get("files", [])
         lines = [f"Pliki w {inner.get('directory', '?')} ({inner.get('count', 0)}):"]
-        for f in files[:30]:
+        for f in files[:_SYSTEM_FILE_LIST_LIMIT]:
             lines.append(f"  {f['path']} ({f['size_kb']} KB)")
         return "\n".join(lines)
 

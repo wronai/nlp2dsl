@@ -17,9 +17,9 @@ flowchart TD
         backend__app__db__WorkflowRepo__list_runs["list_runs"]
         backend__app__db__WorkflowRepo__count_runs["count_runs"]
         backend__app__db__create_workflow_repo["create_workflow_repo"]
-        backend__app__workflow__list_actions["list_actions"]
-        backend__app__workflow__get_history["get_history"]
-        ...["+92 more"]
+        backend__app__db__postgres__WorkflowRunModel__to_dict["to_dict"]
+        backend__app__db__postgres__PostgresWorkflowRepo___ensure_tables["_ensure_tables"]
+        ...["+114 more"]
     end
 
     class tauri_wrapper__src_tauri__src__main__main,backend__app__main__health,backend__app__db__memory__MemoryWorkflowRepo__save_run,backend__app__db__memory__MemoryWorkflowRepo__update_run_status,backend__app__db__memory__MemoryWorkflowRepo__get_run,backend__app__db__memory__MemoryWorkflowRepo__list_runs,backend__app__db__memory__MemoryWorkflowRepo__count_runs,backend__app__db__WorkflowRepo__save_run,backend__app__db__WorkflowRepo__update_run_status,backend__app__db__WorkflowRepo__get_run entry

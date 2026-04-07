@@ -52,7 +52,7 @@ def generate_invoice_from_text(text: str) -> dict[str, Any]:
     return response.json()
 
 
-def main():
+def main() -> None:
     """Główna funkcja przykładu."""
 
     print("=== Przykład: Wysyłanie Faktury ===\n")

@@ -7,8 +7,6 @@ implementację na podstawie env REDIS_URL:
   - unset  → MemoryConversationStore (fallback)
 """
 
-from __future__ import annotations
-
 from abc import ABC, abstractmethod
 
 

@@ -9,14 +9,12 @@ Wzorzec:
   systemowe akcje → system_executor (lokalnie)
 """
 
-from __future__ import annotations
-
 import logging
 import os
 from pathlib import Path
 
-from .registry import ACTIONS_REGISTRY, BUSINESS_ACTIONS, SYSTEM_ACTIONS
-from .settings import settings_manager
+from app.registry import ACTIONS_REGISTRY, BUSINESS_ACTIONS, SYSTEM_ACTIONS
+from app.settings import settings_manager
 
 log = logging.getLogger("system.executor")
 

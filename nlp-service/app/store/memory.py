@@ -2,9 +2,7 @@
 MemoryConversationStore — in-memory fallback (zachowanie dotychczasowe).
 """
 
-from __future__ import annotations
-
-from . import ConversationStore
+from app.store import ConversationStore
 
 
 class MemoryConversationStore(ConversationStore):

@@ -4,9 +4,8 @@ Settings router — /workflow/settings/*, /workflow/actions/schema/*.
 Proxy do nlp-service settings i schema endpoints.
 """
 
-from __future__ import annotations
-
 import logging
+from typing import Any
 
 from fastapi import APIRouter, HTTPException
 from httpx import AsyncClient
@@ -19,7 +18,7 @@ router = APIRouter(prefix="/workflow", tags=["settings"])
 
 
 @router.get("/actions/schema")
-async def actions_schema():
+async def actions_schema() -> dict[str, Any]:
     """Schematy formularzy UI — frontend generuje dynamicznie."""
     async with AsyncClient(timeout=10.0, headers={"X-Request-ID": get_request_id()}) as client:
         resp = await client.get(f"{NLP_SERVICE_URL}/actions/schema")
@@ -27,7 +26,7 @@ async def actions_schema():
 
 
 @router.get("/actions/schema/{action}")
-async def action_schema(action: str):
+async def action_schema(action: str) -> dict[str, Any]:
     """Schemat formularza dla konkretnej akcji."""
     async with AsyncClient(timeout=10.0, headers={"X-Request-ID": get_request_id()}) as client:
         resp = await client.get(f"{NLP_SERVICE_URL}/actions/schema/{action}")
@@ -37,7 +36,7 @@ async def action_schema(action: str):
 
 
 @router.get("/settings")
-async def get_settings():
+async def get_settings() -> dict[str, Any]:
     """Pokaż wszystkie ustawienia systemu."""
     async with AsyncClient(timeout=10.0, headers={"X-Request-ID": get_request_id()}) as client:
         resp = await client.get(f"{NLP_SERVICE_URL}/settings")
@@ -45,7 +44,7 @@ async def get_settings():
 
 
 @router.get("/settings/{section}")
-async def get_settings_section(section: str):
+async def get_settings_section(section: str) -> dict[str, Any]:
     """Pokaż ustawienia sekcji."""
     async with AsyncClient(timeout=10.0, headers={"X-Request-ID": get_request_id()}) as client:
         resp = await client.get(f"{NLP_SERVICE_URL}/settings/{section}")
@@ -55,7 +54,7 @@ async def get_settings_section(section: str):
 
 
 @router.put("/settings/{section}")
-async def update_settings_section(section: str, body: dict):
+async def update_settings_section(section: str, body: dict) -> dict[str, Any]:
     """Zaktualizuj ustawienia sekcji."""
     async with AsyncClient(timeout=10.0, headers={"X-Request-ID": get_request_id()}) as client:
         resp = await client.put(f"{NLP_SERVICE_URL}/settings/{section}", json=body)
@@ -65,7 +64,7 @@ async def update_settings_section(section: str, body: dict):
 
 
 @router.put("/settings")
-async def set_setting(body: dict):
+async def set_setting(body: dict) -> dict[str, Any]:
     """Zmień ustawienie. Body: {"path": "llm.model", "value": "gpt-4o"}"""
     async with AsyncClient(timeout=10.0, headers={"X-Request-ID": get_request_id()}) as client:
         resp = await client.put(f"{NLP_SERVICE_URL}/settings", json=body)
@@ -75,7 +74,7 @@ async def set_setting(body: dict):
 
 
 @router.post("/settings/reset")
-async def reset_settings(body: dict = {}):
+async def reset_settings(body: dict = {}) -> dict[str, Any]:
     """Resetuj ustawienia."""
     async with AsyncClient(timeout=10.0, headers={"X-Request-ID": get_request_id()}) as client:
         resp = await client.post(f"{NLP_SERVICE_URL}/settings/reset", json=body)

@@ -12,8 +12,6 @@ Usage (in main.py):
   app.add_middleware(RequestIDMiddleware)
 """
 
-from __future__ import annotations
-
 import json
 import logging
 import time
