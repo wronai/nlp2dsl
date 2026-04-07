@@ -11,18 +11,19 @@ Wystarczający na MVP, fallback gdy LLM niedostępny.
 
 from __future__ import annotations
 
-import re
 import logging
+import re
 
-from .schemas import NLPResult, NLPIntent, NLPEntities
 from .registry import (
     ACTIONS_REGISTRY,
     COMPOSITE_INTENTS,
-    get_action_by_alias,
     get_trigger,
 )
+from .schemas import NLPEntities, NLPIntent, NLPResult
 
 log = logging.getLogger("nlp.rules")
+
+_MIN_ACTIONS_FOR_DOMINANCE: int = 2
 
 
 # ── Regex patterns ────────────────────────────────────────────
@@ -131,7 +132,7 @@ def _detect_actions(text_lower: str) -> list[str]:
     sorted_actions = sorted(scores.keys(), key=lambda a: scores[a], reverse=True)
 
     # If top action is system and has much higher score, return only it
-    if len(sorted_actions) >= 2:
+    if len(sorted_actions) >= _MIN_ACTIONS_FOR_DOMINANCE:
         top_score = scores[sorted_actions[0]]
         second_score = scores[sorted_actions[1]]
         top_cat = ACTIONS_REGISTRY[sorted_actions[0]].get("category", "business")

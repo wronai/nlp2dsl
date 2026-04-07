@@ -13,17 +13,17 @@ from __future__ import annotations
 
 import json
 import logging
-import os
-from copy import deepcopy
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
+from .config import settings as _svc_config
+
 log = logging.getLogger("settings")
 
-SETTINGS_FILE = os.getenv("SETTINGS_FILE", "/app/data/settings.json")
+SETTINGS_FILE = _svc_config.settings_file
 
 
 # ── Settings Schema ──────────────────────────────────────────
@@ -34,7 +34,7 @@ class LLMSettings(BaseModel):
     model: str = "openrouter/openai/gpt-5-mini"
     temperature: float = 0.0
     max_tokens: int = 1024
-    api_base: Optional[str] = None
+    api_base: str | None = None
     fallback_threshold: float = 0.5
 
 
@@ -71,7 +71,7 @@ class SystemSettings(BaseModel):
     nlp: NLPSettings = Field(default_factory=NLPSettings)
     worker: WorkerSettings = Field(default_factory=WorkerSettings)
     file_access: FileAccessSettings = Field(default_factory=FileAccessSettings)
-    updated_at: Optional[str] = None
+    updated_at: str | None = None
     version: str = "0.2.0"
 
 
@@ -81,7 +81,7 @@ class SystemSettings(BaseModel):
 class SettingsManager:
     """Runtime settings z persystencją do JSON."""
 
-    _instance: Optional["SettingsManager"] = None
+    _instance: SettingsManager | None = None
     _settings: SystemSettings
 
     def __new__(cls):
@@ -170,7 +170,7 @@ class SettingsManager:
 
         return {"section": section, "changes": changes}
 
-    def reset(self, section: Optional[str] = None) -> dict:
+    def reset(self, section: str | None = None) -> dict:
         """Reset settings to defaults."""
         if section:
             default = SystemSettings()

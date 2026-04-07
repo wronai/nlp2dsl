@@ -13,12 +13,10 @@ from __future__ import annotations
 
 import logging
 import os
-from glob import glob
 from pathlib import Path
-from typing import Any
 
+from .registry import ACTIONS_REGISTRY, BUSINESS_ACTIONS, SYSTEM_ACTIONS
 from .settings import settings_manager
-from .registry import ACTIONS_REGISTRY, SYSTEM_ACTIONS, BUSINESS_ACTIONS
 
 log = logging.getLogger("system.executor")
 
@@ -98,8 +96,7 @@ def _exec_settings_set(config: dict) -> dict:
     if value is None:
         return {"error": "Brak setting_value"}
 
-    result = settings_manager.set(path, value)
-    return result
+    return settings_manager.set(path, value)
 
 
 def _exec_settings_reset(config: dict) -> dict:

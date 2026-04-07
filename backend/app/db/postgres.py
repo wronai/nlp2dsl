@@ -9,11 +9,10 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime
-from typing import Optional
 
-from sqlalchemy import Column, String, DateTime, text
+from sqlalchemy import Column, DateTime, String, text
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
 
 from . import WorkflowRepo
@@ -103,7 +102,7 @@ class PostgresWorkflowRepo(WorkflowRepo):
             )
             await session.commit()
 
-    async def get_run(self, workflow_id: str) -> Optional[dict]:
+    async def get_run(self, workflow_id: str) -> dict | None:
         await self._ensure_tables()
 
         async with self._session_factory() as session:

@@ -4,8 +4,6 @@ MemoryConversationStore — in-memory fallback (zachowanie dotychczasowe).
 
 from __future__ import annotations
 
-from typing import Optional
-
 from . import ConversationStore
 
 
@@ -14,7 +12,7 @@ class MemoryConversationStore(ConversationStore):
     def __init__(self):
         self._data: dict[str, dict] = {}
 
-    async def get(self, conversation_id: str) -> Optional[dict]:
+    async def get(self, conversation_id: str) -> dict | None:
         return self._data.get(conversation_id)
 
     async def save(self, conversation_id: str, state: dict) -> None:

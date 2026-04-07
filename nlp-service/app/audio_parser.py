@@ -15,62 +15,62 @@ Konfiguracja (env vars):
 from __future__ import annotations
 
 import logging
-import os
-from typing import Optional
 
 import httpx
+
+from .config import settings
 
 log = logging.getLogger("nlp.audio")
 
 # ── Deepgram Config ───────────────────────────────────────────
 
-DEEPGRAM_API_KEY = os.getenv("DEEPGRAM_API_KEY")
-DEEPGRAM_MODEL = os.getenv("DEEPGRAM_MODEL", "nova-3-general")
-DEEPGRAM_LANGUAGE = os.getenv("DEEPGRAM_LANGUAGE", "pl")
+DEEPGRAM_API_KEY = settings.deepgram_api_key
+DEEPGRAM_MODEL = settings.deepgram_model
+DEEPGRAM_LANGUAGE = settings.deepgram_language
 DEEPGRAM_API_URL = "https://api.deepgram.com/v1/listen"
 
 
 # ── STT Functions ─────────────────────────────────────────────
 
 
-async def stt_audio(audio_bytes: bytes, language: str = None) -> Optional[str]:
+async def stt_audio(audio_bytes: bytes, language: str = None) -> str | None:
     """
     Transcribe audio bytes to text using Deepgram HTTP API.
-    
+
     Args:
         audio_bytes: Audio data (WAV, MP3, M4A, etc.)
         language: Language code (default: pl)
-    
+
     Returns:
         Transcribed text or None if failed
     """
     if not DEEPGRAM_API_KEY:
         log.warning("DEEPGRAM_API_KEY not set, STT disabled")
         return None
-    
+
     lang = language or DEEPGRAM_LANGUAGE
-    
+
     try:
         # Build URL with query params
         url = f"{DEEPGRAM_API_URL}?model={DEEPGRAM_MODEL}&language={lang}&smart_format=true&punctuate=true"
-        
+
         headers = {
             "Authorization": f"Token {DEEPGRAM_API_KEY}",
             "Content-Type": "audio/*",  # Auto-detect format
         }
-        
+
         # Transcribe
         log.info("Transcribing audio (%d bytes, lang=%s)", len(audio_bytes), lang)
-        
+
         async with httpx.AsyncClient(timeout=30.0) as client:
             response = await client.post(url, headers=headers, content=audio_bytes)
-            
-            if response.status_code != 200:
+
+            if not response.is_success:
                 log.error("Deepgram API error: %d - %s", response.status_code, response.text)
                 return None
-            
+
             data = response.json()
-        
+
         # Extract transcript
         if "results" in data:
             channels = data["results"].get("channels", [])
@@ -81,23 +81,23 @@ async def stt_audio(audio_bytes: bytes, language: str = None) -> Optional[str]:
                     if transcript:
                         log.info("Transcription complete: %d chars", len(transcript))
                         return transcript
-        
+
         log.warning("No transcript in response")
         return None
-        
+
     except Exception as e:
         log.exception("STT transcription failed: %s", e)
         return None
 
 
-async def stt_file(file_path: str, language: str = None) -> Optional[str]:
+async def stt_file(file_path: str, language: str = None) -> str | None:
     """
     Transcribe audio file to text using Deepgram.
-    
+
     Args:
         file_path: Path to audio file
         language: Language code (default: pl)
-    
+
     Returns:
         Transcribed text or None if failed
     """
@@ -122,28 +122,28 @@ class StreamingSTT:
     Real-time streaming STT via Deepgram WebSocket.
     Placeholder - requires WebSocket implementation.
     """
-    
+
     def __init__(self, language: str = None):
         self.language = language or DEEPGRAM_LANGUAGE
         self.transcript_buffer = []
         log.warning("StreamingSTT not fully implemented - use stt_audio for batch processing")
-    
+
     async def start(self):
         """Start streaming connection."""
         log.warning("StreamingSTT.start() not implemented")
         return False
-    
+
     async def send_audio(self, audio_chunk: bytes):
         """Send audio chunk to streaming connection."""
         # Fallback: batch process
         transcript = await stt_audio(audio_chunk, self.language)
         if transcript:
             self.transcript_buffer.append(transcript)
-    
+
     async def get_transcript(self) -> str:
         """Get accumulated transcript."""
         return " ".join(self.transcript_buffer)
-    
+
     async def stop(self) -> str:
         """Stop streaming and return final transcript."""
         return " ".join(self.transcript_buffer)

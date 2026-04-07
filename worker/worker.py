@@ -13,14 +13,13 @@ import logging
 from datetime import datetime
 
 from fastapi import FastAPI, HTTPException
+from logging_setup import RequestIDMiddleware, setup_logging
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s | %(name)-18s | %(levelname)-7s | %(message)s",
-)
+setup_logging(service="worker")
 log = logging.getLogger("worker")
 
 app = FastAPI(title="Task Worker", version="0.1.0")
+app.add_middleware(RequestIDMiddleware)
 
 
 # ── Action registry ──────────────────────────────────────────
@@ -90,15 +89,15 @@ async def handle_notify_slack(config: dict) -> dict:
 @action("generate_code")
 async def handle_generate_code(config: dict) -> dict:
     import httpx
-    
+
     description = config.get("description", "")
     language = config.get("language", "python")
     context = config.get("context")
     include_tests = config.get("include_tests", False)
-    
+
     if not description:
         raise ValueError("Description is required for code generation")
-    
+
     # Call nlp-service for code generation
     try:
         async with httpx.AsyncClient() as client:
@@ -114,15 +113,15 @@ async def handle_generate_code(config: dict) -> dict:
             )
             response.raise_for_status()
             result = response.json()
-            
+
             if "error" in result:
                 log.error("Code generation failed: %s", result["error"])
                 return {"error": result["error"], "language": language}
-            
-            log.info("✅ Generated %s code (%d lines)", 
+
+            log.info("✅ Generated %s code (%d lines)",
                     language, result.get("code", "").count("\n") + 1)
             return result
-            
+
     except httpx.HTTPStatusError as e:
         log.error("HTTP error calling code generation: %s", e)
         return {"error": f"Code generation service unavailable: {e}"}

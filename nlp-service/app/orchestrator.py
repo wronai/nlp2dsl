@@ -16,24 +16,25 @@ from __future__ import annotations
 import logging
 from uuid import uuid4
 
-from .schemas import (
-    ConversationState,
-    ConversationResponse,
-    NLPEntities,
-    NLPResult,
-    NLPIntent,
-    ActionFormSchema,
-    FieldSchema,
-    WorkflowDSL,
-)
-from .parser_rules import parse_rules
 from .mapper import map_to_dsl
-from .registry import ACTIONS_REGISTRY, COMPOSITE_INTENTS, SYSTEM_ACTIONS, get_trigger
+from .parser_rules import parse_rules
+from .registry import ACTIONS_REGISTRY, SYSTEM_ACTIONS, get_trigger
+from .schemas import (
+    ActionFormSchema,
+    ConversationResponse,
+    ConversationState,
+    FieldSchema,
+    NLPEntities,
+    NLPIntent,
+    NLPResult,
+)
 from .store.factory import get_conversation_store
 
 log = logging.getLogger("orchestrator")
 
 _store = get_conversation_store()
+
+_MIN_INTENT_CONFIDENCE: float = 0.5
 
 
 # ── Field type inference ──────────────────────────────────────
@@ -248,7 +249,7 @@ def _merge_into_state(state: ConversationState, nlp: NLPResult):
 
     # Update intent if we got a better one
     if nlp.intent.intent != "unknown":
-        if state.intent is None or nlp.intent.confidence > 0.5:
+        if state.intent is None or nlp.intent.confidence > _MIN_INTENT_CONFIDENCE:
             state.intent = nlp.intent.intent
 
     # Merge entities (new values override None, don't overwrite existing with None)

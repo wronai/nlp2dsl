@@ -9,9 +9,7 @@ Trzy warstwy:
 
 from __future__ import annotations
 
-from typing import Any, Optional
 from pydantic import BaseModel, Field
-
 
 # ── NLP Output ────────────────────────────────────────────────
 
@@ -21,31 +19,31 @@ class NLPIntent(BaseModel):
 
 
 class NLPEntities(BaseModel):
-    amount: Optional[float] = None
-    currency: Optional[str] = None
-    to: Optional[str] = None
-    subject: Optional[str] = None
-    message: Optional[str] = None
-    channel: Optional[str] = None
-    report_type: Optional[str] = None
-    format: Optional[str] = None
-    entity: Optional[str] = None
-    data: Optional[dict] = None
+    amount: float | None = None
+    currency: str | None = None
+    to: str | None = None
+    subject: str | None = None
+    message: str | None = None
+    channel: str | None = None
+    report_type: str | None = None
+    format: str | None = None
+    entity: str | None = None
+    data: dict | None = None
     # ── System entities ──
-    setting_path: Optional[str] = None      # np. "llm.model"
-    setting_value: Optional[str] = None     # np. "gpt-4o-mini"
-    section: Optional[str] = None           # np. "llm", "nlp", "worker"
-    file_path: Optional[str] = None         # np. "worker/worker.py"
-    content: Optional[str] = None           # treść pliku
-    directory: Optional[str] = None         # katalog
-    pattern: Optional[str] = None           # glob pattern
-    line_start: Optional[int] = None
-    line_end: Optional[int] = None
-    mode: Optional[str] = None              # "write" | "append"
-    action_name: Optional[str] = None       # nazwa nowej akcji
-    action_description: Optional[str] = None
-    required_fields: Optional[list[str]] = None
-    aliases: Optional[list[str]] = None
+    setting_path: str | None = None      # np. "llm.model"
+    setting_value: str | None = None     # np. "gpt-4o-mini"
+    section: str | None = None           # np. "llm", "nlp", "worker"
+    file_path: str | None = None         # np. "worker/worker.py"
+    content: str | None = None           # treść pliku
+    directory: str | None = None         # katalog
+    pattern: str | None = None           # glob pattern
+    line_start: int | None = None
+    line_end: int | None = None
+    mode: str | None = None              # "write" | "append"
+    action_name: str | None = None       # nazwa nowej akcji
+    action_description: str | None = None
+    required_fields: list[str] | None = None
+    aliases: list[str] | None = None
 
 
 class NLPResult(BaseModel):
@@ -64,7 +62,7 @@ class DSLStep(BaseModel):
 
 class WorkflowDSL(BaseModel):
     name: str
-    trigger: Optional[str] = "manual"
+    trigger: str | None = "manual"
     steps: list[DSLStep] = []
 
 
@@ -72,9 +70,9 @@ class WorkflowDSL(BaseModel):
 
 class DialogResponse(BaseModel):
     status: str  # "complete" | "incomplete"
-    workflow: Optional[WorkflowDSL] = None
+    workflow: WorkflowDSL | None = None
     missing_fields: list[str] = []
-    prompt_user: Optional[str] = None  # pytanie do użytkownika
+    prompt_user: str | None = None  # pytanie do użytkownika
 
 
 # ── Request ───────────────────────────────────────────────────
@@ -90,10 +88,10 @@ class NLPRequest(BaseModel):
 class ConversationState(BaseModel):
     """Stan rozmowy — akumuluje dane między turami dialogu."""
     id: str = ""
-    intent: Optional[str] = None
+    intent: str | None = None
     entities: dict = {}
     missing: list[str] = []
-    dsl: Optional[WorkflowDSL] = None
+    dsl: WorkflowDSL | None = None
     status: str = "in_progress"   # in_progress | ready | done | error
     history: list[dict] = []      # [{"role": "user"|"assistant", "text": "..."}]
 
@@ -106,7 +104,7 @@ class FieldSchema(BaseModel):
     label: str = ""
     required: bool = True
     options: list[str] = []  # for select type
-    default: Optional[str] = None
+    default: str | None = None
 
 
 class ActionFormSchema(BaseModel):
@@ -118,7 +116,7 @@ class ActionFormSchema(BaseModel):
 class ConversationResponse(BaseModel):
     conversation_id: str
     status: str              # in_progress | ready | done
-    message: Optional[str] = None
-    dsl: Optional[WorkflowDSL] = None
+    message: str | None = None
+    dsl: WorkflowDSL | None = None
     missing: list[str] = []
-    form: Optional[ActionFormSchema] = None
+    form: ActionFormSchema | None = None

@@ -27,11 +27,10 @@ import json
 import logging
 import os
 
-from litellm import acompletion
 import litellm
+from litellm import acompletion
 
-from .schemas import NLPResult, NLPIntent, NLPEntities
-from .registry import ACTIONS_REGISTRY
+from .schemas import NLPEntities, NLPIntent, NLPResult
 
 log = logging.getLogger("nlp.llm")
 

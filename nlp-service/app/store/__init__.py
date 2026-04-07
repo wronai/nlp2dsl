@@ -9,16 +9,14 @@ implementację na podstawie env REDIS_URL:
 
 from __future__ import annotations
 
-import os
 from abc import ABC, abstractmethod
-from typing import Optional
 
 
 class ConversationStore(ABC):
     """Abstrakcja persystencji stanu konwersacji."""
 
     @abstractmethod
-    async def get(self, conversation_id: str) -> Optional[dict]:
+    async def get(self, conversation_id: str) -> dict | None:
         ...
 
     @abstractmethod

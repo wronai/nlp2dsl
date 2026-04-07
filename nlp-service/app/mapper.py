@@ -12,14 +12,14 @@ from __future__ import annotations
 
 import logging
 
-from .schemas import NLPResult, NLPEntities, WorkflowDSL, DSLStep, DialogResponse
 from .registry import (
     ACTIONS_REGISTRY,
     COMPOSITE_INTENTS,
-    get_required_fields,
     get_defaults,
+    get_required_fields,
     get_trigger,
 )
+from .schemas import DialogResponse, DSLStep, NLPEntities, NLPResult, WorkflowDSL
 
 log = logging.getLogger("nlp.mapper")
 

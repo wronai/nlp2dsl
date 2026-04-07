@@ -5,8 +5,9 @@ Example usage of multi-language code generation via API.
 This demonstrates how to use the generate_code action through the nlp2dsl API.
 """
 
-import requests
 import json
+
+import requests
 
 # Base URLs
 NLP_SERVICE_URL = "http://localhost:8002"
@@ -15,7 +16,7 @@ BACKEND_URL = "http://localhost:8010"
 def test_direct_code_generation():
     """Test direct code generation via nlp-service API."""
     print("=== Direct Code Generation API ===\n")
-    
+
     # Test generating Python code
     payload = {
         "description": "Funkcja obliczająca NWD dwóch liczb (algorytm Euklidesa)",
@@ -23,7 +24,7 @@ def test_direct_code_generation():
         "context": "Dodaj sprawdzanie typów i dokumentację",
         "include_tests": True
     }
-    
+
     try:
         response = requests.post(f"{NLP_SERVICE_URL}/code/generate", json=payload)
         if response.status_code == 200:
@@ -39,9 +40,9 @@ def test_direct_code_generation():
             print(f"❌ Error: {response.status_code} - {response.text}")
     except requests.exceptions.ConnectionError:
         print("❌ Cannot connect to nlp-service. Make sure it's running on port 8002")
-    
+
     print("\n" + "="*50 + "\n")
-    
+
     # Test getting supported languages
     try:
         response = requests.get(f"{NLP_SERVICE_URL}/code/languages")
@@ -58,13 +59,13 @@ def test_direct_code_generation():
 def test_via_workflow():
     """Test code generation through the workflow API."""
     print("\n=== Code Generation via Workflow ===\n")
-    
+
     # One-shot pipeline
     payload = {
         "text": "Napisz funkcję w JavaScript do sortowania bąbelkowego",
         "execute": False  # Just generate DSL, don't execute
     }
-    
+
     try:
         response = requests.post(f"{BACKEND_URL}/workflow/from-text", json=payload)
         if response.status_code == 200:
@@ -72,7 +73,7 @@ def test_via_workflow():
             print("✅ DSL generated successfully")
             print(f"Intent: {result.get('intent', {}).get('intent')}")
             print(f"Confidence: {result.get('intent', {}).get('confidence')}")
-            
+
             if 'dsl' in result:
                 print("\nGenerated DSL:")
                 print(json.dumps(result['dsl'], indent=2, ensure_ascii=False))
@@ -84,23 +85,23 @@ def test_via_workflow():
 def test_conversation_flow():
     """Test code generation through conversation flow."""
     print("\n=== Code Generation via Conversation ===\n")
-    
+
     # Start conversation
     try:
         response = requests.post(
             f"{NLP_SERVICE_URL}/chat/start",
             data={"text": "Chcę napisać program w Javie"}
         )
-        
+
         if response.status_code == 200:
             result = response.json()
             conv_id = result.get('conversation_id')
             print(f"✅ Conversation started: {conv_id}")
             print(f"Message: {result.get('message')}")
-            
+
             if result.get('missing'):
                 print(f"Missing fields: {result['missing']}")
-                
+
                 # Continue conversation with missing details
                 response = requests.post(
                     f"{NLP_SERVICE_URL}/chat/message",
@@ -109,11 +110,11 @@ def test_conversation_flow():
                         "text": "Klasa do obsługi kalkulatora z podstawowymi operacjami"
                     }
                 )
-                
+
                 if response.status_code == 200:
                     result = response.json()
                     print(f"\nResponse: {result.get('message')}")
-                    
+
                     if result.get('form'):
                         print("Form data:")
                         print(json.dumps(result['form'], indent=2, ensure_ascii=False))
@@ -125,7 +126,7 @@ def test_conversation_flow():
 def test_worker_execution():
     """Test actual code generation through worker."""
     print("\n=== Code Generation via Worker ===\n")
-    
+
     # Direct worker call
     payload = {
         "step_id": "test-001",
@@ -136,14 +137,14 @@ def test_worker_execution():
             "include_tests": False
         }
     }
-    
+
     try:
         response = requests.post("http://localhost:8004/execute", json=payload)
         if response.status_code == 200:
             result = response.json()
             print("✅ Code generated via worker")
             print(f"Status: {result['status']}")
-            
+
             if 'result' in result:
                 gen_result = result['result']
                 if 'error' in gen_result:
@@ -159,13 +160,13 @@ def test_worker_execution():
 if __name__ == "__main__":
     print("Multi-Language Code Generation Examples")
     print("="*50)
-    
+
     # Run all tests
     test_direct_code_generation()
     test_via_workflow()
     test_conversation_flow()
     test_worker_execution()
-    
+
     print("\n" + "="*50)
     print("Examples complete!")
     print("\nTo test with actual LLM generation:")

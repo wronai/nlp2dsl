@@ -260,9 +260,130 @@
             border-radius: 8px;
             padding: 15px;
             margin-top: 10px;
-            font-family: monospace;
+            font-family: 'Fira Code', 'Cascadia Code', 'JetBrains Mono', monospace;
             font-size: 0.85rem;
             overflow-x: auto;
+            position: relative;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .workflow-preview .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #aaa;
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .workflow-preview .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        .workflow-preview .copy-btn.copied {
+            color: #4ade80;
+            border-color: #4ade80;
+        }
+
+        .workflow-preview .data-type-badge {
+            position: absolute;
+            top: 8px;
+            left: 12px;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #888;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        /* JSON syntax colors */
+        .json-key { color: #7dd3fc; }
+        .json-string { color: #86efac; }
+        .json-number { color: #fbbf24; }
+        .json-bool { color: #c084fc; }
+        .json-null { color: #f87171; font-style: italic; }
+        .json-bracket { color: #94a3b8; }
+        .json-colon { color: #64748b; }
+
+        /* YAML syntax colors */
+        .yaml-key { color: #7dd3fc; }
+        .yaml-value { color: #86efac; }
+        .yaml-comment { color: #64748b; font-style: italic; }
+        .yaml-dash { color: #f59e0b; }
+
+        /* Key-value and table */
+        .kv-key { color: #7dd3fc; font-weight: 600; }
+        .kv-sep { color: #64748b; }
+        .kv-value { color: #e2e8f0; }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 4px 0;
+            font-size: 0.83rem;
+        }
+
+        .data-table th {
+            text-align: left;
+            color: #7dd3fc;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 4px 10px 4px 0;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 3px 10px 3px 0;
+            color: #e2e8f0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Workflow step cards */
+        .wf-step {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin: 6px 0;
+        }
+
+        .wf-step-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .wf-step-num {
+            background: #00d9ff33;
+            color: #00d9ff;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .wf-step-action {
+            font-weight: 700;
+            color: #f0abfc;
+            font-size: 0.95rem;
+        }
+
+        .wf-step-config {
+            padding-left: 30px;
         }
         
         .form-fields {
@@ -922,6 +1043,261 @@
             }
         }
         
+        // ── DataFormatter: detect type & render with syntax highlighting ──
+
+        class DataFormatter {
+            /**
+             * Detect data type of an arbitrary value.
+             * Returns: 'workflow' | 'json' | 'yaml' | 'table' | 'keyvalue' | 'text'
+             */
+            static detectType(data) {
+                if (data === null || data === undefined) return 'text';
+
+                // Already-parsed object
+                if (typeof data === 'object') {
+                    if (DataFormatter._isWorkflowDSL(data)) return 'workflow';
+                    if (Array.isArray(data) && data.length && typeof data[0] === 'object') return 'table';
+                    return 'json';
+                }
+
+                const s = String(data).trim();
+
+                // Try JSON string
+                if ((s.startsWith('{') || s.startsWith('[')) && DataFormatter._tryParseJSON(s) !== null) return 'json';
+
+                // YAML-ish (has key: value lines and maybe dashes)
+                if (/^[\w_-]+\s*:/m.test(s) && (s.includes('\n') || s.includes('- '))) return 'yaml';
+
+                // Key-value (single or few "key: value" or "key = value" lines)
+                const lines = s.split('\n').filter(l => l.trim());
+                const kvCount = lines.filter(l => /^[\w_.\-]+\s*[:=]\s*.+/.test(l.trim())).length;
+                if (kvCount > 0 && kvCount >= lines.length * 0.6) return 'keyvalue';
+
+                return 'text';
+            }
+
+            static _isWorkflowDSL(obj) {
+                if (Array.isArray(obj)) return false;
+                return obj && (Array.isArray(obj.steps) || (obj.name && obj.trigger));
+            }
+
+            static _tryParseJSON(s) {
+                try { return JSON.parse(s); } catch { return null; }
+            }
+
+            /**
+             * Render data into a DOM element with syntax highlighting.
+             * Returns { element: HTMLElement, rawText: string, typeName: string }
+             */
+            static render(data) {
+                const type = DataFormatter.detectType(data);
+                let parsed = data;
+
+                if (typeof data === 'string') {
+                    const maybe = DataFormatter._tryParseJSON(data);
+                    if (maybe !== null) parsed = maybe;
+                }
+
+                switch (type) {
+                    case 'workflow': return DataFormatter._renderWorkflow(parsed);
+                    case 'json':    return DataFormatter._renderJSON(parsed);
+                    case 'yaml':    return DataFormatter._renderYAML(String(data));
+                    case 'table':   return DataFormatter._renderTable(parsed);
+                    case 'keyvalue':return DataFormatter._renderKeyValue(String(data));
+                    default:        return DataFormatter._renderText(String(data));
+                }
+            }
+
+            // ── Workflow DSL (rich step cards + JSON fallback) ──
+
+            static _renderWorkflow(dsl) {
+                const el = document.createElement('div');
+
+                // Workflow header
+                if (dsl.name || dsl.trigger) {
+                    const meta = document.createElement('div');
+                    meta.style.cssText = 'margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.1)';
+                    const parts = [];
+                    if (dsl.name) parts.push(`<span class="kv-key">name</span><span class="kv-sep">:</span> <span class="kv-value">${DataFormatter._esc(dsl.name)}</span>`);
+                    if (dsl.trigger && dsl.trigger !== 'manual') parts.push(`<span class="kv-key">trigger</span><span class="kv-sep">:</span> <span class="json-string">${DataFormatter._esc(dsl.trigger)}</span>`);
+                    meta.innerHTML = parts.join('  ·  ');
+                    el.appendChild(meta);
+                }
+
+                // Steps
+                if (Array.isArray(dsl.steps)) {
+                    dsl.steps.forEach((step, i) => {
+                        const card = document.createElement('div');
+                        card.className = 'wf-step';
+
+                        const hdr = document.createElement('div');
+                        hdr.className = 'wf-step-header';
+                        hdr.innerHTML = `<span class="wf-step-num">${i + 1}</span><span class="wf-step-action">${DataFormatter._esc(step.action)}</span>`;
+                        card.appendChild(hdr);
+
+                        if (step.config && Object.keys(step.config).length) {
+                            const cfg = document.createElement('div');
+                            cfg.className = 'wf-step-config';
+                            cfg.innerHTML = Object.entries(step.config)
+                                .map(([k, v]) => `<span class="kv-key">${DataFormatter._esc(k)}</span><span class="kv-sep">:</span> <span class="kv-value">${DataFormatter._esc(String(v))}</span>`)
+                                .join('\n');
+                            card.appendChild(cfg);
+                        }
+
+                        el.appendChild(card);
+                    });
+                }
+
+                return { element: el, rawText: JSON.stringify(dsl, null, 2), typeName: 'workflow' };
+            }
+
+            // ── JSON with syntax coloring ──
+
+            static _renderJSON(obj) {
+                const raw = JSON.stringify(obj, null, 2);
+                const html = DataFormatter._highlightJSON(raw);
+                const el = document.createElement('code');
+                el.innerHTML = html;
+                return { element: el, rawText: raw, typeName: 'json' };
+            }
+
+            static _highlightJSON(str) {
+                return str.replace(
+                    /("(?:\\.|[^"\\])*")\s*(:)?|(\b(?:true|false)\b)|(\bnull\b)|(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)|([{}\[\]])/g,
+                    (match, strVal, colon, bool, nul, num, bracket) => {
+                        if (strVal) {
+                            if (colon) return `<span class="json-key">${DataFormatter._esc(strVal)}</span><span class="json-colon">:</span>`;
+                            return `<span class="json-string">${DataFormatter._esc(strVal)}</span>`;
+                        }
+                        if (bool) return `<span class="json-bool">${bool}</span>`;
+                        if (nul) return `<span class="json-null">null</span>`;
+                        if (num) return `<span class="json-number">${num}</span>`;
+                        if (bracket) return `<span class="json-bracket">${bracket}</span>`;
+                        return match;
+                    }
+                );
+            }
+
+            // ── YAML-ish ──
+
+            static _renderYAML(text) {
+                const html = text.split('\n').map(line => {
+                    const trimmed = line.trim();
+                    if (trimmed.startsWith('#')) return `<span class="yaml-comment">${DataFormatter._esc(line)}</span>`;
+                    if (trimmed.startsWith('- ')) {
+                        const rest = line.replace(/^(\s*)(- )/, '$1<span class="yaml-dash">- </span>');
+                        return DataFormatter._highlightYAMLLine(rest);
+                    }
+                    return DataFormatter._highlightYAMLLine(line);
+                }).join('\n');
+                const el = document.createElement('code');
+                el.innerHTML = html;
+                return { element: el, rawText: text, typeName: 'yaml' };
+            }
+
+            static _highlightYAMLLine(line) {
+                const m = line.match(/^(\s*)([\w_.\-]+)(\s*:\s*)(.*)/);
+                if (!m) return DataFormatter._esc(line);
+                const [, indent, key, sep, val] = m;
+                return `${indent}<span class="yaml-key">${DataFormatter._esc(key)}</span><span class="kv-sep">${DataFormatter._esc(sep)}</span><span class="yaml-value">${DataFormatter._esc(val)}</span>`;
+            }
+
+            // ── Table (array of objects) ──
+
+            static _renderTable(arr) {
+                const keys = [...new Set(arr.flatMap(r => Object.keys(r)))];
+                const table = document.createElement('table');
+                table.className = 'data-table';
+
+                const thead = document.createElement('thead');
+                const headRow = document.createElement('tr');
+                keys.forEach(k => { const th = document.createElement('th'); th.textContent = k; headRow.appendChild(th); });
+                thead.appendChild(headRow);
+                table.appendChild(thead);
+
+                const tbody = document.createElement('tbody');
+                arr.forEach(row => {
+                    const tr = document.createElement('tr');
+                    keys.forEach(k => {
+                        const td = document.createElement('td');
+                        const v = row[k];
+                        td.textContent = v === null || v === undefined ? '—' : typeof v === 'object' ? JSON.stringify(v) : String(v);
+                        tr.appendChild(td);
+                    });
+                    tbody.appendChild(tr);
+                });
+                table.appendChild(tbody);
+
+                return { element: table, rawText: JSON.stringify(arr, null, 2), typeName: 'table' };
+            }
+
+            // ── Key-value pairs ──
+
+            static _renderKeyValue(text) {
+                const html = text.split('\n').map(line => {
+                    const m = line.trim().match(/^([\w_.\-]+)\s*([:=])\s*(.*)/);
+                    if (!m) return DataFormatter._esc(line);
+                    return `<span class="kv-key">${DataFormatter._esc(m[1])}</span><span class="kv-sep"> ${DataFormatter._esc(m[2])} </span><span class="kv-value">${DataFormatter._esc(m[3])}</span>`;
+                }).join('\n');
+                const el = document.createElement('code');
+                el.innerHTML = html;
+                return { element: el, rawText: text, typeName: 'key-value' };
+            }
+
+            // ── Plain text ──
+
+            static _renderText(text) {
+                const el = document.createElement('span');
+                el.textContent = text;
+                return { element: el, rawText: text, typeName: 'text' };
+            }
+
+            static _esc(s) {
+                const d = document.createElement('span');
+                d.textContent = s;
+                return d.innerHTML;
+            }
+        }
+
+        /**
+         * Build a .workflow-preview container with badge, copy button, and formatted content.
+         */
+        function buildPreviewBlock(data) {
+            const { element, rawText, typeName } = DataFormatter.render(data);
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'workflow-preview';
+
+            // Type badge
+            if (typeName !== 'text') {
+                const badge = document.createElement('span');
+                badge.className = 'data-type-badge';
+                badge.textContent = typeName;
+                wrapper.appendChild(badge);
+            }
+
+            // Copy button
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'copy-btn';
+            copyBtn.textContent = 'Copy';
+            copyBtn.addEventListener('click', () => {
+                navigator.clipboard.writeText(rawText).then(() => {
+                    copyBtn.textContent = '✓ Copied';
+                    copyBtn.classList.add('copied');
+                    setTimeout(() => { copyBtn.textContent = 'Copy'; copyBtn.classList.remove('copied'); }, 1500);
+                });
+            });
+            wrapper.appendChild(copyBtn);
+
+            // Content
+            const content = document.createElement('div');
+            content.style.cssText = typeName !== 'text' ? 'padding-top: 24px' : '';
+            content.appendChild(element);
+            wrapper.appendChild(content);
+
+            return wrapper;
+        }
+
         // Add message to chat
         function addMessage(role, content) {
             const container = document.getElementById('messages');
@@ -932,18 +1308,26 @@
             header.className = 'message-header';
             header.textContent = role === 'user' ? '👤 Ty' : role === 'assistant' ? '🤖 System' : 'ℹ️ Info';
             
-            const body = document.createElement('div');
-            body.className = 'message-content';
-            body.textContent = content;
-            
             msg.appendChild(header);
-            msg.appendChild(body);
+
+            // Auto-detect structured data in assistant/system messages
+            const detectedType = (role !== 'user') ? DataFormatter.detectType(content) : 'text';
+
+            if (detectedType !== 'text') {
+                msg.appendChild(buildPreviewBlock(content));
+            } else {
+                const body = document.createElement('div');
+                body.className = 'message-content';
+                body.textContent = content;
+                msg.appendChild(body);
+            }
+
             container.appendChild(msg);
             
             // Scroll to bottom
             container.scrollTop = container.scrollHeight;
         }
-        
+
         // Show workflow preview
         function showWorkflowPreview(dsl) {
             const container = document.getElementById('messages');
@@ -954,12 +1338,8 @@
             header.className = 'message-header';
             header.textContent = '📋 Workflow DSL';
             
-            const body = document.createElement('div');
-            body.className = 'workflow-preview';
-            body.textContent = JSON.stringify(dsl, null, 2);
-            
             preview.appendChild(header);
-            preview.appendChild(body);
+            preview.appendChild(buildPreviewBlock(dsl));
             container.appendChild(preview);
             container.scrollTop = container.scrollHeight;
         }

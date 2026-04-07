@@ -16,31 +16,42 @@ Endpoints:
 from __future__ import annotations
 
 import logging
-import os
 
-from fastapi import FastAPI, HTTPException, UploadFile, File, Form, WebSocket, WebSocketDisconnect
+from fastapi import (
+    FastAPI,
+    File,
+    Form,
+    HTTPException,
+    UploadFile,
+    WebSocket,
+    WebSocketDisconnect,
+)
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 
-from .schemas import NLPRequest, NLPResult, DialogResponse, ConversationResponse, ActionFormSchema
-from .parser_rules import parse_rules
-from .parser_llm import parse_llm, _detect_provider, LLM_MODEL
+from .audio_parser import StreamingSTT, is_stt_available, stt_audio
+from .config import settings as _svc_settings
+from .logging_setup import RequestIDMiddleware, setup_logging
 from .mapper import map_to_dsl
-from .registry import ACTIONS_REGISTRY
 from .orchestrator import (
-    start_conversation,
     continue_conversation,
-    get_conversation,
     get_action_form,
-    FIELD_TYPES,
+    get_conversation,
+    start_conversation,
+)
+from .parser_llm import LLM_MODEL, _detect_provider, parse_llm
+from .parser_rules import parse_rules
+from .registry import ACTIONS_REGISTRY
+from .schemas import (
+    ActionFormSchema,
+    ConversationResponse,
+    DialogResponse,
+    NLPRequest,
+    NLPResult,
 )
 from .store.factory import get_conversation_store
-from .audio_parser import stt_audio, is_stt_available, StreamingSTT
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s | %(name)-18s | %(levelname)-7s | %(message)s",
-)
+setup_logging(service="nlp-service")
 log = logging.getLogger("nlp-service")
 
 app = FastAPI(
@@ -52,6 +63,7 @@ app = FastAPI(
     version="0.1.0",
 )
 
+app.add_middleware(RequestIDMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -59,7 +71,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-LLM_FALLBACK_THRESHOLD = float(os.getenv("LLM_FALLBACK_THRESHOLD", "0.5"))
+LLM_FALLBACK_THRESHOLD = _svc_settings.llm_fallback_threshold
 
 
 # ── Endpoints ─────────────────────────────────────────────────
@@ -71,8 +83,7 @@ async def parse_text(req: NLPRequest):
     Etap 1: tekst → intent + entities.
     Nie generuje DSL — tylko rozumie język naturalny.
     """
-    nlp_result = await _run_parser(req)
-    return nlp_result
+    return await _run_parser(req)
 
 
 @app.post("/nlp/to-dsl", response_model=DialogResponse)
@@ -93,8 +104,7 @@ async def text_to_dsl(req: NLPRequest):
             },
         )
 
-    dialog = map_to_dsl(nlp_result)
-    return dialog
+    return map_to_dsl(nlp_result)
 
 
 @app.get("/nlp/actions")
@@ -261,9 +271,9 @@ async def action_schema(action: str):
 # ── Settings API ─────────────────────────────────────────────
 
 
-from .settings import settings_manager
-from .system_executor import execute_system_action, SYSTEM_EXECUTORS
 from .code_generator import code_generator
+from .settings import settings_manager
+from .system_executor import SYSTEM_EXECUTORS, execute_system_action
 
 
 @app.get("/settings")
@@ -288,8 +298,7 @@ async def get_settings_section(section: str):
 async def update_settings_section(section: str, body: dict):
     """Zaktualizuj ustawienia sekcji."""
     try:
-        result = settings_manager.update_section(section, body)
-        return result
+        return settings_manager.update_section(section, body)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -302,8 +311,7 @@ async def set_setting(body: dict):
     if not path:
         raise HTTPException(status_code=400, detail="Field 'path' is required")
     try:
-        result = settings_manager.set(path, value)
-        return result
+        return settings_manager.set(path, value)
     except (ValueError, AttributeError) as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -333,8 +341,7 @@ async def system_execute(body: dict):
             detail=f"Unknown system action: '{action}'. Available: {list(SYSTEM_EXECUTORS.keys())}",
         )
 
-    result = await execute_system_action(action, config)
-    return result
+    return await execute_system_action(action, config)
 
 
 # ── Code Generation API ───────────────────────────────────────
@@ -344,7 +351,7 @@ async def system_execute(body: dict):
 async def generate_code(body: dict):
     """
     Generuje kod w wybranym języku programowania.
-    
+
     Body: {
         "description": "Opis kodu do wygenerowania",
         "language": "python|javascript|java|cpp|go|rust|php|ruby",
@@ -356,21 +363,20 @@ async def generate_code(body: dict):
     language = body.get("language", "python")
     context = body.get("context")
     include_tests = body.get("include_tests", False)
-    
+
     if not description:
         raise HTTPException(
             status_code=400,
             detail="Field 'description' is required"
         )
-    
-    result = await code_generator.generate_code(
+
+    return await code_generator.generate_code(
         description=description,
         language=language,
         context=context,
         include_tests=include_tests
     )
-    
-    return result
+
 
 
 @app.get("/code/languages")
@@ -378,7 +384,7 @@ async def get_supported_languages():
     """Zwraca listę obsługiwanych języków programowania."""
     return {
         "languages": code_generator.get_supported_languages(),
-        "info": {lang: code_generator.get_language_info(lang) 
+        "info": {lang: code_generator.get_language_info(lang)
                 for lang in code_generator.get_supported_languages()}
     }
 
@@ -427,14 +433,14 @@ async def _run_parser(req: NLPRequest) -> NLPResult:
 async def websocket_chat(websocket: WebSocket, conversation_id: str):
     """
     WebSocket endpoint dla voice chat w czasie rzeczywistym.
-    
+
     Flow:
     1. Klient łączy się przez WebSocket
     2. Wysyła audio chunks (binary)
     3. Server streamuje do Deepgram (STT)
     4. Transkrypcja → NLP → DSL
     5. Opcjonalnie: TTS response → audio blob
-    
+
     Example:
         const ws = new WebSocket('ws://localhost:8002/ws/chat/demo');
         navigator.mediaDevices.getUserMedia({audio: true}).then(stream => {
@@ -445,34 +451,34 @@ async def websocket_chat(websocket: WebSocket, conversation_id: str):
     """
     await websocket.accept()
     log.info("WebSocket connected: %s", conversation_id)
-    
+
     streaming_stt = None
     transcript_buffer = []
-    
+
     try:
         # Initialize streaming STT if available
         if is_stt_available():
             streaming_stt = StreamingSTT(language="pl")
             await streaming_stt.start()
             log.info("Streaming STT started for conversation: %s", conversation_id)
-        
+
         while True:
             # Receive audio data
             data = await websocket.receive_bytes()
-            
+
             if streaming_stt:
                 # Stream to Deepgram
                 await streaming_stt.send_audio(data)
-                
+
                 # Get transcript
                 transcript = await streaming_stt.get_transcript()
                 if transcript and transcript not in transcript_buffer:
                     transcript_buffer.append(transcript)
                     log.info("Transcript: %s", transcript)
-                    
+
                     # Process with NLP
                     response = await continue_conversation(conversation_id, transcript)
-                    
+
                     # Send response
                     await websocket.send_json({
                         "type": "transcript",
@@ -489,7 +495,7 @@ async def websocket_chat(websocket: WebSocket, conversation_id: str):
                         "text": transcript,
                         "response": response.model_dump(),
                     })
-    
+
     except WebSocketDisconnect:
         log.info("WebSocket disconnected: %s", conversation_id)
     except Exception as e:
@@ -506,11 +512,10 @@ async def chat_ui():
     import pathlib
     static_dir = pathlib.Path(__file__).parent.parent / "static"
     chat_html = static_dir / "chat.html"
-    
+
     if chat_html.exists():
         return HTMLResponse(content=chat_html.read_text(), status_code=200)
-    else:
-        return HTMLResponse(
-            content="<html><body><h1>Chat UI not found</h1><p>Create static/chat.html</p></body></html>",
-            status_code=404,
-        )
+    return HTMLResponse(
+        content="<html><body><h1>Chat UI not found</h1><p>Create static/chat.html</p></body></html>",
+        status_code=404,
+    )

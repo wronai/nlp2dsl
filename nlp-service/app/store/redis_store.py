@@ -11,7 +11,6 @@ from __future__ import annotations
 import json
 import logging
 import time
-from typing import Optional
 
 import redis.asyncio as aioredis
 
@@ -35,7 +34,7 @@ class RedisConversationStore(ConversationStore):
     def _key(self, conversation_id: str) -> str:
         return f"{self._prefix}{conversation_id}"
 
-    async def get(self, conversation_id: str) -> Optional[dict]:
+    async def get(self, conversation_id: str) -> dict | None:
         raw = await self._redis.get(self._key(conversation_id))
         if raw is None:
             return None

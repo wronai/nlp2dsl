@@ -12,7 +12,6 @@ Użycie:
 from __future__ import annotations
 
 import logging
-import os
 
 from . import ConversationStore
 from .memory import MemoryConversationStore
@@ -28,8 +27,9 @@ def get_conversation_store() -> ConversationStore:
     if _instance is not None:
         return _instance
 
-    redis_url = os.getenv("REDIS_URL")
-    conv_ttl = int(os.getenv("CONVERSATION_TTL", "3600"))
+    from app.config import settings
+    redis_url = settings.redis_url
+    conv_ttl = settings.conversation_ttl
 
     if redis_url:
         try:

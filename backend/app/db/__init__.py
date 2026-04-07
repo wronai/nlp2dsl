@@ -9,9 +9,7 @@ implementację na podstawie env POSTGRES_URL:
 
 from __future__ import annotations
 
-import os
 from abc import ABC, abstractmethod
-from typing import Optional
 
 
 class WorkflowRepo(ABC):
@@ -26,7 +24,7 @@ class WorkflowRepo(ABC):
         ...
 
     @abstractmethod
-    async def get_run(self, workflow_id: str) -> Optional[dict]:
+    async def get_run(self, workflow_id: str) -> dict | None:
         ...
 
     @abstractmethod
@@ -40,10 +38,10 @@ class WorkflowRepo(ABC):
 
 def create_workflow_repo() -> WorkflowRepo:
     """Factory: zwraca Postgres repo jeśli URL jest ustawiony, inaczej memory."""
-    pg_url = os.getenv("POSTGRES_URL")
+    from app.config import settings
+    pg_url = settings.postgres_url
     if pg_url:
         from .postgres import PostgresWorkflowRepo
         return PostgresWorkflowRepo(pg_url)
-    else:
-        from .memory import MemoryWorkflowRepo
-        return MemoryWorkflowRepo()
+    from .memory import MemoryWorkflowRepo
+    return MemoryWorkflowRepo()

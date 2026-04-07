@@ -5,7 +5,6 @@ MemoryWorkflowRepo — in-memory fallback (zachowanie dotychczasowe).
 from __future__ import annotations
 
 from collections import OrderedDict
-from typing import Optional
 
 from . import WorkflowRepo
 
@@ -26,7 +25,7 @@ class MemoryWorkflowRepo(WorkflowRepo):
         if workflow_id in self._data:
             self._data[workflow_id]["status"] = status
 
-    async def get_run(self, workflow_id: str) -> Optional[dict]:
+    async def get_run(self, workflow_id: str) -> dict | None:
         return self._data.get(workflow_id)
 
     async def list_runs(self, limit: int = 50, offset: int = 0) -> list[dict]:

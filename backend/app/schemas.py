@@ -9,11 +9,10 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import Enum
-from typing import Any, Optional
+from typing import Any
 from uuid import uuid4
 
 from pydantic import BaseModel, Field
-
 
 # ── Workflow DSL ──────────────────────────────────────────────
 
@@ -35,7 +34,7 @@ class RunWorkflowRequest(BaseModel):
     """Żądanie uruchomienia workflow — DSL biznesowy."""
     name: str
     steps: list[Step]
-    trigger: Optional[str] = None   # np. "manual", "weekly", "on_event"
+    trigger: str | None = None   # np. "manual", "weekly", "on_event"
 
 
 # ── Responses ─────────────────────────────────────────────────
@@ -45,9 +44,9 @@ class StepResult(BaseModel):
     action: str
     status: StepStatus
     result: Any = None
-    error: Optional[str] = None
-    started_at: Optional[datetime] = None
-    finished_at: Optional[datetime] = None
+    error: str | None = None
+    started_at: datetime | None = None
+    finished_at: datetime | None = None
 
 
 class WorkflowResult(BaseModel):
