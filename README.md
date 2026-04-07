@@ -226,9 +226,25 @@ npm install electron
 ```
 
 ## Tauri desktop wrapper
+ 
+ Jeśli chcesz desktopową powłokę zamiast samej przeglądarki, użyj wrappera w `tauri-wrapper/`.
+ Ten projekt otwiera istniejący backendowy ekran `/chat`, więc nie duplikuje logiki STT/TTS.
+ W trybie dev wrapper uruchamia lokalny launcher na `http://127.0.0.1:1420`, a potem przechodzi do backendowego czatu, gdy `/health` odpowie OK.
 
-Jeśli chcesz desktopową powłokę zamiast samej przeglądarki, użyj wrappera w `tauri-wrapper/`.
-Ten projekt otwiera istniejący backendowy ekran `/chat`, więc nie duplikuje logiki STT/TTS.
+Jeśli na Twoim Linuxie Tauri blokują brakujące biblioteki WebKitGTK/GTK, użyj browserowego fallbacku:
+`cd tauri-wrapper && npm run desktop` albo `bash ./desktop.sh`.
+Otwiera on ten sam `/chat` w Chrome/Chromium w trybie `--app`.
+
+### Linux prerequisites
+Na Linuxie Tauri v1 wymaga systemowych bibliotek WebKitGTK/GTK. Jeśli `npm run dev` kończy się błędem z brakującymi `libsoup-2.4` albo `javascriptcoregtk-4.0`, doinstaluj:
+```bash
+sudo apt install build-essential curl wget file libssl-dev libgtk-3-dev \
+  libwebkit2gtk-4.0-dev libsoup2.4-dev libjavascriptcoregtk-4.0-dev \
+  libayatana-appindicator3-dev librsvg2-dev
+```
+Jeśli używasz innej dystrybucji, zainstaluj odpowiednie odpowiedniki pakietów deweloperskich WebKitGTK/GTK.
+
+### Uruchomienie
 
 ```bash
 cd tauri-wrapper
@@ -236,11 +252,27 @@ npm install
 npm run dev
 ```
 
-Build instalatora / paczki desktopowej:
+Jeśli nie chcesz instalować bibliotek systemowych albo Tauri nie startuje, użyj:
 
 ```bash
+cd tauri-wrapper
+npm run desktop
+```
+
+Launcher sprawdza backend pod `http://127.0.0.1:8002` i dopiero potem przełącza do `http://127.0.0.1:8002/chat`.
+
+### Build
+
+```bash
+cd tauri-wrapper
 npm run build
 ```
+
+### Desktop fallback launcher
+
+Jeśli chcesz ominąć Tauri na danym systemie, użyj `tauri-wrapper/desktop.sh`.
+Skrypt czeka na backend, a potem otwiera voice chat w Chrome/Chromium w trybie `--app`.
+To dobre rozwiązanie, gdy środowisko nie ma wymaganych bibliotek WebKitGTK dla Tauri.
 
 Konfiguracja LLM:
 

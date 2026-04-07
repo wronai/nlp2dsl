@@ -1,24 +1,20 @@
-# vallm batch | 99f | 36✓ 3⚠ 6✗ | 2026-04-06
+# vallm batch | 107f | 36✓ 2⚠ 13✗ | 2026-04-06
 
 SUMMARY:
-  scanned: 99  passed: 36 (36.4%)  warnings: 3  errors: 6  unsupported: 57
+  scanned: 107  passed: 36 (33.6%)  warnings: 2  errors: 13  unsupported: 58
 
-WARNINGS[3]{path,score}:
+WARNINGS[2]{path,score}:
   nlp-service/app/orchestrator.py,0.96
     issues[3]{rule,severity,message,line}:
       complexity.cyclomatic,warning,_process_message has cyclomatic complexity 17 (max: 15),149
       complexity.cyclomatic,warning,_format_system_result has cyclomatic complexity 16 (max: 15),270
       complexity.lizard_cc,warning,_process_message: CC=17 exceeds limit 15,149
-  examples/05-conversation-flow/main.py,0.97
-    issues[2]{rule,severity,message,line}:
-      complexity.cyclomatic,warning,_handle_response has cyclomatic complexity 16 (max: 15),56
-      complexity.lizard_cc,warning,_handle_response: CC=16 exceeds limit 15,56
   nlp-service/app/parser_rules.py,0.97
     issues[2]{rule,severity,message,line}:
       complexity.cyclomatic,warning,_extract_entities has cyclomatic complexity 36 (max: 15),165
       complexity.lizard_cc,warning,_extract_entities: CC=36 exceeds limit 15,165
 
-ERRORS[6]{path,score}:
+ERRORS[13]{path,score}:
   backend/app/main.py,0.68
     issues[3]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'fastapi' not found,10
@@ -35,18 +31,41 @@ ERRORS[6]{path,score}:
       python.import.resolvable,error,Module 'fastapi' not found,21
       python.import.resolvable,error,Module 'fastapi.middleware.cors' not found,22
       python.import.resolvable,error,Module 'fastapi.responses' not found,23
+  nlp-service/app/parser_llm.py,0.86
+    issues[2]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'litellm' not found,30
+      python.import.resolvable,error,Module 'litellm' not found,31
+  backend/app/workflow.py,0.88
+    issues[2]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'fastapi' not found,14
+      python.import.resolvable,error,Module 'httpx' not found,15
+  examples/01-invoice/main.py,0.89
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'requests' not found,7
+  examples/02-email/main.py,0.89
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'requests' not found,7
+  examples/03-report-and-notify/main.py,0.89
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'requests' not found,7
   worker/worker.py,0.89
     issues[1]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'fastapi' not found,15
+  examples/04-scheduled-report/main.py,0.91
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'requests' not found,7
+  examples/05-conversation-flow/main.py,0.91
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'requests' not found,7
+  nlp-service/app/audio_parser.py,0.91
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'httpx' not found,21
   nlp-service/app/store/redis_store.py,0.93
     issues[1]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'redis.asyncio' not found,16
-  backend/app/workflow.py,0.94
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'fastapi' not found,14
 
 UNSUPPORTED[6]{bucket,count}:
-  *.md,23
+  *.md,24
   Dockerfile*,8
   *.txt,9
   *.yml,2

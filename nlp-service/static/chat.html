@@ -48,6 +48,66 @@
             font-size: 0.9rem;
             margin-top: 5px;
         }
+
+        .device-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .device-card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 14px;
+        }
+
+        .device-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .device-card-title {
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .device-badge {
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #cbd5e1;
+            font-size: 0.75rem;
+            white-space: nowrap;
+        }
+
+        .device-select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #eee;
+            font-size: 0.95rem;
+        }
+
+        .device-summary {
+            margin-top: 8px;
+            color: #a5b4fc;
+            font-size: 0.88rem;
+            line-height: 1.4;
+        }
+
+        .device-hint {
+            margin-top: 6px;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            line-height: 1.4;
+        }
         
         .chat-container {
             flex: 1;
@@ -231,6 +291,23 @@
         audio {
             display: none;
         }
+
+        .tts-toggle {
+            padding: 10px 16px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: #eee;
+            cursor: pointer;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .tts-toggle.active {
+            background: rgba(74, 222, 128, 0.2);
+            border-color: #4ade80;
+            color: #4ade80;
+        }
     </style>
 </head>
 <body onload="initVoice()">
@@ -241,6 +318,28 @@
         </header>
         
         <div class="status" id="status">Łączenie z serwerem...</div>
+
+        <div class="device-panel" id="devicePanel">
+            <div class="device-card">
+                <div class="device-card-header">
+                    <div class="device-card-title">🎙️ Mikrofon</div>
+                    <div class="device-badge" id="micBadge">Wykrywanie…</div>
+                </div>
+                <select class="device-select" id="micSelect" aria-label="Wybierz mikrofon"></select>
+                <div class="device-summary" id="micSummary">Ładowanie listy mikrofonów…</div>
+                <div class="device-hint">Aktywny mikrofon jest używany do nagrywania Voice Chat.</div>
+            </div>
+
+            <div class="device-card">
+                <div class="device-card-header">
+                    <div class="device-card-title">🔊 Głośnik</div>
+                    <div class="device-badge" id="speakerBadge">Wykrywanie…</div>
+                </div>
+                <select class="device-select" id="speakerSelect" aria-label="Wybierz głośnik"></select>
+                <div class="device-summary" id="speakerSummary">Ładowanie listy głośników…</div>
+                <div class="device-hint" id="speakerHint">Aktywny głośnik odtwarza odpowiedzi TTS.</div>
+            </div>
+        </div>
         
         <div class="chat-container" id="messages">
             <div class="message system">
@@ -258,6 +357,7 @@
                 </svg>
                 <span id="voiceBtnText">Start Voice</span>
             </button>
+            <button class="tts-toggle active" id="ttsBtn" onclick="toggleTTS()" title="Włącz/wyłącz głos asystenta">🔊 TTS</button>
         </div>
         
         <div class="text-input-container">
@@ -274,18 +374,423 @@
         let audioStream = null;
         let isRecording = false;
         let conversationId = 'voice-' + Math.random().toString(36).substr(2, 9);
+        let ttsEnabled = true;
+        let ttsVoice = null;
+        let autoStartVoicePending = true;
+        const AUDIO_STORAGE_KEYS = {
+            mic: 'nlp2dsl.activeMicDeviceId',
+            speaker: 'nlp2dsl.activeSpeakerDeviceId',
+        };
+        const speakerSelectionSupported =
+            typeof HTMLMediaElement !== 'undefined' &&
+            typeof HTMLMediaElement.prototype.setSinkId === 'function';
+        let micDevices = [];
+        let speakerDevices = [];
+        let audioDeviceListenersBound = false;
+        let activeMicDeviceId = safeGetStoredDeviceId(AUDIO_STORAGE_KEYS.mic) || 'default';
+        let activeSpeakerDeviceId = safeGetStoredDeviceId(AUDIO_STORAGE_KEYS.speaker) || 'default';
+
+        function safeGetStoredDeviceId(key) {
+            try {
+                return localStorage.getItem(key) || '';
+            } catch (error) {
+                return '';
+            }
+        }
+
+        function safeStoreDeviceId(key, value) {
+            try {
+                if (value) {
+                    localStorage.setItem(key, value);
+                } else {
+                    localStorage.removeItem(key);
+                }
+            } catch (error) {
+                // Ignore storage failures in private or restricted sessions.
+            }
+        }
+
+        function getDeviceLabel(device, fallbackLabel, index) {
+            const label = (device?.label || '').trim();
+            return label || `${fallbackLabel} ${index + 1}`;
+        }
+
+        function getCurrentMicDeviceId() {
+            const track = audioStream?.getAudioTracks?.()[0];
+            const settings = track?.getSettings?.();
+            return settings?.deviceId || '';
+        }
+
+        function hasLiveAudioStream() {
+            return Boolean(audioStream && audioStream.getAudioTracks().some((track) => track.readyState === 'live'));
+        }
+
+        function stopAudioStream(stream) {
+            if (!stream) {
+                return;
+            }
+
+            stream.getTracks().forEach((track) => track.stop());
+        }
+
+        function populateDeviceSelect(select, devices, fallbackLabel, selectedId) {
+            const realDevices = devices.filter((device) => device.deviceId !== 'default');
+            select.innerHTML = '';
+
+            const defaultOption = document.createElement('option');
+            defaultOption.value = 'default';
+            defaultOption.textContent = `Domyślny ${fallbackLabel.toLowerCase()}`;
+            select.appendChild(defaultOption);
+
+            realDevices.forEach((device, index) => {
+                const option = document.createElement('option');
+                option.value = device.deviceId;
+                option.textContent = getDeviceLabel(device, fallbackLabel, index);
+                select.appendChild(option);
+            });
+
+            const availableValues = new Set(['default', ...realDevices.map((device) => device.deviceId)]);
+            select.value = availableValues.has(selectedId) ? selectedId : 'default';
+        }
+
+        function updateDeviceSummary(summaryId, badgeId, fallbackLabel, devices, selectedId, unsupported = false) {
+            const summary = document.getElementById(summaryId);
+            const badge = document.getElementById(badgeId);
+            const device = devices.find((item) => item.deviceId === selectedId) || null;
+            const activeLabel = device
+                ? getDeviceLabel(device, fallbackLabel, devices.indexOf(device))
+                : (selectedId === 'default' ? `Domyślny ${fallbackLabel.toLowerCase()}` : `${fallbackLabel} niedostępny`);
+            const countLabel = devices.length === 1 ? '1 urządzenie' : `${devices.length} urządzeń`;
+
+            summary.textContent = unsupported
+                ? `Aktywny: ${activeLabel} · Wykrywanie urządzeń audio nie jest wspierane w tej przeglądarce.`
+                : `Aktywny: ${activeLabel} · Wykryto: ${countLabel}`;
+            badge.textContent = unsupported
+                ? 'Brak wsparcia'
+                : selectedId === 'default'
+                    ? 'Domyślny'
+                    : 'Aktywny';
+        }
+
+        async function openMicrophoneStream(deviceId) {
+            if (!navigator.mediaDevices?.getUserMedia) {
+                throw new Error('MediaDevices API not available');
+            }
+
+            const constraints = deviceId && deviceId !== 'default'
+                ? { audio: { deviceId: { exact: deviceId } } }
+                : { audio: true };
+
+            return navigator.mediaDevices.getUserMedia(constraints);
+        }
+
+        async function initializeMicrophoneStream(preferredDeviceId = '') {
+            const nextPreferredDeviceId = preferredDeviceId || activeMicDeviceId || 'default';
+            const previousStream = audioStream;
+            let stream;
+
+            try {
+                stream = await openMicrophoneStream(nextPreferredDeviceId);
+            } catch (error) {
+                if (nextPreferredDeviceId && nextPreferredDeviceId !== 'default') {
+                    console.warn('Preferred microphone unavailable, falling back to default:', error);
+                    stream = await openMicrophoneStream('default');
+                } else {
+                    throw error;
+                }
+            }
+
+            stopAudioStream(previousStream);
+            audioStream = stream;
+
+            const currentDeviceId = getCurrentMicDeviceId();
+            activeMicDeviceId = currentDeviceId || nextPreferredDeviceId || 'default';
+            safeStoreDeviceId(AUDIO_STORAGE_KEYS.mic, activeMicDeviceId);
+
+            return stream;
+        }
+
+        async function refreshAudioDevicePanel() {
+            const micSelect = document.getElementById('micSelect');
+            const speakerSelect = document.getElementById('speakerSelect');
+            const speakerHint = document.getElementById('speakerHint');
+
+            if (!navigator.mediaDevices?.enumerateDevices) {
+                micSelect.disabled = true;
+                speakerSelect.disabled = true;
+                populateDeviceSelect(micSelect, [], 'mikrofon', 'default');
+                populateDeviceSelect(speakerSelect, [], 'głośnik', 'default');
+                updateDeviceSummary('micSummary', 'micBadge', 'Mikrofon', [], 'default', true);
+                updateDeviceSummary('speakerSummary', 'speakerBadge', 'Głośnik', [], 'default', true);
+                speakerHint.textContent = 'Twoja przeglądarka nie obsługuje wykrywania urządzeń audio.';
+                return;
+            }
+
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            micDevices = devices.filter((device) => device.kind === 'audioinput');
+            speakerDevices = devices.filter((device) => device.kind === 'audiooutput');
+
+            const streamMicDeviceId = getCurrentMicDeviceId();
+            if (streamMicDeviceId && micDevices.some((device) => device.deviceId === streamMicDeviceId)) {
+                activeMicDeviceId = streamMicDeviceId;
+            } else if (!micDevices.some((device) => device.deviceId === activeMicDeviceId)) {
+                activeMicDeviceId = micDevices.some((device) => device.deviceId === 'default')
+                    ? 'default'
+                    : micDevices[0]?.deviceId || 'default';
+            }
+
+            if (speakerSelectionSupported) {
+                if (!speakerDevices.some((device) => device.deviceId === activeSpeakerDeviceId)) {
+                    activeSpeakerDeviceId = speakerDevices.some((device) => device.deviceId === 'default')
+                        ? 'default'
+                        : speakerDevices[0]?.deviceId || 'default';
+                }
+            } else {
+                activeSpeakerDeviceId = 'default';
+            }
+
+            populateDeviceSelect(micSelect, micDevices, 'mikrofon', activeMicDeviceId);
+            populateDeviceSelect(speakerSelect, speakerDevices, 'głośnik', activeSpeakerDeviceId);
+
+            micSelect.disabled = micDevices.length === 0;
+            speakerSelect.disabled = !speakerSelectionSupported || speakerDevices.length === 0;
+
+            updateDeviceSummary('micSummary', 'micBadge', 'Mikrofon', micDevices, activeMicDeviceId, false);
+            updateDeviceSummary('speakerSummary', 'speakerBadge', 'Głośnik', speakerDevices, activeSpeakerDeviceId, !speakerSelectionSupported);
+
+            speakerHint.textContent = speakerSelectionSupported
+                ? 'Aktywny głośnik odtwarza odpowiedzi TTS. Możesz go zmienić z listy.'
+                : 'Twoja przeglądarka nie obsługuje wyboru głośnika; widoczne jest domyślne wyjście audio.';
+
+            safeStoreDeviceId(AUDIO_STORAGE_KEYS.mic, activeMicDeviceId);
+            safeStoreDeviceId(AUDIO_STORAGE_KEYS.speaker, activeSpeakerDeviceId);
+
+            if (speakerSelectionSupported && typeof document.getElementById('player')?.setSinkId === 'function') {
+                try {
+                    await document.getElementById('player').setSinkId(activeSpeakerDeviceId);
+                } catch (error) {
+                    console.warn('Unable to apply speaker selection:', error);
+                    activeSpeakerDeviceId = 'default';
+                    safeStoreDeviceId(AUDIO_STORAGE_KEYS.speaker, activeSpeakerDeviceId);
+                    populateDeviceSelect(speakerSelect, speakerDevices, 'głośnik', activeSpeakerDeviceId);
+                    updateDeviceSummary('speakerSummary', 'speakerBadge', 'Głośnik', speakerDevices, activeSpeakerDeviceId, !speakerSelectionSupported);
+                }
+            }
+        }
+
+        async function switchMicrophoneDevice(deviceId) {
+            if (isRecording) {
+                alert('Zatrzymaj nagrywanie przed zmianą mikrofonu.');
+                populateDeviceSelect(document.getElementById('micSelect'), micDevices, 'mikrofon', activeMicDeviceId);
+                return;
+            }
+
+            try {
+                await initializeMicrophoneStream(deviceId);
+                await refreshAudioDevicePanel();
+            } catch (error) {
+                console.error('Failed to switch microphone:', error);
+                updateStatus('Nie udało się przełączyć mikrofonu');
+                await refreshAudioDevicePanel();
+            }
+        }
+
+        async function switchSpeakerDevice(deviceId) {
+            const player = document.getElementById('player');
+            activeSpeakerDeviceId = deviceId || 'default';
+            safeStoreDeviceId(AUDIO_STORAGE_KEYS.speaker, activeSpeakerDeviceId);
+
+            if (speakerSelectionSupported && typeof player.setSinkId === 'function') {
+                try {
+                    await player.setSinkId(activeSpeakerDeviceId);
+                } catch (error) {
+                    console.error('Failed to switch speaker:', error);
+                    activeSpeakerDeviceId = 'default';
+                    safeStoreDeviceId(AUDIO_STORAGE_KEYS.speaker, activeSpeakerDeviceId);
+                    updateStatus('Nie udało się przełączyć głośnika');
+                }
+            }
+
+            await refreshAudioDevicePanel();
+        }
+
+        function bindAudioDeviceControls() {
+            if (audioDeviceListenersBound) {
+                return;
+            }
+
+            audioDeviceListenersBound = true;
+
+            document.getElementById('micSelect').addEventListener('change', (event) => {
+                switchMicrophoneDevice(event.target.value);
+            });
+
+            document.getElementById('speakerSelect').addEventListener('change', (event) => {
+                switchSpeakerDevice(event.target.value);
+            });
+
+            if (navigator.mediaDevices?.addEventListener) {
+                navigator.mediaDevices.addEventListener('devicechange', () => {
+                    refreshAudioDevicePanel().catch((error) => {
+                        console.error('Failed to refresh audio devices:', error);
+                    });
+                });
+            }
+        }
+
+        async function ensureAudioStream() {
+            if (hasLiveAudioStream()) {
+                return audioStream;
+            }
+
+            return initializeMicrophoneStream(activeMicDeviceId);
+        }
+
+        function setVoiceButtonState(recording) {
+            const btn = document.getElementById('voiceBtn');
+            const btnText = document.getElementById('voiceBtnText');
+
+            if (!btn || !btnText) {
+                return;
+            }
+
+            btn.className = recording ? 'voice-btn stop' : 'voice-btn start';
+            btnText.textContent = recording ? 'Stop Voice' : 'Start Voice';
+        }
+
+        async function startVoiceRecording({ auto = false, requireWebSocket = false } = {}) {
+            if (isRecording) {
+                return true;
+            }
+
+            if (requireWebSocket && (!ws || ws.readyState !== WebSocket.OPEN)) {
+                return false;
+            }
+
+            try {
+                await ensureAudioStream();
+            } catch (error) {
+                console.error('Unable to initialize microphone stream:', error);
+                updateStatus('Mikrofon niedostępny - użyj tekstu');
+                return false;
+            }
+
+            if (requireWebSocket && (!ws || ws.readyState !== WebSocket.OPEN)) {
+                return false;
+            }
+
+            try {
+                mediaRecorder = new MediaRecorder(audioStream, {
+                    mimeType: 'audio/webm;codecs=opus'
+                });
+            } catch (error) {
+                console.error('Unable to create MediaRecorder:', error);
+                updateStatus('Przeglądarka nie obsługuje nagrywania audio');
+                return false;
+            }
+
+            mediaRecorder.ondataavailable = (event) => {
+                if (event.data.size > 0 && ws && ws.readyState === WebSocket.OPEN) {
+                    ws.send(event.data);
+                }
+            };
+
+            mediaRecorder.onstop = () => {
+                mediaRecorder = null;
+            };
+
+            mediaRecorder.onerror = (event) => {
+                console.error('MediaRecorder error:', event.error || event);
+            };
+
+            mediaRecorder.start(250);
+            isRecording = true;
+            autoStartVoicePending = false;
+            setVoiceButtonState(true);
+            updateStatus(auto ? 'Transkrypcja na żywo aktywna' : 'Nagrywanie... mów teraz', 'recording');
+
+            if (auto) {
+                addMessage('system', '🎙️ Transkrypcja na żywo uruchomiona automatycznie.');
+            }
+
+            return true;
+        }
+
+        function stopVoiceRecording() {
+            autoStartVoicePending = false;
+
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                try {
+                    mediaRecorder.stop();
+                } catch (error) {
+                    console.warn('Failed to stop MediaRecorder:', error);
+                }
+            }
+
+            mediaRecorder = null;
+            isRecording = false;
+            setVoiceButtonState(false);
+            updateStatus('Przetwarzanie...', 'connected');
+        }
+
+        async function attemptAutoStartVoice() {
+            if (!autoStartVoicePending || isRecording) {
+                return false;
+            }
+
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                return false;
+            }
+
+            return startVoiceRecording({ auto: true, requireWebSocket: true });
+        }
+
+        function initTTS() {
+            if (!('speechSynthesis' in window)) return;
+            const load = () => {
+                const voices = speechSynthesis.getVoices();
+                ttsVoice = voices.find(v => v.lang.startsWith('pl')) ||
+                           voices.find(v => v.lang.startsWith('en')) ||
+                           voices[0] || null;
+            };
+            load();
+            speechSynthesis.onvoiceschanged = load;
+        }
+
+        function speak(text) {
+            if (!ttsEnabled || !('speechSynthesis' in window)) return;
+            speechSynthesis.cancel();
+            const utt = new SpeechSynthesisUtterance(text);
+            utt.lang = ttsVoice ? ttsVoice.lang : 'pl-PL';
+            if (ttsVoice) utt.voice = ttsVoice;
+            utt.rate = 1.05;
+            utt.pitch = 1.0;
+            speechSynthesis.speak(utt);
+        }
+
+        function toggleTTS() {
+            ttsEnabled = !ttsEnabled;
+            const btn = document.getElementById('ttsBtn');
+            btn.classList.toggle('active', ttsEnabled);
+            btn.textContent = ttsEnabled ? '🔊 TTS' : '🔇 TTS';
+            if (!ttsEnabled) speechSynthesis.cancel();
+        }
         
         // Auto-initialize on page load
         async function initVoice() {
+            initTTS();
+            bindAudioDeviceControls();
             connectWebSocket();
+            updateStatus('Wykrywanie urządzeń audio...');
             
-            // Request microphone permission
             try {
-                audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                await initializeMicrophoneStream(activeMicDeviceId);
+                await refreshAudioDevicePanel();
                 console.log('Microphone access granted');
-                updateStatus('Gotowy - kliknij Start Voice');
+                await attemptAutoStartVoice();
             } catch (e) {
                 console.error('Microphone access denied:', e);
+                await refreshAudioDevicePanel();
                 updateStatus('Mikrofon niedostępny - użyj tekstu');
                 document.getElementById('voiceBtn').disabled = true;
             }
@@ -298,7 +803,18 @@
             
             ws.onopen = () => {
                 console.log('WebSocket connected');
-                updateStatus('Połączono - gotowy do rozmowy', 'connected');
+                attemptAutoStartVoice()
+                    .then((started) => {
+                        if (!started && !isRecording) {
+                            updateStatus('Połączono - gotowy do rozmowy', 'connected');
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Auto-start voice failed:', error);
+                        if (!isRecording) {
+                            updateStatus('Połączono - gotowy do rozmowy', 'connected');
+                        }
+                    });
             };
             
             ws.onmessage = (event) => {
@@ -337,6 +853,7 @@
                     // Show assistant message
                     if (response.message) {
                         addMessage('assistant', response.message);
+                        speak(response.message);
                     }
                     
                     // Show workflow preview
@@ -354,47 +871,14 @@
         
         // Toggle voice recording
         async function toggleVoice() {
-            const btn = document.getElementById('voiceBtn');
-            const btnText = document.getElementById('voiceBtnText');
-            
             if (!isRecording) {
-                // Start recording
-                if (!audioStream) {
-                    try {
-                        audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    } catch (e) {
-                        alert('Mikrofon niedostępny');
-                        return;
-                    }
+                const started = await startVoiceRecording({ auto: false, requireWebSocket: false });
+                if (!started) {
+                    alert('Mikrofon niedostępny');
                 }
-                
-                mediaRecorder = new MediaRecorder(audioStream, {
-                    mimeType: 'audio/webm;codecs=opus'
-                });
-                
-                mediaRecorder.ondataavailable = (event) => {
-                    if (event.data.size > 0 && ws.readyState === WebSocket.OPEN) {
-                        ws.send(event.data);
-                    }
-                };
-                
-                mediaRecorder.start(250); // 250ms chunks
-                isRecording = true;
-                
-                btn.className = 'voice-btn stop';
-                btnText.textContent = 'Stop Voice';
-                updateStatus('Nagrywanie... mów teraz', 'recording');
                 
             } else {
-                // Stop recording
-                if (mediaRecorder) {
-                    mediaRecorder.stop();
-                }
-                isRecording = false;
-                
-                btn.className = 'voice-btn start';
-                btnText.textContent = 'Start Voice';
-                updateStatus('Przetwarzanie...', 'connected');
+                stopVoiceRecording();
             }
         }
         
@@ -417,6 +901,7 @@
             .then(data => {
                 if (data.message) {
                     addMessage('assistant', data.message);
+                    speak(data.message);
                 }
                 if (data.dsl) {
                     showWorkflowPreview(data.dsl);

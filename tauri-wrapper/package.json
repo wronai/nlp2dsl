@@ -4,7 +4,9 @@
   "version": "0.1.0",
   "description": "Tauri desktop wrapper for the existing FastAPI voice chat UI",
   "scripts": {
-    "dev": "tauri dev",
+    "dev": "node scripts/dev.js",
+    "desktop": "bash ./desktop.sh",
+    "serve": "node scripts/serve-dist.js",
     "build": "tauri build",
     "icon": "tauri icon"
   },

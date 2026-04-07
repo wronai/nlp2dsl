@@ -92,6 +92,37 @@ ACTIONS_REGISTRY: dict[str, dict] = {
         },
     },
 
+    # ── Code Generation ────────────────────────────────────────
+
+    "generate_code": {
+        "description": "Generuje kod w wybranym języku programowania",
+        "required": ["description"],
+        "optional": {"language": "python", "context": None, "include_tests": False},
+        "aliases": [
+            "generuj kod", "napisz kod", "stwórz kod", "generate code",
+            "write code", "create code", "kod", "program", "funkcja",
+            "klasa", "skrypt", "aplikacja", "moduł", "implementuj",
+            "napisz funkcję", "stwórz klasę", "zaimplementuj",
+        ],
+        "param_aliases": {
+            "język": "language",
+            "w języku": "language",
+            "opis": "description",
+            "zadanie": "description",
+            "kontekst": "context",
+            "testy": "include_tests",
+            "python": "language=python",
+            "javascript": "language=javascript",
+            "java": "language=java",
+            "c++": "language=cpp",
+            "cpp": "language=cpp",
+            "go": "language=go",
+            "rust": "language=rust",
+            "php": "language=php",
+            "ruby": "language=ruby",
+        },
+    },
+
     # ── System / Settings ─────────────────────────────────────
 
     "system_settings_get": {

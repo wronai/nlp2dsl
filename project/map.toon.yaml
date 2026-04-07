@@ -1,8 +1,8 @@
-# nlp2dsl | 25f 3699L | shell:1,rust:1,python:23 | 2026-04-06
-# stats: 139 func | 0 cls | 25 mod | CC̄=3.3 | critical:3 | cycles:0
+# nlp2dsl | 25f 3733L | shell:1,rust:1,python:23 | 2026-04-06
+# stats: 140 func | 0 cls | 25 mod | CC̄=3.3 | critical:3 | cycles:0
 # alerts[5]: CC _extract_entities=36; fan-out _extract_entities=26; fan-out _process_message=18; fan-out run_workflow=18; CC _process_message=17
 # hotspots[5]: _extract_entities fan=26; run_workflow fan=18; _process_message fan=18; workflow_from_text fan=16; websocket_chat fan=16
-# evolution: CC̄ 3.6→3.3 (improved -0.3)
+# evolution: CC̄ 3.3→3.3 (flat 0.0)
 # Keys: M=modules, D=details, i=imports, e=exports, c=classes, f=functions, m=methods
 M[25]:
   backend/app/__init__.py,0
@@ -11,7 +11,7 @@ M[25]:
   backend/app/db/postgres.py,146
   backend/app/main.py,42
   backend/app/schemas.py,67
-  backend/app/workflow.py,401
+  backend/app/workflow.py,435
   nlp-service/app/__init__.py,0
   nlp-service/app/audio_parser.py,149
   nlp-service/app/main.py,469
@@ -88,14 +88,15 @@ D:
     _detect_provider()
     _parse_json_response(raw)
   backend/app/workflow.py:
-    e: list_actions,run_workflow,get_history,get_workflow,workflow_from_text,chat_start,chat_message,chat_get_state,actions_schema,action_schema,get_settings,get_settings_section,update_settings_section,set_setting,reset_settings,system_execute
+    e: _proxy_chat_payload,list_actions,run_workflow,get_history,get_workflow,workflow_from_text,chat_start,chat_message,chat_get_state,actions_schema,action_schema,get_settings,get_settings_section,update_settings_section,set_setting,reset_settings,system_execute
+    _proxy_chat_payload(request;endpoint)
     list_actions()
     run_workflow(req)
     get_history()
     get_workflow(workflow_id)
     workflow_from_text(body)
-    chat_start(body)
-    chat_message(body)
+    chat_start(request)
+    chat_message(request)
     chat_get_state(conversation_id)
     actions_schema()
     action_schema(action)
@@ -135,14 +136,14 @@ Placeholder ...
     get_trigger(text)
     get_required_fields(action)
     get_defaults(action)
+  nlp-service/app/store/factory.py:
+    e: get_conversation_store
+    get_conversation_store()
   backend/app/db/postgres.py:
     e: Base,WorkflowRunModel,PostgresWorkflowRepo
     Base(DeclarativeBase):
     WorkflowRunModel(Base): to_dict(0)
     PostgresWorkflowRepo(WorkflowRepo): __init__(1),_ensure_tables(0),save_run(4),update_run_status(2),get_run(1),list_runs(2),count_runs(0),close(0)
-  nlp-service/app/store/factory.py:
-    e: get_conversation_store
-    get_conversation_store()
   nlp-service/app/store/redis_store.py:
     e: RedisConversationStore
     RedisConversationStore(ConversationStore): __init__(2),_key(1),get(1),save(2),delete(1),count(0),close(0)
@@ -169,15 +170,23 @@ Placeholder ...
   backend/app/main.py:
     e: health
     health()
-  nlp-service/app/store/memory.py:
-    e: MemoryConversationStore
-    MemoryConversationStore(ConversationStore): __init__(0),get(1),save(2),delete(1),count(0)
   nlp-service/app/store/__init__.py:
     e: ConversationStore
     ConversationStore(ABC): get(1),save(2),delete(1),count(0)  # Abstrakcja persystencji stanu konwersacji...
+  nlp-service/app/store/memory.py:
+    e: MemoryConversationStore
+    MemoryConversationStore(ConversationStore): __init__(0),get(1),save(2),delete(1),count(0)
   project.sh:
   backend/app/__init__.py:
   nlp-service/app/__init__.py:
+  backend/app/schemas.py:
+    e: StepStatus,Step,RunWorkflowRequest,StepResult,WorkflowResult,ActionInfo
+    StepStatus(str,Enum):
+    Step(BaseModel):  # Pojedynczy krok workflow — deklaratywny opis akcji...
+    RunWorkflowRequest(BaseModel):  # Żądanie uruchomienia workflow — DSL biznesowy...
+    StepResult(BaseModel):
+    WorkflowResult(BaseModel):
+    ActionInfo(BaseModel):  # Opis dostępnej akcji (do listowania w GUI / API)...
   nlp-service/app/schemas.py:
     e: NLPIntent,NLPEntities,NLPResult,DSLStep,WorkflowDSL,DialogResponse,NLPRequest,ConversationState,FieldSchema,ActionFormSchema,ConversationResponse
     NLPIntent(BaseModel):
@@ -191,11 +200,3 @@ Placeholder ...
     FieldSchema(BaseModel):
     ActionFormSchema(BaseModel):
     ConversationResponse(BaseModel):
-  backend/app/schemas.py:
-    e: StepStatus,Step,RunWorkflowRequest,StepResult,WorkflowResult,ActionInfo
-    StepStatus(str,Enum):
-    Step(BaseModel):  # Pojedynczy krok workflow — deklaratywny opis akcji...
-    RunWorkflowRequest(BaseModel):  # Żądanie uruchomienia workflow — DSL biznesowy...
-    StepResult(BaseModel):
-    WorkflowResult(BaseModel):
-    ActionInfo(BaseModel):  # Opis dostępnej akcji (do listowania w GUI / API)...

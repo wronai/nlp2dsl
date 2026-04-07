@@ -1,0 +1,41 @@
+pipeline:
+  profile: python-minimal
+
+  # Override metrics (profile defaults: cc_max=15, critical_max=0):
+  metrics:
+    critical_max: 5
+
+  # Explicit stages matching the python-minimal profile.
+  stages:
+    - name: analyze
+      tool: code2llm-filtered
+      optional: true
+      timeout: 0
+
+    - name: validate
+      tool: vallm-filtered
+      optional: true
+      timeout: 0
+
+    - name: lint
+      tool: ruff
+      optional: true
+
+    - name: prefact
+      tool: prefact
+      optional: true
+      timeout: 900
+
+    - name: fix
+      tool: llx-fix
+      optional: true
+      timeout: 1800
+
+    - name: test
+      run: python3 -m pytest -q
+
+  # If you want to tighten gates later, add more overrides here.
+
+  # Environment (optional)
+  env:
+    LLM_MODEL: openrouter/qwen/qwen3-coder-next

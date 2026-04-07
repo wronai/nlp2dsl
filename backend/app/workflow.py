@@ -11,7 +11,7 @@ import os
 from datetime import datetime
 from uuid import uuid4
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from httpx import AsyncClient
 
 from .schemas import (
@@ -31,6 +31,42 @@ WORKER_URL = os.getenv("WORKER_URL", "http://worker:8000")
 NLP_SERVICE_URL = os.getenv("NLP_SERVICE_URL", "http://nlp-service:8002")
 
 _repo = create_workflow_repo()
+
+
+async def _proxy_chat_payload(request: Request, endpoint: str):
+    """Forward JSON or form-data payloads to the NLP service chat endpoints."""
+    content_type = request.headers.get("content-type", "").lower()
+
+    if "multipart/form-data" in content_type or "application/x-www-form-urlencoded" in content_type:
+        form = await request.form()
+        data = {}
+        files = {}
+
+        for key, value in form.multi_items():
+            if hasattr(value, "filename") and hasattr(value, "read"):
+                files[key] = (
+                    value.filename,
+                    await value.read(),
+                    getattr(value, "content_type", None) or "application/octet-stream",
+                )
+            else:
+                data[key] = value
+
+        async with AsyncClient(timeout=30.0) as client:
+            resp = await client.post(
+                f"{NLP_SERVICE_URL}{endpoint}",
+                data=data,
+                files=files or None,
+            )
+        return resp, data
+
+    body = await request.json()
+    if not isinstance(body, dict):
+        body = {}
+
+    async with AsyncClient(timeout=30.0) as client:
+        resp = await client.post(f"{NLP_SERVICE_URL}{endpoint}", data=body)
+    return resp, body
 
 
 # ── Registry dostępnych akcji ─────────────────────────────────
@@ -131,7 +167,7 @@ async def run_workflow(req: RunWorkflowRequest):
                     status=result.status.value,
                     data={
                         "trigger": req.trigger or "manual",
-                        "steps": [s.model_dump() for s in result.steps],
+                        "steps": [s.model_dump(mode="json") for s in result.steps],
                     },
                 )
                 raise HTTPException(
@@ -150,7 +186,7 @@ async def run_workflow(req: RunWorkflowRequest):
         status=result.status.value,
         data={
             "trigger": req.trigger or "manual",
-            "steps": [s.model_dump() for s in result.steps],
+            "steps": [s.model_dump(mode="json") for s in result.steps],
         },
     )
     log.info("✔ Workflow '%s' [%s] completed", req.name, workflow_id)
@@ -252,7 +288,7 @@ async def workflow_from_text(body: dict):
 
 
 @router.post("/chat/start")
-async def chat_start(body: dict):
+async def chat_start(request: Request):
     """
     Rozpocznij konwersację AI → DSL.
 
@@ -261,8 +297,7 @@ async def chat_start(body: dict):
 
     Body: {"text": "Wyślij fakturę na 1500 PLN"}
     """
-    async with AsyncClient(timeout=30.0) as client:
-        resp = await client.post(f"{NLP_SERVICE_URL}/chat/start", json=body)
+    resp, _ = await _proxy_chat_payload(request, "/chat/start")
 
     if resp.status_code != 200:
         raise HTTPException(status_code=resp.status_code, detail=resp.text)
@@ -271,14 +306,13 @@ async def chat_start(body: dict):
 
 
 @router.post("/chat/message")
-async def chat_message(body: dict):
+async def chat_message(request: Request):
     """
     Kontynuuj konwersację — uzupełnij brakujące dane.
 
     Body: {"conversation_id": "abc", "text": "klient@firma.pl"}
     """
-    async with AsyncClient(timeout=30.0) as client:
-        resp = await client.post(f"{NLP_SERVICE_URL}/chat/message", json=body)
+    resp, body = await _proxy_chat_payload(request, "/chat/message")
 
     if resp.status_code != 200:
         raise HTTPException(status_code=resp.status_code, detail=resp.text)

@@ -1,23 +1,23 @@
-# nlp2dsl | 139 func | 20f | 3702L | python | 2026-04-06
+# nlp2dsl | 140 func | 20f | 3736L | python | 2026-04-06
 
 HEALTH:
   CC̄=3.3  critical=8 (limit:10)  dup=0  cycles=0
 
-ALERTS[19]:
+ALERTS[20]:
   !!! cc_exceeded      _extract_entities = 36 (limit:15)
   !!! high_fan_out     _extract_entities = 26 (limit:10)
   !!  high_fan_out     run_workflow = 18 (limit:10)
   !!  high_fan_out     _process_message = 18 (limit:10)
   !!  high_fan_out     workflow_from_text = 16 (limit:10)
   !!  high_fan_out     websocket_chat = 16 (limit:10)
-  !!  high_fan_out     chat_message = 15 (limit:10)
   !   cc_exceeded      _process_message = 17 (limit:15)
   !   cc_exceeded      _format_system_result = 16 (limit:15)
+  !   high_fan_out     chat_message = 14 (limit:10)
   !   high_fan_out     map_to_dsl = 14 (limit:10)
 
 MODULES[25] (top by size):
   M[nlp-service/app/main.py] 469L C:0 F:18 CC↑10 D:0 (python)
-  M[backend/app/workflow.py] 401L C:0 F:16 CC↑9 D:0 (python)
+  M[backend/app/workflow.py] 435L C:0 F:17 CC↑9 D:0 (python)
   M[nlp-service/app/system_executor.py] 343L C:0 F:13 CC↑12 D:1 (python)
   M[nlp-service/app/orchestrator.py] 329L C:0 F:7 CC↑17 D:1 (python)
   M[nlp-service/app/registry.py] 321L C:0 F:4 CC↑5 D:3 (python)
@@ -55,4 +55,4 @@ REFACTOR[6]:
   [5] M/M Reduce run_workflow fan-out (currently 18)
 
 EVOLUTION:
-  2026-04-06 CC̄=3.3 crit=8 3702L // Automated analysis
+  2026-04-06 CC̄=3.3 crit=8 3736L // Automated analysis

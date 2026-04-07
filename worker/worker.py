@@ -87,6 +87,50 @@ async def handle_notify_slack(config: dict) -> dict:
     return {"channel": channel, "delivered": True}
 
 
+@action("generate_code")
+async def handle_generate_code(config: dict) -> dict:
+    import httpx
+    
+    description = config.get("description", "")
+    language = config.get("language", "python")
+    context = config.get("context")
+    include_tests = config.get("include_tests", False)
+    
+    if not description:
+        raise ValueError("Description is required for code generation")
+    
+    # Call nlp-service for code generation
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                "http://nlp-service:8002/code/generate",
+                json={
+                    "description": description,
+                    "language": language,
+                    "context": context,
+                    "include_tests": include_tests
+                },
+                timeout=30.0
+            )
+            response.raise_for_status()
+            result = response.json()
+            
+            if "error" in result:
+                log.error("Code generation failed: %s", result["error"])
+                return {"error": result["error"], "language": language}
+            
+            log.info("✅ Generated %s code (%d lines)", 
+                    language, result.get("code", "").count("\n") + 1)
+            return result
+            
+    except httpx.HTTPStatusError as e:
+        log.error("HTTP error calling code generation: %s", e)
+        return {"error": f"Code generation service unavailable: {e}"}
+    except Exception as e:
+        log.exception("Code generation failed")
+        return {"error": str(e), "language": language}
+
+
 # ── API endpoint ──────────────────────────────────────────────
 
 

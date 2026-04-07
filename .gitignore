@@ -2,6 +2,8 @@ __pycache__/
 *.pyc
 .env
 .env.backup
+node_modules
+
 .env.local
 .venv/
 *.egg-info/

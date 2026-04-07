@@ -263,6 +263,7 @@ async def action_schema(action: str):
 
 from .settings import settings_manager
 from .system_executor import execute_system_action, SYSTEM_EXECUTORS
+from .code_generator import code_generator
 
 
 @app.get("/settings")
@@ -334,6 +335,52 @@ async def system_execute(body: dict):
 
     result = await execute_system_action(action, config)
     return result
+
+
+# ── Code Generation API ───────────────────────────────────────
+
+
+@app.post("/code/generate")
+async def generate_code(body: dict):
+    """
+    Generuje kod w wybranym języku programowania.
+    
+    Body: {
+        "description": "Opis kodu do wygenerowania",
+        "language": "python|javascript|java|cpp|go|rust|php|ruby",
+        "context": "Dodatkowy kontekst (opcjonalnie)",
+        "include_tests": true/false (domyślnie false)
+    }
+    """
+    description = body.get("description", "")
+    language = body.get("language", "python")
+    context = body.get("context")
+    include_tests = body.get("include_tests", False)
+    
+    if not description:
+        raise HTTPException(
+            status_code=400,
+            detail="Field 'description' is required"
+        )
+    
+    result = await code_generator.generate_code(
+        description=description,
+        language=language,
+        context=context,
+        include_tests=include_tests
+    )
+    
+    return result
+
+
+@app.get("/code/languages")
+async def get_supported_languages():
+    """Zwraca listę obsługiwanych języków programowania."""
+    return {
+        "languages": code_generator.get_supported_languages(),
+        "info": {lang: code_generator.get_language_info(lang) 
+                for lang in code_generator.get_supported_languages()}
+    }
 
 
 # ── Internal ──────────────────────────────────────────────────

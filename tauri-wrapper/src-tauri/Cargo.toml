@@ -9,7 +9,8 @@ edition = "2021"
 tauri-build = { version = "1", features = [] }
 
 [dependencies]
-tauri = { version = "1", features = [ "http-request", "shell-open"] }
+tauri = { version = "1", features = ["http-request", "shell-open"] }
+
 
 [features]
 default = []

@@ -6,7 +6,7 @@
 - **Primary Language**: python
 - **Languages**: python: 28, shell: 6, rust: 1
 - **Analysis Mode**: static
-- **Total Functions**: 158
+- **Total Functions**: 160
 - **Total Classes**: 33
 - **Modules**: 35
 - **Entry Points**: 115
@@ -18,7 +18,7 @@
 - **File**: `main.py`
 
 ### backend.app.workflow
-- **Functions**: 16
+- **Functions**: 17
 - **File**: `workflow.py`
 
 ### nlp-service.app.system_executor
@@ -90,15 +90,15 @@
 - **Classes**: 1
 - **File**: `__init__.py`
 
-### examples.01-invoice.main
-- **Functions**: 3
-- **File**: `main.py`
-
 ### examples.04-scheduled-report.main
 - **Functions**: 3
 - **File**: `main.py`
 
-### examples.02-email.main
+### examples.01-invoice.main
+- **Functions**: 3
+- **File**: `main.py`
+
+### examples.03-report-and-notify.main
 - **Functions**: 3
 - **File**: `main.py`
 
@@ -145,14 +145,14 @@ Flow:
 > Główna funkcja przykładu.
 - **Calls**: print, examples.01-invoice.main.generate_invoice_from_text, print, print, print, print, examples.01-invoice.main.send_invoice, print
 
+### nlp-service.app.system_executor._exec_file_read
+- **Calls**: config.get, nlp-service.app.system_executor._validate_file_path, None.read_text, config.get, config.get, None.exists, None.is_file, content.split
+
 ### backend.app.workflow.chat_message
 > Kontynuuj konwersację — uzupełnij brakujące dane.
 
 Body: {"conversation_id": "abc", "text": "klient@firma.pl"}
-- **Calls**: router.post, resp.json, None.lower, AsyncClient, HTTPException, any, result.get, client.post
-
-### nlp-service.app.system_executor._exec_file_read
-- **Calls**: config.get, nlp-service.app.system_executor._validate_file_path, None.read_text, config.get, config.get, None.exists, None.is_file, content.split
+- **Calls**: router.post, resp.json, None.lower, backend.app.workflow._proxy_chat_payload, HTTPException, any, result.get, body.get
 
 ### nlp-service.app.system_executor._exec_file_list
 - **Calls**: config.get, config.get, sorted, candidate.exists, Path, resolved.rglob, str, len
@@ -190,16 +190,13 @@ Obsługuje:
 ### nlp-service.app.system_executor._exec_registry_add
 - **Calls**: config.get, config.get, config.get, isinstance, config.get, isinstance, f.strip, a.strip
 
-### worker.worker.execute_step
-> Wykonuje pojedynczy krok workflow.
-- **Calls**: app.post, step.get, step.get, step.get, ACTION_HANDLERS.get, log.info, HTTPException, handler
-
 ### nlp-service.app.settings.SettingsManager.update_section
 > Update entire section from dict.
 - **Calls**: getattr, data.items, ValueError, hasattr, None.isoformat, self._save, getattr, setattr
 
-### backend.app.db.postgres.PostgresWorkflowRepo.save_run
-- **Calls**: self._ensure_tables, self._session_factory, WorkflowRunModel, session.add, log.debug, session.commit, data.get, data.get
+### worker.worker.execute_step
+> Wykonuje pojedynczy krok workflow.
+- **Calls**: app.post, step.get, step.get, step.get, ACTION_HANDLERS.get, log.info, HTTPException, handler
 
 ### examples.05-conversation-flow.main.ConversationFlow.run_interactive
 > Uruchom tryb interaktywny.
@@ -211,14 +208,14 @@ Obsługuje:
 ### worker.worker.handle_send_invoice
 - **Calls**: worker.worker.action, log.info, log.info, config.get, config.get, asyncio.sleep, config.get, None.strftime
 
+### backend.app.db.postgres.PostgresWorkflowRepo.save_run
+- **Calls**: self._ensure_tables, self._session_factory, WorkflowRunModel, session.add, log.debug, session.commit, data.get, data.get
+
 ### worker.worker.handle_send_email
 - **Calls**: worker.worker.action, log.info, log.info, config.get, config.get, asyncio.sleep, config.get, config.get
 
 ### worker.worker.handle_generate_report
 - **Calls**: worker.worker.action, config.get, config.get, log.info, log.info, asyncio.sleep, None.strftime, datetime.utcnow
-
-### backend.app.db.postgres.PostgresWorkflowRepo.list_runs
-- **Calls**: self._ensure_tables, self._session_factory, None.all, session.execute, text, result.mappings, None.isoformat
 
 ### examples.05-conversation-flow.main.ConversationFlow.send_message
 > Wyślij wiadomość w istniejącej konwersacji.
@@ -239,6 +236,9 @@ Body: {"action": "system_file_list", "config": {"directory": "."}}
 ### nlp-service.app.settings.SettingsManager.reset
 > Reset settings to defaults.
 - **Calls**: None.isoformat, self._save, SystemSettings, setattr, SystemSettings, getattr, datetime.utcnow
+
+### nlp-service.app.settings.SettingsManager._load
+- **Calls**: Path, path.exists, json.loads, SystemSettings, log.info, path.read_text, log.warning
 
 ## Process Flows
 
@@ -266,15 +266,16 @@ websocket_chat [nlp-service.app.main]
   └─ →> is_stt_available
 ```
 
-### Flow 5: chat_message
-```
-chat_message [backend.app.workflow]
-```
-
-### Flow 6: _exec_file_read
+### Flow 5: _exec_file_read
 ```
 _exec_file_read [nlp-service.app.system_executor]
   └─> _validate_file_path
+```
+
+### Flow 6: chat_message
+```
+chat_message [backend.app.workflow]
+  └─> _proxy_chat_payload
 ```
 
 ### Flow 7: _exec_file_list
@@ -352,9 +353,32 @@ Placeholder - requires WebSocket implementation.
 - **Key Methods**: backend.app.db.postgres.WorkflowRunModel.to_dict
 - **Inherits**: Base
 
-### backend.app.db.postgres.Base
+### backend.app.schemas.StepStatus
 - **Methods**: 0
-- **Inherits**: DeclarativeBase
+- **Inherits**: str, Enum
+
+### backend.app.schemas.Step
+> Pojedynczy krok workflow — deklaratywny opis akcji.
+- **Methods**: 0
+- **Inherits**: BaseModel
+
+### backend.app.schemas.RunWorkflowRequest
+> Żądanie uruchomienia workflow — DSL biznesowy.
+- **Methods**: 0
+- **Inherits**: BaseModel
+
+### backend.app.schemas.StepResult
+- **Methods**: 0
+- **Inherits**: BaseModel
+
+### backend.app.schemas.WorkflowResult
+- **Methods**: 0
+- **Inherits**: BaseModel
+
+### backend.app.schemas.ActionInfo
+> Opis dostępnej akcji (do listowania w GUI / API).
+- **Methods**: 0
+- **Inherits**: BaseModel
 
 ### nlp-service.app.schemas.NLPIntent
 - **Methods**: 0
@@ -369,27 +393,6 @@ Placeholder - requires WebSocket implementation.
 - **Inherits**: BaseModel
 
 ### nlp-service.app.schemas.DSLStep
-- **Methods**: 0
-- **Inherits**: BaseModel
-
-### nlp-service.app.schemas.WorkflowDSL
-- **Methods**: 0
-- **Inherits**: BaseModel
-
-### nlp-service.app.schemas.DialogResponse
-- **Methods**: 0
-- **Inherits**: BaseModel
-
-### nlp-service.app.schemas.NLPRequest
-- **Methods**: 0
-- **Inherits**: BaseModel
-
-### nlp-service.app.schemas.ConversationState
-> Stan rozmowy — akumuluje dane między turami dialogu.
-- **Methods**: 0
-- **Inherits**: BaseModel
-
-### nlp-service.app.schemas.FieldSchema
 - **Methods**: 0
 - **Inherits**: BaseModel
 
@@ -441,7 +444,7 @@ Functions exposed as public API (no underscore prefix):
 - `backend.app.workflow.run_workflow` - 22 calls
 - `examples.02-email.main.main` - 22 calls
 - `examples.01-invoice.main.main` - 21 calls
-- `backend.app.workflow.chat_message` - 18 calls
+- `backend.app.workflow.chat_message` - 17 calls
 - `nlp-service.app.mapper.map_to_dsl` - 17 calls
 - `nlp-service.app.parser_llm.parse_llm` - 16 calls
 - `examples.05-conversation-flow.main.ConversationFlow.run_demo` - 15 calls
@@ -451,29 +454,29 @@ Functions exposed as public API (no underscore prefix):
 - `nlp-service.app.main.chat_start` - 12 calls
 - `nlp-service.app.settings.SettingsManager.set` - 11 calls
 - `nlp-service.app.parser_rules.parse_rules` - 10 calls
-- `worker.worker.execute_step` - 10 calls
 - `nlp-service.app.settings.SettingsManager.update_section` - 10 calls
-- `backend.app.db.postgres.PostgresWorkflowRepo.save_run` - 9 calls
-- `examples.05-conversation-flow.main.ConversationFlow.run_interactive` - 9 calls
+- `worker.worker.execute_step` - 10 calls
 - `examples.04-scheduled-report.main.create_scheduled_report` - 9 calls
+- `examples.05-conversation-flow.main.ConversationFlow.run_interactive` - 9 calls
 - `nlp-service.app.store.factory.get_conversation_store` - 9 calls
 - `worker.worker.handle_send_invoice` - 9 calls
+- `backend.app.db.postgres.PostgresWorkflowRepo.save_run` - 9 calls
 - `examples.03-report-and-notify.main.generate_report_and_notify` - 8 calls
 - `nlp-service.app.orchestrator.continue_conversation` - 8 calls
 - `worker.worker.handle_send_email` - 8 calls
 - `worker.worker.handle_generate_report` - 8 calls
-- `backend.app.db.postgres.PostgresWorkflowRepo.list_runs` - 7 calls
+- `tauri-wrapper.src-tauri.src.main.grant_media_permissions` - 7 calls
 - `examples.05-conversation-flow.main.ConversationFlow.send_message` - 7 calls
 - `nlp-service.app.main.health` - 7 calls
 - `nlp-service.app.main.set_setting` - 7 calls
 - `nlp-service.app.main.system_execute` - 7 calls
 - `nlp-service.app.settings.SettingsManager.reset` - 7 calls
-- `backend.app.db.postgres.PostgresWorkflowRepo.update_run_status` - 6 calls
+- `backend.app.db.postgres.PostgresWorkflowRepo.list_runs` - 7 calls
+- `tauri-wrapper.src-tauri.src.main.main` - 6 calls
 - `examples.05-conversation-flow.main.ConversationFlow.start` - 6 calls
 - `examples.05-conversation-flow.main.main` - 6 calls
 - `nlp-service.app.orchestrator.start_conversation` - 6 calls
 - `nlp-service.app.main.chat_ui` - 6 calls
-- `backend.app.db.postgres.PostgresWorkflowRepo.count_runs` - 5 calls
 
 ## System Interactions
 
@@ -497,14 +500,14 @@ graph TD
     websocket_chat --> StreamingSTT
     main --> send_email
     main --> generate_invoice_fro
-    chat_message --> post
-    chat_message --> json
-    chat_message --> lower
-    chat_message --> AsyncClient
-    chat_message --> HTTPException
     _exec_file_read --> get
     _exec_file_read --> _validate_file_path
     _exec_file_read --> read_text
+    chat_message --> post
+    chat_message --> json
+    chat_message --> lower
+    chat_message --> _proxy_chat_payload
+    chat_message --> HTTPException
     _exec_file_list --> get
     _exec_file_list --> sorted
     _exec_file_list --> exists

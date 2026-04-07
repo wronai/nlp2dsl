@@ -1,5 +1,5 @@
-# code2llm | 25f 3699L | python:23,shell:1,rust:1 | 2026-04-06
-# CC̄=3.3 | critical:3/158 | dups:0 | cycles:0
+# code2llm | 25f 3754L | python:23,rust:1,shell:1 | 2026-04-06
+# CC̄=3.3 | critical:3/160 | dups:0 | cycles:0
 
 HEALTH[4]:
   🟡 CC    _handle_response CC=16 (limit:15)
@@ -11,15 +11,15 @@ REFACTOR[1]:
   1. split 4 high-CC methods  (CC>15)
 
 PIPELINES[100]:
-  [1] Src [main]: main
+  [1] Src [main]: main → grant_media_permissions
       PURITY: 100% pure
-  [2] Src [health]: health
+  [2] Src [list_actions]: list_actions
       PURITY: 100% pure
-  [3] Src [__init__]: __init__
+  [3] Src [get_history]: get_history
       PURITY: 100% pure
-  [4] Src [save_run]: save_run
+  [4] Src [get_workflow]: get_workflow
       PURITY: 100% pure
-  [5] Src [get_run]: get_run
+  [5] Src [workflow_from_text]: workflow_from_text → run_workflow
       PURITY: 100% pure
 
 LAYERS:
@@ -40,17 +40,17 @@ LAYERS:
   │ memory                      27L  1C    5m  CC=1      ←0
   │ __init__                     0L  0C    0m  CC=0.0    ←0
   │
-  backend/                        CC̄=2.1    ←in:0  →out:0
-  │ workflow                   401L  0C   16m  CC=9      ←0
+  tauri-wrapper/                  CC̄=2.5    ←in:0  →out:0
+  │ main.rs                     28L  0C    2m  CC=3      ←0
+  │
+  backend/                        CC̄=2.3    ←in:0  →out:0
+  │ workflow                   435L  0C   17m  CC=9      ←0
   │ postgres                   146L  3C    9m  CC=4      ←0
   │ schemas                     67L  6C    0m  CC=0.0    ←0
   │ __init__                    49L  1C    6m  CC=2      ←0
   │ main                        42L  0C    1m  CC=1      ←0
   │ memory                      37L  1C    6m  CC=2      ←0
   │ __init__                     0L  0C    0m  CC=0.0    ←0
-  │
-  tauri-wrapper/                  CC̄=2.0    ←in:0  →out:0
-  │ main.rs                      7L  0C    1m  CC=2      ←0
   │
   worker/                         CC̄=1.1    ←in:0  →out:0
   │ worker                     115L  0C    8m  CC=2      ←0
