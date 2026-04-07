@@ -1,24 +1,38 @@
-# vallm batch | 154f | 61✓ 3⚠ 29✗ | 2026-04-07
+# vallm batch | 163f | 62✓ 3⚠ 38✗ | 2026-04-07
 
 SUMMARY:
-  scanned: 154  passed: 61 (39.6%)  warnings: 3  errors: 29  unsupported: 64
+  scanned: 163  passed: 62 (38.0%)  warnings: 3  errors: 38  unsupported: 63
 
 WARNINGS[3]{path,score}:
-  nlp-service/app/orchestrator.py,0.96
+  nlp2dsl_sdk/client.py,0.96
     issues[3]{rule,severity,message,line}:
-      complexity.cyclomatic,warning,_process_message has cyclomatic complexity 17 (max: 15),150
-      complexity.cyclomatic,warning,_format_system_result has cyclomatic complexity 16 (max: 15),271
-      complexity.lizard_cc,warning,_process_message: CC=17 exceeds limit 15,150
-  examples/05-conversation-flow/main.py,0.97
+      complexity.cyclomatic,warning,_handle_response has cyclomatic complexity 16 (max: 15),475
+      complexity.maintainability,warning,Low maintainability index: 17.6 (threshold: 20),
+      complexity.lizard_cc,warning,_handle_response: CC=16 exceeds limit 15,475
+  nlp2dsl_sdk/demos.py,0.96
+    issues[3]{rule,severity,message,line}:
+      complexity.cyclomatic,warning,run_code_generation_demo has cyclomatic complexity 20 (max: 15),540
+      complexity.maintainability,warning,Low maintainability index: 17.4 (threshold: 20),
+      complexity.lizard_cc,warning,run_code_generation_demo: CC=20 exceeds limit 15,540
+  tests/test_nlp2dsl_sdk.py,0.96
     issues[2]{rule,severity,message,line}:
-      complexity.cyclomatic,warning,_handle_response has cyclomatic complexity 16 (max: 15),56
-      complexity.lizard_cc,warning,_handle_response: CC=16 exceeds limit 15,56
-  nlp-service/app/parser_rules.py,0.97
-    issues[2]{rule,severity,message,line}:
-      complexity.cyclomatic,warning,_extract_entities has cyclomatic complexity 36 (max: 15),166
-      complexity.lizard_cc,warning,_extract_entities: CC=36 exceeds limit 15,166
+      complexity.cyclomatic,warning,test_workflow_and_conversation_endpoints has cyclomatic complexity 17 (max: 15),74
+      complexity.cyclomatic,warning,test_code_generation_methods_hit_expected_services has cyclomatic complexity 16 (max: 15),205
 
-ERRORS[29]{path,score}:
+ERRORS[38]{path,score}:
+  backend/app/workflow.py,0.57
+    issues[5]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'app.engine' not found,12
+      python.import.resolvable,error,Module 'app.engine' not found,13
+      python.import.resolvable,error,Module 'app.engine' not found,14
+      python.import.resolvable,error,Module 'app.engine' not found,15
+      python.import.resolvable,error,Module 'app.routers.workflow' not found,16
+  nlp-service/app/store/memory.py,0.57
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'app.store' not found,5
+  tests/tests/test_tests.py,0.57
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'tests' not found,11
   backend/tests/test_config.py,0.61
     issues[10]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'app.config' not found,16
@@ -48,11 +62,17 @@ ERRORS[29]{path,score}:
       python.import.resolvable,error,Module 'app.system_executor' not found,365
       python.import.resolvable,error,Module 'app.system_executor' not found,379
       python.import.resolvable,error,Module 'app.system_executor' not found,386
+  nlp-service/app/store/factory.py,0.66
+    issues[4]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'app.store' not found,14
+      python.import.resolvable,error,Module 'app.store.memory' not found,15
+      python.import.resolvable,error,Module 'app.config' not found,28
+      python.import.resolvable,error,Module 'app.store.redis_store' not found,36
   backend/app/db/__init__.py,0.68
     issues[3]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'app.config' not found,42
-      python.import.resolvable,error,Module 'app.db.memory' not found,47
-      python.import.resolvable,error,Module 'app.db.postgres' not found,45
+      python.import.resolvable,error,Module 'app.db.memory' not found,48
+      python.import.resolvable,error,Module 'app.db.postgres' not found,46
   backend/app/db/postgres.py,0.69
     issues[5]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'sqlalchemy' not found,11
@@ -67,6 +87,18 @@ ERRORS[29]{path,score}:
       python.import.resolvable,error,Module 'app.store.factory' not found,137
       python.import.resolvable,error,Module 'app.store.factory' not found,150
       python.import.resolvable,error,Module 'app.store.factory' not found,164
+  nlp-service/app/mapper.py,0.71
+    issues[2]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'app.registry' not found,13
+      python.import.resolvable,error,Module 'app.schemas' not found,20
+  nlp-service/app/orchestrator.py,0.71
+    issues[6]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'app.mapper' not found,17
+      python.import.resolvable,error,Module 'app.parser_rules' not found,18
+      python.import.resolvable,error,Module 'app.registry' not found,19
+      python.import.resolvable,error,Module 'app.schemas' not found,20
+      python.import.resolvable,error,Module 'app.store.factory' not found,29
+      python.import.resolvable,error,Module 'app.system_executor' not found,177
   nlp-service/tests/test_orchestrator.py,0.71
     issues[4]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'app.orchestrator' not found,11
@@ -113,6 +145,10 @@ ERRORS[29]{path,score}:
   backend/app/db/memory.py,0.79
     issues[1]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'app.db' not found,7
+  nlp-service/app/parser_rules.py,0.79
+    issues[2]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'app.registry' not found,15
+      python.import.resolvable,error,Module 'app.schemas' not found,20
   backend/tests/test_logging.py,0.80
     issues[6]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'app.logging_setup' not found,18
@@ -121,61 +157,72 @@ ERRORS[29]{path,score}:
       python.import.resolvable,error,Module 'app.logging_setup' not found,72
       python.import.resolvable,error,Module 'app.logging_setup' not found,110
       python.import.resolvable,error,Module 'app.logging_setup' not found,119
-  backend/app/routers/chat.py,0.84
-    issues[3]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'app.engine' not found,15
-      python.import.resolvable,error,Module 'app.logging_setup' not found,16
-      python.import.resolvable,error,Module 'app.schemas' not found,17
-  backend/app/routers/workflow.py,0.84
+  backend/app/routers/chat.py,0.82
     issues[3]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'app.engine' not found,13
       python.import.resolvable,error,Module 'app.logging_setup' not found,14
       python.import.resolvable,error,Module 'app.schemas' not found,15
-  nlp-service/app/store/factory.py,0.86
+  backend/app/engine.py,0.83
+    issues[4]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'app.config' not found,15
+      python.import.resolvable,error,Module 'app.db' not found,16
+      python.import.resolvable,error,Module 'app.logging_setup' not found,17
+      python.import.resolvable,error,Module 'app.schemas' not found,18
+  nlp-service/app/store/redis_store.py,0.83
+    issues[2]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'redis.asyncio' not found,13
+      python.import.resolvable,error,Module 'app.store' not found,15
+  nlp-service/app/system_executor.py,0.83
+    issues[2]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'app.registry' not found,16
+      python.import.resolvable,error,Module 'app.settings' not found,17
+  backend/app/routers/workflow.py,0.84
+    issues[3]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'app.engine' not found,12
+      python.import.resolvable,error,Module 'app.logging_setup' not found,13
+      python.import.resolvable,error,Module 'app.schemas' not found,14
+  backend/app/routers/settings.py,0.86
+    issues[2]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'app.engine' not found,13
+      python.import.resolvable,error,Module 'app.logging_setup' not found,14
+  backend/app/routers/system.py,0.86
+    issues[2]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'app.engine' not found,13
+      python.import.resolvable,error,Module 'app.logging_setup' not found,14
+  nlp-service/app/audio_parser.py,0.86
     issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'app.config' not found,30
-  nlp-service/tests/conftest.py,0.86
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'app.store.memory' not found,11
+      python.import.resolvable,error,Module 'app.config' not found,19
   nlp-service/tests/test_registry.py,0.86
     issues[1]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'app.registry' not found,10
-  backend/app/routers/settings.py,0.88
-    issues[2]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'app.engine' not found,15
-      python.import.resolvable,error,Module 'app.logging_setup' not found,16
-  backend/app/routers/system.py,0.88
-    issues[2]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'app.engine' not found,15
-      python.import.resolvable,error,Module 'app.logging_setup' not found,16
+  test_code_generation.py,0.86
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'code_generator' not found,14
   tests/e2e/test_websocket.py,0.88
     issues[2]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'websockets' not found,17
       python.import.resolvable,error,Module 'websockets.connection' not found,18
-  backend/tests/conftest.py,0.89
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'app.main' not found,11
   tests/e2e/test_chat_ui.py,0.89
     issues[1]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'playwright.async_api' not found,24
-  worker/tests/test_worker.py,0.89
+  nlp-service/app/parser_llm.py,0.93
     issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'worker' not found,12
-  nlp-service/app/store/redis_store.py,0.91
+      python.import.resolvable,error,Module 'app.schemas' not found,31
+  nlp-service/app/settings.py,0.94
     issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'redis.asyncio' not found,15
-  test_code_generation.py,0.93
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'code_generator' not found,16
-  tests/e2e/conftest.py,0.94
-    issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'playwright.async_api' not found,18
+      python.import.resolvable,error,Module 'app.config' not found,20
   worker/worker.py,0.95
     issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'logging_setup' not found,18
+      python.import.resolvable,error,Module 'logging_setup' not found,23
+  backend/app/logging_setup.py,0.96
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'app.config' not found,87
+  nlp-service/app/logging_setup.py,0.96
+    issues[1]{rule,severity,message,line}:
+      python.import.resolvable,error,Module 'app.config' not found,87
   worker/logging_setup.py,0.96
     issues[1]{rule,severity,message,line}:
-      python.import.resolvable,error,Module 'config' not found,89
+      python.import.resolvable,error,Module 'config' not found,87
 
 UNSUPPORTED[6]{bucket,count}:
   *.md,25
@@ -183,4 +230,4 @@ UNSUPPORTED[6]{bucket,count}:
   *.txt,10
   *.yml,2
   *.example,6
-  other,13
+  other,12

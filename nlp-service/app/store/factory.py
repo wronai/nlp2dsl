@@ -25,7 +25,9 @@ def get_conversation_store() -> ConversationStore:
     if _instance is not None:
         return _instance
 
-    from app.config import settings
+    from app.config import NLPServiceSettings
+
+    settings = NLPServiceSettings(_env_file=None)
     redis_url = settings.redis_url
     conv_ttl = settings.conversation_ttl
 

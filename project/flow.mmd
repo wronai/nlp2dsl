@@ -3,6 +3,25 @@ flowchart TD
     %% Entry points (blue)
     classDef entry fill:#4dabf7,stroke:#1971c2,color:#fff
 
+    subgraph CLI
+        nlp2dsl_sdk__client__workflow_step["workflow_step"]
+        nlp2dsl_sdk__client__NLP2DSLClient__from_env["from_env"]
+        nlp2dsl_sdk__client__NLP2DSLClient__close["close"]
+        nlp2dsl_sdk__client__NLP2DSLClient____enter__["__enter__"]
+        nlp2dsl_sdk__client__NLP2DSLClient____exit__["__exit__"]
+        nlp2dsl_sdk__client__NLP2DSLClient___request["_request"]
+        nlp2dsl_sdk__client__NLP2DSLClient___backend["_backend"]
+        nlp2dsl_sdk__client__NLP2DSLClient___nlp_service["_nlp_service"]
+        nlp2dsl_sdk__client__NLP2DSLClient___worker["_worker"]
+        nlp2dsl_sdk__client__NLP2DSLClient__backend_health["backend_health"]
+        nlp2dsl_sdk__client__NLP2DSLClient__nlp_service_health["nlp_service_health"]
+        nlp2dsl_sdk__client__NLP2DSLClient__worker_health["worker_health"]
+        nlp2dsl_sdk__client__NLP2DSLClient__health["health"]
+        nlp2dsl_sdk__client__NLP2DSLClient__workflow_from_text["workflow_from_text"]
+        nlp2dsl_sdk__client__NLP2DSLClient__run_workflow["run_workflow"]
+        ...["+30 more"]
+    end
+
     subgraph Core
         tauri_wrapper__src_tauri__src__main__main["main"]
         backend__app__main__health["health"]
@@ -18,8 +37,8 @@ flowchart TD
         backend__app__db__WorkflowRepo__count_runs["count_runs"]
         backend__app__db__create_workflow_repo["create_workflow_repo"]
         backend__app__db__postgres__WorkflowRunModel__to_dict["to_dict"]
-        backend__app__db__postgres__PostgresWorkflowRepo___ensure_tables["_ensure_tables"]
-        ...["+114 more"]
+        backend__app__db__postgres__PostgresWorkflowRepo___ensure_engine["_ensure_engine"]
+        ...["+121 more"]
     end
 
     class tauri_wrapper__src_tauri__src__main__main,backend__app__main__health,backend__app__db__memory__MemoryWorkflowRepo__save_run,backend__app__db__memory__MemoryWorkflowRepo__update_run_status,backend__app__db__memory__MemoryWorkflowRepo__get_run,backend__app__db__memory__MemoryWorkflowRepo__list_runs,backend__app__db__memory__MemoryWorkflowRepo__count_runs,backend__app__db__WorkflowRepo__save_run,backend__app__db__WorkflowRepo__update_run_status,backend__app__db__WorkflowRepo__get_run entry

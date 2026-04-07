@@ -1,31 +1,49 @@
-# code2llm/evolution | 170 func | 28f | 2026-04-07
+# code2llm/evolution | 237 func | 31f | 2026-04-07
 
-NEXT[4] (ranked by impact):
-  [1] !! SPLIT           nlp-service/app/main.py
-      WHY: 520L, 0 classes, max CC=10
-      EFFORT: ~4h  IMPACT: 5200
+NEXT[8] (ranked by impact):
+  [1] !! SPLIT           nlp2dsl_sdk/demos.py
+      WHY: 649L, 1 classes, max CC=20
+      EFFORT: ~4h  IMPACT: 12980
 
-  [2] !! SPLIT-FUNC      _extract_entities  CC=36  fan=26
+  [2] !! SPLIT           nlp2dsl_sdk/client.py
+      WHY: 567L, 2 classes, max CC=16
+      EFFORT: ~4h  IMPACT: 9072
+
+  [3] !! SPLIT           nlp-service/app/main.py
+      WHY: 519L, 0 classes, max CC=10
+      EFFORT: ~4h  IMPACT: 5190
+
+  [4] !! SPLIT-FUNC      _extract_entities  CC=36  fan=26
       WHY: CC=36 exceeds 15
       EFFORT: ~1h  IMPACT: 936
 
-  [3] !  SPLIT-FUNC      _process_message  CC=17  fan=18
+  [5] !  SPLIT-FUNC      run_code_generation_demo  CC=20  fan=21
+      WHY: CC=20 exceeds 15
+      EFFORT: ~1h  IMPACT: 420
+
+  [6] !  SPLIT-FUNC      _process_message  CC=17  fan=18
       WHY: CC=17 exceeds 15
       EFFORT: ~1h  IMPACT: 306
 
-  [4] !  SPLIT-FUNC      _format_system_result  CC=16  fan=7
+  [7] !  SPLIT-FUNC      ConversationFlow._handle_response  CC=16  fan=11
+      WHY: CC=16 exceeds 15
+      EFFORT: ~1h  IMPACT: 176
+
+  [8] !  SPLIT-FUNC      _format_system_result  CC=16  fan=7
       WHY: CC=16 exceeds 15
       EFFORT: ~1h  IMPACT: 112
 
 
-RISKS[1]:
+RISKS[3]:
+  ⚠ Splitting nlp2dsl_sdk/demos.py may break 17 import paths
+  ⚠ Splitting nlp2dsl_sdk/client.py may break 47 import paths
   ⚠ Splitting nlp-service/app/main.py may break 20 import paths
 
 METRICS-TARGET:
-  CC̄:          3.1 → ≤2.2
+  CC̄:          3.0 → ≤2.1
   max-CC:      36 → ≤18
-  god-modules: 1 → 0
-  high-CC(≥15): 3 → ≤1
+  god-modules: 3 → 0
+  high-CC(≥15): 5 → ≤2
   hub-types:   0 → ≤0
 
 PATTERNS (language parser shared logic):
@@ -53,4 +71,4 @@ PATTERNS (language parser shared logic):
     - Standardized FunctionInfo/ClassInfo models
 
 HISTORY:
-  prev CC̄=3.1 → now CC̄=3.1
+  prev CC̄=3.0 → now CC̄=3.0

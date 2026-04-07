@@ -1,5 +1,5 @@
 # goal.yaml - Goal configuration file
-# Generated: 2026-04-06 10:13:25
+# Generated: 2026-04-07 18:06:31
 # Documentation: https://github.com/wronai/goal#configuration
 #
 # This file configures Goal's behavior for:
@@ -14,12 +14,14 @@
 version: '1.0'
 project:
   name: nlp2dsl
-  type: []
+  type:
+  - python
   description: ''
 versioning:
   strategy: semver
   files:
   - VERSION
+  - pyproject.toml:version
   - venv/lib/python3.13/site-packages/matplotlib/__init__.py:__version__
   bump_rules:
     patch: 10

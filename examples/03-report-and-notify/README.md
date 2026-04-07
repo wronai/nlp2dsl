@@ -2,67 +2,35 @@
 
 Zaawansowany przykład pokazujący, jak zautomatyzować generowanie raportu i wysyłanie powiadomień do wielu kanałów.
 
+Ten katalog jest cienkim wrapperem nad `run_report_and_notify_demo()` z pakietu `nlp2dsl_sdk`.
+
 ## Scenariusz
 
 Co tydzień generuj raport sprzedaży w PDF i wyślij email do manager@firma.pl oraz powiadomienie na Slack #sales
 
-## Sposoby użycia
+## Jak używać
 
-### 1. One-shot API (composite intent)
+### 1. Bezpośrednio z SDK
 
-```bash
-# Automatyczne rozpoznanie wielu akcji
-curl -X POST http://localhost:8010/workflow/from-text \
-  -H "Content-Type: application/json" \
-  -d '{"text": "Co tydzień generuj raport sprzedaży w PDF i wyślij email do manager@firma.pl oraz powiadom na Slack #sales"}'
+```python
+from nlp2dsl_sdk import run_report_and_notify_demo
 
-# Generuj i wykonaj od razu
-curl -X POST http://localhost:8010/workflow/from-text \
-  -H "Content-Type: application/json" \
-  -d '{"text": "Generuj raport sprzedaży i powiadom team", "execute": true}'
+run_report_and_notify_demo()
 ```
 
-### 2. Konwersacyjny flow
-
-```bash
-# Rozpocznij rozmowę
-curl -X POST http://localhost:8010/workflow/chat/start \
-  -H "Content-Type: application/json" \
-  -d '{"text": "Chcę zautomatyzować raporty sprzedaży"}'
-
-# System dopyta o szczegóły...
-curl -X POST http://localhost:8010/workflow/chat/message \
-  -H "Content-Type: application/json" \
-  -d '{"conversation_id": "ID", "text": "Raport sprzedaży w PDF, email do manager, powiadomienie na #sales"}'
-
-# Uruchom
-curl -X POST http://localhost:8010/workflow/chat/message \
-  -H "Content-Type: application/json" \
-  -d '{"conversation_id": "ID", "text": "uruchom"}'
-```
-
-### 3. Bezpośrednie wywołanie DSL
-
-```bash
-curl -X POST http://localhost:8010/workflow/run \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "weekly_sales_report",
-    "trigger": "weekly",
-    "steps": [
-      {"action": "generate_report", "config": {"report_type": "sales", "format": "pdf"}},
-      {"action": "send_email", "config": {"to": "manager@firma.pl", "subject": "Tygodniowy raport sprzedaży", "body": "W załączniku znajdziesz raport sprzedaży za ostatni tydzień."}},
-      {"action": "notify_slack", "config": {"channel": "#sales", "message": "📊 Nowy raport sprzedaży jest dostępny!"}}
-    ]
-  }'
-```
-
-## Uruchomienie przykładu
+### 2. Z terminala
 
 ```bash
 ./run.sh
 # lub
 python3 main.py
+```
+
+### 3. Co robi helper
+
+```python
+# 1. workflow_from_text("Co tydzień generuj raport sprzedaży w PDF i wyślij email do manager@firma.pl oraz powiadom na Slack #sales")
+# 2. generate_report_and_notify(report_type="sales", format_type="pdf", email_to="manager@firma.pl", slack_channel="#sales", trigger="weekly")
 ```
 
 ## Oczekiwany wynik

@@ -79,7 +79,7 @@ class SystemSettings(BaseModel):
 class SettingsManager:
     """Runtime settings z persystencją do JSON."""
 
-    _instance: SettingsManager | None = None
+    _instance: "SettingsManager | None" = None
     _settings: SystemSettings
 
     def __new__(cls):

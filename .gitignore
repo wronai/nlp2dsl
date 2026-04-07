@@ -1,3 +1,7 @@
+backend/.env.example
+nlp-service/.env.example
+tests/.env.example
+worker/.env.example
 __pycache__/
 *.pyc
 .env

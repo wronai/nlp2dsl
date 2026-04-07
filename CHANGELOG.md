@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.7] - 2026-04-07
+
+### Docs
+- Update README.md
+- Update docs/README.md
+- Update examples/01-invoice/README.md
+- Update examples/02-email/README.md
+- Update examples/03-report-and-notify/README.md
+- Update examples/04-scheduled-report/README.md
+- Update examples/05-conversation-flow/README.md
+- Update examples/README.md
+- Update project/README.md
+- Update project/context.md
+
+### Test
+- Update tests/.gitignore
+- Update tests/e2e/conftest.py
+- Update tests/pytest.ini
+- Update tests/test_nlp2dsl_sdk.py
+- Update tests/tests/test_tests.py
+
+### Other
+- Update .gitignore
+- Update backend/.gitignore
+- Update backend/app/db/__init__.py
+- Update backend/app/db/postgres.py
+- Update backend/tests/conftest.py
+- Update examples/01-invoice/Dockerfile
+- Update examples/01-invoice/main.py
+- Update examples/01-invoice/requirements.txt
+- Update examples/01-invoice/run.sh
+- Update examples/02-email/Dockerfile
+- ... and 43 more files
+
 ## [0.0.6] - 2026-04-07
 
 ### Test

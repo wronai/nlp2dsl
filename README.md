@@ -1,5 +1,16 @@
 # MVP Automation Platform
 
+
+## AI Cost Tracking
+
+![AI Cost](https://img.shields.io/badge/AI%20Cost-$1.35-green) ![AI Model](https://img.shields.io/badge/AI%20Model-openrouter%2Fqwen%2Fqwen3-coder-next-lightgrey)
+
+This project uses AI-generated code. Total cost: **$1.3500** with **9** AI commits.
+
+Generated on 2026-04-07 using [openrouter/qwen/qwen3-coder-next](https://openrouter.ai/models/openrouter/qwen/qwen3-coder-next)
+
+---
+
 > System kompilujący intencje biznesowe (język naturalny) do wykonywalnych procesów w kontenerach Docker — z konwersacyjnym AI i dynamicznym UI.
 
 ## Architektura
@@ -10,7 +21,7 @@ Użytkownik (tekst / głos / GUI)
         ▼
 ┌──────────────────────────┐
 │   NLP Service            │
-│  ├─ Parser (rules/LLM)  │  ← rozumie język naturalny
+│  ├─ Parser (rules/LLM)   │  ← rozumie język naturalny
 │  ├─ Mapper (determ.)     │  ← buduje DSL
 │  ├─ Orchestrator         │  ← conversation loop
 │  └─ Schema generator     │  ← dynamic UI forms
@@ -340,6 +351,13 @@ nlp2dsl/
 ## Przykłady użycia
 
 Zobacz `examples/README.md` dla pełnej listy przykładów:
+
+Jeśli chcesz od razu uruchomić gotowy scenariusz bez tworzenia wrappera, użyj pakietowego CLI:
+
+```bash
+nlp2dsl-demo --list
+nlp2dsl-demo gallery
+```
 
 ```bash
 # Uruchom wszystkie przykłady

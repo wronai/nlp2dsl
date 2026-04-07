@@ -1,7 +1,7 @@
 <!-- code2docs:start --># nlp2dsl
 
-![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.9-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-200-green)
-> **200** functions | **43** classes | **53** files | CC̄ = 3.3
+![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.10-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-250-green)
+> **250** functions | **45** classes | **58** files | CC̄ = 3.0
 
 > Auto-generated project documentation from source code analysis.
 
@@ -141,7 +141,7 @@ Content outside the markers is preserved when regenerating. Enable this with `sy
 
 ```
 nlp2dsl/
-├── project├── metrun-profile    ├── desktop            ├── main        ├── dev        ├── engine    ├── app/        ├── main        ├── workflow            ├── memory        ├── db/            ├── postgres            ├── system        ├── routers/            ├── chat            ├── workflow            ├── settings    ├── code_generation_examples        ├── run        ├── main        ├── run        ├── main        ├── run        ├── main        ├── run        ├── main            ├── run        ├── run        ├── main        ├── logging_setup        ├── audio_parser        ├── parser_rules        ├── registry        ├── logging_setup        ├── config        ├── code_generator    ├── app/        ├── config        ├── mapper        ├── orchestrator        ├── main        ├── schemas        ├── system_executor            ├── memory        ├── store/            ├── factory        ├── settings            ├── redis_store    ├── config    ├── worker        ├── schemas    ├── logging_setup        ├── parser_llm```
+├── project├── metrun-profile            ├── main    ├── desktop        ├── dev        ├── engine    ├── app/        ├── main        ├── workflow            ├── memory        ├── db/            ├── postgres            ├── system        ├── routers/            ├── chat            ├── workflow            ├── settings    ├── demos├── nlp2dsl_sdk/    ├── client    ├── __main__    ├── code_generation_examples        ├── run        ├── main        ├── run        ├── main        ├── run        ├── main        ├── run        ├── main            ├── run        ├── run        ├── main        ├── logging_setup        ├── audio_parser        ├── parser_rules        ├── registry        ├── logging_setup        ├── config        ├── code_generator    ├── app/        ├── schemas        ├── mapper        ├── config        ├── orchestrator        ├── main        ├── system_executor        ├── settings            ├── memory        ├── store/            ├── factory            ├── redis_store    ├── config├── worker/    ├── worker        ├── schemas    ├── logging_setup        ├── parser_llm```
 
 ## API Overview
 
@@ -152,7 +152,9 @@ nlp2dsl/
 - **`Base`** — —
 - **`WorkflowRunModel`** — —
 - **`PostgresWorkflowRepo`** — —
-- **`ConversationFlow`** — Klasa do obsługi konwersacyjnego flow.
+- **`DemoSpec`** — Metadata for a runnable demo exposed by the package CLI.
+- **`NLP2DSLClient`** — Small reusable SDK for the NLP2DSL services.
+- **`ConversationFlow`** — Convenience helper for the conversational workflow example.
 - **`JSONFormatter`** — Emit log records as single-line JSON objects.
 - **`RequestIDMiddleware`** — Generate or forward X-Request-ID for every HTTP request.
 - **`StreamingSTT`** — Real-time streaming STT via Deepgram WebSocket.
@@ -160,21 +162,21 @@ nlp2dsl/
 - **`RequestIDMiddleware`** — Generate or forward X-Request-ID for every HTTP request.
 - **`BackendSettings`** — —
 - **`CodeGenerator`** — Generates code in multiple programming languages using LLM.
-- **`NLPServiceSettings`** — —
 - **`StepStatus`** — —
 - **`Step`** — Pojedynczy krok workflow — deklaratywny opis akcji.
 - **`RunWorkflowRequest`** — Żądanie uruchomienia workflow — DSL biznesowy.
 - **`StepResult`** — —
 - **`WorkflowResult`** — —
 - **`ActionInfo`** — Opis dostępnej akcji (do listowania w GUI / API).
-- **`MemoryConversationStore`** — —
-- **`ConversationStore`** — Abstrakcja persystencji stanu konwersacji.
+- **`NLPServiceSettings`** — —
 - **`LLMSettings`** — —
 - **`NLPSettings`** — —
 - **`WorkerSettings`** — —
 - **`FileAccessSettings`** — —
 - **`SystemSettings`** — Pełny model ustawień systemu.
 - **`SettingsManager`** — Runtime settings z persystencją do JSON.
+- **`MemoryConversationStore`** — —
+- **`ConversationStore`** — Abstrakcja persystencji stanu konwersacji.
 - **`RedisConversationStore`** — —
 - **`WorkerSettings`** — —
 - **`NLPIntent`** — —
@@ -219,22 +221,22 @@ nlp2dsl/
 - `update_settings_section(section, body)` — Zaktualizuj ustawienia sekcji.
 - `set_setting(body)` — Zmień ustawienie. Body: {"path": "llm.model", "value": "gpt-4o"}
 - `reset_settings(body)` — Resetuj ustawienia.
-- `test_direct_code_generation()` — Test direct code generation via nlp-service API.
-- `test_via_workflow()` — Test code generation through the workflow API.
-- `test_conversation_flow()` — Test code generation through conversation flow.
-- `test_worker_execution()` — Test actual code generation through worker.
+- `run_crm_update_demo(client)` — —
+- `run_action_catalog_demo(client)` — —
+- `run_automation_gallery_demo(client)` — —
+- `run_invoice_demo(client)` — —
+- `run_email_demo(client)` — —
+- `run_report_and_notify_demo(client)` — —
+- `run_scheduled_report_demo(client)` — —
+- `run_code_generation_demo(client)` — —
+- `list_available_demos()` — —
+- `workflow_step(action)` — Build a declarative workflow step payload.
+- `main()` — —
+- `main()` — Run the code generation showcase via the shared SDK.
 - `main()` — Główna funkcja przykładu.
-- `create_scheduled_report(name, report_type, trigger, schedule)` — Utwórz zaplanowany raport.
-- `create_scheduled_from_text(text)` — Utwórz raport z tekstu zawierającego trigger.
 - `main()` — Główna funkcja przykładu.
-- `send_invoice(amount, to, currency)` — Wyślij fakturę przez API.
-- `generate_invoice_from_text(text)` — Generuj DSL z języka naturalnego.
 - `main()` — Główna funkcja przykładu.
-- `generate_report_and_notify(report_type, format_type, email_to, slack_channel)` — Generuj raport i wyślij powiadomienia.
-- `generate_composite_from_text(text)` — Generuj DSL z tekstu z wieloma akcjami.
 - `main()` — Główna funkcja przykładu.
-- `send_email(to, subject, body)` — Wyślij e-mail przez API.
-- `generate_email_from_text(text)` — Generuj DSL z języka naturalnego.
 - `main()` — Główna funkcja przykładu.
 - `get_request_id()` — —
 - `setup_logging(service, level)` — Replace root logger handlers with a JSONFormatter handler.
@@ -294,7 +296,7 @@ nlp2dsl/
 📄 `backend.app.config` (1 classes)
 📦 `backend.app.db` (6 functions, 1 classes)
 📄 `backend.app.db.memory` (6 functions, 1 classes)
-📄 `backend.app.db.postgres` (9 functions, 3 classes)
+📄 `backend.app.db.postgres` (11 functions, 3 classes)
 📄 `backend.app.engine` (1 functions)
 📄 `backend.app.logging_setup` (6 functions, 2 classes)
 📄 `backend.app.main` (1 functions)
@@ -305,18 +307,18 @@ nlp2dsl/
 📄 `backend.app.routers.workflow` (5 functions)
 📄 `backend.app.schemas` (6 classes)
 📄 `backend.app.workflow`
-📄 `examples.01-invoice.main` (3 functions)
+📄 `examples.01-invoice.main` (1 functions)
 📄 `examples.01-invoice.run`
-📄 `examples.02-email.main` (3 functions)
+📄 `examples.02-email.main` (1 functions)
 📄 `examples.02-email.run`
-📄 `examples.03-report-and-notify.main` (3 functions)
+📄 `examples.03-report-and-notify.main` (1 functions)
 📄 `examples.03-report-and-notify.run`
-📄 `examples.04-scheduled-report.main` (3 functions)
+📄 `examples.04-scheduled-report.main` (1 functions)
 📄 `examples.04-scheduled-report.run`
-📄 `examples.05-conversation-flow.main` (7 functions, 1 classes)
+📄 `examples.05-conversation-flow.main` (1 functions)
 📄 `examples.05-conversation-flow.run`
 📄 `examples.basic.invoice.run`
-📄 `examples.code_generation_examples` (4 functions)
+📄 `examples.code_generation_examples` (1 functions)
 📄 `metrun-profile`
 📦 `nlp-service.app`
 📄 `nlp-service.app.audio_parser` (8 functions, 1 classes)
@@ -336,17 +338,23 @@ nlp2dsl/
 📄 `nlp-service.app.store.memory` (5 functions, 1 classes)
 📄 `nlp-service.app.store.redis_store` (7 functions, 1 classes)
 📄 `nlp-service.app.system_executor` (13 functions)
+📦 `nlp2dsl_sdk`
+📄 `nlp2dsl_sdk.__main__` (1 functions)
+📄 `nlp2dsl_sdk.client` (47 functions, 2 classes)
+📄 `nlp2dsl_sdk.demos` (17 functions, 1 classes)
 📄 `project`
 📄 `tauri-wrapper.desktop`
 📄 `tauri-wrapper.scripts.dev` (8 functions)
 📄 `tauri-wrapper.src-tauri.src.main` (1 functions)
+📦 `worker`
 📄 `worker.config` (1 classes)
 📄 `worker.logging_setup` (6 functions, 2 classes)
 📄 `worker.worker` (9 functions)
 
 ## Requirements
 
-
+- Python >= >=3.10
+- requests >=2.31.0
 
 ## Contributing
 

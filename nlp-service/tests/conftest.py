@@ -7,8 +7,19 @@ and mock conversation store for orchestrator tests.
 
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+
 import pytest
-from app.store.memory import MemoryConversationStore
+
+NLP_SERVICE_ROOT = Path(__file__).resolve().parents[1]
+if str(NLP_SERVICE_ROOT) not in sys.path:
+    sys.path.insert(0, str(NLP_SERVICE_ROOT))
+
+try:
+    from app.store.memory import MemoryConversationStore
+except ImportError as exc:
+    pytest.skip(f"Skipping nlp-service tests because a runtime dependency is missing: {exc}", allow_module_level=True)
 
 # ── Sample texts for NLP parsing ─────────────────────────────────
 

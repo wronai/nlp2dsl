@@ -53,25 +53,38 @@ class PostgresWorkflowRepo(WorkflowRepo):
         if database_url.startswith("postgresql://"):
             database_url = database_url.replace("postgresql://", "postgresql+asyncpg://", 1)
 
-        self._engine = create_async_engine(
-            database_url,
-            echo=False,
-            pool_size=5,
-            max_overflow=10,
-            pool_pre_ping=True,
-        )
-        self._session_factory = async_sessionmaker(
-            self._engine,
-            class_=AsyncSession,
-            expire_on_commit=False,
-        )
+        self._database_url = database_url
+        self._engine = None
+        self._session_factory = None
         self._initialized = False
-        log.info("Postgres workflow repo created: %s", database_url.split("@")[-1])
+        log.info("Postgres workflow repo configured: %s", database_url.split("@")[-1])
+
+    def _ensure_engine(self):
+        if self._engine is None:
+            self._engine = create_async_engine(
+                self._database_url,
+                echo=False,
+                pool_size=5,
+                max_overflow=10,
+                pool_pre_ping=True,
+            )
+        if self._session_factory is None:
+            self._session_factory = async_sessionmaker(
+                self._engine,
+                class_=AsyncSession,
+                expire_on_commit=False,
+            )
+        return self._engine
+
+    def _get_session_factory(self):
+        self._ensure_engine()
+        return self._session_factory
 
     async def _ensure_tables(self) -> None:
         if self._initialized:
             return
-        async with self._engine.begin() as conn:
+        engine = self._ensure_engine()
+        async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
         self._initialized = True
         log.info("Database tables ensured")
@@ -79,7 +92,7 @@ class PostgresWorkflowRepo(WorkflowRepo):
     async def save_run(self, workflow_id: str, name: str, status: str, data: dict) -> None:
         await self._ensure_tables()
 
-        async with self._session_factory() as session:
+        async with self._get_session_factory()() as session:
             run = WorkflowRunModel(
                 id=workflow_id,
                 name=name,
@@ -95,7 +108,7 @@ class PostgresWorkflowRepo(WorkflowRepo):
     async def update_run_status(self, workflow_id: str, status: str) -> None:
         await self._ensure_tables()
 
-        async with self._session_factory() as session:
+        async with self._get_session_factory()() as session:
             await session.execute(
                 text("UPDATE workflow_runs SET status = :status, updated_at = :now WHERE id = :id"),
                 {"status": status, "now": datetime.now(UTC), "id": workflow_id},
@@ -105,7 +118,7 @@ class PostgresWorkflowRepo(WorkflowRepo):
     async def get_run(self, workflow_id: str) -> dict | None:
         await self._ensure_tables()
 
-        async with self._session_factory() as session:
+        async with self._get_session_factory()() as session:
             result = await session.get(WorkflowRunModel, workflow_id)
             if result:
                 return result.to_dict()
@@ -114,7 +127,7 @@ class PostgresWorkflowRepo(WorkflowRepo):
     async def list_runs(self, limit: int = DEFAULT_LIST_LIMIT, offset: int = 0) -> list[dict]:
         await self._ensure_tables()
 
-        async with self._session_factory() as session:
+        async with self._get_session_factory()() as session:
             result = await session.execute(
                 text(
                     "SELECT * FROM workflow_runs ORDER BY created_at DESC LIMIT :limit OFFSET :offset"
@@ -137,9 +150,10 @@ class PostgresWorkflowRepo(WorkflowRepo):
     async def count_runs(self) -> int:
         await self._ensure_tables()
 
-        async with self._session_factory() as session:
+        async with self._get_session_factory()() as session:
             result = await session.execute(text("SELECT COUNT(*) FROM workflow_runs"))
             return result.scalar() or 0
 
     async def close(self) -> None:
-        await self._engine.dispose()
+        if self._engine is not None:
+            await self._engine.dispose()

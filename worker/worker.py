@@ -16,7 +16,11 @@ from datetime import UTC, datetime
 from typing import Any
 
 from fastapi import FastAPI, HTTPException
-from logging_setup import RequestIDMiddleware, setup_logging
+
+try:
+    from .logging_setup import RequestIDMiddleware, setup_logging
+except ImportError:
+    from logging_setup import RequestIDMiddleware, setup_logging
 
 setup_logging(service="worker")
 log = logging.getLogger("worker")
@@ -64,7 +68,7 @@ async def handle_send_email(config: dict) -> dict:
 
 @action("generate_report")
 async def handle_generate_report(config: dict) -> dict:
-    report_type = config.get("type", "sales")
+    report_type = config.get("report_type", config.get("type", "sales"))
     fmt = config.get("format", "pdf")
     log.info("📊 Generating %s report (%s)…", report_type, fmt)
     await asyncio.sleep(1.0)

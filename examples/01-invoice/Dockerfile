@@ -6,15 +6,18 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Zależności
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY README.md pyproject.toml ./
+COPY nlp2dsl_sdk ./nlp2dsl_sdk
+RUN pip install --no-cache-dir .
 
 # Kopiuj kod przykładu
-COPY main.py .
-COPY run.sh .
+COPY examples/01-invoice/main.py ./examples/01-invoice/main.py
+COPY examples/01-invoice/run.sh ./examples/01-invoice/run.sh
 
 # Uprawnienia dla skryptu
-RUN chmod +x run.sh
+RUN chmod +x ./examples/01-invoice/run.sh
+
+WORKDIR /app/examples/01-invoice
 
 # Domyślne polecenie
 CMD ["python3", "main.py"]

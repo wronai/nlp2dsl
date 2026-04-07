@@ -1,6 +1,6 @@
 # Przykłady użycia NLP2DSL
 
-Zbiór praktycznych przykładów pokazujących, jak używać platformy NLP2DSL do automatyzacji procesów biznesowych.
+Zbiór praktycznych przykładów pokazujących, jak używać platformy NLP2DSL do automatyzacji procesów biznesowych. Od tej wersji logika HTTP i wspólne flow są wyciągnięte do pakietu `nlp2dsl_sdk`, a skrypty w `examples/` są cienkimi wrapperami nad helperami SDK. Dodatkowo pakiet udostępnia katalog demo i CLI (`nlp2dsl-demo`) do uruchamiania gotowych scenariuszy bez tworzenia boilerplate'u. Jeśli chcesz używać tej samej warstwy w projekcie produkcyjnym, zainstaluj pakiet z repozytorium przez `pip install -e .`.
 
 ## Struktura
 
@@ -30,12 +30,19 @@ examples/
    python3 main.py
    ```
 
+3. Albo uruchom gotowy demo katalog z pakietu:
+   ```bash
+   nlp2dsl-demo --list
+   nlp2dsl-demo gallery
+   nlp2dsl-demo actions
+   ```
+
 ### Uruchomienie w Dockerze
 Każdy przykład zawiera Dockerfile i może być uruchomiony kontenerowo:
 ```bash
-cd examples/01-invoice
-docker build -t nlp2dsl-invoice-example .
-docker run --rm --env-file .env nlp2dsl-invoice-example
+# z katalogu głównego repo
+docker build -f examples/01-invoice/Dockerfile -t nlp2dsl-invoice-example .
+docker run --rm --network host nlp2dsl-invoice-example
 ```
 
 ## Przykłady
@@ -43,27 +50,27 @@ docker run --rm --env-file .env nlp2dsl-invoice-example
 ### 1. Wysyłanie Faktury
 - **Lokalizacja**: `examples/01-invoice/`
 - **Opis**: Prosty przykład wysyłania faktury z kwotą i odbiorcą
-- **Koncepcje**: One-shot API, bezpośrednie wywołanie DSL
+- **Koncepcje**: `run_invoice_demo()`, `workflow_from_text()`, `send_invoice()`
 
 ### 2. Wysyłanie E-maila
 - **Lokalizacja**: `examples/02-email/`
 - **Opis**: Różne sposoby wysyłania e-maili
-- **Koncepcje**: Aliasy komend, parametry opcjonalne
+- **Koncepcje**: `run_email_demo()`, `workflow_from_text()`, `send_email()`
 
 ### 3. Raport i Powiadomienia
 - **Lokalizacja**: `examples/03-report-and-notify/`
 - **Opis**: Generowanie raportu i wysyłanie do wielu kanałów
-- **Koncepcje**: Composite intents, wielokrokowe workflow
+- **Koncepcje**: `run_report_and_notify_demo()`, wielokrokowe workflow, powiadomienia
 
 ### 4. Zaplanowane Raporty
 - **Lokalizacja**: `examples/04-scheduled-report/`
 - **Opis**: Automatyczne raporty według harmonogramu
-- **Koncepcje**: Triggers (daily/weekly/monthly), schedule
+- **Koncepcje**: `run_scheduled_report_demo()`, triggery, schedule
 
 ### 5. Konwersacyjny Flow
 - **Lokalizacja**: `examples/05-conversation-flow/`
 - **Opis**: Pełny cykl konwersacji od startu do wykonania
-- **Koncepcje**: Chat API, state management, dynamic forms
+- **Koncepcje**: `ConversationFlow`, `run_demo()`, `run_interactive()`, dynamic forms
 
 ## Konfiguracja środowiska
 
@@ -114,47 +121,52 @@ Aby użyć prawdziwych serwisów zamiast mock responses:
    S3_ACCESS_KEY=minioadmin
    ```
 
-## Wspólne wzorce
+## Korzystanie z SDK
 
 ### 1. One-shot API
 Najszybszy sposób na wykonanie pojedynczej akcji:
 ```python
-import requests
+from nlp2dsl_sdk import NLP2DSLClient
 
-response = requests.post(
-    "http://localhost:8010/workflow/from-text",
-    json={"text": "Wyślij fakturę na 1500 PLN do klient@firma.pl"}
-)
+with NLP2DSLClient.from_env() as client:
+    client.workflow_from_text("Wyślij fakturę na 1500 PLN do klient@firma.pl")
 ```
 
 ### 2. Konwersacyjny flow
 Gdy potrzebujesz dopytać o brakujące dane:
 ```python
-# Start
-conv = requests.post(
-    "http://localhost:8010/workflow/chat/start",
-    json={"text": "Chcę wysłać fakturę"}
-)
+from nlp2dsl_sdk import ConversationFlow
 
-# Kontynuacja
-requests.post(
-    "http://localhost:8010/workflow/chat/message",
-    json={"conversation_id": conv_id, "text": "1500 PLN na klient@firma.pl"}
-)
+flow = ConversationFlow()
+flow.run_demo()
+# albo:
+# flow.run_interactive()
 ```
 
 ### 3. Bezpośrednie DSL
 Gdy znasz dokładną konfigurację:
 ```python
-requests.post(
-    "http://localhost:8010/workflow/run",
-    json={
-        "name": "my_workflow",
-        "steps": [
-            {"action": "send_invoice", "config": {...}}
-        ]
-    }
-)
+from nlp2dsl_sdk import NLP2DSLClient, workflow_step
+
+with NLP2DSLClient.from_env() as client:
+    client.run_workflow(
+        name="my_workflow",
+        steps=[
+            workflow_step("send_invoice", amount=1500, to="klient@firma.pl", currency="PLN"),
+            workflow_step("send_email", to="billing@firma.pl", subject="Faktura wysłana"),
+        ],
+    )
+```
+
+### 4. Boilerplate-free demo catalog
+Gdy chcesz szybko dodać nowy scenariusz demo bez kopiowania HTTP i printów:
+```python
+from nlp2dsl_sdk import DEMO_REGISTRY, list_available_demos
+
+for spec in list_available_demos():
+    print(spec.name, spec.description)
+
+DEMO_REGISTRY["gallery"]()
 ```
 
 ## Dostępne akcje
@@ -170,9 +182,12 @@ requests.post(
 ## Composite Intents
 
 System automatycznie rozpoznaje złożone intencje:
+- `invoice_and_notify` - Faktura + powiadomienie
 - `invoice_and_email` - Faktura + email
 - `report_and_notify` - Raport + powiadomienia
+- `report_and_email` - Raport + email
 - `full_invoice_flow` - Pełny proces faktury
+- `full_report_flow` - Pełny proces raportu
 
 ## Tryby LLM
 
@@ -212,9 +227,9 @@ done
 
 ## Dodawanie własnych przykładów
 
-1. Stwórz katalog w odpowiedniej kategorii
-2. Dodaj `README.md`, `run.sh`, `main.py`
-3. Użyj istniejących przykładów jako szablonu
+1. Najpierw sprawdź, czy istniejący katalog demo w `nlp2dsl_sdk` nie pokrywa Twojego przypadku
+2. Jeśli potrzebujesz nowego scenariusza, dopisz go jako nową definicję do katalogu demo albo użyj `workflow_step()` do złożenia workflow
+3. Dodawaj tylko cienkie wrappery w `examples/`, jeśli naprawdę potrzebujesz osobnego punktu wejścia
 4. Przetestuj przed dodaniem
 
 ## Wsparcie

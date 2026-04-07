@@ -2,62 +2,31 @@
 
 Podstawowy przykład pokazujący, jak wysłać fakturę za pomocą platformy NLP2DSL.
 
-## Sposoby użycia
+Ten katalog jest cienkim wrapperem nad `run_invoice_demo()` z pakietu `nlp2dsl_sdk`.
 
-### 1. One-shot API (bez konwersacji)
+## Jak używać
 
-```bash
-# Generuj DSL
-curl -X POST http://localhost:8010/workflow/from-text \
-  -H "Content-Type: application/json" \
-  -d '{"text": "Wyślij fakturę na 1500 PLN do klient@firma.pl"}'
+### 1. Bezpośrednio z SDK
 
-# Generuj i wykonaj od razu
-curl -X POST http://localhost:8010/workflow/from-text \
-  -H "Content-Type: application/json" \
-  -d '{"text": "Wyślij fakturę na 1500 PLN do klient@firma.pl", "execute": true}'
+```python
+from nlp2dsl_sdk import run_invoice_demo
+
+run_invoice_demo()
 ```
 
-### 2. Konwersacyjny flow
+### 2. Z terminala
 
 ```bash
-# Rozpocznij rozmowę
-curl -X POST http://localhost:8010/workflow/chat/start \
-  -H "Content-Type: application/json" \
-  -d '{"text": "Chcę wysłać fakturę"}'
-
-# Uzupełnij dane (conversation_id z poprzedniej odpowiedzi)
-curl -X POST http://localhost:8010/workflow/chat/message \
-  -H "Content-Type: application/json" \
-  -d '{"conversation_id": "ID", "text": "1500 PLN na klient@firma.pl"}'
-
-# Uruchom workflow
-curl -X POST http://localhost:8010/workflow/chat/message \
-  -H "Content-Type: application/json" \
-  -d '{"conversation_id": "ID", "text": "uruchom"}'
-```
-
-### 3. Bezpośrednie wywołanie DSL
-
-```bash
-curl -X POST http://localhost:8010/workflow/run \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "invoice_example",
-    "steps": [
-      {"action": "send_invoice", "config": {"amount": 1500, "to": "klient@firma.pl", "currency": "PLN"}}
-    ]
-  }'
-```
-
-## Uruchomienie przykładu
-
-```bash
-# Użyj skryptu Python
 ./run.sh
-
-# Lub bezpośrednio
+# lub
 python3 main.py
+```
+
+### 3. Co robi helper
+
+```python
+# 1. workflow_from_text("Wyślij fakturę na 1500 PLN do klient@firma.pl")
+# 2. send_invoice(amount=1500, to="klient@firma.pl", currency="PLN")
 ```
 
 ## Oczekiwany wynik

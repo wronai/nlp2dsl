@@ -1,51 +1,56 @@
-# nlp2dsl | 41f 4752L | shell:3,rust:1,javascript:1,python:36 | 2026-04-07
-# stats: 177 func | 0 cls | 41 mod | CC̄=3.2 | critical:3 | cycles:0
-# alerts[5]: CC _extract_entities=36; fan-out _extract_entities=26; fan-out _process_message=18; fan-out run_workflow=18; CC _process_message=17
-# hotspots[5]: _extract_entities fan=26; run_workflow fan=18; _process_message fan=18; workflow_from_text fan=17; websocket_chat fan=16
-# evolution: CC̄ 3.1→3.2 (regressed +0.1)
+# nlp2dsl | 46f 6047L | shell:3,rust:1,javascript:1,python:41 | 2026-04-07
+# stats: 244 func | 0 cls | 46 mod | CC̄=3.0 | critical:5 | cycles:0
+# alerts[5]: CC _extract_entities=36; fan-out _extract_entities=26; fan-out run_code_generation_demo=21; CC run_code_generation_demo=20; fan-out _process_message=18
+# hotspots[5]: _extract_entities fan=26; run_code_generation_demo fan=21; run_workflow fan=18; _process_message fan=18; workflow_from_text fan=17
+# evolution: CC̄ 3.0→3.0 (flat 0.0)
 # Keys: M=modules, D=details, i=imports, e=exports, c=classes, f=functions, m=methods
-M[41]:
+M[46]:
   backend/app/__init__.py,0
   backend/app/config.py,42
-  backend/app/db/__init__.py,48
+  backend/app/db/__init__.py,49
   backend/app/db/memory.py,37
-  backend/app/db/postgres.py,145
-  backend/app/engine.py,97
+  backend/app/db/postgres.py,159
+  backend/app/engine.py,98
   backend/app/logging_setup.py,100
   backend/app/main.py,48
   backend/app/routers/__init__.py,0
   backend/app/routers/chat.py,107
-  backend/app/routers/settings.py,83
+  backend/app/routers/settings.py,81
   backend/app/routers/system.py,29
-  backend/app/routers/workflow.py,103
+  backend/app/routers/workflow.py,102
   backend/app/schemas.py,64
-  backend/app/workflow.py,13
+  backend/app/workflow.py,22
   metrun-profile.sh,48
   nlp-service/app/__init__.py,0
-  nlp-service/app/audio_parser.py,149
-  nlp-service/app/code_generator.py,283
-  nlp-service/app/config.py,62
-  nlp-service/app/logging_setup.py,102
-  nlp-service/app/main.py,520
-  nlp-service/app/mapper.py,187
-  nlp-service/app/orchestrator.py,330
+  nlp-service/app/audio_parser.py,148
+  nlp-service/app/code_generator.py,279
+  nlp-service/app/config.py,60
+  nlp-service/app/logging_setup.py,100
+  nlp-service/app/main.py,519
+  nlp-service/app/mapper.py,185
+  nlp-service/app/orchestrator.py,331
   nlp-service/app/parser_llm.py,183
-  nlp-service/app/parser_rules.py,274
+  nlp-service/app/parser_rules.py,272
   nlp-service/app/registry.py,352
-  nlp-service/app/schemas.py,122
-  nlp-service/app/settings.py,253
-  nlp-service/app/store/__init__.py,32
+  nlp-service/app/schemas.py,120
+  nlp-service/app/settings.py,251
+  nlp-service/app/store/__init__.py,30
   nlp-service/app/store/factory.py,46
-  nlp-service/app/store/memory.py,25
-  nlp-service/app/store/redis_store.py,60
-  nlp-service/app/system_executor.py,340
+  nlp-service/app/store/memory.py,23
+  nlp-service/app/store/redis_store.py,58
+  nlp-service/app/system_executor.py,338
+  nlp2dsl_sdk/__init__.py,33
+  nlp2dsl_sdk/__main__.py,41
+  nlp2dsl_sdk/client.py,567
+  nlp2dsl_sdk/demos.py,649
   project.sh,35
   tauri-wrapper/desktop.sh,79
   tauri-wrapper/scripts/dev.js,56
   tauri-wrapper/src-tauri/src/main.rs,7
-  worker/config.py,29
-  worker/logging_setup.py,102
-  worker/worker.py,160
+  worker/__init__.py,5
+  worker/config.py,27
+  worker/logging_setup.py,100
+  worker/worker.py,167
 D:
   nlp-service/app/parser_rules.py:
     e: parse_rules,_detect_actions,_resolve_intent,_extract_entities,_set_entity
@@ -54,6 +59,26 @@ D:
     _resolve_intent(actions)
     _extract_entities(text;text_lower)
     _set_entity(entities;field;value)
+  nlp2dsl_sdk/demos.py:
+    e: DemoSpec,_ensure_services,_print_json,_print_workflow_preview,_print_execution_result,_print_code_generation_preview,_preview_text_examples,run_crm_update_demo,run_action_catalog_demo,run_automation_gallery_demo,_run_workflow_examples,_run_gallery_examples,run_invoice_demo,run_email_demo,run_report_and_notify_demo,run_scheduled_report_demo,run_code_generation_demo,list_available_demos
+    DemoSpec:  # Metadata for a runnable demo exposed by the package CLI...
+    _ensure_services(client)
+    _print_json(payload)
+    _print_workflow_preview(result)
+    _print_execution_result(result)
+    _print_code_generation_preview(result)
+    _preview_text_examples(client;title;examples)
+    run_crm_update_demo(client)
+    run_action_catalog_demo(client)
+    run_automation_gallery_demo(client)
+    _run_workflow_examples(client;title;examples)
+    _run_gallery_examples(client;title;examples)
+    run_invoice_demo(client)
+    run_email_demo(client)
+    run_report_and_notify_demo(client)
+    run_scheduled_report_demo(client)
+    run_code_generation_demo(client)
+    list_available_demos()
   nlp-service/app/orchestrator.py:
     e: start_conversation,continue_conversation,get_conversation,get_action_form,_process_message,_merge_into_state,_format_system_result
     start_conversation(text)
@@ -63,6 +88,11 @@ D:
     _process_message(state;text)
     _merge_into_state(state;nlp)
     _format_system_result(intent;result)
+  nlp2dsl_sdk/client.py:
+    e: NLP2DSLClient,ConversationFlow,workflow_step
+    NLP2DSLClient: __init__(5),from_env(1),close(0),__enter__(0),__exit__(3),_request(3),_backend(2),_nlp_service(2),_worker(2),backend_health(0),nlp_service_health(0),worker_health(0),health(0),workflow_from_text(3),run_workflow(4),workflow_actions(0),workflow_action_schema(1),settings(0),settings_section(1),update_settings_section(2),set_setting(2),reset_settings(1),chat_start(2),chat_message(3),chat_state(1),nlp_chat_start(2),nlp_chat_message(3),nlp_chat_state(1),generate_code(4),supported_languages(0),worker_execute(3),worker_generate_code(5),send_invoice(5),send_email(5),generate_report(4),generate_report_and_notify(7),create_scheduled_report(7),notify_slack(4),crm_update(4),send_invoice_and_notify(7)  # Small reusable SDK for the NLP2DSL services...
+    ConversationFlow: __init__(1),start(2),send_message(2),_handle_response(1),run_demo(0),run_interactive(0)  # Convenience helper for the conversational workflow example...
+    workflow_step(action)
   nlp-service/app/code_generator.py:
     e: CodeGenerator
     CodeGenerator: __init__(0),_get_api_key(0),_build_prompt(3),generate_code(4),_extract_class_name(1),_split_code_and_tests(2),get_supported_languages(0),get_language_info(1)  # Generates code in multiple programming languages using LLM...
@@ -158,6 +188,9 @@ Placeholder ...
     SystemSettings(BaseModel):  # Pełny model ustawień systemu...
     SettingsManager: __new__(0),get(1),get_section(1),get_all(0),set(2),update_section(2),reset(1),_load(0),_save(0),describe(-1)  # Runtime settings z persystencją do JSON...
     _coerce_type(value;target_type)
+  nlp2dsl_sdk/__main__.py:
+    e: main
+    main()
   nlp-service/app/registry.py:
     e: get_action_by_alias,get_trigger,get_required_fields,get_defaults
     get_action_by_alias(text)
@@ -179,7 +212,7 @@ Placeholder ...
     e: Base,WorkflowRunModel,PostgresWorkflowRepo
     Base(DeclarativeBase):
     WorkflowRunModel(Base): to_dict(0)
-    PostgresWorkflowRepo(WorkflowRepo): __init__(1),_ensure_tables(0),save_run(4),update_run_status(2),get_run(1),list_runs(2),count_runs(0),close(0)
+    PostgresWorkflowRepo(WorkflowRepo): __init__(1),_ensure_engine(0),_get_session_factory(0),_ensure_tables(0),save_run(4),update_run_status(2),get_run(1),list_runs(2),count_runs(0),close(0)
   nlp-service/app/store/factory.py:
     e: get_conversation_store
     get_conversation_store()
@@ -242,11 +275,12 @@ Placeholder ...
     e: ConversationStore
     ConversationStore(ABC): get(1),save(2),delete(1),count(0)  # Abstrakcja persystencji stanu konwersacji...
   project.sh:
-  tauri-wrapper/desktop.sh:
   metrun-profile.sh:
+  tauri-wrapper/desktop.sh:
   backend/app/__init__.py:
   backend/app/workflow.py:
   backend/app/routers/__init__.py:
+  nlp2dsl_sdk/__init__.py:
   backend/app/config.py:
     e: BackendSettings
     BackendSettings(BaseSettings):
@@ -254,17 +288,6 @@ Placeholder ...
   nlp-service/app/config.py:
     e: NLPServiceSettings
     NLPServiceSettings(BaseSettings):
-  backend/app/schemas.py:
-    e: StepStatus,Step,RunWorkflowRequest,StepResult,WorkflowResult,ActionInfo
-    StepStatus(str,Enum):
-    Step(BaseModel):  # Pojedynczy krok workflow — deklaratywny opis akcji...
-    RunWorkflowRequest(BaseModel):  # Żądanie uruchomienia workflow — DSL biznesowy...
-    StepResult(BaseModel):
-    WorkflowResult(BaseModel):
-    ActionInfo(BaseModel):  # Opis dostępnej akcji (do listowania w GUI / API)...
-  worker/config.py:
-    e: WorkerSettings
-    WorkerSettings(BaseSettings):
   nlp-service/app/schemas.py:
     e: NLPIntent,NLPEntities,NLPResult,DSLStep,WorkflowDSL,DialogResponse,NLPRequest,ConversationState,FieldSchema,ActionFormSchema,ConversationResponse
     NLPIntent(BaseModel):
@@ -278,3 +301,15 @@ Placeholder ...
     FieldSchema(BaseModel):
     ActionFormSchema(BaseModel):
     ConversationResponse(BaseModel):
+  backend/app/schemas.py:
+    e: StepStatus,Step,RunWorkflowRequest,StepResult,WorkflowResult,ActionInfo
+    StepStatus(str,Enum):
+    Step(BaseModel):  # Pojedynczy krok workflow — deklaratywny opis akcji...
+    RunWorkflowRequest(BaseModel):  # Żądanie uruchomienia workflow — DSL biznesowy...
+    StepResult(BaseModel):
+    WorkflowResult(BaseModel):
+    ActionInfo(BaseModel):  # Opis dostępnej akcji (do listowania w GUI / API)...
+  worker/config.py:
+    e: WorkerSettings
+    WorkerSettings(BaseSettings):
+  worker/__init__.py:

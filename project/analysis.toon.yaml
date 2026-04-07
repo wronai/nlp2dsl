@@ -1,16 +1,17 @@
-# code2llm | 41f 4752L | python:36,shell:3,rust:1,javascript:1 | 2026-04-07
-# CC̄=3.2 | critical:3/200 | dups:0 | cycles:0
+# code2llm | 46f 6047L | python:41,shell:3,rust:1,javascript:1 | 2026-04-07
+# CC̄=3.0 | critical:5/250 | dups:0 | cycles:0
 
-HEALTH[4]:
+HEALTH[5]:
+  🟡 CC    run_code_generation_demo CC=20 (limit:15)
   🟡 CC    _handle_response CC=16 (limit:15)
   🟡 CC    _extract_entities CC=36 (limit:15)
   🟡 CC    _process_message CC=17 (limit:15)
   🟡 CC    _format_system_result CC=16 (limit:15)
 
 REFACTOR[1]:
-  1. split 4 high-CC methods  (CC>15)
+  1. split 5 high-CC methods  (CC>15)
 
-PIPELINES[138]:
+PIPELINES[182]:
   [1] Src [main]: main
       PURITY: 100% pure
   [2] Src [server]: server
@@ -24,23 +25,23 @@ PIPELINES[138]:
 
 LAYERS:
   nlp-service/                    CC̄=3.8    ←in:0  →out:0
-  │ !! main                       520L  0C   20m  CC=10     ←0
+  │ !! main                       519L  0C   20m  CC=10     ←0
   │ registry                   352L  0C    4m  CC=5      ←3
-  │ system_executor            340L  0C   13m  CC=12     ←1
-  │ !! orchestrator               330L  0C    7m  CC=17     ←1
-  │ code_generator             283L  1C    8m  CC=14     ←0
-  │ !! parser_rules               274L  0C    5m  CC=36     ←2
-  │ settings                   253L  6C   11m  CC=6      ←1
-  │ mapper                     187L  0C    6m  CC=8      ←2
+  │ system_executor            338L  0C   13m  CC=12     ←1
+  │ !! orchestrator               331L  0C    7m  CC=17     ←1
+  │ code_generator             279L  1C    8m  CC=14     ←0
+  │ !! parser_rules               272L  0C    5m  CC=36     ←2
+  │ settings                   251L  6C   11m  CC=6      ←1
+  │ mapper                     185L  0C    6m  CC=8      ←2
   │ parser_llm                 183L  0C    3m  CC=10     ←1
-  │ audio_parser               149L  1C    8m  CC=9      ←1
-  │ schemas                    122L  11C    0m  CC=0.0    ←0
-  │ logging_setup              102L  2C    6m  CC=3      ←0
-  │ config                      62L  1C    0m  CC=0.0    ←0
-  │ redis_store                 60L  1C    7m  CC=3      ←0
+  │ audio_parser               148L  1C    8m  CC=9      ←1
+  │ schemas                    120L  11C    0m  CC=0.0    ←0
+  │ logging_setup              100L  2C    6m  CC=3      ←0
+  │ config                      60L  1C    0m  CC=0.0    ←0
+  │ redis_store                 58L  1C    7m  CC=3      ←0
   │ factory                     46L  0C    1m  CC=4      ←1
-  │ __init__                    32L  1C    4m  CC=1      ←0
-  │ memory                      25L  1C    5m  CC=1      ←0
+  │ __init__                    30L  1C    4m  CC=1      ←0
+  │ memory                      23L  1C    5m  CC=1      ←0
   │ __init__                     0L  0C    0m  CC=0.0    ←0
   │
   tauri-wrapper/                  CC̄=3.5    ←in:0  →out:0
@@ -48,27 +49,34 @@ LAYERS:
   │ dev.js                      56L  0C    7m  CC=11     ←0
   │ main.rs                      7L  0C    1m  CC=2      ←0
   │
+  nlp2dsl_sdk/                    CC̄=2.6    ←in:0  →out:0
+  │ !! demos                      649L  1C   17m  CC=20     ←6
+  │ !! client                     567L  2C   47m  CC=16     ←1
+  │ __main__                    41L  0C    1m  CC=5      ←0
+  │ __init__                    33L  0C    0m  CC=0.0    ←0
+  │
   backend/                        CC̄=2.2    ←in:0  →out:0
-  │ postgres                   145L  3C    9m  CC=4      ←0
+  │ postgres                   159L  3C   11m  CC=4      ←0
   │ chat                       107L  0C    4m  CC=9      ←0
-  │ workflow                   103L  0C    5m  CC=8      ←0
+  │ workflow                   102L  0C    5m  CC=8      ←0
   │ logging_setup              100L  2C    6m  CC=3      ←5
-  │ engine                      97L  0C    1m  CC=9      ←2
-  │ settings                    83L  0C    7m  CC=2      ←0
+  │ engine                      98L  0C    1m  CC=9      ←2
+  │ settings                    81L  0C    7m  CC=2      ←0
   │ schemas                     64L  6C    0m  CC=0.0    ←0
+  │ __init__                    49L  1C    6m  CC=2      ←0
   │ main                        48L  0C    1m  CC=1      ←0
-  │ __init__                    48L  1C    6m  CC=2      ←0
   │ config                      42L  1C    0m  CC=0.0    ←0
   │ memory                      37L  1C    6m  CC=2      ←0
   │ system                      29L  0C    1m  CC=2      ←0
-  │ workflow                    13L  0C    0m  CC=0.0    ←0
+  │ workflow                    22L  0C    0m  CC=0.0    ←0
   │ __init__                     0L  0C    0m  CC=0.0    ←0
   │ __init__                     0L  0C    0m  CC=0.0    ←0
   │
   worker/                         CC̄=1.6    ←in:0  →out:0
-  │ worker                     160L  0C    9m  CC=5      ←0
-  │ logging_setup              102L  2C    6m  CC=3      ←0
-  │ config                      29L  1C    0m  CC=0.0    ←0
+  │ worker                     167L  0C    9m  CC=5      ←0
+  │ logging_setup              100L  2C    6m  CC=3      ←0
+  │ config                      27L  1C    0m  CC=0.0    ←0
+  │ __init__                     5L  0C    0m  CC=0.0    ←0
   │
   ./                              CC̄=0.0    ←in:0  →out:0
   │ metrun-profile.sh           48L  0C    0m  CC=0.0    ←0

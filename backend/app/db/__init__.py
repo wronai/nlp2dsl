@@ -39,8 +39,9 @@ class WorkflowRepo(ABC):
 
 def create_workflow_repo() -> WorkflowRepo:
     """Factory: zwraca Postgres repo jeśli URL jest ustawiony, inaczej memory."""
-    from app.config import settings
-    pg_url = settings.postgres_url
+    from app.config import BackendSettings
+
+    pg_url = BackendSettings().postgres_url
     if pg_url:
         from app.db.postgres import PostgresWorkflowRepo
         return PostgresWorkflowRepo(pg_url)

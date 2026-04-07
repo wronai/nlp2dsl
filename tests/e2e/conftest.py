@@ -10,12 +10,21 @@ Services under test:
 from __future__ import annotations
 
 import os
+import sys
 import shutil
 import pytest
-import pytest_asyncio
-import httpx
+from pathlib import Path
 
-from playwright.async_api import async_playwright, Browser, BrowserContext, Page
+TESTS_ROOT = Path(__file__).resolve().parents[1]
+if str(TESTS_ROOT) not in sys.path:
+    sys.path.insert(0, str(TESTS_ROOT))
+
+try:
+    import pytest_asyncio
+    import httpx
+    from playwright.async_api import async_playwright, Browser, BrowserContext, Page
+except ImportError as exc:
+    pytest.skip(f"Skipping e2e tests because a runtime dependency is missing: {exc}", allow_module_level=True)
 
 
 # ── Base URLs ──────────────────────────────────────────────────
