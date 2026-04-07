@@ -5,8 +5,6 @@ Test script for multi-language code generation in nlp2dsl.
 This script tests the generate_code action with different programming languages.
 """
 
-import asyncio
-import json
 import sys
 from pathlib import Path
 
@@ -139,12 +137,3 @@ async def test_code_generation():
     
     print("\n=== Test Complete ===")
     return results
-
-
-if __name__ == "__main__":
-    # Set test environment variables
-    import os
-    os.environ["LLM_MODEL"] = "openrouter/openai/gpt-5-mini"
-    os.environ["OPENROUTER_API_KEY"] = "test-key"  # Will fail but tests the flow
-    
-    asyncio.run(test_code_generation())

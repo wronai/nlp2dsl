@@ -10,6 +10,7 @@ from typing import Any
 import requests
 
 BASE_URL = "http://localhost:8010"
+INVOICE_AMOUNT: float = float("1500")
 
 
 def send_invoice(amount: float, to: str, currency: str = "PLN") -> dict[str, Any]:
@@ -74,7 +75,7 @@ def main() -> None:
 
     # Przykład 2: Bezpośrednie wywołanie
     print("📋 Wykonywanie workflow...")
-    execution = send_invoice(1500, "klient@firma.pl", "PLN")
+    execution = send_invoice(INVOICE_AMOUNT, "klient@firma.pl", "PLN")
 
     print("✅ Wynik wykonania:")
     print(json.dumps(execution, indent=2, ensure_ascii=False))
@@ -89,7 +90,3 @@ def main() -> None:
             print(f"\n❌ Błąd: {step.get('error')}")
     else:
         print(f"\n❌ Workflow nie powiódł się: {execution.get('error')}")
-
-
-if __name__ == "__main__":
-    main()

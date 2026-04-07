@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.6] - 2026-04-07
+
+### Test
+- Update test_code_generation.py
+
+### Other
+- Update backend/app/logging_setup.py
+- Update examples/01-invoice/main.py
+- Update examples/02-email/main.py
+- Update examples/03-report-and-notify/main.py
+- Update examples/04-scheduled-report/main.py
+- Update examples/05-conversation-flow/main.py
+- Update examples/code_generation_examples.py
+- Update nlp-service/app/code_generator.py
+- Update worker/worker.py
+
 ## [0.0.5] - 2026-04-07
 
 ### Docs

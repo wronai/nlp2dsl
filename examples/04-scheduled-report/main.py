@@ -161,7 +161,3 @@ def main() -> None:
     print("\n🎉 Wszystkie zaplanowane raporty zostały utworzone!")
     print("\n💡 Wskazówka: W systemie produkcyjnym te workflow byłyby uruchamiane")
     print("   automatycznie według zdefiniowanych harmonogramów.")
-
-
-if __name__ == "__main__":
-    main()

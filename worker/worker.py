@@ -10,6 +10,7 @@ W produkcji: podmień simulate_* na prawdziwe integracje
 
 import asyncio
 import logging
+from http import HTTPStatus
 from collections.abc import Callable
 from datetime import UTC, datetime
 from typing import Any
@@ -22,6 +23,8 @@ log = logging.getLogger("worker")
 
 app = FastAPI(title="Task Worker", version="0.1.0")
 app.add_middleware(RequestIDMiddleware)
+
+WORKER_TIMEOUT_SECONDS: float = float("30.0")
 
 
 # ── Action registry ──────────────────────────────────────────
@@ -111,7 +114,7 @@ async def handle_generate_code(config: dict) -> dict:
                     "context": context,
                     "include_tests": include_tests
                 },
-                timeout=30.0
+                timeout=WORKER_TIMEOUT_SECONDS
             )
             response.raise_for_status()
             result = response.json()
@@ -145,7 +148,7 @@ async def execute_step(step: dict) -> dict[str, Any]:
     handler = ACTION_HANDLERS.get(action_name)
     if not handler:
         raise HTTPException(
-            status_code=400,
+            status_code=HTTPStatus.BAD_REQUEST,
             detail=f"Unknown action: '{action_name}'. "
                    f"Available: {list(ACTION_HANDLERS.keys())}",
         )

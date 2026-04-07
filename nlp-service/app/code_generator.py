@@ -248,7 +248,7 @@ Requirements:
         import re
         words = re.findall(r'\b\w+\b', description.title())
         if words:
-            return words[0] + "Class"
+            return f"{words[0]}Class"
         return None
 
     def _split_code_and_tests(self, combined: str, result: dict) -> dict:

@@ -98,7 +98,3 @@ def main() -> None:
             print(f"\n❌ Błąd: {step.get('error')}")
     else:
         print(f"\n❌ Workflow nie powiódł się: {execution.get('error')}")
-
-
-if __name__ == "__main__":
-    main()

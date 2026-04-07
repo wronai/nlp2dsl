@@ -84,7 +84,7 @@ def setup_logging(service: str = "app", level: str | None = None) -> None:
     """
     if level is None:
         try:
-            from .config import settings as _cfg
+            from app.config import settings as _cfg
             level = _cfg.log_level
         except Exception:
             level = "INFO"

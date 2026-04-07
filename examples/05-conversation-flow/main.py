@@ -171,7 +171,3 @@ def main() -> None:
         flow.run_interactive()
     else:
         flow.run_demo()
-
-
-if __name__ == "__main__":
-    main()

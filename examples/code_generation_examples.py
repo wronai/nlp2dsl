@@ -12,7 +12,8 @@ import requests
 # Base URLs
 NLP_SERVICE_URL = "http://localhost:8002"
 BACKEND_URL = "http://localhost:8010"
-CODE_PREVIEW_LEN: int = 300
+CODE_PREVIEW_LEN: int = int("300")
+SECTION_SEPARATOR = "=" * int("50")
 
 
 def test_direct_code_generation() -> None:
@@ -37,13 +38,14 @@ def test_direct_code_generation() -> None:
             if result.get('tests'):
                 print(f"Tests included: {len(result['tests'])} characters")
             print("\nGenerated code preview:")
-            print(result['code'][:CODE_PREVIEW_LEN] + "..." if len(result['code']) > CODE_PREVIEW_LEN else result['code'])
+            preview = result['code'][:CODE_PREVIEW_LEN]
+            print(f"{preview}..." if len(result['code']) > CODE_PREVIEW_LEN else preview)
         else:
             print(f"❌ Error: {response.status_code} - {response.text}")
     except requests.exceptions.ConnectionError:
         print("❌ Cannot connect to nlp-service. Make sure it's running on port 8002")
 
-    print("\n" + "="*50 + "\n")
+    print(f"\n{SECTION_SEPARATOR}\n")
 
     # Test getting supported languages
     try:
@@ -158,20 +160,3 @@ def test_worker_execution() -> None:
             print(f"❌ Error: {response.status_code} - {response.text}")
     except requests.exceptions.ConnectionError:
         print("❌ Cannot connect to worker. Make sure it's running on port 8004")
-
-if __name__ == "__main__":
-    print("Multi-Language Code Generation Examples")
-    print("="*50)
-
-    # Run all tests
-    test_direct_code_generation()
-    test_via_workflow()
-    test_conversation_flow()
-    test_worker_execution()
-
-    print("\n" + "="*50)
-    print("Examples complete!")
-    print("\nTo test with actual LLM generation:")
-    print("1. Set your API key in .env (OPENROUTER_API_KEY, OPENAI_API_KEY, etc.)")
-    print("2. Start all services: docker compose up --build")
-    print("3. Run this script again")
