@@ -65,7 +65,7 @@ async def backend_client():
 
 # ── Playwright ─────────────────────────────────────────────────
 
-@pytest_asyncio.fixture(scope="session")
+@pytest_asyncio.fixture(scope="session", loop_scope="session")
 async def browser_instance():
     async with async_playwright() as pw:
         browser_kwargs = {

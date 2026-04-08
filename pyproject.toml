@@ -22,6 +22,7 @@ nlp2dsl-demo = "nlp2dsl_sdk.__main__:main"
 testpaths = ["tests"]
 norecursedirs = ["e2e", ".git", ".venv"]
 addopts = ["--import-mode=importlib"]
+asyncio_default_fixture_loop_scope = "function"
 filterwarnings = [
     "ignore::DeprecationWarning",
 ]

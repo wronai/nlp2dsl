@@ -17,6 +17,9 @@ dependencies = [
 
 [tool.pytest.ini_options]
 addopts = ["--import-mode=importlib"]
+testpaths = ["."]
+norecursedirs = ["e2e", ".git", ".venv"]
+asyncio_default_fixture_loop_scope = "function"
 
 [tool.pfix]
 # Self-healing Python configuration

@@ -5,7 +5,7 @@ Użytkownik opisuje CO chce zrobić (kroki workflow),
 system sam tłumaczy to na imperatywne wykonanie w kontenerach.
 """
 
-from datetime import datetime
+from datetime import UTC, datetime
 from enum import Enum
 from typing import Any
 from uuid import uuid4
@@ -52,7 +52,7 @@ class WorkflowResult(BaseModel):
     name: str
     status: StepStatus
     steps: list[StepResult] = []
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
 
 # ── Registry ──────────────────────────────────────────────────
