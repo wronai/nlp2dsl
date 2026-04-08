@@ -1,10 +1,10 @@
-# code2llm | 47f 6508L | python:42,shell:3,rust:1,javascript:1 | 2026-04-08
+# code2llm | 47f 6550L | python:42,shell:3,javascript:1,rust:1 | 2026-04-08
 # CC̄=3.0 | critical:5/269 | dups:0 | cycles:0
 
 HEALTH[5]:
   🟡 CC    run_code_generation_demo CC=20 (limit:15)
   🟡 CC    _handle_response CC=16 (limit:15)
-  🟡 CC    _extract_entities CC=36 (limit:15)
+  🟡 CC    _extract_entities CC=40 (limit:15)
   🟡 CC    _process_message CC=21 (limit:15)
   🟡 CC    _format_system_result CC=16 (limit:15)
 
@@ -12,30 +12,30 @@ REFACTOR[1]:
   1. split 5 high-CC methods  (CC>15)
 
 PIPELINES[192]:
-  [1] Src [main]: main
+  [1] Src [server]: server
       PURITY: 100% pure
-  [2] Src [server]: server
+  [2] Src [npmCommand]: npmCommand
       PURITY: 100% pure
-  [3] Src [npmCommand]: npmCommand
+  [3] Src [child]: child
       PURITY: 100% pure
-  [4] Src [child]: child
+  [4] Src [shuttingDown]: shuttingDown
       PURITY: 100% pure
-  [5] Src [shuttingDown]: shuttingDown
+  [5] Src [exitCode]: exitCode → main → shutdown
       PURITY: 100% pure
 
 LAYERS:
-  nlp-service/                    CC̄=3.8    ←in:0  →out:0
+  nlp-service/                    CC̄=3.9    ←in:0  →out:0
   │ !! main                       519L  0C   20m  CC=10     ←0
-  │ registry                   381L  0C    4m  CC=5      ←3
+  │ registry                   384L  0C    4m  CC=5      ←3
   │ !! orchestrator               344L  0C    7m  CC=21     ←1
   │ system_executor            338L  0C   13m  CC=12     ←1
+  │ !! parser_rules               290L  0C    5m  CC=40     ←2
   │ code_generator             279L  1C    8m  CC=14     ←0
-  │ !! parser_rules               272L  0C    5m  CC=36     ←2
   │ settings                   251L  6C   11m  CC=6      ←2
   │ mapper                     189L  0C    6m  CC=8      ←2
   │ parser_llm                 187L  0C    3m  CC=10     ←1
   │ audio_parser               148L  1C    8m  CC=9      ←1
-  │ schemas                    122L  11C    0m  CC=0.0    ←0
+  │ schemas                    127L  11C    0m  CC=0.0    ←0
   │ logging_setup              100L  2C    6m  CC=3      ←0
   │ config                      60L  1C    0m  CC=0.0    ←0
   │ redis_store                 58L  1C    7m  CC=3      ←0
@@ -56,8 +56,8 @@ LAYERS:
   │ __init__                    33L  0C    0m  CC=0.0    ←0
   │
   backend/                        CC̄=2.1    ←in:0  →out:0
-  │ engine                     261L  0C    7m  CC=11     ←2
-  │ workflow                   181L  0C    9m  CC=8      ←0
+  │ engine                     269L  0C    7m  CC=11     ←2
+  │ workflow                   189L  0C    9m  CC=8      ←0
   │ postgres                   172L  3C   11m  CC=4      ←0
   │ chat                       107L  0C    4m  CC=9      ←0
   │ logging_setup              100L  2C    6m  CC=3      ←5

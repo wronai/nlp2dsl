@@ -42,9 +42,11 @@ REPORT_TYPE_KEYWORDS = {
     "sales": "sales",
     "hr": "hr",
     "kadrowy": "hr",
+    "kadr": "hr",
     "finansowy": "finance",
     "finanse": "finance",
     "finance": "finance",
+    "finansów": "finance",
     "marketing": "marketing",
     "miesięczny": "monthly_summary",
     "tygodniowy": "weekly_summary",
@@ -106,6 +108,10 @@ def parse_rules(text: str) -> NLPResult:
         entities_dict["_trigger"] = trigger
 
     confidence = min(0.6 + 0.1 * len(detected_actions), 0.9) if detected_actions else 0.3
+
+    # Handle description for generate_code (rules mode)
+    if intent_name == "generate_code" and not entities.description:
+        entities.description = text
 
     return NLPResult(
         intent=NLPIntent(intent=intent_name, confidence=confidence),

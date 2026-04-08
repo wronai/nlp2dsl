@@ -13,9 +13,9 @@ NEXT[8] (ranked by impact):
       WHY: 519L, 0 classes, max CC=10
       EFFORT: ~4h  IMPACT: 5190
 
-  [4] !! SPLIT-FUNC      _extract_entities  CC=36  fan=26
-      WHY: CC=36 exceeds 15
-      EFFORT: ~1h  IMPACT: 936
+  [4] !! SPLIT-FUNC      _extract_entities  CC=40  fan=30
+      WHY: CC=40 exceeds 15
+      EFFORT: ~1h  IMPACT: 1200
 
   [5] !  SPLIT-FUNC      run_code_generation_demo  CC=20  fan=21
       WHY: CC=20 exceeds 15
@@ -40,8 +40,8 @@ RISKS[3]:
   ⚠ Splitting nlp-service/app/main.py may break 20 import paths
 
 METRICS-TARGET:
-  CC̄:          2.9 → ≤2.0
-  max-CC:      36 → ≤18
+  CC̄:          3.0 → ≤2.1
+  max-CC:      40 → ≤20
   god-modules: 3 → 0
   high-CC(≥15): 5 → ≤2
   hub-types:   0 → ≤0
@@ -71,4 +71,4 @@ PATTERNS (language parser shared logic):
     - Standardized FunctionInfo/ClassInfo models
 
 HISTORY:
-  prev CC̄=3.0 → now CC̄=2.9
+  prev CC̄=2.9 → now CC̄=3.0

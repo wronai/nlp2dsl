@@ -1,73 +1,86 @@
-# redup/duplication | 8 groups | 37f 6083L | 2026-04-08
+# redup/duplication | 10 groups | 48f 6480L | 2026-04-08
 
 SUMMARY:
-  files_scanned: 37
-  total_lines:   6083
-  dup_groups:    8
-  dup_fragments: 24
-  saved_lines:   173
-  scan_ms:       13461
+  files_scanned: 48
+  total_lines:   6480
+  dup_groups:    10
+  dup_fragments: 29
+  saved_lines:   143
+  scan_ms:       20703
 
-DUPLICATES[8] (ranked by impact):
-  [1899ff8e67d31c77] ! STRU  setup_logging  L=25 N=3 saved=50 sim=1.00
-      backend/app/logging_setup.py:0-24  (setup_logging)
-      worker/logging_setup.py:0-24  (setup_logging)
-      nlp-service/app/logging_setup.py:0-24  (setup_logging)
-  [a58ac04d8adce867]   EXAC  format  L=14 N=3 saved=28 sim=1.00
-      backend/app/logging_setup.py:0-13  (format)
-      worker/logging_setup.py:0-13  (format)
-      nlp-service/app/logging_setup.py:0-13  (format)
-  [7a728d8cfa044c9f]   STRU  main  L=7 N=5 saved=28 sim=1.00
-      examples/code_generation_examples.py:0-6  (main)
-      examples/04-scheduled-report/main.py:0-6  (main)
-      examples/01-invoice/main.py:0-6  (main)
-      examples/03-report-and-notify/main.py:0-6  (main)
-      examples/02-email/main.py:0-6  (main)
-  [09dab9b354c8767d]   STRU  parse_text  L=13 N=3 saved=26 sim=1.00
-      nlp-service/app/main.py:0-12  (parse_text)
-      backend/app/routers/workflow.py:0-6  (run_workflow_endpoint)
-      backend/app/routers/workflow.py:0-6  (start_workflow_endpoint)
-  [ffd95d6b2707ba43]   EXAC  dispatch  L=11 N=3 saved=22 sim=1.00
-      backend/app/logging_setup.py:0-10  (dispatch)
-      worker/logging_setup.py:0-10  (dispatch)
-      nlp-service/app/logging_setup.py:0-10  (dispatch)
-  [a62bc534c778f738]   EXAC  get_request_id  L=5 N=3 saved=10 sim=1.00
-      backend/app/logging_setup.py:0-4  (get_request_id)
-      worker/logging_setup.py:0-4  (get_request_id)
-      nlp-service/app/logging_setup.py:0-4  (get_request_id)
-  [3f5cfdf7288a2da1]   STRU  get  L=5 N=2 saved=5 sim=1.00
-      nlp-service/app/store/__init__.py:0-4  (get)
-      backend/app/db/__init__.py:0-4  (get_run)
-  [59e25ab8745014ff]   STRU  get  L=4 N=2 saved=4 sim=1.00
-      nlp-service/app/store/memory.py:0-3  (get)
-      backend/app/db/memory.py:0-3  (get_run)
+DUPLICATES[10] (ranked by impact):
+  [5980042b45ef9ea3] ! STRU  setup_logging  L=22 N=3 saved=44 sim=1.00
+      backend/app/logging_setup.py:79-100  (setup_logging)
+      nlp-service/app/logging_setup.py:79-100  (setup_logging)
+      worker/logging_setup.py:79-100  (setup_logging)
+  [a58ac04d8adce867]   EXAC  format  L=12 N=3 saved=24 sim=1.00
+      backend/app/logging_setup.py:40-51  (format)
+      nlp-service/app/logging_setup.py:40-51  (format)
+      worker/logging_setup.py:40-51  (format)
+  [ffd95d6b2707ba43]   EXAC  dispatch  L=9 N=3 saved=18 sim=1.00
+      backend/app/logging_setup.py:68-76  (dispatch)
+      nlp-service/app/logging_setup.py:68-76  (dispatch)
+      worker/logging_setup.py:68-76  (dispatch)
+  [8e6677ea0d5059a7]   STRU  main  L=4 N=5 saved=16 sim=1.00
+      examples/01-invoice/main.py:16-19  (main)
+      examples/02-email/main.py:16-19  (main)
+      examples/03-report-and-notify/main.py:16-19  (main)
+      examples/04-scheduled-report/main.py:16-19  (main)
+      examples/code_generation_examples.py:18-21  (main)
+  [fe1a465464777068]   STRU  handle_notify_slack  L=11 N=2 saved=11 sim=1.00
+      worker/worker.py:119-129  (handle_notify_slack)
+      worker/worker.py:133-143  (handle_notify_telegram)
+  [8e33482aef8974e1]   STRU  action_schema  L=7 N=2 saved=7 sim=1.00
+      backend/app/routers/settings.py:29-35  (action_schema)
+      backend/app/routers/settings.py:47-53  (get_settings_section)
+  [e2bd3c5d1f7d650b]   EXAC  __init__  L=3 N=3 saved=6 sim=1.00
+      backend/app/logging_setup.py:36-38  (__init__)
+      nlp-service/app/logging_setup.py:36-38  (__init__)
+      worker/logging_setup.py:36-38  (__init__)
+  [2283cb9d4d16ec25]   EXAC  __init__  L=3 N=3 saved=6 sim=1.00
+      backend/app/logging_setup.py:64-66  (__init__)
+      nlp-service/app/logging_setup.py:64-66  (__init__)
+      worker/logging_setup.py:64-66  (__init__)
+  [8af82767bfb2b892]   STRU  run_workflow_endpoint  L=3 N=3 saved=6 sim=1.00
+      backend/app/routers/workflow.py:67-69  (run_workflow_endpoint)
+      backend/app/routers/workflow.py:73-75  (start_workflow_endpoint)
+      nlp-service/app/main.py:84-89  (parse_text)
+  [2ce1096adac6d1a4]   STRU  actions_schema  L=5 N=2 saved=5 sim=1.00
+      backend/app/routers/settings.py:21-25  (actions_schema)
+      backend/app/routers/settings.py:39-43  (get_settings)
 
-REFACTOR[8] (ranked by priority):
+REFACTOR[10] (ranked by priority):
   [1] ● extract_function   → utils/setup_logging.py
-      WHY: 3 occurrences of 25-line block across 3 files — saves 50 lines
+      WHY: 3 occurrences of 22-line block across 3 files — saves 44 lines
       FILES: backend/app/logging_setup.py, nlp-service/app/logging_setup.py, worker/logging_setup.py
   [2] ● extract_class      → utils/format.py
-      WHY: 3 occurrences of 14-line block across 3 files — saves 28 lines
+      WHY: 3 occurrences of 12-line block across 3 files — saves 24 lines
       FILES: backend/app/logging_setup.py, nlp-service/app/logging_setup.py, worker/logging_setup.py
-  [3] ○ extract_function   → examples/utils/main.py
-      WHY: 5 occurrences of 7-line block across 5 files — saves 28 lines
+  [3] ● extract_class      → utils/dispatch.py
+      WHY: 3 occurrences of 9-line block across 3 files — saves 18 lines
+      FILES: backend/app/logging_setup.py, nlp-service/app/logging_setup.py, worker/logging_setup.py
+  [4] ○ extract_function   → examples/utils/main.py
+      WHY: 5 occurrences of 4-line block across 5 files — saves 16 lines
       FILES: examples/01-invoice/main.py, examples/02-email/main.py, examples/03-report-and-notify/main.py, examples/04-scheduled-report/main.py, examples/code_generation_examples.py
-  [4] ○ extract_function   → utils/parse_text.py
-      WHY: 3 occurrences of 13-line block across 2 files — saves 26 lines
+  [5] ○ extract_function   → worker/utils/handle_notify_slack.py
+      WHY: 2 occurrences of 11-line block across 1 files — saves 11 lines
+      FILES: worker/worker.py
+  [6] ○ extract_function   → backend/app/routers/utils/action_schema.py
+      WHY: 2 occurrences of 7-line block across 1 files — saves 7 lines
+      FILES: backend/app/routers/settings.py
+  [7] ● extract_class      → utils/__init__.py
+      WHY: 3 occurrences of 3-line block across 3 files — saves 6 lines
+      FILES: backend/app/logging_setup.py, nlp-service/app/logging_setup.py, worker/logging_setup.py
+  [8] ● extract_class      → utils/__init__.py
+      WHY: 3 occurrences of 3-line block across 3 files — saves 6 lines
+      FILES: backend/app/logging_setup.py, nlp-service/app/logging_setup.py, worker/logging_setup.py
+  [9] ○ extract_function   → utils/run_workflow_endpoint.py
+      WHY: 3 occurrences of 3-line block across 2 files — saves 6 lines
       FILES: backend/app/routers/workflow.py, nlp-service/app/main.py
-  [5] ● extract_class      → utils/dispatch.py
-      WHY: 3 occurrences of 11-line block across 3 files — saves 22 lines
-      FILES: backend/app/logging_setup.py, nlp-service/app/logging_setup.py, worker/logging_setup.py
-  [6] ● extract_function   → utils/get_request_id.py
-      WHY: 3 occurrences of 5-line block across 3 files — saves 10 lines
-      FILES: backend/app/logging_setup.py, nlp-service/app/logging_setup.py, worker/logging_setup.py
-  [7] ○ extract_function   → utils/get.py
-      WHY: 2 occurrences of 5-line block across 2 files — saves 5 lines
-      FILES: backend/app/db/__init__.py, nlp-service/app/store/__init__.py
-  [8] ○ extract_function   → utils/get.py
-      WHY: 2 occurrences of 4-line block across 2 files — saves 4 lines
-      FILES: backend/app/db/memory.py, nlp-service/app/store/memory.py
+  [10] ○ extract_function   → backend/app/routers/utils/actions_schema.py
+      WHY: 2 occurrences of 5-line block across 1 files — saves 5 lines
+      FILES: backend/app/routers/settings.py
 
 METRICS-TARGET:
-  dup_groups:  8 → 0
-  saved_lines: 173 lines recoverable
+  dup_groups:  10 → 0
+  saved_lines: 143 lines recoverable

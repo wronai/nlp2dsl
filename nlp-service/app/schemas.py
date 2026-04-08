@@ -44,6 +44,11 @@ class NLPEntities(BaseModel):
     action_description: str | None = None
     required_fields: list[str] | None = None
     aliases: list[str] | None = None
+    # ── Code generation ──
+    description: str | None = None
+    language: str | None = None
+    context: str | None = None
+    include_tests: bool | None = None
 
 
 class NLPResult(BaseModel):

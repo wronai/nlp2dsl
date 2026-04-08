@@ -141,7 +141,7 @@ Content outside the markers is preserved when regenerating. Enable this with `sy
 
 ```
 nlp2dsl/
-├── metrun-profile├── project            ├── main    ├── desktop        ├── dev        ├── engine    ├── app/        ├── workflow_events        ├── main        ├── workflow            ├── memory        ├── db/            ├── postgres            ├── system        ├── routers/            ├── chat            ├── workflow            ├── settings    ├── demos├── nlp2dsl_sdk/    ├── client    ├── __main__    ├── code_generation_examples        ├── run        ├── main        ├── run        ├── main        ├── run        ├── main        ├── run        ├── main            ├── run        ├── run        ├── main        ├── logging_setup        ├── audio_parser        ├── parser_rules        ├── registry        ├── logging_setup        ├── config        ├── code_generator    ├── app/        ├── schemas        ├── mapper        ├── orchestrator        ├── main        ├── system_executor        ├── settings            ├── memory        ├── store/            ├── factory            ├── redis_store    ├── config        ├── schemas├── worker/    ├── worker        ├── config    ├── logging_setup        ├── parser_llm```
+├── metrun-profile├── project    ├── desktop            ├── main        ├── dev        ├── engine    ├── app/        ├── workflow_events        ├── main        ├── workflow            ├── memory        ├── db/            ├── postgres            ├── system        ├── routers/            ├── chat            ├── workflow            ├── settings    ├── demos├── nlp2dsl_sdk/    ├── client    ├── __main__    ├── code_generation_examples        ├── run        ├── main        ├── run        ├── main        ├── run        ├── main        ├── run        ├── main            ├── run        ├── run        ├── main        ├── logging_setup        ├── audio_parser        ├── parser_rules        ├── registry        ├── logging_setup        ├── schemas        ├── code_generator    ├── app/        ├── config        ├── mapper        ├── orchestrator        ├── main        ├── system_executor        ├── settings            ├── memory        ├── store/        ├── schemas            ├── factory    ├── config            ├── redis_store├── worker/    ├── worker        ├── config    ├── logging_setup        ├── parser_llm```
 
 ## API Overview
 
@@ -162,14 +162,14 @@ nlp2dsl/
 - **`StreamingSTT`** — Real-time streaming STT via Deepgram WebSocket.
 - **`JSONFormatter`** — Emit log records as single-line JSON objects.
 - **`RequestIDMiddleware`** — Generate or forward X-Request-ID for every HTTP request.
-- **`BackendSettings`** — —
-- **`CodeGenerator`** — Generates code in multiple programming languages using LLM.
 - **`StepStatus`** — —
 - **`Step`** — Pojedynczy krok workflow — deklaratywny opis akcji.
 - **`RunWorkflowRequest`** — Żądanie uruchomienia workflow — DSL biznesowy.
 - **`StepResult`** — —
 - **`WorkflowResult`** — —
 - **`ActionInfo`** — Opis dostępnej akcji (do listowania w GUI / API).
+- **`CodeGenerator`** — Generates code in multiple programming languages using LLM.
+- **`BackendSettings`** — —
 - **`LLMSettings`** — —
 - **`NLPSettings`** — —
 - **`WorkerSettings`** — —
@@ -178,8 +178,6 @@ nlp2dsl/
 - **`SettingsManager`** — Runtime settings z persystencją do JSON.
 - **`MemoryConversationStore`** — —
 - **`ConversationStore`** — Abstrakcja persystencji stanu konwersacji.
-- **`RedisConversationStore`** — —
-- **`WorkerSettings`** — —
 - **`NLPIntent`** — —
 - **`NLPEntities`** — —
 - **`NLPResult`** — —
@@ -191,6 +189,8 @@ nlp2dsl/
 - **`FieldSchema`** — —
 - **`ActionFormSchema`** — —
 - **`ConversationResponse`** — —
+- **`WorkerSettings`** — —
+- **`RedisConversationStore`** — —
 - **`NLPServiceSettings`** — —
 - **`JSONFormatter`** — Emit log records as single-line JSON objects.
 - **`RequestIDMiddleware`** — Generate or forward X-Request-ID for every HTTP request.

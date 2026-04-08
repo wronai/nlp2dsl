@@ -21,7 +21,8 @@ nlp2dsl-demo = "nlp2dsl_sdk.__main__:main"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 norecursedirs = ["e2e", ".git", ".venv"]
-addopts = ["--import-mode=importlib"]
+addopts = ["--import-mode=importlib", "-v", "--tb=no"]
+asyncio_default_fixture_loop_scope = "function"
 filterwarnings = [
     "ignore::DeprecationWarning",
 ]

@@ -1,7 +1,7 @@
-# vallm batch | 164f | 63✓ 3⚠ 38✗ | 2026-04-08
+# vallm batch | 170f | 69✓ 3⚠ 38✗ | 2026-04-08
 
 SUMMARY:
-  scanned: 164  passed: 63 (38.4%)  warnings: 3  errors: 38  unsupported: 63
+  scanned: 170  passed: 69 (40.6%)  warnings: 3  errors: 38  unsupported: 63
 
 WARNINGS[3]{path,score}:
   nlp2dsl_sdk/client.py,0.96
@@ -50,18 +50,18 @@ ERRORS[38]{path,score}:
       python.import.resolvable,error,Module 'app.registry' not found,11
       python.import.resolvable,error,Module 'app.settings' not found,12
       python.import.resolvable,error,Module 'app.system_executor' not found,13
-      python.import.resolvable,error,Module 'app.system_executor' not found,221
-      python.import.resolvable,error,Module 'app.system_executor' not found,238
-      python.import.resolvable,error,Module 'app.system_executor' not found,252
-      python.import.resolvable,error,Module 'app.system_executor' not found,269
-      python.import.resolvable,error,Module 'app.system_executor' not found,281
-      python.import.resolvable,error,Module 'app.system_executor' not found,295
-      python.import.resolvable,error,Module 'app.system_executor' not found,314
-      python.import.resolvable,error,Module 'app.system_executor' not found,342
-      python.import.resolvable,error,Module 'app.system_executor' not found,351
-      python.import.resolvable,error,Module 'app.system_executor' not found,365
-      python.import.resolvable,error,Module 'app.system_executor' not found,379
-      python.import.resolvable,error,Module 'app.system_executor' not found,386
+      python.import.resolvable,error,Module 'app.system_executor' not found,231
+      python.import.resolvable,error,Module 'app.system_executor' not found,248
+      python.import.resolvable,error,Module 'app.system_executor' not found,262
+      python.import.resolvable,error,Module 'app.system_executor' not found,279
+      python.import.resolvable,error,Module 'app.system_executor' not found,291
+      python.import.resolvable,error,Module 'app.system_executor' not found,305
+      python.import.resolvable,error,Module 'app.system_executor' not found,324
+      python.import.resolvable,error,Module 'app.system_executor' not found,352
+      python.import.resolvable,error,Module 'app.system_executor' not found,361
+      python.import.resolvable,error,Module 'app.system_executor' not found,375
+      python.import.resolvable,error,Module 'app.system_executor' not found,389
+      python.import.resolvable,error,Module 'app.system_executor' not found,396
   nlp-service/app/store/factory.py,0.66
     issues[4]{rule,severity,message,line}:
       python.import.resolvable,error,Module 'app.store' not found,14

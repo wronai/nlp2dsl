@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [tool.pytest.ini_options]
-addopts = ["--import-mode=importlib"]
+addopts = ["--import-mode=importlib", "-v", "--tb=no"]
 testpaths = ["."]
 norecursedirs = ["e2e", ".git", ".venv"]
 asyncio_default_fixture_loop_scope = "function"

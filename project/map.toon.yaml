@@ -1,8 +1,8 @@
-# nlp2dsl | 47f 6508L | shell:3,rust:1,javascript:1,python:42 | 2026-04-08
+# nlp2dsl | 47f 6550L | shell:3,javascript:1,rust:1,python:42 | 2026-04-08
 # stats: 263 func | 0 cls | 47 mod | CC̄=3.0 | critical:5 | cycles:0
-# alerts[5]: CC _extract_entities=36; fan-out _extract_entities=26; fan-out run_code_generation_demo=21; fan-out _process_message=20; CC _process_message=21
-# hotspots[5]: _extract_entities fan=26; run_code_generation_demo fan=21; _process_message fan=20; _execute_workflow fan=19; workflow_from_text fan=17
-# evolution: CC̄ 3.0→3.0 (flat 0.0)
+# alerts[5]: CC _extract_entities=40; fan-out _extract_entities=30; fan-out run_code_generation_demo=21; fan-out _process_message=20; CC _process_message=21
+# hotspots[5]: _extract_entities fan=30; run_code_generation_demo fan=21; _process_message fan=20; _execute_workflow fan=19; workflow_from_text fan=17
+# evolution: CC̄ 2.9→3.0 (regressed +0.1)
 # Keys: M=modules, D=details, i=imports, e=exports, c=classes, f=functions, m=methods
 M[47]:
   backend/app/__init__.py,0
@@ -10,14 +10,14 @@ M[47]:
   backend/app/db/__init__.py,49
   backend/app/db/memory.py,37
   backend/app/db/postgres.py,172
-  backend/app/engine.py,261
+  backend/app/engine.py,269
   backend/app/logging_setup.py,100
   backend/app/main.py,48
   backend/app/routers/__init__.py,0
   backend/app/routers/chat.py,107
   backend/app/routers/settings.py,81
   backend/app/routers/system.py,29
-  backend/app/routers/workflow.py,181
+  backend/app/routers/workflow.py,189
   backend/app/schemas.py,64
   backend/app/workflow.py,22
   backend/app/workflow_events.py,91
@@ -31,9 +31,9 @@ M[47]:
   nlp-service/app/mapper.py,189
   nlp-service/app/orchestrator.py,344
   nlp-service/app/parser_llm.py,187
-  nlp-service/app/parser_rules.py,272
-  nlp-service/app/registry.py,381
-  nlp-service/app/schemas.py,122
+  nlp-service/app/parser_rules.py,290
+  nlp-service/app/registry.py,384
+  nlp-service/app/schemas.py,127
   nlp-service/app/settings.py,251
   nlp-service/app/store/__init__.py,30
   nlp-service/app/store/factory.py,46
@@ -327,7 +327,7 @@ Placeholder ...
   worker/config.py:
     e: WorkerSettings
     WorkerSettings(BaseSettings):
-  worker/__init__.py:
   nlp-service/app/config.py:
     e: NLPServiceSettings
     NLPServiceSettings(BaseSettings):
+  worker/__init__.py:

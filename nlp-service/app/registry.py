@@ -34,9 +34,9 @@ ACTIONS_REGISTRY: dict[str, dict] = {
         "required": ["to"],
         "optional": {"subject": "Automatyczna wiadomość", "body": ""},
         "aliases": [
-            "email", "e-mail", "mail", "maila",
-            "wyślij email", "wyślij maila", "send email",
-            "wiadomość", "napisz",
+            "email", "e-mail",
+            "wyślij email", "wyślij maila", "send email", "napisz maila",
+            "wiadomość", "napisz do", "napisz wiadomość", "wyślij wiadomość",
         ],
         "param_aliases": {
             "temat": "subject",
@@ -59,6 +59,7 @@ ACTIONS_REGISTRY: dict[str, dict] = {
             "sprzedaż": "report_type=sales",
             "hr": "report_type=hr",
             "finanse": "report_type=finance",
+            "finansów": "report_type=finance",
             "format": "format",
             "pdf": "format=pdf",
             "csv": "format=csv",
@@ -128,10 +129,10 @@ ACTIONS_REGISTRY: dict[str, dict] = {
         "required": ["description"],
         "optional": {"language": "python", "context": None, "include_tests": False},
         "aliases": [
-            "generuj kod", "napisz kod", "stwórz kod", "generate code",
+            "generuj kod", "napisz kod", "stwórz kod", "stwórz", "generate code",
             "write code", "create code", "kod", "program", "funkcja",
             "klasa", "skrypt", "aplikacja", "moduł", "implementuj",
-            "napisz funkcję", "stwórz klasę", "zaimplementuj",
+            "napisz funkcję", "stwórz klasę", "zaimplementuj", "stwórz api",
         ],
         "param_aliases": {
             "język": "language",
@@ -330,6 +331,7 @@ BUSINESS_ACTIONS = {
 TRIGGER_ALIASES: dict[str, str] = {
     "codziennie": "daily",
     "co dzień": "daily",
+    "każdego dnia": "daily",
     "daily": "daily",
     "co tydzień": "weekly",
     "tygodniowo": "weekly",
@@ -337,6 +339,7 @@ TRIGGER_ALIASES: dict[str, str] = {
     "co poniedziałek": "weekly",
     "co miesiąc": "monthly",
     "miesięcznie": "monthly",
+    "każdego miesiąca": "monthly",
     "monthly": "monthly",
     "ręcznie": "manual",
     "manual": "manual",

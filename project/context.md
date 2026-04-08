@@ -4,7 +4,7 @@
 
 - **Project**: /home/tom/github/wronai/nlp2dsl
 - **Primary Language**: python
-- **Languages**: python: 48, shell: 9, rust: 1, javascript: 1
+- **Languages**: python: 48, shell: 9, javascript: 1, rust: 1
 - **Analysis Mode**: static
 - **Total Functions**: 269
 - **Total Classes**: 47
@@ -127,6 +127,10 @@ Flow:
 3. Server streamuj
 - **Calls**: app.websocket, log.info, websocket.accept, nlp-service.app.audio_parser.is_stt_available, StreamingSTT, log.info, log.info, log.exception
 
+### backend.app.routers.workflow.stream_workflow
+> SSE stream with live workflow lifecycle events.
+- **Calls**: router.get, StreamingResponse, _repo.get_run, HTTPException, backend.app.routers.workflow._workflow_snapshot, event_generator, backend.app.routers.workflow._format_sse, snapshot.get
+
 ### nlp2dsl_sdk.demos.run_action_catalog_demo
 - **Calls**: print, client.workflow_actions, print, NLP2DSLClient.from_env, nlp2dsl_sdk.demos._ensure_services, action.get, print, client.workflow_action_schema
 
@@ -138,10 +142,6 @@ Flow:
 
 Body: {"conversation_id": "abc", "text": "klient@firma.pl"}
 - **Calls**: router.post, resp.json, None.lower, backend.app.routers.chat._proxy_chat_payload, HTTPException, any, result.get, body.get
-
-### backend.app.routers.workflow.stream_workflow
-> SSE stream with live workflow lifecycle events.
-- **Calls**: router.get, StreamingResponse, _repo.get_run, HTTPException, backend.app.routers.workflow._workflow_snapshot, event_generator, backend.app.routers.workflow._format_sse, snapshot.get
 
 ### nlp-service.app.system_executor._exec_file_list
 - **Calls**: config.get, config.get, sorted, candidate.exists, Path, resolved.rglob, str, len
@@ -263,28 +263,28 @@ websocket_chat [nlp-service.app.main]
   └─ →> is_stt_available
 ```
 
-### Flow 4: run_action_catalog_demo
+### Flow 4: stream_workflow
+```
+stream_workflow [backend.app.routers.workflow]
+  └─> _workflow_snapshot
+```
+
+### Flow 5: run_action_catalog_demo
 ```
 run_action_catalog_demo [nlp2dsl_sdk.demos]
   └─> _ensure_services
 ```
 
-### Flow 5: _exec_file_read
+### Flow 6: _exec_file_read
 ```
 _exec_file_read [nlp-service.app.system_executor]
   └─> _validate_file_path
 ```
 
-### Flow 6: chat_message
+### Flow 7: chat_message
 ```
 chat_message [backend.app.routers.chat]
   └─> _proxy_chat_payload
-```
-
-### Flow 7: stream_workflow
-```
-stream_workflow [backend.app.routers.workflow]
-  └─> _workflow_snapshot
 ```
 
 ### Flow 8: _exec_file_list
@@ -482,9 +482,9 @@ Functions exposed as public API (no underscore prefix):
 - `nlp2dsl_sdk.demos.run_code_generation_demo` - 51 calls
 - `backend.app.routers.workflow.workflow_from_text` - 26 calls
 - `nlp-service.app.main.websocket_chat` - 23 calls
+- `backend.app.routers.workflow.stream_workflow` - 22 calls
 - `nlp2dsl_sdk.demos.run_action_catalog_demo` - 19 calls
 - `backend.app.routers.chat.chat_message` - 17 calls
-- `backend.app.routers.workflow.stream_workflow` - 17 calls
 - `nlp-service.app.mapper.map_to_dsl` - 17 calls
 - `worker.worker.handle_generate_code` - 17 calls
 - `nlp-service.app.parser_llm.parse_llm` - 16 calls
@@ -512,8 +512,8 @@ Functions exposed as public API (no underscore prefix):
 - `worker.worker.handle_send_invoice` - 9 calls
 - `worker.worker.handle_generate_report` - 9 calls
 - `worker.logging_setup.setup_logging` - 9 calls
-- `nlp-service.app.orchestrator.continue_conversation` - 8 calls
 - `worker.worker.handle_send_email` - 8 calls
+- `nlp-service.app.orchestrator.continue_conversation` - 8 calls
 - `backend.app.engine.start_workflow` - 7 calls
 - `backend.app.db.postgres.PostgresWorkflowRepo.list_runs` - 7 calls
 - `backend.app.routers.chat.chat_get_state` - 7 calls
@@ -537,6 +537,11 @@ graph TD
     websocket_chat --> accept
     websocket_chat --> is_stt_available
     websocket_chat --> StreamingSTT
+    stream_workflow --> get
+    stream_workflow --> StreamingResponse
+    stream_workflow --> get_run
+    stream_workflow --> HTTPException
+    stream_workflow --> _workflow_snapshot
     run_action_catalog_d --> print
     run_action_catalog_d --> workflow_actions
     run_action_catalog_d --> from_env
@@ -549,11 +554,6 @@ graph TD
     chat_message --> lower
     chat_message --> _proxy_chat_payload
     chat_message --> HTTPException
-    stream_workflow --> get
-    stream_workflow --> StreamingResponse
-    stream_workflow --> get_run
-    stream_workflow --> HTTPException
-    stream_workflow --> _workflow_snapshot
     _exec_file_list --> get
     _exec_file_list --> sorted
 ```
