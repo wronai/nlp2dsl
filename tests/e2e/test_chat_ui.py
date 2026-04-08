@@ -24,7 +24,7 @@ import pytest
 from playwright.async_api import Page
 
 
-pytestmark = pytest.mark.asyncio
+pytestmark = pytest.mark.asyncio(loop_scope="session")
 
 
 # ── Page load ─────────────────────────────────────────────────

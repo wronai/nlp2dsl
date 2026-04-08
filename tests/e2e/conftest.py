@@ -81,7 +81,7 @@ async def browser_instance():
         await browser.close()
 
 
-@pytest_asyncio.fixture
+@pytest_asyncio.fixture(loop_scope="session")
 async def browser_context(browser_instance: Browser):
     ctx: BrowserContext = await browser_instance.new_context(
         permissions=["microphone"],
@@ -90,14 +90,14 @@ async def browser_context(browser_instance: Browser):
     await ctx.close()
 
 
-@pytest_asyncio.fixture
+@pytest_asyncio.fixture(loop_scope="session")
 async def page(browser_context: BrowserContext):
     p: Page = await browser_context.new_page()
     yield p
     await p.close()
 
 
-@pytest_asyncio.fixture
+@pytest_asyncio.fixture(loop_scope="session")
 async def chat_page(page: Page):
     """Page already loaded at CHAT_URL and idle."""
     await page.goto(CHAT_URL, wait_until="domcontentloaded")

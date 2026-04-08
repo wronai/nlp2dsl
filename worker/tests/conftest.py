@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -21,6 +22,19 @@ try:
     from httpx import ASGITransport, AsyncClient
 except ImportError as exc:
     pytest.skip(f"Skipping worker tests because a runtime dependency is missing: {exc}", allow_module_level=True)
+
+
+async def _noop_sleep(*args, **kwargs):
+    """No-op replacement for asyncio.sleep."""
+    pass
+
+
+@pytest.fixture(autouse=True)
+def mock_asyncio_sleep():
+    """Mock asyncio.sleep to make tests run instantly (no artificial delays)."""
+    mock_sleep = MagicMock(side_effect=_noop_sleep)
+    with patch("asyncio.sleep", mock_sleep):
+        yield mock_sleep
 
 
 @pytest.fixture

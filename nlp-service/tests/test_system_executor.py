@@ -115,12 +115,22 @@ class TestSettingsReset:
 class TestFileList:
     """_exec_file_list handler."""
 
-    def test_file_list(self) -> None:
-        """List files in current directory → returns files list."""
-        result = _exec_file_list({"directory": "."})
+    def test_file_list(self, tmp_path, monkeypatch) -> None:
+        """List files in temp directory → returns files list."""
+        # Create test files
+        (tmp_path / "file1.txt").write_text("test")
+        (tmp_path / "file2.py").write_text("print()")
+        # Allow access to tmp_path
+        monkeypatch.setattr(
+            settings_manager.settings.file_access,
+            "allowed_paths",
+            [str(tmp_path)],
+        )
+        result = _exec_file_list({"directory": str(tmp_path)})
         assert "files" in result
         assert "count" in result
         assert isinstance(result["files"], list)
+        assert result["count"] == 2
 
     def test_file_list_nonexistent(self) -> None:
         """Non-existent directory → error."""
