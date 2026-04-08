@@ -126,16 +126,10 @@ class TestRunWorkflow:
     @pytest.mark.asyncio
     async def test_start_workflow(self, client: AsyncClient) -> None:
         """POST /workflow/start → returns running snapshot immediately."""
-        mock_resp = _mock_worker_response(
-            json_data={"step_id": "step1", "status": "completed", "result": {"invoice_id": "INV-001"}}
-        )
-
-        with patch("app.engine.AsyncClient") as MockClient:
-            mock_instance = AsyncMock()
-            mock_instance.post.return_value = mock_resp
-            mock_instance.__aenter__ = AsyncMock(return_value=mock_instance)
-            mock_instance.__aexit__ = AsyncMock(return_value=False)
-            MockClient.return_value = mock_instance
+        with patch("app.engine.asyncio.create_task") as mock_create_task:
+            mock_task = MagicMock()
+            mock_task.add_done_callback = MagicMock()
+            mock_create_task.return_value = mock_task
 
             resp = await client.post(
                 "/workflow/start",
@@ -150,6 +144,7 @@ class TestRunWorkflow:
             data = resp.json()
             assert data["status"] == "running"
             assert data["workflow_id"]
+            mock_create_task.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_stream_workflow(self, client: AsyncClient) -> None:
@@ -176,7 +171,7 @@ class TestRunWorkflow:
             )
             workflow_id = start_resp.json()["workflow_id"]
 
-            await asyncio.sleep(0)
+            await asyncio.sleep(0.01)
 
             resp = await client.get(f"/workflow/stream/{workflow_id}")
             assert resp.status_code == 200

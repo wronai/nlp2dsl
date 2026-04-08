@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nlp2dsl-tests"
+version = "0.0.0"
+description = "Test harness for NLP2DSL"
+requires-python = ">=3.10"
+dependencies = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.24",
+    "httpx>=0.27",
+    "websockets>=12.0",
+    "playwright>=1.44",
+]
+
+[tool.pytest.ini_options]
+addopts = ["--import-mode=importlib"]
+
+[tool.pfix]
+# Self-healing Python configuration
+model = "openrouter/qwen/qwen3-coder-next"
+auto_apply = true
+auto_install_deps = true
+auto_restart = false
+max_retries = 3
+create_backups = false
+git_auto_commit = false
+
+[tool.pfix.runtime_todo]
+enabled = true
+todo_file = "TODO.md"
+min_severity = "low"
+deduplicate = true
+
+[tool.costs]
+# AI Cost tracking configuration
+badge = true
+update_readme = true
+readme_path = "README.md"
+default_model = "openrouter/qwen/qwen3-coder-next"
+analysis_mode = "byok"
+full_history = true
+max_commits = 500
+
+# Cost thresholds for badge colors (USD)
+badge_color_thresholds = { low = 1.0, medium = 5.0, high = 10.0, critical = 50.0 }

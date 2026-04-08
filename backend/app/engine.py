@@ -183,6 +183,14 @@ async def _execute_workflow(
                     total_steps=total_steps,
                     payload={"error": step_result.error},
                 )
+                await _publish_workflow_event(
+                    workflow_id,
+                    "workflow_failed",
+                    StepStatus.FAILED.value,
+                    f"Workflow '{req.name}' zakończył się błędem",
+                    total_steps=len(req.steps),
+                    payload={"error": step_result.error, "failed_step": step.id},
+                )
                 if raise_on_failure:
                     raise HTTPException(
                         status_code=HTTPStatus.BAD_REQUEST,

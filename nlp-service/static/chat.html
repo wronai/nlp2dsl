@@ -555,6 +555,17 @@
             border-color: #4ade80;
         }
 
+        .workflow-preview-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .workflow-preview-actions .session-btn {
+            padding: 8px 12px;
+        }
+
         .workflow-preview .data-type-badge {
             position: absolute;
             top: 8px;
@@ -1309,9 +1320,11 @@
         let mediaRecorder = null;
         let audioStream = null;
         let isRecording = false;
+        let workflowEventSource = null;
         const SESSION_STORAGE_KEYS = {
             conversationId: 'nlp2dsl.activeConversationId',
         };
+        const WORKFLOW_API_BASE = window.WORKFLOW_API_BASE || window.__WORKFLOW_API_BASE || `${window.location.protocol}//${window.location.hostname}:8010`;
         const QUICK_PROMPTS = [
             {
                 label: 'Wyślij fakturę',
@@ -1344,6 +1357,8 @@
             generate_report: 'raport',
             crm_update: 'CRM',
             notify_slack: 'slack',
+            notify_telegram: 'Telegram',
+            notify_teams: 'Teams',
         };
         const FIELD_LABELS = {
             amount: 'Kwota',
@@ -1354,6 +1369,8 @@
             report_type: 'Typ raportu',
             format: 'Format',
             channel: 'Kanał Slack',
+            chat_id: 'Chat ID Telegram',
+            title: 'Tytuł powiadomienia',
             entity: 'Encja CRM',
             data: 'Dane',
         };
@@ -1665,6 +1682,11 @@
                 showWorkflowPreview(data.dsl, data);
             }
 
+            const executionWorkflowId = data.execution?.workflow_id || data.workflow_id;
+            if (executionWorkflowId) {
+                connectWorkflowStatusStream(executionWorkflowId, data.dsl || data.execution?.dsl || null);
+            }
+
             if (data.missing && data.missing.length > 0) {
                 showFormPrompt(data);
             }
@@ -1712,6 +1734,7 @@
         async function resetConversation() {
             stopVoiceRecording();
             disconnectWebSocket();
+            closeWorkflowStatusStream();
             conversationId = createConversationId();
             setConversationIdLabel();
             clearChatMessages();
@@ -1754,9 +1777,11 @@
                     } else {
                         const previewEl = msg.querySelector('.workflow-preview');
                         if (previewEl) {
+                            const previewClone = previewEl.cloneNode(true);
+                            previewClone.querySelectorAll('.copy-btn, .workflow-preview-actions').forEach((node) => node.remove());
                             const badge = previewEl.querySelector('.data-type-badge');
                             const type = badge ? `[${badge.textContent}] ` : '';
-                            content = type + previewEl.textContent;
+                            content = type + (previewClone.textContent || '');
                         }
                     }
 
@@ -2659,6 +2684,136 @@
             });
         }
 
+        function closeWorkflowStatusStream() {
+            if (workflowEventSource) {
+                workflowEventSource.close();
+                workflowEventSource = null;
+            }
+        }
+
+        function requestWorkflowNotifications() {
+            if (!('Notification' in window) || Notification.permission !== 'default') {
+                return;
+            }
+
+            Notification.requestPermission().catch(() => {});
+        }
+
+        function showWorkflowBrowserNotification(title, body) {
+            if (!('Notification' in window) || Notification.permission !== 'granted') {
+                return;
+            }
+
+            try {
+                new Notification(title, { body });
+            } catch (error) {
+                console.warn('Unable to show workflow notification:', error);
+            }
+        }
+
+        function connectWorkflowStatusStream(workflowId, dsl = null) {
+            if (!workflowId || typeof EventSource === 'undefined') {
+                return null;
+            }
+
+            closeWorkflowStatusStream();
+
+            const source = new EventSource(`${WORKFLOW_API_BASE}/workflow/stream/${encodeURIComponent(workflowId)}`);
+            workflowEventSource = source;
+
+            const updateFromStatus = (status) => {
+                if (status === 'completed') return 'done';
+                if (status === 'failed') return 'error';
+                return 'in_progress';
+            };
+
+            const updateStatusFromEvent = (payload) => {
+                const nextStatus = updateFromStatus(payload.status);
+                syncConversationOverview({ status: nextStatus, dsl: dsl || payload.payload?.dsl || null });
+                const label = payload.message || `Workflow ${workflowId}: ${payload.status}`;
+                updateStatus(label, payload.status === 'failed' ? '' : 'connected');
+
+                if (payload.status === 'completed' || payload.status === 'failed') {
+                    addMessage('system', label);
+                    showWorkflowBrowserNotification(`Workflow ${payload.status === 'completed' ? 'zakończony' : 'nieudany'}`, label);
+                    closeWorkflowStatusStream();
+                }
+            };
+
+            source.onopen = () => {
+                updateStatus(`Śledzę workflow ${workflowId}`, 'connected');
+            };
+
+            source.addEventListener('snapshot', (event) => {
+                try {
+                    const snapshot = JSON.parse(event.data || '{}');
+                    syncConversationOverview({ status: updateFromStatus(snapshot.status), dsl });
+                    updateStatus(`Workflow ${workflowId}: ${snapshot.status}`, 'connected');
+                } catch (error) {
+                    console.warn('Failed to parse workflow snapshot event:', error);
+                }
+            });
+
+            ['workflow_started', 'step_started', 'step_completed', 'step_failed', 'workflow_completed', 'workflow_failed'].forEach((eventName) => {
+                source.addEventListener(eventName, (event) => {
+                    try {
+                        const payload = JSON.parse(event.data || '{}');
+                        updateStatusFromEvent(payload);
+                    } catch (error) {
+                        console.warn(`Failed to parse workflow event ${eventName}:`, error);
+                    }
+                });
+            });
+
+            source.onerror = () => {
+                if (workflowEventSource === source) {
+                    updateStatus(`Połączenie SSE dla workflow ${workflowId} zostało przerwane`);
+                    closeWorkflowStatusStream();
+                }
+            };
+
+            return source;
+        }
+
+        async function startWorkflowExecution(dsl, context = {}) {
+            if (!dsl || !Array.isArray(dsl.steps) || dsl.steps.length === 0) {
+                addMessage('system', 'Brak kroków do uruchomienia workflow.');
+                return null;
+            }
+
+            requestWorkflowNotifications();
+            closeWorkflowStatusStream();
+
+            try {
+                const response = await fetch(`${WORKFLOW_API_BASE}/workflow/start`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: dsl.name || describeWorkflow(dsl),
+                        trigger: dsl.trigger || context.trigger || 'manual',
+                        steps: dsl.steps,
+                    }),
+                });
+
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok) {
+                    const detail = data.detail || data.message || 'Nie udało się uruchomić workflow';
+                    addMessage('system', `Błąd uruchamiania workflow: ${typeof detail === 'string' ? detail : JSON.stringify(detail)}`);
+                    updateStatus('Nie udało się uruchomić workflow');
+                    return null;
+                }
+
+                addMessage('system', `Workflow uruchomiony: ${data.workflow_id}`);
+                connectWorkflowStatusStream(data.workflow_id, dsl);
+                return data;
+            } catch (error) {
+                console.error('Workflow start failed:', error);
+                addMessage('system', 'Błąd uruchamiania workflow');
+                updateStatus('Błąd uruchamiania workflow');
+                return null;
+            }
+        }
+
         function setComposerBusy(isBusy) {
             const input = document.getElementById('textInput');
             const sendBtn = document.querySelector('.send-btn');
@@ -2724,10 +2879,30 @@
             preview.className = 'message assistant workflow-preview-message';
             preview.dataset.role = 'assistant';
 
+            closeWorkflowStatusStream();
             removeDynamicBlocks('workflow-preview-message');
             
             preview.appendChild(createMessageMeta('📋 Workflow DSL'));
             preview.appendChild(buildPreviewBlock(dsl));
+
+            const actions = document.createElement('div');
+            actions.className = 'workflow-preview-actions';
+
+            const runBtn = document.createElement('button');
+            runBtn.type = 'button';
+            runBtn.className = 'session-btn primary';
+            runBtn.textContent = 'Uruchom workflow';
+            runBtn.addEventListener('click', async () => {
+                runBtn.disabled = true;
+                try {
+                    await startWorkflowExecution(dsl, context);
+                } finally {
+                    runBtn.disabled = false;
+                }
+            });
+
+            actions.appendChild(runBtn);
+            preview.appendChild(actions);
             container.appendChild(preview);
             syncConversationOverview({
                 status: context.status || 'ready',
