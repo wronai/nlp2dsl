@@ -147,6 +147,8 @@ def _get_field_mapping(action: str) -> dict[str, str]:
         "generate_report": {"report_type": "report_type", "format": "format"},
         "crm_update": {"entity": "entity", "data": "data"},
         "notify_slack": {"channel": "channel", "message": "message"},
+        "notify_telegram": {"chat_id": "chat_id", "message": "message"},
+        "notify_teams": {"channel": "channel", "message": "message"},
     }
     return mappings.get(action, {})
 
@@ -170,6 +172,8 @@ def _build_prompt(missing: list[str]) -> str:
         "report_type": "typ raportu (np. sales, hr, finance)",
         "format": "format (pdf, csv)",
         "channel": "kanał Slack (np. #general)",
+        "chat_id": "identyfikator czatu Telegram",
+        "title": "tytuł powiadomienia",
         "message": "treść wiadomości",
         "entity": "typ encji CRM (np. contact, client)",
     }

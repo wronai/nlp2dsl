@@ -91,6 +91,35 @@ ACTIONS_REGISTRY: dict[str, dict] = {
             "wiadomość": "message",
         },
     },
+    "notify_telegram": {
+        "description": "Wysyła powiadomienie Telegram",
+        "required": ["chat_id"],
+        "optional": {"message": "Automatyczne powiadomienie"},
+        "aliases": [
+            "telegram", "telegramie", "powiadomienie telegram", "notify telegram",
+            "wyślij na telegram", "telegram notification",
+        ],
+        "param_aliases": {
+            "chat": "chat_id",
+            "kanał": "chat_id",
+            "wiadomość": "message",
+            "message": "message",
+        },
+    },
+    "notify_teams": {
+        "description": "Wysyła powiadomienie Microsoft Teams",
+        "required": ["channel"],
+        "optional": {"message": "Automatyczne powiadomienie"},
+        "aliases": [
+            "teams", "microsoft teams", "powiadomienie teams", "notify teams",
+            "wyślij na teams",
+        ],
+        "param_aliases": {
+            "kanał": "channel",
+            "wiadomość": "message",
+            "message": "message",
+        },
+    },
 
     # ── Code Generation ────────────────────────────────────────
 

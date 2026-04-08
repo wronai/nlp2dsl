@@ -2,27 +2,58 @@
 Workflow router — /workflow/run, /workflow/history/*, /workflow/actions, /workflow/from-text.
 """
 
+import asyncio
+import json
 import logging
 from http import HTTPStatus
 from typing import Any
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from httpx import AsyncClient
+from starlette.responses import StreamingResponse
 
-from app.engine import NLP_SERVICE_URL, _repo, run_workflow
+from app.engine import NLP_SERVICE_URL, _repo, run_workflow, start_workflow
 from app.logging_setup import get_request_id
+from app.workflow_events import TERMINAL_EVENT_TYPES, workflow_event_hub
 from app.schemas import ActionInfo, RunWorkflowRequest, Step, WorkflowResult
 
 log = logging.getLogger("router.workflow")
 router = APIRouter(prefix="/workflow", tags=["workflow"])
 
 _PROXY_TIMEOUT_SECONDS: float = float("30.0")
+
+
+def _format_sse(event: str, data: dict[str, Any], *, event_id: str | None = None) -> str:
+    payload = json.dumps(data, ensure_ascii=False)
+    lines: list[str] = []
+
+    if event_id:
+        lines.append(f"id: {event_id}")
+    if event:
+        lines.append(f"event: {event}")
+    for line in payload.splitlines() or [payload]:
+        lines.append(f"data: {line}")
+    return "\n".join(lines) + "\n\n"
+
+
+def _workflow_snapshot(run: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "workflow_id": run.get("workflow_id"),
+        "name": run.get("name"),
+        "status": run.get("status"),
+        "trigger": run.get("trigger"),
+        "steps": run.get("steps", []),
+        "created_at": run.get("created_at"),
+        "updated_at": run.get("updated_at"),
+    }
 ACTIONS_REGISTRY: list[ActionInfo] = [
     ActionInfo(name="send_invoice",   description="Generuje i wysyła fakturę",       config_schema={"to": "str", "amount": "float", "currency": "str"}),
     ActionInfo(name="send_email",     description="Wysyła e-mail",                   config_schema={"to": "str", "subject": "str", "body": "str"}),
     ActionInfo(name="generate_report",description="Generuje raport PDF/CSV",         config_schema={"type": "str", "format": "str"}),
     ActionInfo(name="crm_update",     description="Aktualizuje rekord w CRM",        config_schema={"entity": "str", "data": "dict"}),
     ActionInfo(name="notify_slack",   description="Wysyła powiadomienie Slack",      config_schema={"channel": "str", "message": "str"}),
+    ActionInfo(name="notify_telegram", description="Wysyła powiadomienie Telegram",   config_schema={"chat_id": "str", "message": "str", "webhook_url": "str"}),
+    ActionInfo(name="notify_teams",    description="Wysyła powiadomienie Microsoft Teams", config_schema={"channel": "str", "message": "str", "webhook_url": "str"}),
 ]
 
 
@@ -38,6 +69,12 @@ async def run_workflow_endpoint(req: RunWorkflowRequest) -> WorkflowResult:
     return await run_workflow(req)
 
 
+@router.post("/start", response_model=WorkflowResult)
+async def start_workflow_endpoint(req: RunWorkflowRequest) -> WorkflowResult:
+    """Startuje workflow w tle i zwraca natychmiastowy snapshot running."""
+    return await start_workflow(req)
+
+
 @router.get("/history")
 async def get_history() -> list[dict]:
     """Zwraca historię wykonanych workflow."""
@@ -51,6 +88,56 @@ async def get_workflow(workflow_id: str) -> dict[str, Any]:
     if not run:
         raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="Workflow not found")
     return run
+
+
+@router.get("/stream/{workflow_id}")
+async def stream_workflow(workflow_id: str, request: Request) -> StreamingResponse:
+    """SSE stream with live workflow lifecycle events."""
+    run = await _repo.get_run(workflow_id)
+    if not run:
+        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="Workflow not found")
+
+    async def event_generator():
+        snapshot = _workflow_snapshot(run)
+        yield _format_sse("snapshot", snapshot, event_id=f"{workflow_id}:snapshot")
+
+        if snapshot.get("status") in {"completed", "failed"}:
+            terminal_event = "workflow_completed" if snapshot.get("status") == "completed" else "workflow_failed"
+            yield _format_sse(terminal_event, snapshot, event_id=f"{workflow_id}:{terminal_event}")
+            return
+
+        queue = await workflow_event_hub.subscribe(workflow_id)
+        try:
+            current = await _repo.get_run(workflow_id)
+            if current:
+                snapshot = _workflow_snapshot(current)
+                if snapshot.get("status") in {"completed", "failed"}:
+                    terminal_event = "workflow_completed" if snapshot.get("status") == "completed" else "workflow_failed"
+                    yield _format_sse(terminal_event, snapshot, event_id=f"{workflow_id}:{terminal_event}")
+                    return
+
+            while True:
+                if await request.is_disconnected():
+                    break
+
+                try:
+                    event = await asyncio.wait_for(queue.get(), timeout=15.0)
+                except asyncio.TimeoutError:
+                    yield ": keep-alive\n\n"
+                    continue
+
+                yield _format_sse(event.event_type, event.to_dict(), event_id=event.event_id)
+                if event.event_type in TERMINAL_EVENT_TYPES:
+                    break
+        finally:
+            await workflow_event_hub.unsubscribe(workflow_id, queue)
+
+    headers = {
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "X-Accel-Buffering": "no",
+    }
+    return StreamingResponse(event_generator(), media_type="text/event-stream", headers=headers)
 
 
 @router.post("/from-text")

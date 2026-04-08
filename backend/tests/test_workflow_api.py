@@ -7,6 +7,7 @@ Mocks external HTTP calls to worker and nlp-service.
 
 from __future__ import annotations
 
+import asyncio
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -121,6 +122,67 @@ class TestRunWorkflow:
                 },
             )
             assert resp.status_code == 400
+
+    @pytest.mark.asyncio
+    async def test_start_workflow(self, client: AsyncClient) -> None:
+        """POST /workflow/start → returns running snapshot immediately."""
+        mock_resp = _mock_worker_response(
+            json_data={"step_id": "step1", "status": "completed", "result": {"invoice_id": "INV-001"}}
+        )
+
+        with patch("app.engine.AsyncClient") as MockClient:
+            mock_instance = AsyncMock()
+            mock_instance.post.return_value = mock_resp
+            mock_instance.__aenter__ = AsyncMock(return_value=mock_instance)
+            mock_instance.__aexit__ = AsyncMock(return_value=False)
+            MockClient.return_value = mock_instance
+
+            resp = await client.post(
+                "/workflow/start",
+                json={
+                    "name": "background_workflow",
+                    "steps": [
+                        {"action": "send_invoice", "config": {"to": "x@y.pl", "amount": 100}},
+                    ],
+                },
+            )
+            assert resp.status_code == 200
+            data = resp.json()
+            assert data["status"] == "running"
+            assert data["workflow_id"]
+
+    @pytest.mark.asyncio
+    async def test_stream_workflow(self, client: AsyncClient) -> None:
+        """GET /workflow/stream/{workflow_id} → snapshot + terminal SSE events."""
+        mock_resp = _mock_worker_response(
+            json_data={"step_id": "step1", "status": "completed", "result": {"invoice_id": "INV-001"}}
+        )
+
+        with patch("app.engine.AsyncClient") as MockClient:
+            mock_instance = AsyncMock()
+            mock_instance.post.return_value = mock_resp
+            mock_instance.__aenter__ = AsyncMock(return_value=mock_instance)
+            mock_instance.__aexit__ = AsyncMock(return_value=False)
+            MockClient.return_value = mock_instance
+
+            start_resp = await client.post(
+                "/workflow/start",
+                json={
+                    "name": "stream_workflow",
+                    "steps": [
+                        {"action": "send_invoice", "config": {"to": "x@y.pl", "amount": 100}},
+                    ],
+                },
+            )
+            workflow_id = start_resp.json()["workflow_id"]
+
+            await asyncio.sleep(0)
+
+            resp = await client.get(f"/workflow/stream/{workflow_id}")
+            assert resp.status_code == 200
+            body = resp.text
+            assert "event: snapshot" in body
+            assert "event: workflow_completed" in body or "event: workflow_failed" in body
 
 
 # ── Workflow history ─────────────────────────────────────────────

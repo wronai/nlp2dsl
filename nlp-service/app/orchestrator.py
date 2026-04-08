@@ -151,6 +151,19 @@ def get_action_form(action: str) -> ActionFormSchema | None:
 def _process_message(state: ConversationState, text: str) -> ConversationResponse:
     """Core orchestration: parse → merge → validate → respond."""
 
+    # Early return: if workflow is ready and user says execute keyword, preserve DSL
+    if state.status == "ready" and state.dsl:
+        text_lower = text.lower()
+        execute_keywords = ["uruchom", "wykonaj", "start", "run", "ok", "tak", "go"]
+        if any(kw in text_lower for kw in execute_keywords):
+            log.info("Workflow already ready, preserving DSL for execution")
+            return ConversationResponse(
+                conversation_id=state.id,
+                status="ready",
+                message=f"Workflow gotowy: {state.dsl.name} ({len(state.dsl.steps)} kroków). Wyślij 'uruchom' aby wykonać.",
+                dsl=state.dsl,
+            )
+
     # 1. NLP extraction
     nlp = parse_rules(text)
     log.info("NLP: intent=%s conf=%.2f", nlp.intent.intent, nlp.intent.confidence)

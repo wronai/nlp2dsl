@@ -10,12 +10,14 @@ W produkcji: podmień simulate_* na prawdziwe integracje
 
 import asyncio
 import logging
+import os
 from http import HTTPStatus
 from collections.abc import Callable
 from datetime import UTC, datetime
 from typing import Any
 
 from fastapi import FastAPI, HTTPException
+import httpx
 
 try:
     from .logging_setup import RequestIDMiddleware, setup_logging
@@ -42,6 +44,33 @@ def action(name: str) -> Callable[[Callable], Callable]:
         ACTION_HANDLERS[name] = fn
         return fn
     return decorator
+
+
+async def _deliver_notification(provider: str, config: dict, payload: dict, env_var: str) -> dict:
+    webhook_url = config.get("webhook_url") or os.getenv(env_var, "").strip()
+
+    if webhook_url:
+        log.info("📨 Sending %s notification via webhook", provider)
+        async with httpx.AsyncClient(timeout=WORKER_TIMEOUT_SECONDS) as client:
+            response = await client.post(webhook_url, json=payload)
+            response.raise_for_status()
+        return {
+            "provider": provider,
+            "delivered": True,
+            "transport": "webhook",
+            "target": payload.get("target"),
+            "message": payload.get("text") or payload.get("message"),
+        }
+
+    log.info("💬 Simulating %s notification → %s", provider, payload.get("target", "?"))
+    await asyncio.sleep(0.2)
+    return {
+        "provider": provider,
+        "delivered": True,
+        "transport": "simulated",
+        "target": payload.get("target"),
+        "message": payload.get("text") or payload.get("message"),
+    }
 
 
 # ── Akcje (symulowane — MVP) ──────────────────────────────────
@@ -89,10 +118,44 @@ async def handle_crm_update(config: dict) -> dict:
 @action("notify_slack")
 async def handle_notify_slack(config: dict) -> dict:
     channel = config.get("channel", "#general")
-    log.info("💬 Sending Slack notification → %s", channel)
-    await asyncio.sleep(0.2)
+    message = config.get("message", "Automatyczne powiadomienie")
+    result = await _deliver_notification(
+        "slack",
+        config,
+        {"channel": channel, "target": channel, "text": message},
+        "SLACK_WEBHOOK_URL",
+    )
     log.info("✅ Slack message sent")
-    return {"channel": channel, "delivered": True}
+    return {"channel": channel, **result}
+
+
+@action("notify_telegram")
+async def handle_notify_telegram(config: dict) -> dict:
+    chat_id = config.get("chat_id", "@general")
+    message = config.get("message", "Automatyczne powiadomienie")
+    result = await _deliver_notification(
+        "telegram",
+        config,
+        {"chat_id": chat_id, "target": chat_id, "text": message},
+        "TELEGRAM_WEBHOOK_URL",
+    )
+    log.info("✅ Telegram message sent")
+    return {"chat_id": chat_id, **result}
+
+
+@action("notify_teams")
+async def handle_notify_teams(config: dict) -> dict:
+    channel = config.get("channel", "general")
+    message = config.get("message", "Automatyczne powiadomienie")
+    title = config.get("title", "Workflow notification")
+    result = await _deliver_notification(
+        "teams",
+        config,
+        {"channel": channel, "target": channel, "title": title, "text": message},
+        "TEAMS_WEBHOOK_URL",
+    )
+    log.info("✅ Teams message sent")
+    return {"channel": channel, "title": title, **result}
 
 
 @action("generate_code")

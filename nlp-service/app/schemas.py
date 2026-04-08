@@ -23,6 +23,8 @@ class NLPEntities(BaseModel):
     subject: str | None = None
     message: str | None = None
     channel: str | None = None
+    chat_id: str | None = None
+    title: str | None = None
     report_type: str | None = None
     format: str | None = None
     entity: str | None = None

@@ -62,6 +62,8 @@ Dostępne intenty (akcje):
 - generate_report: raport (required: report_type)
 - crm_update: aktualizacja CRM (required: entity)
 - notify_slack: powiadomienie Slack (required: channel)
+- notify_telegram: powiadomienie Telegram (required: chat_id)
+- notify_teams: powiadomienie Microsoft Teams (required: channel)
 - invoice_and_notify: faktura + Slack
 - invoice_and_email: faktura + email
 - report_and_email: raport + email
@@ -76,6 +78,8 @@ Schemat entities:
   "subject": string | null,
   "message": string | null,
   "channel": string | null,
+  "chat_id": string | null,
+  "title": string | null,
   "report_type": string | null,
   "format": string | null,
   "entity": string | null

@@ -53,6 +53,8 @@ REPORT_TYPE_KEYWORDS = {
 FORMAT_KEYWORDS = {"pdf": "pdf", "csv": "csv", "excel": "xlsx", "xlsx": "xlsx"}
 
 SLACK_CHANNEL_PATTERN = re.compile(r"#[\w-]+")
+TELEGRAM_CHAT_PATTERN = re.compile(r"(?:telegram(?:ie)?|na telegram|do telegramu|chat(?:em)?|do)\s+([@][\w_]+|\d+)", re.IGNORECASE)
+TEAMS_CHANNEL_PATTERN = re.compile(r"(?:teams|microsoft teams|na teams|do teamsu)\s+([#\w-]+)", re.IGNORECASE)
 
 # ── System patterns ───────────────────────────────────────────
 
@@ -200,6 +202,16 @@ def _extract_entities(text: str, text_lower: str) -> NLPEntities:
     channel_match = SLACK_CHANNEL_PATTERN.search(text)
     if channel_match:
         entities.channel = channel_match.group(0)
+
+    # Telegram chat_id
+    telegram_match = TELEGRAM_CHAT_PATTERN.search(text)
+    if telegram_match and not entities.chat_id:
+        entities.chat_id = telegram_match.group(1)
+
+    # Teams channel (fallback when user explicitly names Teams)
+    teams_match = TEAMS_CHANNEL_PATTERN.search(text)
+    if teams_match and not entities.channel:
+        entities.channel = teams_match.group(1)
 
     # ── param_aliases extraction (from registry) ─────────────
     for action_name, meta in ACTIONS_REGISTRY.items():

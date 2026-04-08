@@ -110,6 +110,38 @@ class TestExecuteActions:
         assert data["result"]["channel"] == "#general"
 
     @pytest.mark.asyncio
+    async def test_execute_notify_telegram(self, client: AsyncClient) -> None:
+        """Execute notify_telegram → completed."""
+        resp = await client.post(
+            "/execute",
+            json={
+                "step_id": "s5",
+                "action": "notify_telegram",
+                "config": {"chat_id": "@ops-team", "message": "Test"},
+            },
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["status"] == "completed"
+        assert data["result"]["chat_id"] == "@ops-team"
+
+    @pytest.mark.asyncio
+    async def test_execute_notify_teams(self, client: AsyncClient) -> None:
+        """Execute notify_teams → completed."""
+        resp = await client.post(
+            "/execute",
+            json={
+                "step_id": "s6",
+                "action": "notify_teams",
+                "config": {"channel": "general", "message": "Test"},
+            },
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["status"] == "completed"
+        assert data["result"]["channel"] == "general"
+
+    @pytest.mark.asyncio
     async def test_execute_unknown_action(self, client: AsyncClient) -> None:
         """Unknown action → 400 error."""
         resp = await client.post(
@@ -131,8 +163,8 @@ class TestActionRegistry:
     """ACTION_HANDLERS dict validation."""
 
     def test_handlers_registered(self) -> None:
-        """At least 5 action handlers registered."""
-        assert len(ACTION_HANDLERS) >= 5
+        """At least 7 action handlers registered."""
+        assert len(ACTION_HANDLERS) >= 7
 
     def test_all_handlers_callable(self) -> None:
         """All registered handlers are async callables."""

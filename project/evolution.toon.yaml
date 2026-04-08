@@ -1,4 +1,4 @@
-# code2llm/evolution | 237 func | 31f | 2026-04-07
+# code2llm/evolution | 256 func | 32f | 2026-04-08
 
 NEXT[8] (ranked by impact):
   [1] !! SPLIT           nlp2dsl_sdk/demos.py
@@ -21,9 +21,9 @@ NEXT[8] (ranked by impact):
       WHY: CC=20 exceeds 15
       EFFORT: ~1h  IMPACT: 420
 
-  [6] !  SPLIT-FUNC      _process_message  CC=17  fan=18
-      WHY: CC=17 exceeds 15
-      EFFORT: ~1h  IMPACT: 306
+  [6] !  SPLIT-FUNC      _process_message  CC=21  fan=20
+      WHY: CC=21 exceeds 15
+      EFFORT: ~1h  IMPACT: 420
 
   [7] !  SPLIT-FUNC      ConversationFlow._handle_response  CC=16  fan=11
       WHY: CC=16 exceeds 15
@@ -40,7 +40,7 @@ RISKS[3]:
   ⚠ Splitting nlp-service/app/main.py may break 20 import paths
 
 METRICS-TARGET:
-  CC̄:          3.0 → ≤2.1
+  CC̄:          2.9 → ≤2.0
   max-CC:      36 → ≤18
   god-modules: 3 → 0
   high-CC(≥15): 5 → ≤2
@@ -71,4 +71,4 @@ PATTERNS (language parser shared logic):
     - Standardized FunctionInfo/ClassInfo models
 
 HISTORY:
-  prev CC̄=3.0 → now CC̄=3.0
+  prev CC̄=3.0 → now CC̄=2.9

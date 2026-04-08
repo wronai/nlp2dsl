@@ -1,7 +1,7 @@
 <!-- code2docs:start --># nlp2dsl
 
-![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.10-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-250-green)
-> **250** functions | **45** classes | **58** files | CC̄ = 3.0
+![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.10-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-269-green)
+> **269** functions | **47** classes | **59** files | CC̄ = 2.9
 
 > Auto-generated project documentation from source code analysis.
 
@@ -141,12 +141,14 @@ Content outside the markers is preserved when regenerating. Enable this with `sy
 
 ```
 nlp2dsl/
-├── project├── metrun-profile            ├── main    ├── desktop        ├── dev        ├── engine    ├── app/        ├── main        ├── workflow            ├── memory        ├── db/            ├── postgres            ├── system        ├── routers/            ├── chat            ├── workflow            ├── settings    ├── demos├── nlp2dsl_sdk/    ├── client    ├── __main__    ├── code_generation_examples        ├── run        ├── main        ├── run        ├── main        ├── run        ├── main        ├── run        ├── main            ├── run        ├── run        ├── main        ├── logging_setup        ├── audio_parser        ├── parser_rules        ├── registry        ├── logging_setup        ├── config        ├── code_generator    ├── app/        ├── schemas        ├── mapper        ├── config        ├── orchestrator        ├── main        ├── system_executor        ├── settings            ├── memory        ├── store/            ├── factory            ├── redis_store    ├── config├── worker/    ├── worker        ├── schemas    ├── logging_setup        ├── parser_llm```
+├── metrun-profile├── project            ├── main    ├── desktop        ├── dev        ├── engine    ├── app/        ├── workflow_events        ├── main        ├── workflow            ├── memory        ├── db/            ├── postgres            ├── system        ├── routers/            ├── chat            ├── workflow            ├── settings    ├── demos├── nlp2dsl_sdk/    ├── client    ├── __main__    ├── code_generation_examples        ├── run        ├── main        ├── run        ├── main        ├── run        ├── main        ├── run        ├── main            ├── run        ├── run        ├── main        ├── logging_setup        ├── audio_parser        ├── parser_rules        ├── registry        ├── logging_setup        ├── config        ├── code_generator    ├── app/        ├── schemas        ├── mapper        ├── orchestrator        ├── main        ├── system_executor        ├── settings            ├── memory        ├── store/            ├── factory            ├── redis_store    ├── config        ├── schemas├── worker/    ├── worker        ├── config    ├── logging_setup        ├── parser_llm```
 
 ## API Overview
 
 ### Classes
 
+- **`WorkflowEvent`** — —
+- **`WorkflowEventHub`** — In-memory broadcaster dla workflow lifecycle events.
 - **`MemoryWorkflowRepo`** — —
 - **`WorkflowRepo`** — Abstrakcja persystencji workflow.
 - **`Base`** — —
@@ -168,7 +170,6 @@ nlp2dsl/
 - **`StepResult`** — —
 - **`WorkflowResult`** — —
 - **`ActionInfo`** — Opis dostępnej akcji (do listowania w GUI / API).
-- **`NLPServiceSettings`** — —
 - **`LLMSettings`** — —
 - **`NLPSettings`** — —
 - **`WorkerSettings`** — —
@@ -190,6 +191,7 @@ nlp2dsl/
 - **`FieldSchema`** — —
 - **`ActionFormSchema`** — —
 - **`ConversationResponse`** — —
+- **`NLPServiceSettings`** — —
 - **`JSONFormatter`** — Emit log records as single-line JSON objects.
 - **`RequestIDMiddleware`** — Generate or forward X-Request-ID for every HTTP request.
 
@@ -203,6 +205,7 @@ nlp2dsl/
 - `shutdown()` — —
 - `exitCode()` — —
 - `run_workflow(req)` — Uruchamia workflow — iteruje po krokach DSL i deleguje do workera.
+- `start_workflow(req)` — Startuje workflow asynchronicznie i zwraca natychmiastowy snapshot running.
 - `health()` — —
 - `create_workflow_repo()` — Factory: zwraca Postgres repo jeśli URL jest ustawiony, inaczej memory.
 - `system_execute(body)` — Wykonaj akcję systemową. Body: {"action": "system_file_list", "config": {}}
@@ -211,8 +214,10 @@ nlp2dsl/
 - `chat_get_state(conversation_id)` — Pobierz stan konwersacji.
 - `list_actions()` — Zwraca listę dostępnych akcji (DSL vocabulary).
 - `run_workflow_endpoint(req)` — Uruchamia workflow — iteruje po krokach DSL i deleguje każdy krok do workera.
+- `start_workflow_endpoint(req)` — Startuje workflow w tle i zwraca natychmiastowy snapshot running.
 - `get_history()` — Zwraca historię wykonanych workflow.
 - `get_workflow(workflow_id)` — Zwraca szczegóły konkretnego workflow.
+- `stream_workflow(workflow_id, request)` — SSE stream with live workflow lifecycle events.
 - `workflow_from_text(body)` — Pełny pipeline: tekst → NLP → DSL → (opcjonalne) wykonanie.
 - `actions_schema()` — Schematy formularzy UI — frontend generuje dynamicznie.
 - `action_schema(action)` — Schemat formularza dla konkretnej akcji.
@@ -282,6 +287,8 @@ nlp2dsl/
 - `handle_generate_report(config)` — —
 - `handle_crm_update(config)` — —
 - `handle_notify_slack(config)` — —
+- `handle_notify_telegram(config)` — —
+- `handle_notify_teams(config)` — —
 - `handle_generate_code(config)` — —
 - `execute_step(step)` — Wykonuje pojedynczy krok workflow.
 - `health()` — —
@@ -297,16 +304,17 @@ nlp2dsl/
 📦 `backend.app.db` (6 functions, 1 classes)
 📄 `backend.app.db.memory` (6 functions, 1 classes)
 📄 `backend.app.db.postgres` (11 functions, 3 classes)
-📄 `backend.app.engine` (1 functions)
+📄 `backend.app.engine` (7 functions)
 📄 `backend.app.logging_setup` (6 functions, 2 classes)
 📄 `backend.app.main` (1 functions)
 📦 `backend.app.routers`
 📄 `backend.app.routers.chat` (4 functions)
 📄 `backend.app.routers.settings` (7 functions)
 📄 `backend.app.routers.system` (1 functions)
-📄 `backend.app.routers.workflow` (5 functions)
+📄 `backend.app.routers.workflow` (9 functions)
 📄 `backend.app.schemas` (6 classes)
 📄 `backend.app.workflow`
+📄 `backend.app.workflow_events` (6 functions, 2 classes)
 📄 `examples.01-invoice.main` (1 functions)
 📄 `examples.01-invoice.run`
 📄 `examples.02-email.main` (1 functions)
@@ -349,7 +357,7 @@ nlp2dsl/
 📦 `worker`
 📄 `worker.config` (1 classes)
 📄 `worker.logging_setup` (6 functions, 2 classes)
-📄 `worker.worker` (9 functions)
+📄 `worker.worker` (12 functions)
 
 ## Requirements
 

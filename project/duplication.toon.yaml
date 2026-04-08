@@ -1,39 +1,40 @@
-# redup/duplication | 8 groups | 36f 5604L | 2026-04-07
+# redup/duplication | 8 groups | 37f 6083L | 2026-04-08
 
 SUMMARY:
-  files_scanned: 36
-  total_lines:   5604
+  files_scanned: 37
+  total_lines:   6083
   dup_groups:    8
-  dup_fragments: 23
-  saved_lines:   160
-  scan_ms:       14097
+  dup_fragments: 24
+  saved_lines:   173
+  scan_ms:       13461
 
 DUPLICATES[8] (ranked by impact):
   [1899ff8e67d31c77] ! STRU  setup_logging  L=25 N=3 saved=50 sim=1.00
       backend/app/logging_setup.py:0-24  (setup_logging)
-      nlp-service/app/logging_setup.py:0-24  (setup_logging)
       worker/logging_setup.py:0-24  (setup_logging)
+      nlp-service/app/logging_setup.py:0-24  (setup_logging)
   [a58ac04d8adce867]   EXAC  format  L=14 N=3 saved=28 sim=1.00
       backend/app/logging_setup.py:0-13  (format)
-      nlp-service/app/logging_setup.py:0-13  (format)
       worker/logging_setup.py:0-13  (format)
+      nlp-service/app/logging_setup.py:0-13  (format)
   [7a728d8cfa044c9f]   STRU  main  L=7 N=5 saved=28 sim=1.00
+      examples/code_generation_examples.py:0-6  (main)
       examples/04-scheduled-report/main.py:0-6  (main)
       examples/01-invoice/main.py:0-6  (main)
-      examples/02-email/main.py:0-6  (main)
       examples/03-report-and-notify/main.py:0-6  (main)
-      examples/code_generation_examples.py:0-6  (main)
-  [ffd95d6b2707ba43]   EXAC  dispatch  L=11 N=3 saved=22 sim=1.00
-      backend/app/logging_setup.py:0-10  (dispatch)
-      nlp-service/app/logging_setup.py:0-10  (dispatch)
-      worker/logging_setup.py:0-10  (dispatch)
-  [09dab9b354c8767d]   STRU  parse_text  L=13 N=2 saved=13 sim=1.00
+      examples/02-email/main.py:0-6  (main)
+  [09dab9b354c8767d]   STRU  parse_text  L=13 N=3 saved=26 sim=1.00
       nlp-service/app/main.py:0-12  (parse_text)
       backend/app/routers/workflow.py:0-6  (run_workflow_endpoint)
+      backend/app/routers/workflow.py:0-6  (start_workflow_endpoint)
+  [ffd95d6b2707ba43]   EXAC  dispatch  L=11 N=3 saved=22 sim=1.00
+      backend/app/logging_setup.py:0-10  (dispatch)
+      worker/logging_setup.py:0-10  (dispatch)
+      nlp-service/app/logging_setup.py:0-10  (dispatch)
   [a62bc534c778f738]   EXAC  get_request_id  L=5 N=3 saved=10 sim=1.00
       backend/app/logging_setup.py:0-4  (get_request_id)
-      nlp-service/app/logging_setup.py:0-4  (get_request_id)
       worker/logging_setup.py:0-4  (get_request_id)
+      nlp-service/app/logging_setup.py:0-4  (get_request_id)
   [3f5cfdf7288a2da1]   STRU  get  L=5 N=2 saved=5 sim=1.00
       nlp-service/app/store/__init__.py:0-4  (get)
       backend/app/db/__init__.py:0-4  (get_run)
@@ -51,12 +52,12 @@ REFACTOR[8] (ranked by priority):
   [3] ○ extract_function   → examples/utils/main.py
       WHY: 5 occurrences of 7-line block across 5 files — saves 28 lines
       FILES: examples/01-invoice/main.py, examples/02-email/main.py, examples/03-report-and-notify/main.py, examples/04-scheduled-report/main.py, examples/code_generation_examples.py
-  [4] ● extract_class      → utils/dispatch.py
+  [4] ○ extract_function   → utils/parse_text.py
+      WHY: 3 occurrences of 13-line block across 2 files — saves 26 lines
+      FILES: backend/app/routers/workflow.py, nlp-service/app/main.py
+  [5] ● extract_class      → utils/dispatch.py
       WHY: 3 occurrences of 11-line block across 3 files — saves 22 lines
       FILES: backend/app/logging_setup.py, nlp-service/app/logging_setup.py, worker/logging_setup.py
-  [5] ○ extract_function   → utils/parse_text.py
-      WHY: 2 occurrences of 13-line block across 2 files — saves 13 lines
-      FILES: backend/app/routers/workflow.py, nlp-service/app/main.py
   [6] ● extract_function   → utils/get_request_id.py
       WHY: 3 occurrences of 5-line block across 3 files — saves 10 lines
       FILES: backend/app/logging_setup.py, nlp-service/app/logging_setup.py, worker/logging_setup.py
@@ -69,4 +70,4 @@ REFACTOR[8] (ranked by priority):
 
 METRICS-TARGET:
   dup_groups:  8 → 0
-  saved_lines: 160 lines recoverable
+  saved_lines: 173 lines recoverable

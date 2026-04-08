@@ -10,6 +10,7 @@ from datetime import UTC, datetime
 
 from sqlalchemy import Column, DateTime, String, text
 from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
 
@@ -93,15 +94,27 @@ class PostgresWorkflowRepo(WorkflowRepo):
         await self._ensure_tables()
 
         async with self._get_session_factory()() as session:
-            run = WorkflowRunModel(
+            now = datetime.now(UTC)
+            statement = pg_insert(WorkflowRunModel).values(
                 id=workflow_id,
                 name=name,
                 status=status,
                 trigger=data.get("trigger", "manual"),
                 steps=data.get("steps", []),
-                created_at=datetime.now(UTC),
+                created_at=now,
+                updated_at=now,
             )
-            session.add(run)
+            statement = statement.on_conflict_do_update(
+                index_elements=[WorkflowRunModel.id],
+                set_={
+                    "name": name,
+                    "status": status,
+                    "trigger": data.get("trigger", "manual"),
+                    "steps": data.get("steps", []),
+                    "updated_at": now,
+                },
+            )
+            await session.execute(statement)
             await session.commit()
             log.debug("Saved workflow run %s (%s)", workflow_id, name)
 

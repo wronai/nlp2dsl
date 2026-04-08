@@ -1,13 +1,16 @@
 flowchart TD
+    backend__app["backend.app<br/>64 funcs"]
     examples__01_invoice["examples.01-invoice<br/>1 funcs"]
     examples__02_email["examples.02-email<br/>1 funcs"]
     examples__03_report_and_notify["examples.03-report-and-notify<br/>1 funcs"]
     examples__04_scheduled_report["examples.04-scheduled-report<br/>1 funcs"]
     examples__code_generation_examples["examples.code_generation_examples<br/>1 funcs"]
+    nlp_service__app["nlp-service.app<br/>108 funcs"]
     nlp2dsl_sdk____main__["nlp2dsl_sdk.__main__<br/>1 funcs"]
     nlp2dsl_sdk__client["nlp2dsl_sdk.client<br/>47 funcs"]
     nlp2dsl_sdk__demos["nlp2dsl_sdk.demos<br/>17 funcs"]
     nlp2dsl_sdk__demos ==>|8| nlp2dsl_sdk__client
+    backend__app -->|2| nlp_service__app
     nlp2dsl_sdk____main__ -->|1| nlp2dsl_sdk__demos
     examples__code_generation_examples -->|1| nlp2dsl_sdk__demos
     examples__04_scheduled_report -->|1| nlp2dsl_sdk__demos

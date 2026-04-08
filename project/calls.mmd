@@ -1,20 +1,32 @@
 flowchart LR
     subgraph backend__app
-        backend__app__routers__system__system_execute["system_execute"]
-        backend__app__routers__settings__actions_schema["actions_schema"]
-        backend__app__routers__chat__chat_start["chat_start"]
         backend__app__routers__workflow__run_workflow_endpoint["run_workflow_endpoint"]
+        backend__app__engine___persist_workflow_snapshot["_persist_workflow_snapshot"]
+        backend__app__routers__settings__reset_settings["reset_settings"]
+        backend__app__engine___publish_workflow_event["_publish_workflow_event"]
+        backend__app__routers__chat__chat_start["chat_start"]
         backend__app__routers__settings__action_schema["action_schema"]
-        backend__app__logging_setup__get_request_id["get_request_id"]
+        backend__app__routers__settings__set_setting["set_setting"]
+        backend__app__engine__start_workflow["start_workflow"]
+        backend__app__engine___workflow_steps_payload["_workflow_steps_payload"]
+        backend__app__routers__settings__get_settings["get_settings"]
+        backend__app__engine__run_workflow["run_workflow"]
+        backend__app__routers__chat__chat_message["chat_message"]
+        backend__app__routers__workflow___format_sse["_format_sse"]
         backend__app__routers__settings__get_settings_section["get_settings_section"]
+        backend__app__routers__workflow___workflow_snapshot["_workflow_snapshot"]
         backend__app__routers__chat___proxy_chat_payload["_proxy_chat_payload"]
         backend__app__routers__chat__chat_get_state["chat_get_state"]
-        backend__app__routers__settings__get_settings["get_settings"]
+        backend__app__workflow_events__WorkflowEventHub__subscriber_count["subscriber_count"]
+        backend__app__routers__workflow__start_workflow_endpoint["start_workflow_endpoint"]
+        backend__app__routers__settings__actions_schema["actions_schema"]
+        backend__app__engine___execute_workflow["_execute_workflow"]
+        backend__app__engine___track_background_task["_track_background_task"]
+        backend__app__logging_setup__get_request_id["get_request_id"]
+        backend__app__routers__workflow__stream_workflow["stream_workflow"]
+        backend__app__routers__system__system_execute["system_execute"]
+        backend__app__workflow_events__WorkflowEventHub__publish["publish"]
         backend__app__routers__settings__update_settings_section["update_settings_section"]
-        backend__app__routers__chat__chat_message["chat_message"]
-        backend__app__routers__settings__set_setting["set_setting"]
-        backend__app__routers__settings__reset_settings["reset_settings"]
-        backend__app__engine__run_workflow["run_workflow"]
     end
     subgraph examples__01_invoice
         examples__01_invoice__main__main["main"]
@@ -32,106 +44,121 @@ flowchart LR
         examples__code_generation_examples__main["main"]
     end
     subgraph nlp_service__app
-        nlp_service__app__parser_rules__parse_rules["parse_rules"]
-        nlp_service__app__mapper___make_name["_make_name"]
-        nlp_service__app__orchestrator___merge_into_state["_merge_into_state"]
-        nlp_service__app__registry__get_required_fields["get_required_fields"]
-        nlp_service__app__settings___coerce_type["_coerce_type"]
-        nlp_service__app__main__parse_text["parse_text"]
-        nlp_service__app__parser_rules___resolve_intent["_resolve_intent"]
         nlp_service__app__system_executor__execute_system_action["execute_system_action"]
-        nlp_service__app__system_executor___is_read_only["_is_read_only"]
         nlp_service__app__registry__get_trigger["get_trigger"]
-        nlp_service__app__main__chat_message["chat_message"]
-        nlp_service__app__parser_rules___detect_actions["_detect_actions"]
-        nlp_service__app__mapper__map_to_dsl["map_to_dsl"]
-        nlp_service__app__system_executor___validate_file_path["_validate_file_path"]
-        nlp_service__app__mapper___build_config["_build_config"]
-        nlp_service__app__parser_llm___detect_provider["_detect_provider"]
-        nlp_service__app__settings__SettingsManager__set["set"]
-        nlp_service__app__main__chat_state["chat_state"]
-        nlp_service__app__orchestrator__get_action_form["get_action_form"]
-        nlp_service__app__system_executor___exec_file_read["_exec_file_read"]
-        nlp_service__app__main__chat_start["chat_start"]
-        nlp_service__app__main__health["health"]
-        nlp_service__app__parser_rules___extract_entities["_extract_entities"]
-        nlp_service__app__orchestrator___process_message["_process_message"]
-        nlp_service__app__audio_parser__stt_audio["stt_audio"]
-        nlp_service__app__main__system_execute["system_execute"]
-        nlp_service__app__main__text_to_dsl["text_to_dsl"]
-        nlp_service__app__orchestrator__start_conversation["start_conversation"]
-        nlp_service__app__main___run_parser["_run_parser"]
-        nlp_service__app__audio_parser__stt_file["stt_file"]
-        nlp_service__app__mapper___get_field_mapping["_get_field_mapping"]
-        nlp_service__app__system_executor___exec_file_write["_exec_file_write"]
-        nlp_service__app__main__actions_schema["actions_schema"]
-        nlp_service__app__parser_llm__parse_llm["parse_llm"]
-        nlp_service__app__main__action_schema["action_schema"]
-        nlp_service__app__audio_parser__is_stt_available["is_stt_available"]
-        nlp_service__app__main__websocket_chat["websocket_chat"]
-        nlp_service__app__orchestrator__continue_conversation["continue_conversation"]
-        nlp_service__app__orchestrator__get_conversation["get_conversation"]
-        nlp_service__app__registry__get_defaults["get_defaults"]
         nlp_service__app__mapper___resolve_actions["_resolve_actions"]
-        nlp_service__app__audio_parser__StreamingSTT__send_audio["send_audio"]
-        nlp_service__app__store__factory__get_conversation_store["get_conversation_store"]
+        nlp_service__app__system_executor___exec_file_write["_exec_file_write"]
+        nlp_service__app__system_executor___validate_file_path["_validate_file_path"]
+        nlp_service__app__main__chat_message["chat_message"]
+        nlp_service__app__system_executor___exec_file_read["_exec_file_read"]
+        nlp_service__app__settings__SettingsManager__set["set"]
+        nlp_service__app__orchestrator__get_action_form["get_action_form"]
+        nlp_service__app__parser_llm__parse_llm["parse_llm"]
+        nlp_service__app__orchestrator__get_conversation["get_conversation"]
+        nlp_service__app__parser_rules___detect_actions["_detect_actions"]
+        nlp_service__app__orchestrator__continue_conversation["continue_conversation"]
+        nlp_service__app__main__websocket_chat["websocket_chat"]
+        nlp_service__app__settings___coerce_type["_coerce_type"]
+        nlp_service__app__main__chat_state["chat_state"]
+        nlp_service__app__mapper___make_name["_make_name"]
+        nlp_service__app__main__text_to_dsl["text_to_dsl"]
         nlp_service__app__parser_llm___parse_json_response["_parse_json_response"]
+        nlp_service__app__orchestrator___process_message["_process_message"]
+        nlp_service__app__registry__get_defaults["get_defaults"]
+        nlp_service__app__registry__get_required_fields["get_required_fields"]
+        nlp_service__app__audio_parser__is_stt_available["is_stt_available"]
+        nlp_service__app__main___run_parser["_run_parser"]
+        nlp_service__app__main__actions_schema["actions_schema"]
+        nlp_service__app__parser_rules___resolve_intent["_resolve_intent"]
+        nlp_service__app__main__action_schema["action_schema"]
+        nlp_service__app__mapper___build_config["_build_config"]
+        nlp_service__app__mapper___get_field_mapping["_get_field_mapping"]
+        nlp_service__app__mapper__map_to_dsl["map_to_dsl"]
+        nlp_service__app__orchestrator___merge_into_state["_merge_into_state"]
+        nlp_service__app__parser_rules___extract_entities["_extract_entities"]
+        nlp_service__app__main__parse_text["parse_text"]
+        nlp_service__app__audio_parser__StreamingSTT__send_audio["send_audio"]
+        nlp_service__app__orchestrator__start_conversation["start_conversation"]
+        nlp_service__app__audio_parser__stt_file["stt_file"]
+        nlp_service__app__main__health["health"]
+        nlp_service__app__audio_parser__stt_audio["stt_audio"]
+        nlp_service__app__parser_rules__parse_rules["parse_rules"]
+        nlp_service__app__system_executor___is_read_only["_is_read_only"]
+        nlp_service__app__main__chat_start["chat_start"]
+        nlp_service__app__store__factory__get_conversation_store["get_conversation_store"]
+        nlp_service__app__main__system_execute["system_execute"]
+        nlp_service__app__parser_llm___detect_provider["_detect_provider"]
     end
     subgraph nlp2dsl_sdk____main__
         nlp2dsl_sdk____main____main["main"]
     end
     subgraph nlp2dsl_sdk__client
-        nlp2dsl_sdk__client__NLP2DSLClient__notify_slack["notify_slack"]
+        nlp2dsl_sdk__client__NLP2DSLClient__crm_update["crm_update"]
         nlp2dsl_sdk__client__workflow_step["workflow_step"]
-        nlp2dsl_sdk__client__NLP2DSLClient__send_invoice_and_notify["send_invoice_and_notify"]
+        nlp2dsl_sdk__client__ConversationFlow____init__["__init__"]
+        nlp2dsl_sdk__client__NLP2DSLClient__send_email["send_email"]
+        nlp2dsl_sdk__client__NLP2DSLClient__from_env["from_env"]
         nlp2dsl_sdk__client__NLP2DSLClient__generate_report_and_notify["generate_report_and_notify"]
+        nlp2dsl_sdk__client__NLP2DSLClient__notify_slack["notify_slack"]
+        nlp2dsl_sdk__client__NLP2DSLClient__send_invoice_and_notify["send_invoice_and_notify"]
         nlp2dsl_sdk__client__NLP2DSLClient__generate_report["generate_report"]
         nlp2dsl_sdk__client__NLP2DSLClient__send_invoice["send_invoice"]
-        nlp2dsl_sdk__client__NLP2DSLClient__send_email["send_email"]
-        nlp2dsl_sdk__client__ConversationFlow____init__["__init__"]
-        nlp2dsl_sdk__client__NLP2DSLClient__from_env["from_env"]
-        nlp2dsl_sdk__client__NLP2DSLClient__crm_update["crm_update"]
     end
     subgraph nlp2dsl_sdk__demos
-        nlp2dsl_sdk__demos___print_execution_result["_print_execution_result"]
-        nlp2dsl_sdk__demos___ensure_services["_ensure_services"]
-        nlp2dsl_sdk__demos__run_automation_gallery_demo["run_automation_gallery_demo"]
-        nlp2dsl_sdk__demos__run_crm_update_demo["run_crm_update_demo"]
-        nlp2dsl_sdk__demos___run_workflow_examples["_run_workflow_examples"]
         nlp2dsl_sdk__demos__run_scheduled_report_demo["run_scheduled_report_demo"]
-        nlp2dsl_sdk__demos__run_report_and_notify_demo["run_report_and_notify_demo"]
-        nlp2dsl_sdk__demos__run_code_generation_demo["run_code_generation_demo"]
-        nlp2dsl_sdk__demos__list_available_demos["list_available_demos"]
-        nlp2dsl_sdk__demos__run_action_catalog_demo["run_action_catalog_demo"]
+        nlp2dsl_sdk__demos___ensure_services["_ensure_services"]
+        nlp2dsl_sdk__demos___run_workflow_examples["_run_workflow_examples"]
         nlp2dsl_sdk__demos___print_json["_print_json"]
-        nlp2dsl_sdk__demos__run_invoice_demo["run_invoice_demo"]
+        nlp2dsl_sdk__demos__run_crm_update_demo["run_crm_update_demo"]
         nlp2dsl_sdk__demos__run_email_demo["run_email_demo"]
         nlp2dsl_sdk__demos___print_workflow_preview["_print_workflow_preview"]
+        nlp2dsl_sdk__demos___print_execution_result["_print_execution_result"]
+        nlp2dsl_sdk__demos__run_automation_gallery_demo["run_automation_gallery_demo"]
+        nlp2dsl_sdk__demos__run_code_generation_demo["run_code_generation_demo"]
         nlp2dsl_sdk__demos___run_gallery_examples["_run_gallery_examples"]
+        nlp2dsl_sdk__demos__run_action_catalog_demo["run_action_catalog_demo"]
+        nlp2dsl_sdk__demos__run_invoice_demo["run_invoice_demo"]
+        nlp2dsl_sdk__demos__run_report_and_notify_demo["run_report_and_notify_demo"]
+        nlp2dsl_sdk__demos__list_available_demos["list_available_demos"]
         nlp2dsl_sdk__demos___preview_text_examples["_preview_text_examples"]
     end
     subgraph tauri_wrapper__scripts
+        tauri_wrapper__scripts__dev__shutdown["shutdown"]
         tauri_wrapper__scripts__dev__main["main"]
         tauri_wrapper__scripts__dev__exitCode["exitCode"]
-        tauri_wrapper__scripts__dev__shutdown["shutdown"]
     end
     subgraph worker__worker
-        worker__worker__handle_send_invoice["handle_send_invoice"]
+        worker__worker__handle_notify_teams["handle_notify_teams"]
         worker__worker__handle_crm_update["handle_crm_update"]
         worker__worker__action["action"]
-        worker__worker__handle_notify_slack["handle_notify_slack"]
+        worker__worker___deliver_notification["_deliver_notification"]
+        worker__worker__handle_notify_telegram["handle_notify_telegram"]
+        worker__worker__handle_send_email["handle_send_email"]
         worker__worker__handle_generate_report["handle_generate_report"]
         worker__worker__handle_generate_code["handle_generate_code"]
-        worker__worker__handle_send_email["handle_send_email"]
+        worker__worker__handle_notify_slack["handle_notify_slack"]
+        worker__worker__handle_send_invoice["handle_send_invoice"]
     end
     tauri_wrapper__scripts__dev__main --> tauri_wrapper__scripts__dev__shutdown
     tauri_wrapper__scripts__dev__exitCode --> tauri_wrapper__scripts__dev__main
-    backend__app__engine__run_workflow --> backend__app__logging_setup__get_request_id
+    backend__app__engine___persist_workflow_snapshot --> backend__app__engine___workflow_steps_payload
+    backend__app__engine___execute_workflow --> backend__app__engine___publish_workflow_event
+    backend__app__engine___execute_workflow --> backend__app__logging_setup__get_request_id
+    backend__app__engine___execute_workflow --> backend__app__engine___persist_workflow_snapshot
+    backend__app__engine__run_workflow --> backend__app__engine___execute_workflow
+    backend__app__engine__start_workflow --> backend__app__engine___track_background_task
+    backend__app__engine__start_workflow --> backend__app__engine___persist_workflow_snapshot
+    backend__app__engine__start_workflow --> backend__app__engine___execute_workflow
+    backend__app__workflow_events__WorkflowEventHub__publish --> nlp_service__app__settings__SettingsManager__set
+    backend__app__workflow_events__WorkflowEventHub__subscriber_count --> nlp_service__app__settings__SettingsManager__set
     backend__app__routers__system__system_execute --> backend__app__logging_setup__get_request_id
     backend__app__routers__chat__chat_start --> backend__app__routers__chat___proxy_chat_payload
     backend__app__routers__chat__chat_message --> backend__app__routers__chat___proxy_chat_payload
     backend__app__routers__chat__chat_get_state --> backend__app__logging_setup__get_request_id
     backend__app__routers__workflow__run_workflow_endpoint --> backend__app__engine__run_workflow
+    backend__app__routers__workflow__start_workflow_endpoint --> backend__app__engine__start_workflow
+    backend__app__routers__workflow__stream_workflow --> backend__app__routers__workflow___workflow_snapshot
+    backend__app__routers__workflow__stream_workflow --> backend__app__routers__workflow___format_sse
     backend__app__routers__settings__actions_schema --> backend__app__logging_setup__get_request_id
     backend__app__routers__settings__action_schema --> backend__app__logging_setup__get_request_id
     backend__app__routers__settings__get_settings --> backend__app__logging_setup__get_request_id
@@ -198,16 +225,6 @@ flowchart LR
     nlp_service__app__mapper___build_config --> nlp_service__app__registry__get_required_fields
     nlp_service__app__mapper___build_config --> nlp_service__app__registry__get_defaults
     nlp_service__app__mapper___build_config --> nlp_service__app__mapper___get_field_mapping
-    nlp_service__app__orchestrator__start_conversation --> nlp_service__app__orchestrator___process_message
-    nlp_service__app__orchestrator__continue_conversation --> nlp_service__app__orchestrator___process_message
-    nlp_service__app__orchestrator___process_message --> nlp_service__app__parser_rules__parse_rules
-    nlp_service__app__orchestrator___process_message --> nlp_service__app__orchestrator___merge_into_state
-    nlp_service__app__orchestrator___process_message --> nlp_service__app__mapper__map_to_dsl
-    nlp_service__app__orchestrator___merge_into_state --> nlp_service__app__registry__get_trigger
-    nlp_service__app__system_executor___exec_file_read --> nlp_service__app__system_executor___validate_file_path
-    nlp_service__app__system_executor___exec_file_write --> nlp_service__app__system_executor___validate_file_path
-    nlp_service__app__system_executor___exec_file_write --> nlp_service__app__system_executor___is_read_only
-    nlp_service__app__settings__SettingsManager__set --> nlp_service__app__settings___coerce_type
     nlp_service__app__main__parse_text --> nlp_service__app__main___run_parser
     nlp_service__app__main__text_to_dsl --> nlp_service__app__mapper__map_to_dsl
     nlp_service__app__main__text_to_dsl --> nlp_service__app__main___run_parser
@@ -225,11 +242,26 @@ flowchart LR
     nlp_service__app__main___run_parser --> nlp_service__app__parser_llm___detect_provider
     nlp_service__app__main___run_parser --> nlp_service__app__parser_llm__parse_llm
     nlp_service__app__main__websocket_chat --> nlp_service__app__audio_parser__is_stt_available
+    nlp_service__app__system_executor___exec_file_read --> nlp_service__app__system_executor___validate_file_path
+    nlp_service__app__system_executor___exec_file_write --> nlp_service__app__system_executor___validate_file_path
+    nlp_service__app__system_executor___exec_file_write --> nlp_service__app__system_executor___is_read_only
+    nlp_service__app__settings__SettingsManager__set --> nlp_service__app__settings___coerce_type
+    nlp_service__app__orchestrator__start_conversation --> nlp_service__app__orchestrator___process_message
+    nlp_service__app__orchestrator__continue_conversation --> nlp_service__app__orchestrator___process_message
+    nlp_service__app__orchestrator___process_message --> nlp_service__app__parser_rules__parse_rules
+    nlp_service__app__orchestrator___process_message --> nlp_service__app__orchestrator___merge_into_state
+    nlp_service__app__orchestrator___process_message --> nlp_service__app__mapper__map_to_dsl
+    nlp_service__app__orchestrator___merge_into_state --> nlp_service__app__registry__get_trigger
     worker__worker__handle_send_invoice --> worker__worker__action
     worker__worker__handle_send_email --> worker__worker__action
     worker__worker__handle_generate_report --> worker__worker__action
     worker__worker__handle_crm_update --> worker__worker__action
     worker__worker__handle_notify_slack --> worker__worker__action
+    worker__worker__handle_notify_slack --> worker__worker___deliver_notification
+    worker__worker__handle_notify_telegram --> worker__worker__action
+    worker__worker__handle_notify_telegram --> worker__worker___deliver_notification
+    worker__worker__handle_notify_teams --> worker__worker__action
+    worker__worker__handle_notify_teams --> worker__worker___deliver_notification
     worker__worker__handle_generate_code --> worker__worker__action
     nlp_service__app__parser_llm__parse_llm --> nlp_service__app__parser_llm___detect_provider
     nlp_service__app__parser_llm__parse_llm --> nlp_service__app__parser_llm___parse_json_response
