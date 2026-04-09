@@ -32,7 +32,7 @@ pipeline:
       timeout: 1800
 
     - name: test
-      run: python3 -m pytest -q
+      run: bash .pfix-test-wrapper.sh
 
   # If you want to tighten gates later, add more overrides here.
 
