@@ -43,9 +43,23 @@ echo ""
 echo "==> Aggregating testql from examples/*/.nlp2dsl/ ..."
 "$PY" "$ROOT/scripts/aggregate-example-testql.py" || true
 
+echo ""
+echo "==> TestQL results per example (.nlp2dsl/result.*) ..."
+testql_failed=0
+if ! "$PY" "$ROOT/scripts/run-example-testql-results.py"; then
+  testql_failed=1
+  echo "WARN: some example testql results failed (see examples/*/.nlp2dsl/result.toon.yaml)" >&2
+fi
+
 if [[ "$failed" -ne 0 ]]; then
   echo ""
   echo "Some examples failed. Ensure platform is up: docker compose up -d (from repo root)" >&2
+  exit 1
+fi
+
+if [[ "$testql_failed" -ne 0 ]]; then
+  echo ""
+  echo "Examples OK but testql result checks reported failures." >&2
   exit 1
 fi
 

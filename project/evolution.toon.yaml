@@ -1,34 +1,58 @@
-# code2llm/evolution | 381 func | 49f | 2026-06-05
+# code2llm/evolution | 542 func | 82f | 2026-06-05
 # generated in 0.00s
 
-NEXT[4] (ranked by impact):
-  [1] !! SPLIT           nlp-service/app/main.py
-      WHY: 592L, 0 classes, max CC=10
-      EFFORT: ~4h  IMPACT: 5920
+NEXT[10] (ranked by impact):
+  [1] !! SPLIT           packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py
+      WHY: 1209L, 2 classes, max CC=73
+      EFFORT: ~4h  IMPACT: 88257
 
-  [2] !! SPLIT           nlp2dsl_sdk/demos.py
-      WHY: 687L, 1 classes, max CC=6
-      EFFORT: ~4h  IMPACT: 4122
+  [2] !! SPLIT-FUNC      KeywordIntentDetector._fast_path_detection  CC=73  fan=29
+      WHY: CC=73 exceeds 15
+      EFFORT: ~1h  IMPACT: 2117
 
-  [3] !  SPLIT-FUNC      resolve_intent  CC=18  fan=19
+  [3] !! SPLIT-FUNC      KeywordPatterns._load_detector_config_from_json  CC=33  fan=18
+      WHY: CC=33 exceeds 15
+      EFFORT: ~1h  IMPACT: 594
+
+  [4] !  SPLIT-FUNC      resolve_intent  CC=18  fan=19
       WHY: CC=18 exceeds 15
       EFFORT: ~1h  IMPACT: 342
 
-  [4] !! SPLIT           planfile.yaml
-      WHY: 786L, 0 classes, max CC=0
-      EFFORT: ~4h  IMPACT: 0
+  [5] !  SPLIT-FUNC      KeywordPatterns._load_patterns_from_json  CC=19  fan=17
+      WHY: CC=19 exceeds 15
+      EFFORT: ~1h  IMPACT: 323
+
+  [6] !  SPLIT-FUNC      _build_config  CC=19  fan=16
+      WHY: CC=19 exceeds 15
+      EFFORT: ~1h  IMPACT: 304
+
+  [7] !  SPLIT-FUNC      KeywordIntentDetector.detect  CC=17  fan=17
+      WHY: CC=17 exceeds 15
+      EFFORT: ~1h  IMPACT: 289
+
+  [8] !  SPLIT-FUNC      orient_query  CC=16  fan=16
+      WHY: CC=16 exceeds 15
+      EFFORT: ~1h  IMPACT: 256
+
+  [9] !  SPLIT-FUNC      _resolve_file_list_host_command  CC=15  fan=17
+      WHY: CC=15 exceeds 15
+      EFFORT: ~1h  IMPACT: 255
+
+  [10] !  SPLIT-FUNC      KeywordIntentDetector._keyword_detection  CC=15  fan=12
+      WHY: CC=15 exceeds 15
+      EFFORT: ~1h  IMPACT: 180
 
 
 RISKS[3]:
+  ⚠ Splitting packages/nlp2cmd-intent/src/nlp2cmd_intent/data/patterns.json may break 0 import paths
   ⚠ Splitting planfile.yaml may break 0 import paths
-  ⚠ Splitting nlp2dsl_sdk/demos.py may break 22 import paths
-  ⚠ Splitting nlp-service/app/main.py may break 24 import paths
+  ⚠ Splitting packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py may break 22 import paths
 
 METRICS-TARGET:
-  CC̄:          2.9 → ≤2.0
-  max-CC:      18 → ≤9
-  god-modules: 5 → 0
-  high-CC(≥15): 1 → ≤0
+  CC̄:          3.6 → ≤2.5
+  max-CC:      73 → ≤20
+  god-modules: 7 → 0
+  high-CC(≥15): 12 → ≤6
   hub-types:   0 → ≤0
 
 PATTERNS (language parser shared logic):
@@ -56,4 +80,4 @@ PATTERNS (language parser shared logic):
     - Standardized FunctionInfo/ClassInfo models
 
 HISTORY:
-  prev CC̄=2.9 → now CC̄=2.9
+  prev CC̄=3.6 → now CC̄=3.6

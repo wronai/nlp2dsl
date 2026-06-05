@@ -139,7 +139,8 @@ def execute_from_text(
     label: str = "Wykonywanie workflow",
 ) -> dict[str, Any]:
     """NLP query → DSL → execution (no hardcoded run_workflow helpers)."""
-    print(f"\n📋 {label}...")
+    if label:
+        print(f"\n📋 {label}...")
     print(f"🧠 Zapytanie: '{text}'")
     try:
         result = client.workflow_from_text(text, execute=True, mode=mode)
@@ -157,6 +158,38 @@ def execute_from_text(
                 icon = "✅" if step.get("status") == "completed" else "❌"
                 print(f"   Krok {index} ({step.get('action')}): {icon}")
     return result
+
+
+def execute_text_examples(
+    client: NLP2DSLClient,
+    title: str,
+    examples: Sequence[str],
+    *,
+    mode: str = "auto",
+    artifact_writer: ExampleArtifactWriter | None = None,
+    finalize_artifacts: bool = True,
+) -> list[dict[str, Any]]:
+    """Run each NL query with execute=True; incomplete queries surface missing_fields."""
+    if title:
+        print(title)
+
+    writer = artifact_writer or get_example_writer()
+    results: list[dict[str, Any]] = []
+    for text in examples:
+        print(f"\n📝 Zapytanie: {text}")
+        try:
+            result = client.workflow_from_text(text, execute=True, mode=mode)
+        except requests.HTTPError as exc:
+            result = workflow_http_error_result(exc)
+        results.append(result)
+        print_workflow_preview(result)
+        if writer:
+            writer.record(text, result, mode=mode)
+
+    if writer and finalize_artifacts:
+        writer.finalize(client)
+
+    return results
 
 
 def finalize_example_artifacts(client: NLP2DSLClient | None = None) -> None:

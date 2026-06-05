@@ -784,3 +784,536 @@ sprints:
     model_hints:
       planning: balanced
       implementation: balanced
+  - id: ticket-808f0627
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in nlp-service/app/dsl/pipeline.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - nlp-service/app/dsl/pipeline.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-ae593814
+    name: Fix unused-imports issues
+    description: Resolve 8 unused-imports issues in nlp-service/app/main.py
+    task_type: prefactor
+    priority: high
+    estimate: 2d
+    files:
+    - nlp-service/app/main.py
+    rule_id: unused-imports
+    count: 8
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-f8a324eb
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in nlp-service/app/routing/parser/enrich.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - nlp-service/app/routing/parser/enrich.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-71a31124
+    name: Fix string-concat issues
+    description: Resolve 2 string-concat issues in nlp-service/app/routing/orientation.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - nlp-service/app/routing/orientation.py
+    rule_id: string-concat
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-6eedcc0d
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in nlp-service/app/routing/parser/prompt_catalog.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - nlp-service/app/routing/parser/prompt_catalog.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-c5647da9
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in nlp-service/app/routing/parser/resolve_mode.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - nlp-service/app/routing/parser/resolve_mode.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-61a1ce8a
+    name: Fix relative-imports issues
+    description: Resolve 4 relative-imports issues in nlp2dsl_sdk/cli.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - nlp2dsl_sdk/cli.py
+    rule_id: relative-imports
+    count: 4
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-99d85fdb
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in nlp2dsl_sdk/cli.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - nlp2dsl_sdk/cli.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-93020831
+    name: Fix ai-boilerplate issues
+    description: Resolve 1 ai-boilerplate issues in nlp2dsl_sdk/cli.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - nlp2dsl_sdk/cli.py
+    rule_id: ai-boilerplate
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-16d87497
+    name: Fix relative-imports issues
+    description: Resolve 2 relative-imports issues in nlp2dsl_sdk/artifacts.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - nlp2dsl_sdk/artifacts.py
+    rule_id: relative-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-35431ebc
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in nlp2dsl_sdk/artifacts.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - nlp2dsl_sdk/artifacts.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-04b8c97a
+    name: Fix llm-hallucinations issues
+    description: Resolve 1 llm-hallucinations issues in nlp2dsl_sdk/artifacts.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - nlp2dsl_sdk/artifacts.py
+    rule_id: llm-hallucinations
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-c914348e
+    name: Fix magic-numbers issues
+    description: Resolve 1 magic-numbers issues in nlp2dsl_sdk/artifacts.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - nlp2dsl_sdk/artifacts.py
+    rule_id: magic-numbers
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-cc77397e
+    name: Fix llm-generated-code issues
+    description: Resolve 2 llm-generated-code issues in nlp2dsl_sdk/artifacts.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - nlp2dsl_sdk/artifacts.py
+    rule_id: llm-generated-code
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-b7b9d421
+    name: Fix smart-return-type issues
+    description: Resolve 1 smart-return-type issues in nlp2dsl_sdk/encoding.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - nlp2dsl_sdk/encoding.py
+    rule_id: smart-return-type
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-1f4e1aa2
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in nlp2dsl_sdk/encoding.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - nlp2dsl_sdk/encoding.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-9e34bb51
+    name: Fix string-concat issues
+    description: Resolve 1 string-concat issues in nlp2dsl_sdk/client.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - nlp2dsl_sdk/client.py
+    rule_id: string-concat
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-5e716bad
+    name: Fix llm-hallucinations issues
+    description: Resolve 1 llm-hallucinations issues in nlp2dsl_sdk/demos.py
+    task_type: bugfix
+    priority: critical
+    estimate: 1d
+    files:
+    - nlp2dsl_sdk/demos.py
+    rule_id: llm-hallucinations
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-9aeb0d35
+    name: Fix relative-imports issues
+    description: Resolve 4 relative-imports issues in nlp2dsl_sdk/example_loader.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - nlp2dsl_sdk/example_loader.py
+    rule_id: relative-imports
+    count: 4
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-46df90a5
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in nlp2dsl_sdk/example_loader.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - nlp2dsl_sdk/example_loader.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-e16eb7d9
+    name: Fix relative-imports issues
+    description: Resolve 6 relative-imports issues in nlp2dsl_sdk/preview.py
+    task_type: prefactor
+    priority: high
+    estimate: 2d
+    files:
+    - nlp2dsl_sdk/preview.py
+    rule_id: relative-imports
+    count: 6
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-4952538e
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in nlp2dsl_sdk/preview.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - nlp2dsl_sdk/preview.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-04696266
+    name: Fix magic-numbers issues
+    description: Resolve 2 magic-numbers issues in nlp2dsl_sdk/preview.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - nlp2dsl_sdk/preview.py
+    rule_id: magic-numbers
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-6dba0796
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in packages/nlp2cmd-intent/src/nlp2cmd_intent/clarification.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - packages/nlp2cmd-intent/src/nlp2cmd_intent/clarification.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-018e66cc
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in packages/nlp2cmd-intent/src/nlp2cmd_intent/domain_mapping.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - packages/nlp2cmd-intent/src/nlp2cmd_intent/domain_mapping.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-cf108012
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in packages/nlp2cmd-intent/src/nlp2cmd_intent/data_files.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - packages/nlp2cmd-intent/src/nlp2cmd_intent/data_files.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-f9fd0150
+    name: Fix smart-return-type issues
+    description: Resolve 1 smart-return-type issues in packages/nlp2cmd-intent/src/nlp2cmd_intent/facade.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - packages/nlp2cmd-intent/src/nlp2cmd_intent/facade.py
+    rule_id: smart-return-type
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-1fb59192
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in packages/nlp2cmd-intent/src/nlp2cmd_intent/facade.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - packages/nlp2cmd-intent/src/nlp2cmd_intent/facade.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-6b52261f
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in packages/nlp2cmd-intent/src/nlp2cmd_intent/input.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - packages/nlp2cmd-intent/src/nlp2cmd_intent/input.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-9e1b41d4
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_patterns.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_patterns.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-fec1d591
+    name: Fix llm-generated-code issues
+    description: Resolve 1 llm-generated-code issues in packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_patterns.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_patterns.py
+    rule_id: llm-generated-code
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-90f4d3d2
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in packages/nlp2cmd-intent/src/nlp2cmd_intent/nlp2cmd_convert.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - packages/nlp2cmd-intent/src/nlp2cmd_intent/nlp2cmd_convert.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-90757fae
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in packages/nlp2cmd-intent/src/nlp2cmd_intent/normalize.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - packages/nlp2cmd-intent/src/nlp2cmd_intent/normalize.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-6ecbbbfd
+    name: Fix relative-imports issues
+    description: Resolve 2 relative-imports issues in packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py
+    rule_id: relative-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-7e98f326
+    name: Fix smart-return-type issues
+    description: Resolve 1 smart-return-type issues in packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py
+    rule_id: smart-return-type
+    count: 1
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-6af3ff9e
+    name: Fix string-concat issues
+    description: Resolve 2 string-concat issues in packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py
+    rule_id: string-concat
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-b4559ca8
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-efd5460e
+    name: Fix llm-generated-code issues
+    description: Resolve 4 llm-generated-code issues in packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py
+    task_type: prefactor
+    priority: medium
+    estimate: 2d
+    files:
+    - packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py
+    rule_id: llm-generated-code
+    count: 4
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-59c32939
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in packages/nlp2cmd-planner/src/nlp2cmd_planner/pipeline.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - packages/nlp2cmd-planner/src/nlp2cmd_planner/pipeline.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-8c51127d
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in packages/nlp2cmd-intent/src/nlp2cmd_intent/protocols.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - packages/nlp2cmd-intent/src/nlp2cmd_intent/protocols.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-d73753dc
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in packages/nlp2cmd-planner/src/nlp2cmd_planner/router.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - packages/nlp2cmd-planner/src/nlp2cmd_planner/router.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced

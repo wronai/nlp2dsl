@@ -12,8 +12,8 @@ from .client import NLP2DSLClient
 from .example_loader import load_example_runner
 from .preview import (
     ensure_services,
+    execute_from_text,
     preview_text_examples,
-    print_execution_result,
     print_json,
     print_workflow_preview,
     workflow_http_error_result,
@@ -21,12 +21,6 @@ from .preview import (
 
 CONSTANT_50 = 50
 CONSTANT_300 = 300
-CONSTANT_1500 = 1500.0
-
-
-CONSTANT_50 = CONSTANT_50
-CONSTANT_300 = CONSTANT_300
-CONSTANT_1500 = CONSTANT_1500
 
 
 CODE_PREVIEW_LEN = CONSTANT_300
@@ -65,16 +59,8 @@ def run_crm_update_demo(client: Optional[NLP2DSLClient] = None) -> Dict[str, Any
     if not ensure_services(client):
         return {}
 
-    preview_text_examples(client, "", CRM_TEXT_EXAMPLES)
-
-    print("\n📋 Wykonywanie workflow...")
-    execution = client.crm_update(
-        entity="lead",
-        data={"company": "ACME", "status": "qualified", "owner": "sales"},
-        name="crm_update_demo",
-    )
-    print_execution_result(execution)
-    return execution
+    preview_text_examples(client, "", CRM_TEXT_EXAMPLES, finalize_artifacts=False)
+    return execute_from_text(client, CRM_TEXT_EXAMPLES[0], label="Wykonywanie z zapytania NLP")
 
 
 def run_action_catalog_demo(client: Optional[NLP2DSLClient] = None) -> Dict[str, Any]:
@@ -97,17 +83,13 @@ def run_action_catalog_demo(client: Optional[NLP2DSLClient] = None) -> Dict[str,
 
         prompt = ACTION_SAMPLE_PROMPTS.get(name)
         if prompt:
-            print(f"  🧠 Analiza tekstu: '{prompt}'")
-            preview = client.workflow_from_text(prompt)
-            results["samples"][name] = preview
-            print_workflow_preview(preview)
-
-        runner = ACTION_SAMPLE_RUNNERS.get(name)
-        if runner:
-            print("  📋 Przykładowe wykonanie:")
-            sample = runner(client)
-            results["samples"][f"{name}_execution"] = sample
-            print_execution_result(sample)
+            print(f"  🧠 NLP → DSL → wykonanie: '{prompt}'")
+            try:
+                sample = client.workflow_from_text(prompt, execute=True, mode="auto")
+            except requests.HTTPError as exc:
+                sample = workflow_http_error_result(exc)
+            results["samples"][name] = sample
+            print_workflow_preview(sample)
 
     return results
 
@@ -119,7 +101,12 @@ def run_automation_gallery_demo(client: Optional[NLP2DSLClient] = None) -> list[
     if not ensure_services(client):
         return []
 
-    return _run_gallery_examples(client, "", AUTOMATION_GALLERY_SPECS)
+    results: list[dict[str, Any]] = []
+    for title, prompt in AUTOMATION_GALLERY_QUERIES:
+        print(f"\n📝 {title}")
+        result = execute_from_text(client, prompt, label="Wykonywanie z NLP")
+        results.append({"title": title, "query": prompt, "result": result})
+    return results
 
 
 DEFAULT_INVOICE_PROMPT = "Wyślij fakturę na 1500 PLN do klient@firma.pl"
@@ -169,58 +156,26 @@ CODE_WORKER_SPECS: tuple[Mapping[str, Any], ...] = (
     },
 )
 
-AUTOMATION_GALLERY_SPECS: tuple[Mapping[str, Any], ...] = (
-    {
-        "title": "Faktura",
-        "prompt": DEFAULT_INVOICE_PROMPT,
-        "runner": lambda client: client.send_invoice(
-            CONSTANT_1500,
-            "klient@firma.pl",
-            "PLN",
-            name="gallery_invoice_example",
-        ),
-    },
-    {
-        "title": "Faktura + powiadomienie",
-        "prompt": "Wyślij fakturę i poinformuj księgowość oraz Slack",
-        "runner": lambda client: client.send_invoice_and_notify(
-            CONSTANT_1500,
-            "klient@firma.pl",
-            email_to="billing@firma.pl",
-            slack_channel="#finance",
-            name="gallery_invoice_notify_example",
-        ),
-    },
-    {
-        "title": "Aktualizacja CRM",
-        "prompt": "Zaktualizuj CRM dla leada ACME z etapem qualified",
-        "runner": lambda client: client.crm_update(
-            entity="lead",
-            data={"company": "ACME", "status": "qualified", "owner": "sales"},
-            name="gallery_crm_update_example",
-        ),
-    },
-    {
-        "title": "Raport + email + Slack",
-        "prompt": "Co tydzień generuj raport sprzedaży w PDF i wyślij do managera oraz na Slack",
-        "runner": lambda client: client.generate_report_and_notify(
-            report_type="sales",
-            format_type="pdf",
-            email_to="manager@firma.pl",
-            slack_channel="#sales",
-            trigger="weekly",
-            name="gallery_report_notify_example",
-        ),
-    },
-    {
-        "title": "Powiadomienie Slack",
-        "prompt": "Powiadom zespół na Slacku o wdrożeniu",
-        "runner": lambda client: client.notify_slack(
-            channel="#deployments",
-            message="Wdrożenie zakończone powodzeniem.",
-            name="gallery_slack_example",
-        ),
-    },
+AUTOMATION_GALLERY_QUERIES: tuple[tuple[str, str], ...] = (
+    ("Faktura", DEFAULT_INVOICE_PROMPT),
+    (
+        "Faktura + powiadomienie",
+        "Wyślij fakturę na 1500 PLN do klient@firma.pl, email do billing@firma.pl "
+        "i powiadom #finance na Slacku",
+    ),
+    (
+        "Aktualizacja CRM",
+        "Zaktualizuj CRM dla leada ACME z etapem qualified i ownerem sales",
+    ),
+    (
+        "Raport + email + Slack",
+        "Co tydzień generuj raport sprzedaży PDF, wyślij do manager@firma.pl "
+        "i powiadom #sales na Slacku",
+    ),
+    (
+        "Powiadomienie Slack",
+        "Powiadom #deployments na Slacku: Wdrożenie zakończone powodzeniem.",
+    ),
 )
 
 CRM_TEXT_EXAMPLES: tuple[str, ...] = (
@@ -237,87 +192,7 @@ ACTION_SAMPLE_PROMPTS: dict[str, str] = {
     "notify_slack": "Powiadom zespół na Slacku o wdrożeniu",
 }
 
-ACTION_SAMPLE_RUNNERS: dict[str, Callable[[NLP2DSLClient], dict[str, Any]]] = {
-    "send_invoice": lambda client: client.send_invoice(
-        CONSTANT_1500,
-        "klient@firma.pl",
-        "PLN",
-        name="catalog_invoice_example",
-    ),
-    "send_email": lambda client: client.send_email(
-        "team@firma.pl",
-        subject="Status dzienny projektów",
-        body="Wszystkie projekty przebiegają zgodnie z harmonogramem.",
-        name="catalog_email_example",
-    ),
-    "generate_report": lambda client: client.generate_report(
-        report_type="sales",
-        format_type="pdf",
-        name="catalog_report_example",
-    ),
-    "crm_update": lambda client: client.crm_update(
-        entity="lead",
-        data={"company": "ACME", "status": "qualified", "owner": "sales"},
-        name="catalog_crm_example",
-    ),
-    "notify_slack": lambda client: client.notify_slack(
-        channel="#ops",
-        message="Automatyczne powiadomienie z katalogu akcji.",
-        name="catalog_slack_example",
-    ),
-}
-
-
-def _run_workflow_examples(
-    client: NLP2DSLClient,
-    title: str,
-    examples: Sequence[Mapping[str, Any]],
-) -> list[dict[str, Any]]:
-    if title:
-        print(title)
-
-    results: list[dict[str, Any]] = []
-    for example in examples:
-        print(f"\n📦 {example['title']}")
-        result = example["runner"](client)
-        results.append(result)
-        print_execution_result(result)
-
-    return results
-
-
-def _run_gallery_examples(
-    client: NLP2DSLClient,
-    title: str,
-    examples: Sequence[Mapping[str, Any]],
-) -> list[dict[str, Any]]:
-    if title:
-        print(title)
-
-    results: list[dict[str, Any]] = []
-    for example in examples:
-        print(f"\n📝 {example['title']}")
-        prompt = example.get("prompt")
-        if prompt:
-            print(f"🧠 Analiza tekstu: '{prompt}'")
-            preview = client.workflow_from_text(prompt, execute=bool(example.get("execute_preview", False)))
-            print_workflow_preview(preview)
-        else:
-            preview = {}
-
-        execution = None
-        runner = example.get("runner")
-        if callable(runner):
-            print("\n📋 Wykonywanie workflow...")
-            execution = runner(client)
-            print_execution_result(execution)
-
-        results.append({"title": example["title"], "preview": preview, "execution": execution})
-
-    return results
-
-
-# Przykłady 01–07: logika w examples/<dir>/scenario.py (demos.py tylko re-eksportuje)
+# Przykłady 01–12: logika w examples/<dir>/scenario.py (demos.py tylko re-eksportuje)
 run_invoice_demo = load_example_runner("01-invoice")
 run_email_demo = load_example_runner("02-email")
 run_report_and_notify_demo = load_example_runner("03-report-and-notify")

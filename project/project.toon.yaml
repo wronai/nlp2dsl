@@ -1,61 +1,52 @@
-# nlp2dsl | 415 func | 57f | 10666L | python | 2026-06-05
+# nlp2dsl | 605 func | 101f | 26410L | python | 2026-06-05
 # generated in 0.00s
 
 HEALTH:
-  CC̄=2.9  critical=11 (limit:10)  dup=3  cycles=1
+  CC̄=3.7  critical=42 (limit:10)  dup=3  cycles=0
 
 ALERTS[20]:
+  !!! cc_exceeded      KeywordIntentDetector._fast_path_detection = 73 (limit:15)
+  !!! cc_exceeded      KeywordPatterns._load_detector_config_from_json = 33 (limit:15)
+  !!! high_fan_out     process_example = 31 (limit:10)
+  !!! high_fan_out     KeywordIntentDetector._fast_path_detection = 29 (limit:10)
+  !!! high_fan_out     main = 23 (limit:10)
+  !!! high_fan_out     enrich_entities = 21 (limit:10)
+  !!  cc_exceeded      _apply_context_filters = 21 (limit:15)
   !!  high_fan_out     _execute_workflow = 19 (limit:10)
   !!  high_fan_out     resolve_intent = 19 (limit:10)
-  !!  high_fan_out     workflow_from_text = 17 (limit:10)
-  !!  high_fan_out     chat_message = 16 (limit:10)
-  !!  high_fan_out     websocket_chat = 16 (limit:10)
-  !   cc_exceeded      resolve_intent = 18 (limit:15)
-  !   high_fan_out     stream_workflow = 14 (limit:10)
-  !   high_fan_out     map_to_dsl = 14 (limit:10)
-  !   high_fan_out     run_action_catalog_demo = 13 (limit:10)
-  !   high_fan_out     _exec_file_read = 13 (limit:10)
+  !!  high_fan_out     KeywordPatterns._load_detector_config_from_json = 18 (limit:10)
 
-MODULES[121] (top by size):
-  M[planfile.yaml] 786L C:0 F:0 CC↑0 D:0 (yaml)
-  M[nlp2dsl_sdk/demos.py] 687L C:1 F:22 CC↑6 D:6 (python)
-  M[nlp-service/app/main.py] 592L C:0 F:24 CC↑10 D:1 (python)
-  M[nlp2dsl_sdk/client.py] 580L C:2 F:51 CC↑6 D:0 (python)
+MODULES[210] (top by size):
+  M[examples/testql-results.json] 2077L C:0 F:0 CC↑0 D:0 (json)
+  M[packages/nlp2cmd-intent/src/nlp2cmd_intent/data/patterns.json] 2016L C:0 F:0 CC↑0 D:0 (json)
+  M[planfile.yaml] 1319L C:0 F:0 CC↑0 D:0 (yaml)
+  M[packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py] 1209L C:2 F:22 CC↑73 D:0 (python)
+  M[examples/08-multi-object-benchmark/results/benchmark_1780668530.json] 642L C:0 F:0 CC↑0 D:0 (json)
+  M[examples/08-multi-object-benchmark/results/benchmark_1780672619.json] 636L C:0 F:0 CC↑0 D:0 (json)
+  M[examples/08-multi-object-benchmark/results/benchmark_1780673613.json] 636L C:0 F:0 CC↑0 D:0 (json)
+  M[nlp2dsl_sdk/client.py] 600L C:2 F:51 CC↑9 D:0 (python)
+  M[nlp-service/app/main.py] 570L C:0 F:24 CC↑10 D:1 (python)
+  M[nlp-service/app/routing/parser/rules.py] 564L C:0 F:31 CC↑21 D:2 (python)
   M[goal.yaml] 512L C:0 F:0 CC↑0 D:0 (yaml)
-  M[nlp-service/app/registry.py] 390L C:0 F:4 CC↑5 D:3 (python)
-  M[nlp-service/app/routing/parser/rules.py] 381L C:0 F:25 CC↑7 D:3 (python)
-  M[nlp-service/app/governance/policy.py] 302L C:2 F:14 CC↑5 D:2 (python)
-  M[nlp-service/app/code_generator.py] 279L C:1 F:8 CC↑14 D:0 (python)
-  M[nlp-service/app/conversation/responses.py] 272L C:0 F:18 CC↑7 D:1 (python)
-  M[backend/app/engine.py] 269L C:0 F:7 CC↑11 D:2 (python)
-  M[nlp-service/app/settings.py] 251L C:6 F:11 CC↑6 D:5 (python)
-  M[worker/worker.py] 230L C:0 F:12 CC↑5 D:0 (python)
-  M[nlp-service/app/routing/orientation.py] 206L C:1 F:6 CC↑13 D:2 (python)
-  M[backend/app/routers/workflow.py] 199L C:0 F:10 CC↑8 D:0 (python)
-  LANGS: python:79/other:8/yaml:8/shell:7/toml:5/txt:4/json:3/javascript:2/rust:2/yml:2/ini:1
+  M[nlp2dsl_sdk/artifacts.py] 410L C:1 F:17 CC↑17 D:7 (python)
+  M[scripts/run-example-testql-results.py] 408L C:2 F:11 CC↑19 D:0 (python)
+  M[nlp-service/app/registry.py] 403L C:0 F:5 CC↑5 D:4 (python)
+  M[testql-scenarios/generated-examples.testql.toon.yaml] 400L C:0 F:0 CC↑0 D:0 (yaml)
+  LANGS: python:145/json:15/shell:11/toml:10/other:9/yaml:9/txt:4/javascript:2/rust:2/yml:2/ini:1
 
 HOTSPOTS[10]:
+  ★ process_example fan=31  // Analysis pipeline, 31 stages
+  ★ KeywordIntentDetector._fast_path_detection fan=29  // Fast path detection for common patterns.
+  ★ main fan=23  // Orchestrates 23 calls
+  ★ enrich_entities fan=21  // Use LLM to compose missing quality fields. Returns updated NLPResult or None.
   ★ _execute_workflow fan=19  // Orchestrates 19 calls
-  ★ resolve_intent fan=19  // Kaskada: orientacja → native_routing → parse_text → authorize.
 
-Zwraca (decyzja,
-  ★ workflow_from_text fan=17  // Pełny pipeline: tekst → NLP → DSL → (opcjonalne) wykonanie.
-
-Body: {"text": "...
-  ★ chat_message fan=16  // Kontynuuj konwersację — uzupełnij brakujące dane.
-
-Body: {"conversation_id": "ab
-  ★ websocket_chat fan=16  // WebSocket endpoint dla voice chat w czasie rzeczywistym.
-
-Flow:
-1. Klient łączy 
-
-REFACTOR[10]:
-  [1] H/H Split god module nlp-service/app/main.py (592L, 0 classes)
-  [2] H/H Split god module nlp2dsl_sdk/client.py (580L, 2 classes)
-  [3] H/H Split god module nlp2dsl_sdk/demos.py (687L, 1 classes)
-  [4] H/H Split god module goal.yaml (512L, 0 classes)
-  [5] H/H Split god module planfile.yaml (786L, 0 classes)
+REFACTOR[15]:
+  [1] H/L Split KeywordPatterns._load_detector_config_from_json (CC=33)
+  [2] H/L Split KeywordIntentDetector._fast_path_detection (CC=73)
+  [3] H/H Split god module packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py (1209L, 2 classes)
+  [4] H/H Split god module nlp-service/app/routing/parser/rules.py (564L, 0 classes)
+  [5] H/H Split god module nlp-service/app/main.py (570L, 0 classes)
 
 EVOLUTION:
-  2026-06-05 CC̄=2.9 crit=11 10666L // Automated analysis
+  2026-06-05 CC̄=3.7 crit=42 26410L // Automated analysis

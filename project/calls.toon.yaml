@@ -1,49 +1,49 @@
 # code2llm call graph | /home/tom/github/wronai/nlp2dsl
-# generated in 0.18s
-# nodes: 220 | edges: 237 | modules: 42
-# CC̄=2.9
+# generated in 0.26s
+# nodes: 346 | edges: 353 | modules: 73
+# CC̄=3.7
 
 HUBS[20]:
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_detector_config_from_json
+    CC=33  in:0  out:48  total:48
   backend.app.engine._execute_workflow
     CC=11  in:2  out:42  total:44
+  scripts.run-example-testql-results.process_example
+    CC=11  in:1  out:38  total:39
+  nlp2dsl_sdk.preview.print_workflow_preview
+    CC=11  in:8  out:27  total:35
   nlp-service.app.routing.resolve.resolve_intent
     CC=18  in:1  out:31  total:32
+  nlp2dsl_sdk.cli._run
+    CC=12  in:1  out:30  total:31
+  scripts.run-example-testql-results.main
+    CC=16  in:0  out:31  total:31
+  nlp-service.app.routing.parser.enrich.enrich_entities
+    CC=14  in:1  out:29  total:30
+  nlp2dsl_sdk.artifacts.build_process_trace
+    CC=17  in:1  out:29  total:30
+  nlp-service.app.dsl.mapper._build_config
+    CC=19  in:1  out:29  total:30
+  nlp-service.app.routing.orientation.orient_query
+    CC=16  in:2  out:27  total:29
+  nlp2dsl_sdk.cli._display
+    CC=13  in:1  out:27  total:28
   nlp-service.app.governance.bootstrap._actions_from_yaml_areas
     CC=14  in:1  out:26  total:27
-  nlp-service.app.routing.orientation.orient_query
-    CC=13  in:2  out:21  total:23
-  nlp-service.app.main.websocket_chat
-    CC=10  in:0  out:23  total:23
-  backend.app.routers.workflow.stream_workflow
-    CC=2  in:0  out:22  total:22
-  backend.app.routers.chat.chat_message
-    CC=12  in:0  out:21  total:21
-  nlp-service.app.mapper.map_to_dsl
-    CC=8  in:3  out:17  total:20
-  nlp-service.app.parser_llm.parse_llm
-    CC=3  in:4  out:16  total:20
-  nlp-service.app.governance.config._build_access_config
-    CC=7  in:1  out:18  total:19
-  nlp2dsl_sdk.demos.run_action_catalog_demo
-    CC=6  in:0  out:19  total:19
-  nlp-service.app.audio_parser.stt_audio
-    CC=9  in:5  out:14  total:19
-  worker.worker._deliver_notification
-    CC=5  in:3  out:16  total:19
-  nlp2dsl_sdk.demos._print_workflow_preview
-    CC=4  in:3  out:16  total:19
-  backend.app.routers.chat._proxy_chat_payload
-    CC=9  in:2  out:16  total:18
-  nlp2dsl_sdk.demos._print_execution_result
-    CC=5  in:7  out:11  total:18
+  examples.08-multi-object-benchmark.scenario.run_benchmark
+    CC=16  in:2  out:24  total:26
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_patterns_from_json
+    CC=19  in:0  out:26  total:26
+  examples.12-ir-show.scenario.run
+    CC=13  in:0  out:25  total:25
+  nlp2dsl_sdk.cli.main
+    CC=7  in:0  out:25  total:25
+  nlp-service.app.routing.orientation._resolve_file_list_host_command
+    CC=15  in:1  out:24  total:25
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.nlp2cmd_convert.detection_to_intent_ir
+    CC=10  in:2  out:22  total:24
   nlp-service.app.settings.SettingsManager.set
-    CC=4  in:7  out:11  total:18
-  nlp-service.app.governance.config._search_paths
-    CC=6  in:1  out:17  total:18
-  nlp-service.app.system_executor._exec_file_read
-    CC=9  in:0  out:18  total:18
-  nlp-service.app.conversation.orchestrator._process_message
-    CC=6  in:2  out:16  total:18
+    CC=4  in:13  out:11  total:24
 
 MODULES:
   backend.app.engine  [7 funcs]
@@ -80,14 +80,39 @@ MODULES:
   backend.app.workflow_events  [2 funcs]
     publish  CC=2  out:4
     subscriber_count  CC=1  out:3
-  examples.01-invoice.main  [1 funcs]
-    main  CC=1  out:1
-  examples.02-email.main  [1 funcs]
-    main  CC=1  out:1
-  examples.03-report-and-notify.main  [1 funcs]
-    main  CC=1  out:1
-  examples.04-scheduled-report.main  [1 funcs]
-    main  CC=1  out:1
+  examples.01-invoice.scenario  [1 funcs]
+    run  CC=7  out:22
+  examples.02-email.scenario  [1 funcs]
+    run  CC=7  out:19
+  examples.03-report-and-notify.scenario  [1 funcs]
+    run  CC=6  out:16
+  examples.04-scheduled-report.scenario  [1 funcs]
+    run  CC=11  out:21
+  examples.05-conversation-flow.scenario  [3 funcs]
+    run  CC=2  out:2
+    run_demo  CC=2  out:15
+    run_interactive  CC=1  out:2
+  examples.06-interactive-chat.scenario  [3 funcs]
+    run  CC=2  out:2
+    run_demo  CC=3  out:9
+    run_interactive  CC=1  out:4
+  examples.07-email-conversation.scenario  [1 funcs]
+    run  CC=3  out:11
+  examples.08-multi-object-benchmark.scenario  [4 funcs]
+    _evaluate  CC=6  out:9
+    _extract_actions  CC=5  out:5
+    run  CC=5  out:15
+    run_benchmark  CC=16  out:24
+  examples.09-execution-smoke.scenario  [1 funcs]
+    run  CC=9  out:22
+  examples.10-llm-benchmark.scenario  [1 funcs]
+    run  CC=3  out:10
+  examples.11-notify-quality.scenario  [1 funcs]
+    run  CC=8  out:17
+  examples.12-ir-show.scenario  [1 funcs]
+    run  CC=13  out:25
+  examples.bootstrap  [1 funcs]
+    bootstrap  CC=3  out:4
   examples.code_generation_examples  [1 funcs]
     main  CC=1  out:1
   nlp-service.app.access.uri_match  [3 funcs]
@@ -100,15 +125,16 @@ MODULES:
     stt_audio  CC=9  out:14
     stt_file  CC=2  out:4
   nlp-service.app.conversation.merge  [1 funcs]
-    merge_into_state  CC=9  out:4
+    merge_into_state  CC=13  out:4
   nlp-service.app.conversation.orchestrator  [5 funcs]
     _attach_routing  CC=1  out:1
     _process_message  CC=6  out:16
     continue_conversation  CC=2  out:8
     get_conversation  CC=2  out:2
     start_conversation  CC=1  out:6
-  nlp-service.app.conversation.responses  [9 funcs]
-    _is_execute_or_continue  CC=2  out:3
+  nlp-service.app.conversation.responses  [10 funcs]
+    _execute_keyword_in_text  CC=3  out:4
+    _is_execute_or_continue  CC=2  out:4
     _nlp_from_state  CC=5  out:5
     build_and_check_dsl  CC=4  out:6
     build_incomplete_response  CC=3  out:6
@@ -119,6 +145,14 @@ MODULES:
     handle_unknown_intent  CC=5  out:6
   nlp-service.app.dsl.forms  [1 funcs]
     get_action_form  CC=5  out:12
+  nlp-service.app.dsl.mapper  [5 funcs]
+    _build_config  CC=19  out:29
+    _get_field_mapping  CC=1  out:1
+    _make_name  CC=3  out:2
+    _resolve_actions  CC=7  out:4
+    map_to_dsl  CC=8  out:17
+  nlp-service.app.dsl.pipeline  [1 funcs]
+    map_to_dsl_with_enrichment  CC=6  out:4
   nlp-service.app.execution.delegate  [2 funcs]
     execution_backend_for_intent  CC=2  out:1
     is_delegated_to_mullm  CC=2  out:1
@@ -149,7 +183,7 @@ MODULES:
     _scheme_decision  CC=3  out:2
     _unknown_agent_decision  CC=4  out:3
   nlp-service.app.main  [15 funcs]
-    _run_parser  CC=7  out:9
+    _run_parser  CC=3  out:3
     access_check  CC=3  out:6
     access_config  CC=3  out:12
     access_reload  CC=2  out:2
@@ -159,18 +193,9 @@ MODULES:
     chat_start  CC=5  out:12
     chat_state  CC=2  out:4
     health  CC=3  out:8
-  nlp-service.app.mapper  [5 funcs]
-    _build_config  CC=6  out:10
-    _get_field_mapping  CC=1  out:1
-    _make_name  CC=3  out:2
-    _resolve_actions  CC=7  out:4
-    map_to_dsl  CC=8  out:17
-  nlp-service.app.parser_llm  [3 funcs]
-    _detect_provider  CC=10  out:8
-    _parse_json_response  CC=6  out:10
-    parse_llm  CC=3  out:16
-  nlp-service.app.registry  [3 funcs]
+  nlp-service.app.registry  [4 funcs]
     get_defaults  CC=1  out:3
+    get_quality_required_fields  CC=1  out:3
     get_required_fields  CC=1  out:2
     get_trigger  CC=3  out:2
   nlp-service.app.routing.native  [13 funcs]
@@ -187,22 +212,35 @@ MODULES:
   nlp-service.app.routing.observability  [2 funcs]
     record_intent_decision  CC=7  out:4
     routing_metrics_snapshot  CC=1  out:1
-  nlp-service.app.routing.orientation  [2 funcs]
+  nlp-service.app.routing.orientation  [4 funcs]
+    _host_list_root  CC=3  out:2
     _is_file_list_query  CC=5  out:8
-    orient_query  CC=13  out:21
+    _resolve_file_list_host_command  CC=15  out:24
+    orient_query  CC=16  out:27
+  nlp-service.app.routing.parser.enrich  [4 funcs]
+    can_enrich_missing  CC=4  out:5
+    enrich_entities  CC=14  out:29
+    get_enrichable_missing  CC=5  out:3
+    is_enrich_enabled  CC=1  out:3
   nlp-service.app.routing.parser.facade  [1 funcs]
-    parse_text  CC=8  out:8
-  nlp-service.app.routing.parser.rules  [25 funcs]
+    parse_text  CC=2  out:4
+  nlp-service.app.routing.parser.llm  [3 funcs]
+    _detect_provider  CC=10  out:8
+    _parse_json_response  CC=6  out:10
+    parse_llm  CC=3  out:16
+  nlp-service.app.routing.parser.resolve_mode  [1 funcs]
+    parse_with_mode  CC=10  out:12
+  nlp-service.app.routing.parser.rules  [30 funcs]
     _action_alias_scores  CC=4  out:3
     _action_category  CC=1  out:2
     _actions_by_score  CC=1  out:2
-    _detect_actions  CC=3  out:3
+    _alias_in_text  CC=3  out:4
+    _apply_context_filters  CC=21  out:17
+    _detect_actions  CC=6  out:6
     _dominant_overlap_action  CC=4  out:5
     _extract_amount  CC=5  out:7
-    _extract_email  CC=2  out:2
-    _extract_entities  CC=1  out:9
-    _extract_fallback_recipient  CC=7  out:5
-    _extract_file_path_entity  CC=3  out:2
+    _extract_body_content_prefix  CC=4  out:4
+    _extract_email  CC=3  out:2
   nlp-service.app.routing.resolve  [4 funcs]
     _intent_from_nlp  CC=2  out:7
     _intent_from_orientation  CC=4  out:9
@@ -224,7 +262,29 @@ MODULES:
     apply_integrations  CC=5  out:7
     load_integration_registries  CC=5  out:10
   nlp2dsl_sdk.__main__  [1 funcs]
-    main  CC=5  out:9
+    main  CC=5  out:10
+  nlp2dsl_sdk.artifacts  [15 funcs]
+    __init__  CC=5  out:6
+    finalize  CC=4  out:6
+    record  CC=1  out:6
+    _extract_actions  CC=4  out:5
+    _mask_secret  CC=3  out:1
+    _slugify  CC=2  out:5
+    build_process_trace  CC=17  out:29
+    collect_environment  CC=6  out:4
+    example_artifact_root  CC=1  out:2
+    get_example_writer  CC=2  out:4
+  nlp2dsl_sdk.cli  [10 funcs]
+    _actions  CC=3  out:8
+    _analyze  CC=2  out:1
+    _chat_start  CC=2  out:10
+    _client  CC=1  out:1
+    _demo  CC=6  out:5
+    _display  CC=13  out:27
+    _health  CC=2  out:6
+    _run  CC=12  out:30
+    main  CC=7  out:25
+    show  CC=2  out:3
   nlp2dsl_sdk.client  [8 funcs]
     crm_update  CC=2  out:3
     generate_report  CC=1  out:2
@@ -234,17 +294,111 @@ MODULES:
     send_invoice  CC=1  out:2
     send_invoice_and_notify  CC=4  out:6
     workflow_step  CC=1  out:1
-  nlp2dsl_sdk.demos  [21 funcs]
-    _ensure_services  CC=2  out:2
+  nlp2dsl_sdk.demos  [10 funcs]
     _get_supported_languages  CC=3  out:6
-    _preview_text_examples  CC=3  out:6
     _print_code_generation_preview  CC=3  out:11
-    _print_execution_result  CC=5  out:11
-    _print_json  CC=1  out:2
-    _print_workflow_preview  CC=4  out:16
     _run_conversation_code_example  CC=3  out:14
     _run_direct_code_generation  CC=5  out:9
-    _run_gallery_examples  CC=5  out:14
+    _run_workflow_code_examples  CC=1  out:1
+    list_available_demos  CC=1  out:0
+    run_action_catalog_demo  CC=6  out:16
+    run_automation_gallery_demo  CC=4  out:6
+    run_code_generation_demo  CC=6  out:14
+    run_crm_update_demo  CC=3  out:5
+  nlp2dsl_sdk.encoding  [7 funcs]
+    _apply_utf8_locale_env  CC=2  out:3
+    _auto_configure_once  CC=2  out:1
+    _explicit_utf8_locale  CC=4  out:2
+    _reconfigure_stdio  CC=4  out:2
+    _set_utf8_locale  CC=3  out:1
+    configure_utf8  CC=3  out:4
+    utf8_auto_enabled  CC=1  out:3
+  nlp2dsl_sdk.preview  [9 funcs]
+    ensure_services  CC=2  out:2
+    execute_from_text  CC=8  out:15
+    execute_text_examples  CC=8  out:9
+    finalize_example_artifacts  CC=2  out:2
+    preview_text_examples  CC=9  out:13
+    print_execution_result  CC=5  out:11
+    print_json  CC=1  out:2
+    print_workflow_preview  CC=11  out:27
+    workflow_http_error_result  CC=11  out:13
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.clarification  [2 funcs]
+    clarification_enforced  CC=1  out:3
+    ensure_intent_clear  CC=4  out:3
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files  [3 funcs]
+    _nlp2cmd_data_dir  CC=2  out:3
+    _package_data_dir  CC=2  out:5
+    find_data_files  CC=6  out:17
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.facade  [3 funcs]
+    __init__  CC=4  out:3
+    detect  CC=2  out:4
+    default_intent_detector  CC=1  out:1
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.input  [1 funcs]
+    analyze_query  CC=3  out:8
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector  [14 funcs]
+    _calculate_keyword_confidence  CC=6  out:5
+    _fuzzy_detection  CC=6  out:4
+    _ml_detection  CC=6  out:4
+    _semantic_detection  CC=6  out:4
+    _tokenize_text  CC=11  out:15
+    detect  CC=17  out:21
+    detect_all  CC=8  out:10
+    detect_intent_ir  CC=1  out:2
+    _get_fuzzy_schema_matcher  CC=7  out:7
+    _get_ml_classifier  CC=8  out:6
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns  [7 funcs]
+    __init__  CC=3  out:7
+    _load_detector_config_from_json  CC=33  out:48
+    _load_patterns_from_json  CC=19  out:26
+    add_pattern  CC=6  out:6
+    _dedupe_case_insensitive  CC=3  out:4
+    _find_data_files  CC=1  out:2
+    _normalize_polish_text  CC=1  out:2
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.nlp2cmd_convert  [1 funcs]
+    detection_to_intent_ir  CC=10  out:22
+  packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rest_workflow  [2 funcs]
+    plan  CC=7  out:14
+    supports  CC=4  out:1
+  packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rule_shell  [2 funcs]
+    plan  CC=3  out:6
+    _parse_file_search  CC=10  out:11
+  packages.nlp2cmd-planner.src.nlp2cmd_planner.workflow_backend  [4 funcs]
+    fetch_workflow_from_text  CC=4  out:12
+    workflow_backend_enabled  CC=1  out:3
+    workflow_backend_url  CC=1  out:4
+    workflow_run_path  CC=2  out:2
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter  [8 funcs]
+    _delegate_block  CC=4  out:4
+    _format_json_body  CC=2  out:3
+    _mcp_block  CC=6  out:13
+    _rest_block  CC=2  out:5
+    _shell_block  CC=1  out:1
+    _ws_block  CC=5  out:11
+    plan_to_propact_markdown  CC=2  out:4
+    step_to_propact_block  CC=12  out:17
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.executor  [5 funcs]
+    _run_nlp2cmd_step  CC=5  out:13
+    _run_propact_step  CC=1  out:2
+    run  CC=10  out:20
+    _single_step_plan  CC=1  out:2
+    execution_route  CC=3  out:0
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.runner  [8 funcs]
+    render  CC=1  out:1
+    run  CC=8  out:14
+    _is_shell_only  CC=3  out:2
+    _propact_available  CC=1  out:2
+    _requires_propact  CC=2  out:1
+    _resolve_propact_bin  CC=2  out:2
+    _run_shell_steps  CC=7  out:19
+    _shell_command  CC=3  out:3
+  packages.nlp2dsl-show.src.nlp2dsl_show.cli  [1 funcs]
+    main  CC=7  out:17
+  scripts.run-example-testql-results  [4 funcs]
+    _generate_conversation_toon  CC=6  out:18
+    _load_manifest  CC=3  out:3
+    main  CC=16  out:31
+    process_example  CC=11  out:38
   tauri-wrapper.scripts.dev  [3 funcs]
     exitCode  CC=2  out:1
     main  CC=11  out:10
@@ -308,17 +462,17 @@ EDGES:
   backend.app.routers.settings.update_settings_section → backend.app.logging_setup.get_request_id
   backend.app.routers.settings.set_setting → backend.app.logging_setup.get_request_id
   backend.app.routers.settings.reset_settings → backend.app.logging_setup.get_request_id
-  nlp2dsl_sdk.demos._print_workflow_preview → nlp2dsl_sdk.demos._print_json
-  nlp2dsl_sdk.demos._print_execution_result → nlp2dsl_sdk.demos._print_json
-  nlp2dsl_sdk.demos._preview_text_examples → nlp2dsl_sdk.demos._print_workflow_preview
-  nlp2dsl_sdk.demos.run_crm_update_demo → nlp2dsl_sdk.demos._preview_text_examples
-  nlp2dsl_sdk.demos.run_crm_update_demo → nlp2dsl_sdk.demos._print_execution_result
-  nlp2dsl_sdk.demos.run_crm_update_demo → nlp2dsl_sdk.demos._ensure_services
-  nlp2dsl_sdk.demos.run_action_catalog_demo → nlp2dsl_sdk.demos._ensure_services
-  nlp2dsl_sdk.demos.run_automation_gallery_demo → nlp2dsl_sdk.demos._run_gallery_examples
-  nlp2dsl_sdk.demos.run_automation_gallery_demo → nlp2dsl_sdk.demos._ensure_services
-  nlp2dsl_sdk.demos._run_workflow_examples → nlp2dsl_sdk.demos._print_execution_result
-  nlp2dsl_sdk.demos._run_gallery_examples → nlp2dsl_sdk.demos._print_workflow_preview
-  nlp2dsl_sdk.demos.run_invoice_demo → nlp2dsl_sdk.demos._preview_text_examples
-  nlp2dsl_sdk.demos.run_invoice_demo → nlp2dsl_sdk.demos._print_execution_result
-  nlp2dsl_sdk.demos.run_invoice_demo → nlp2dsl_sdk.demos._ensure_services
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.clarification.ensure_intent_clear → packages.nlp2cmd-intent.src.nlp2cmd_intent.clarification.clarification_enforced
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.facade.KeywordIntentAdapter.detect → packages.nlp2cmd-intent.src.nlp2cmd_intent.nlp2cmd_convert.detection_to_intent_ir
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.facade.IntentPipeline.__init__ → packages.nlp2cmd-intent.src.nlp2cmd_intent.facade.default_intent_detector
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.input.analyze_query → packages.nlp2cmd-intent.src.nlp2cmd_intent.clarification.ensure_intent_clear
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files.find_data_files → nlp-service.app.settings.SettingsManager.set
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files.find_data_files → packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files._package_data_dir
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files.find_data_files → packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files._nlp2cmd_data_dir
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._dedupe_case_insensitive → nlp-service.app.settings.SettingsManager.set
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.__init__ → nlp-service.app.settings.SettingsManager.set
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_patterns_from_json → packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._find_data_files
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_detector_config_from_json → packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._find_data_files
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.add_pattern → packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._normalize_polish_text
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.add_pattern → packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._dedupe_case_insensitive
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector.detect → packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector._get_query_normalizer

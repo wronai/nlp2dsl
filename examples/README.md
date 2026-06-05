@@ -162,7 +162,7 @@ Gdy `NLP_ENRICH_MISSING=1` i jest `OPENROUTER_API_KEY`, nlp-service sam generuje
 ```bash
 python3 examples/01-invoice/main.py
 ```
-One-shot: tekst → DSL → `send_invoice`.
+One-shot: zdanie NL → DSL → wykonanie (`workflow_from_text(execute=True)`).
 
 ### 02 — E-mail
 ```bash
@@ -171,7 +171,7 @@ python3 examples/02-email/main.py
 Cztery warianty fraz + wykonanie. Pierwsza fraza (tylko temat) → `incomplete` bez enrich.
 
 ### 03 — Raport + powiadomienia
-Wielokrokowy workflow: `generate_report` → `send_email` → `notify_slack`.
+Wielokrokowy workflow z jednego zdania NL (parser rozbija na kroki).
 
 ### 04 — Zaplanowane raporty
 Triggery: `daily`, `weekly`, `monthly` + generowanie z tekstu.
@@ -293,7 +293,17 @@ Te komendy ładują ten sam `scenario.py` co `examples/*/main.py`.
 
 ### Wykonanie wyłącznie z NLP (bez hardkodu SDK)
 
-Przykłady **01–04** i **09** używają `workflow_from_text(query, execute=True)` — nie `client.send_email()` / `create_scheduled_report()`.  
+### Audyt: NLP vs hardkod
+
+| Przykład | Wejście | Wykonanie | Uzupełnianie braków |
+|----------|---------|-----------|---------------------|
+| 01–04, 09 | zdania NL | `workflow_from_text(execute=True)` | incomplete → prompt w output |
+| 05–07 | zdania NL | API konwersacji (`ConversationFlow`) | dialog wieloetapowy |
+| 08, 10 | zdania NL | **tylko analiza** (`execute=False`) | benchmark parsera, nie worker |
+| 11 | zdania NL | execute + preview incomplete | enrich opcjonalny (`.env`) |
+| 12 MVP | zdania NL | execute | IR (`nlp2dsl show`) — osobna ścieżka |
+
+Przykłady **01–04, 09, 11, 12 (MVP)** nie używają `client.send_email()` / `create_scheduled_report()`.  
 Jedynym wejściem jest **zdanie użytkownika**; DSL i kroki wynikają z parsera.
 
 ```python

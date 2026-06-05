@@ -6,6 +6,7 @@ SUMD - Structured Unified Markdown Descriptor for AI-aware project refactorizati
 
 - [Metadata](#metadata)
 - [Architecture](#architecture)
+- [Workflows](#workflows)
 - [Quality Pipeline (`pyqual.yaml`)](#quality-pipeline-pyqualyaml)
 - [Dependencies](#dependencies)
 - [Call Graph](#call-graph)
@@ -16,12 +17,12 @@ SUMD - Structured Unified Markdown Descriptor for AI-aware project refactorizati
 ## Metadata
 
 - **name**: `nlp2dsl`
-- **version**: `0.0.15`
+- **version**: `0.0.18`
 - **python_requires**: `>=3.10`
 - **license**: Apache-2.0
 - **ai_model**: `openrouter/qwen/qwen3-coder-next`
 - **ecosystem**: SUMD + DOQL + testql + taskfile
-- **generated_from**: pyproject.toml, testql(3), app.doql.less, pyqual.yaml, goal.yaml, .env.example, docker-compose.yml, project/(6 analysis files)
+- **generated_from**: pyproject.toml, Makefile, testql(4), app.doql.less, pyqual.yaml, goal.yaml, .env.example, docker-compose.yml, project/(6 analysis files)
 
 ## Architecture
 
@@ -36,11 +37,11 @@ SUMD (description) → DOQL/source (code) → taskfile (automation) → testql (
 
 app {
   name: nlp2dsl;
-  version: 0.0.15;
+  version: 0.0.18;
 }
 
 dependencies {
-  runtime: requests>=2.31.0;
+  runtime: "requests>=2.31.0, pyyaml>=6.0";
 }
 
 entity[name="NLPIntent"] {
@@ -52,6 +53,7 @@ entity[name="NLPEntities"] {
   amount: float | None;
   currency: str | None;
   to: str | None;
+  email_to: str | None;
   subject: str | None;
   message: str | None;
   channel: str | None;
@@ -133,12 +135,120 @@ interface[type="api"] {
 interface[type="cli"] {
   framework: argparse;
 }
-interface[type="cli"] page[name="nlp2dsl-demo"] {
+interface[type="cli"] page[name="nlp2dsl"] {
 
 }
 
 integration[name="nlp"] {
   type: api;
+}
+
+workflow[name="install"] {
+  trigger: manual;
+  step-1: run cmd=$(PYTHON) -m pip install -e .;
+}
+
+workflow[name="install-dev"] {
+  trigger: manual;
+  step-1: depend target=setup-dev;
+}
+
+workflow[name="setup-dev"] {
+  trigger: manual;
+  step-1: run cmd=./scripts/setup-dev.sh;
+}
+
+workflow[name="update"] {
+  trigger: manual;
+  step-1: run cmd=echo "$(YELLOW)==> update integration stack$(NC)";
+  step-2: run cmd=./scripts/setup-dev.sh;
+}
+
+workflow[name="test"] {
+  trigger: manual;
+  step-1: run cmd=$(PYTHON) -m pytest tests/ -v;
+}
+
+workflow[name="check-pypi-deps"] {
+  trigger: manual;
+  step-1: run cmd=$(PYTHON) -c "import build, twine" 2>/dev/null || $(PYTHON) -m pip install build twine -q;
+}
+
+workflow[name="clean"] {
+  trigger: manual;
+  step-1: run cmd=rm -rf dist/ build/ *.egg-info;
+  step-2: run cmd=for pkg in $(PACKAGES); do \;
+  step-3: run cmd=rm -rf $$pkg/dist $$pkg/build $$pkg/src/*.egg-info 2>/dev/null || true; \;
+  step-4: run cmd=done;
+  step-5: run cmd=find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true;
+}
+
+workflow[name="build"] {
+  trigger: manual;
+  step-1: run cmd=echo "$(YELLOW)==> build root SDK$(NC)";
+  step-2: run cmd=$(PYTHON) -m build .;
+}
+
+workflow[name="build-packages"] {
+  trigger: manual;
+  step-1: run cmd=for pkg in $(PACKAGES); do \;
+  step-2: run cmd=echo "$(YELLOW)==> build $$pkg$(NC)"; \;
+  step-3: run cmd=$(PYTHON) -m build $$pkg; \;
+  step-4: run cmd=done;
+}
+
+workflow[name="build-all"] {
+  trigger: manual;
+  step-1: depend target=build;
+  step-2: depend target=build-packages;
+}
+
+workflow[name="publish-root"] {
+  trigger: manual;
+  step-1: run cmd=echo "$(YELLOW)==> twine upload root SDK$(NC)";
+  step-2: run cmd=$(PYTHON) -m twine upload dist/*;
+}
+
+workflow[name="publish-packages"] {
+  trigger: manual;
+  step-1: run cmd=for pkg in $(PACKAGES); do \;
+  step-2: run cmd=echo "$(YELLOW)==> twine upload $$pkg$(NC)"; \;
+  step-3: run cmd=$(PYTHON) -m twine upload --skip-existing $$pkg/dist/* || exit 1; \;
+  step-4: run cmd=sleep $(PYPI_UPLOAD_DELAY); \;
+  step-5: run cmd=done;
+}
+
+workflow[name="publish-package"] {
+  trigger: manual;
+  step-1: run cmd=test -n "$(PKG)" || (echo "Usage: make publish-package PKG=packages/nlp2dsl-show" && exit 1);
+  step-2: run cmd=echo "$(YELLOW)==> build $(PKG)$(NC)";
+  step-3: run cmd=$(PYTHON) -m build $(PKG);
+  step-4: run cmd=echo "$(YELLOW)==> twine upload $(PKG)$(NC)";
+  step-5: run cmd=$(PYTHON) -m twine upload --skip-existing $(PKG)/dist/*;
+}
+
+workflow[name="publish"] {
+  trigger: manual;
+  step-1: run cmd=echo "$(YELLOW)==> Publishing nlp2dsl + packages to PyPI$(NC)";
+  step-2: run cmd=$(PYTHON) -m twine upload dist/*;
+  step-3: run cmd=for pkg in $(PACKAGES); do \;
+  step-4: run cmd=echo "$(YELLOW)==> twine upload $$pkg$(NC)"; \;
+  step-5: run cmd=$(PYTHON) -m twine upload $$pkg/dist/*; \;
+  step-6: run cmd=done;
+  step-7: run cmd=echo "$(GREEN)Done: nlp2dsl + $(words $(PACKAGES)) packages published$(NC)";
+}
+
+workflow[name="version"] {
+  trigger: manual;
+  step-1: run cmd=grep -m1 '^version = ' pyproject.toml | cut -d'"' -f2;
+}
+
+workflow[name="package-versions"] {
+  trigger: manual;
+  step-1: run cmd=for pkg in $(PACKAGES); do \;
+  step-2: run cmd=v=$$(grep -m1 '^version = ' $$pkg/pyproject.toml | cut -d'"' -f2); \;
+  step-3: run cmd=echo "$$pkg: $$v"; \;
+  step-4: run cmd=done;
 }
 
 deploy {
@@ -157,6 +267,8 @@ environment[name="backup"] {
   env_file: .env.backup;
 }
 ```
+
+## Workflows
 
 ## Quality Pipeline (`pyqual.yaml`)
 
@@ -210,72 +322,73 @@ pipeline:
 
 ```text markpact:deps python
 requests>=2.31.0
+pyyaml>=6.0
 ```
 
 ## Call Graph
 
-*220 nodes · 237 edges · 42 modules · CC̄=2.9*
+*342 nodes · 350 edges · 72 modules · CC̄=3.6*
 
 ### Hubs (by degree)
 
 | Function | CC | in | out | total |
 |----------|----|----|-----|-------|
+| `_load_detector_config_from_json` *(in packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns)* | 33 ⚠ | 0 | 48 | **48** |
 | `_execute_workflow` *(in backend.app.engine)* | 11 ⚠ | 2 | 42 | **44** |
+| `print_workflow_preview` *(in nlp2dsl_sdk.preview)* | 11 ⚠ | 8 | 27 | **35** |
 | `resolve_intent` *(in nlp-service.app.routing.resolve)* | 18 ⚠ | 1 | 31 | **32** |
-| `_actions_from_yaml_areas` *(in nlp-service.app.governance.bootstrap)* | 14 ⚠ | 1 | 26 | **27** |
-| `orient_query` *(in nlp-service.app.routing.orientation)* | 13 ⚠ | 2 | 21 | **23** |
-| `websocket_chat` *(in nlp-service.app.main)* | 10 ⚠ | 0 | 23 | **23** |
-| `stream_workflow` *(in backend.app.routers.workflow)* | 2 | 0 | 22 | **22** |
-| `chat_message` *(in backend.app.routers.chat)* | 12 ⚠ | 0 | 21 | **21** |
-| `map_to_dsl` *(in nlp-service.app.mapper)* | 8 | 3 | 17 | **20** |
+| `_run` *(in nlp2dsl_sdk.cli)* | 12 ⚠ | 1 | 30 | **31** |
+| `enrich_entities` *(in nlp-service.app.routing.parser.enrich)* | 14 ⚠ | 1 | 29 | **30** |
+| `build_process_trace` *(in nlp2dsl_sdk.artifacts)* | 17 ⚠ | 1 | 29 | **30** |
+| `_build_config` *(in nlp-service.app.dsl.mapper)* | 19 ⚠ | 1 | 29 | **30** |
 
 ```toon markpact:analysis path=project/calls.toon.yaml
 # code2llm call graph | /home/tom/github/wronai/nlp2dsl
-# generated in 0.18s
-# nodes: 220 | edges: 237 | modules: 42
-# CC̄=2.9
+# generated in 0.27s
+# nodes: 342 | edges: 350 | modules: 72
+# CC̄=3.6
 
 HUBS[20]:
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_detector_config_from_json
+    CC=33  in:0  out:48  total:48
   backend.app.engine._execute_workflow
     CC=11  in:2  out:42  total:44
+  nlp2dsl_sdk.preview.print_workflow_preview
+    CC=11  in:8  out:27  total:35
   nlp-service.app.routing.resolve.resolve_intent
     CC=18  in:1  out:31  total:32
+  nlp2dsl_sdk.cli._run
+    CC=12  in:1  out:30  total:31
+  nlp-service.app.routing.parser.enrich.enrich_entities
+    CC=14  in:1  out:29  total:30
+  nlp2dsl_sdk.artifacts.build_process_trace
+    CC=17  in:1  out:29  total:30
+  nlp-service.app.dsl.mapper._build_config
+    CC=19  in:1  out:29  total:30
+  nlp-service.app.routing.orientation.orient_query
+    CC=16  in:2  out:27  total:29
+  nlp2dsl_sdk.cli._display
+    CC=13  in:1  out:27  total:28
   nlp-service.app.governance.bootstrap._actions_from_yaml_areas
     CC=14  in:1  out:26  total:27
-  nlp-service.app.routing.orientation.orient_query
-    CC=13  in:2  out:21  total:23
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_patterns_from_json
+    CC=19  in:0  out:26  total:26
+  examples.08-multi-object-benchmark.scenario.run_benchmark
+    CC=16  in:2  out:24  total:26
+  examples.12-ir-show.scenario.run
+    CC=13  in:0  out:25  total:25
+  nlp-service.app.routing.orientation._resolve_file_list_host_command
+    CC=15  in:1  out:24  total:25
+  nlp2dsl_sdk.cli.main
+    CC=7  in:0  out:25  total:25
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.nlp2cmd_convert.detection_to_intent_ir
+    CC=10  in:2  out:22  total:24
   nlp-service.app.main.websocket_chat
     CC=10  in:0  out:23  total:23
+  nlp-service.app.settings.SettingsManager.set
+    CC=4  in:12  out:11  total:23
   backend.app.routers.workflow.stream_workflow
     CC=2  in:0  out:22  total:22
-  backend.app.routers.chat.chat_message
-    CC=12  in:0  out:21  total:21
-  nlp-service.app.mapper.map_to_dsl
-    CC=8  in:3  out:17  total:20
-  nlp-service.app.parser_llm.parse_llm
-    CC=3  in:4  out:16  total:20
-  nlp-service.app.governance.config._build_access_config
-    CC=7  in:1  out:18  total:19
-  nlp2dsl_sdk.demos.run_action_catalog_demo
-    CC=6  in:0  out:19  total:19
-  nlp-service.app.audio_parser.stt_audio
-    CC=9  in:5  out:14  total:19
-  worker.worker._deliver_notification
-    CC=5  in:3  out:16  total:19
-  nlp2dsl_sdk.demos._print_workflow_preview
-    CC=4  in:3  out:16  total:19
-  backend.app.routers.chat._proxy_chat_payload
-    CC=9  in:2  out:16  total:18
-  nlp2dsl_sdk.demos._print_execution_result
-    CC=5  in:7  out:11  total:18
-  nlp-service.app.settings.SettingsManager.set
-    CC=4  in:7  out:11  total:18
-  nlp-service.app.governance.config._search_paths
-    CC=6  in:1  out:17  total:18
-  nlp-service.app.system_executor._exec_file_read
-    CC=9  in:0  out:18  total:18
-  nlp-service.app.conversation.orchestrator._process_message
-    CC=6  in:2  out:16  total:18
 
 MODULES:
   backend.app.engine  [7 funcs]
@@ -312,14 +425,39 @@ MODULES:
   backend.app.workflow_events  [2 funcs]
     publish  CC=2  out:4
     subscriber_count  CC=1  out:3
-  examples.01-invoice.main  [1 funcs]
-    main  CC=1  out:1
-  examples.02-email.main  [1 funcs]
-    main  CC=1  out:1
-  examples.03-report-and-notify.main  [1 funcs]
-    main  CC=1  out:1
-  examples.04-scheduled-report.main  [1 funcs]
-    main  CC=1  out:1
+  examples.01-invoice.scenario  [1 funcs]
+    run  CC=7  out:22
+  examples.02-email.scenario  [1 funcs]
+    run  CC=7  out:19
+  examples.03-report-and-notify.scenario  [1 funcs]
+    run  CC=6  out:16
+  examples.04-scheduled-report.scenario  [1 funcs]
+    run  CC=11  out:21
+  examples.05-conversation-flow.scenario  [3 funcs]
+    run  CC=2  out:2
+    run_demo  CC=2  out:15
+    run_interactive  CC=1  out:2
+  examples.06-interactive-chat.scenario  [3 funcs]
+    run  CC=2  out:2
+    run_demo  CC=3  out:9
+    run_interactive  CC=1  out:4
+  examples.07-email-conversation.scenario  [1 funcs]
+    run  CC=3  out:11
+  examples.08-multi-object-benchmark.scenario  [4 funcs]
+    _evaluate  CC=6  out:9
+    _extract_actions  CC=5  out:5
+    run  CC=5  out:15
+    run_benchmark  CC=16  out:24
+  examples.09-execution-smoke.scenario  [1 funcs]
+    run  CC=9  out:22
+  examples.10-llm-benchmark.scenario  [1 funcs]
+    run  CC=3  out:10
+  examples.11-notify-quality.scenario  [1 funcs]
+    run  CC=8  out:17
+  examples.12-ir-show.scenario  [1 funcs]
+    run  CC=13  out:25
+  examples.bootstrap  [1 funcs]
+    bootstrap  CC=3  out:4
   examples.code_generation_examples  [1 funcs]
     main  CC=1  out:1
   nlp-service.app.access.uri_match  [3 funcs]
@@ -332,15 +470,16 @@ MODULES:
     stt_audio  CC=9  out:14
     stt_file  CC=2  out:4
   nlp-service.app.conversation.merge  [1 funcs]
-    merge_into_state  CC=9  out:4
+    merge_into_state  CC=13  out:4
   nlp-service.app.conversation.orchestrator  [5 funcs]
     _attach_routing  CC=1  out:1
     _process_message  CC=6  out:16
     continue_conversation  CC=2  out:8
     get_conversation  CC=2  out:2
     start_conversation  CC=1  out:6
-  nlp-service.app.conversation.responses  [9 funcs]
-    _is_execute_or_continue  CC=2  out:3
+  nlp-service.app.conversation.responses  [10 funcs]
+    _execute_keyword_in_text  CC=3  out:4
+    _is_execute_or_continue  CC=2  out:4
     _nlp_from_state  CC=5  out:5
     build_and_check_dsl  CC=4  out:6
     build_incomplete_response  CC=3  out:6
@@ -351,6 +490,14 @@ MODULES:
     handle_unknown_intent  CC=5  out:6
   nlp-service.app.dsl.forms  [1 funcs]
     get_action_form  CC=5  out:12
+  nlp-service.app.dsl.mapper  [5 funcs]
+    _build_config  CC=19  out:29
+    _get_field_mapping  CC=1  out:1
+    _make_name  CC=3  out:2
+    _resolve_actions  CC=7  out:4
+    map_to_dsl  CC=8  out:17
+  nlp-service.app.dsl.pipeline  [1 funcs]
+    map_to_dsl_with_enrichment  CC=6  out:4
   nlp-service.app.execution.delegate  [2 funcs]
     execution_backend_for_intent  CC=2  out:1
     is_delegated_to_mullm  CC=2  out:1
@@ -381,7 +528,7 @@ MODULES:
     _scheme_decision  CC=3  out:2
     _unknown_agent_decision  CC=4  out:3
   nlp-service.app.main  [15 funcs]
-    _run_parser  CC=7  out:9
+    _run_parser  CC=3  out:3
     access_check  CC=3  out:6
     access_config  CC=3  out:12
     access_reload  CC=2  out:2
@@ -391,18 +538,9 @@ MODULES:
     chat_start  CC=5  out:12
     chat_state  CC=2  out:4
     health  CC=3  out:8
-  nlp-service.app.mapper  [5 funcs]
-    _build_config  CC=6  out:10
-    _get_field_mapping  CC=1  out:1
-    _make_name  CC=3  out:2
-    _resolve_actions  CC=7  out:4
-    map_to_dsl  CC=8  out:17
-  nlp-service.app.parser_llm  [3 funcs]
-    _detect_provider  CC=10  out:8
-    _parse_json_response  CC=6  out:10
-    parse_llm  CC=3  out:16
-  nlp-service.app.registry  [3 funcs]
+  nlp-service.app.registry  [4 funcs]
     get_defaults  CC=1  out:3
+    get_quality_required_fields  CC=1  out:3
     get_required_fields  CC=1  out:2
     get_trigger  CC=3  out:2
   nlp-service.app.routing.native  [13 funcs]
@@ -419,22 +557,35 @@ MODULES:
   nlp-service.app.routing.observability  [2 funcs]
     record_intent_decision  CC=7  out:4
     routing_metrics_snapshot  CC=1  out:1
-  nlp-service.app.routing.orientation  [2 funcs]
+  nlp-service.app.routing.orientation  [4 funcs]
+    _host_list_root  CC=3  out:2
     _is_file_list_query  CC=5  out:8
-    orient_query  CC=13  out:21
+    _resolve_file_list_host_command  CC=15  out:24
+    orient_query  CC=16  out:27
+  nlp-service.app.routing.parser.enrich  [4 funcs]
+    can_enrich_missing  CC=4  out:5
+    enrich_entities  CC=14  out:29
+    get_enrichable_missing  CC=5  out:3
+    is_enrich_enabled  CC=1  out:3
   nlp-service.app.routing.parser.facade  [1 funcs]
-    parse_text  CC=8  out:8
-  nlp-service.app.routing.parser.rules  [25 funcs]
+    parse_text  CC=2  out:4
+  nlp-service.app.routing.parser.llm  [3 funcs]
+    _detect_provider  CC=10  out:8
+    _parse_json_response  CC=6  out:10
+    parse_llm  CC=3  out:16
+  nlp-service.app.routing.parser.resolve_mode  [1 funcs]
+    parse_with_mode  CC=10  out:12
+  nlp-service.app.routing.parser.rules  [30 funcs]
     _action_alias_scores  CC=4  out:3
     _action_category  CC=1  out:2
     _actions_by_score  CC=1  out:2
-    _detect_actions  CC=3  out:3
+    _alias_in_text  CC=3  out:4
+    _apply_context_filters  CC=21  out:17
+    _detect_actions  CC=6  out:6
     _dominant_overlap_action  CC=4  out:5
     _extract_amount  CC=5  out:7
-    _extract_email  CC=2  out:2
-    _extract_entities  CC=1  out:9
-    _extract_fallback_recipient  CC=7  out:5
-    _extract_file_path_entity  CC=3  out:2
+    _extract_body_content_prefix  CC=4  out:4
+    _extract_email  CC=3  out:2
   nlp-service.app.routing.resolve  [4 funcs]
     _intent_from_nlp  CC=2  out:7
     _intent_from_orientation  CC=4  out:9
@@ -456,7 +607,29 @@ MODULES:
     apply_integrations  CC=5  out:7
     load_integration_registries  CC=5  out:10
   nlp2dsl_sdk.__main__  [1 funcs]
-    main  CC=5  out:9
+    main  CC=5  out:10
+  nlp2dsl_sdk.artifacts  [15 funcs]
+    __init__  CC=5  out:6
+    finalize  CC=4  out:6
+    record  CC=1  out:6
+    _extract_actions  CC=4  out:5
+    _mask_secret  CC=3  out:1
+    _slugify  CC=2  out:5
+    build_process_trace  CC=17  out:29
+    collect_environment  CC=6  out:4
+    example_artifact_root  CC=1  out:2
+    get_example_writer  CC=2  out:4
+  nlp2dsl_sdk.cli  [10 funcs]
+    _actions  CC=3  out:8
+    _analyze  CC=2  out:1
+    _chat_start  CC=2  out:10
+    _client  CC=1  out:1
+    _demo  CC=6  out:5
+    _display  CC=13  out:27
+    _health  CC=2  out:6
+    _run  CC=12  out:30
+    main  CC=7  out:25
+    show  CC=2  out:3
   nlp2dsl_sdk.client  [8 funcs]
     crm_update  CC=2  out:3
     generate_report  CC=1  out:2
@@ -466,17 +639,106 @@ MODULES:
     send_invoice  CC=1  out:2
     send_invoice_and_notify  CC=4  out:6
     workflow_step  CC=1  out:1
-  nlp2dsl_sdk.demos  [21 funcs]
-    _ensure_services  CC=2  out:2
+  nlp2dsl_sdk.demos  [10 funcs]
     _get_supported_languages  CC=3  out:6
-    _preview_text_examples  CC=3  out:6
     _print_code_generation_preview  CC=3  out:11
-    _print_execution_result  CC=5  out:11
-    _print_json  CC=1  out:2
-    _print_workflow_preview  CC=4  out:16
     _run_conversation_code_example  CC=3  out:14
     _run_direct_code_generation  CC=5  out:9
-    _run_gallery_examples  CC=5  out:14
+    _run_workflow_code_examples  CC=1  out:1
+    list_available_demos  CC=1  out:0
+    run_action_catalog_demo  CC=6  out:16
+    run_automation_gallery_demo  CC=4  out:6
+    run_code_generation_demo  CC=6  out:14
+    run_crm_update_demo  CC=3  out:5
+  nlp2dsl_sdk.encoding  [7 funcs]
+    _apply_utf8_locale_env  CC=2  out:3
+    _auto_configure_once  CC=2  out:1
+    _explicit_utf8_locale  CC=4  out:2
+    _reconfigure_stdio  CC=4  out:2
+    _set_utf8_locale  CC=3  out:1
+    configure_utf8  CC=3  out:4
+    utf8_auto_enabled  CC=1  out:3
+  nlp2dsl_sdk.preview  [9 funcs]
+    ensure_services  CC=2  out:2
+    execute_from_text  CC=8  out:15
+    execute_text_examples  CC=8  out:9
+    finalize_example_artifacts  CC=2  out:2
+    preview_text_examples  CC=9  out:13
+    print_execution_result  CC=5  out:11
+    print_json  CC=1  out:2
+    print_workflow_preview  CC=11  out:27
+    workflow_http_error_result  CC=11  out:13
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.clarification  [2 funcs]
+    clarification_enforced  CC=1  out:3
+    ensure_intent_clear  CC=4  out:3
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files  [3 funcs]
+    _nlp2cmd_data_dir  CC=2  out:3
+    _package_data_dir  CC=2  out:5
+    find_data_files  CC=6  out:17
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.facade  [3 funcs]
+    __init__  CC=4  out:3
+    detect  CC=2  out:4
+    default_intent_detector  CC=1  out:1
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.input  [1 funcs]
+    analyze_query  CC=3  out:8
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector  [14 funcs]
+    _calculate_keyword_confidence  CC=6  out:5
+    _fuzzy_detection  CC=6  out:4
+    _ml_detection  CC=6  out:4
+    _semantic_detection  CC=6  out:4
+    _tokenize_text  CC=11  out:15
+    detect  CC=17  out:21
+    detect_all  CC=8  out:10
+    detect_intent_ir  CC=1  out:2
+    _get_fuzzy_schema_matcher  CC=7  out:7
+    _get_ml_classifier  CC=8  out:6
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns  [7 funcs]
+    __init__  CC=3  out:7
+    _load_detector_config_from_json  CC=33  out:48
+    _load_patterns_from_json  CC=19  out:26
+    add_pattern  CC=6  out:6
+    _dedupe_case_insensitive  CC=3  out:4
+    _find_data_files  CC=1  out:2
+    _normalize_polish_text  CC=1  out:2
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.nlp2cmd_convert  [1 funcs]
+    detection_to_intent_ir  CC=10  out:22
+  packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rest_workflow  [2 funcs]
+    plan  CC=7  out:14
+    supports  CC=4  out:1
+  packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rule_shell  [2 funcs]
+    plan  CC=3  out:6
+    _parse_file_search  CC=10  out:11
+  packages.nlp2cmd-planner.src.nlp2cmd_planner.workflow_backend  [4 funcs]
+    fetch_workflow_from_text  CC=4  out:12
+    workflow_backend_enabled  CC=1  out:3
+    workflow_backend_url  CC=1  out:4
+    workflow_run_path  CC=2  out:2
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter  [8 funcs]
+    _delegate_block  CC=4  out:4
+    _format_json_body  CC=2  out:3
+    _mcp_block  CC=6  out:13
+    _rest_block  CC=2  out:5
+    _shell_block  CC=1  out:1
+    _ws_block  CC=5  out:11
+    plan_to_propact_markdown  CC=2  out:4
+    step_to_propact_block  CC=12  out:17
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.executor  [5 funcs]
+    _run_nlp2cmd_step  CC=5  out:13
+    _run_propact_step  CC=1  out:2
+    run  CC=10  out:20
+    _single_step_plan  CC=1  out:2
+    execution_route  CC=3  out:0
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.runner  [8 funcs]
+    render  CC=1  out:1
+    run  CC=8  out:14
+    _is_shell_only  CC=3  out:2
+    _propact_available  CC=1  out:2
+    _requires_propact  CC=2  out:1
+    _resolve_propact_bin  CC=2  out:2
+    _run_shell_steps  CC=7  out:19
+    _shell_command  CC=3  out:3
+  packages.nlp2dsl-show.src.nlp2dsl_show.cli  [1 funcs]
+    main  CC=7  out:17
   tauri-wrapper.scripts.dev  [3 funcs]
     exitCode  CC=2  out:1
     main  CC=11  out:10
@@ -540,20 +802,20 @@ EDGES:
   backend.app.routers.settings.update_settings_section → backend.app.logging_setup.get_request_id
   backend.app.routers.settings.set_setting → backend.app.logging_setup.get_request_id
   backend.app.routers.settings.reset_settings → backend.app.logging_setup.get_request_id
-  nlp2dsl_sdk.demos._print_workflow_preview → nlp2dsl_sdk.demos._print_json
-  nlp2dsl_sdk.demos._print_execution_result → nlp2dsl_sdk.demos._print_json
-  nlp2dsl_sdk.demos._preview_text_examples → nlp2dsl_sdk.demos._print_workflow_preview
-  nlp2dsl_sdk.demos.run_crm_update_demo → nlp2dsl_sdk.demos._preview_text_examples
-  nlp2dsl_sdk.demos.run_crm_update_demo → nlp2dsl_sdk.demos._print_execution_result
-  nlp2dsl_sdk.demos.run_crm_update_demo → nlp2dsl_sdk.demos._ensure_services
-  nlp2dsl_sdk.demos.run_action_catalog_demo → nlp2dsl_sdk.demos._ensure_services
-  nlp2dsl_sdk.demos.run_automation_gallery_demo → nlp2dsl_sdk.demos._run_gallery_examples
-  nlp2dsl_sdk.demos.run_automation_gallery_demo → nlp2dsl_sdk.demos._ensure_services
-  nlp2dsl_sdk.demos._run_workflow_examples → nlp2dsl_sdk.demos._print_execution_result
-  nlp2dsl_sdk.demos._run_gallery_examples → nlp2dsl_sdk.demos._print_workflow_preview
-  nlp2dsl_sdk.demos.run_invoice_demo → nlp2dsl_sdk.demos._preview_text_examples
-  nlp2dsl_sdk.demos.run_invoice_demo → nlp2dsl_sdk.demos._print_execution_result
-  nlp2dsl_sdk.demos.run_invoice_demo → nlp2dsl_sdk.demos._ensure_services
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.clarification.ensure_intent_clear → packages.nlp2cmd-intent.src.nlp2cmd_intent.clarification.clarification_enforced
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.facade.KeywordIntentAdapter.detect → packages.nlp2cmd-intent.src.nlp2cmd_intent.nlp2cmd_convert.detection_to_intent_ir
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.facade.IntentPipeline.__init__ → packages.nlp2cmd-intent.src.nlp2cmd_intent.facade.default_intent_detector
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.input.analyze_query → packages.nlp2cmd-intent.src.nlp2cmd_intent.clarification.ensure_intent_clear
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files.find_data_files → nlp-service.app.settings.SettingsManager.set
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files.find_data_files → packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files._package_data_dir
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files.find_data_files → packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files._nlp2cmd_data_dir
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._dedupe_case_insensitive → nlp-service.app.settings.SettingsManager.set
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.__init__ → nlp-service.app.settings.SettingsManager.set
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_patterns_from_json → packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._find_data_files
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_detector_config_from_json → packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._find_data_files
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.add_pattern → packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._normalize_polish_text
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.add_pattern → packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._dedupe_case_insensitive
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector.detect → packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector._get_query_normalizer
 ```
 
 ## Test Contracts
@@ -567,9 +829,11 @@ EDGES:
 - assert `_status >= 200`
 - detectors: FastAPIDetector, WebSocketDetector, ConfigEndpointDetector
 
-### Cli (1)
+### Cli (2)
 
 **`CLI Command Tests`**
+
+**`NLP2DSL Examples (aggregated)`**
 
 ### Integration (1)
 
@@ -583,51 +847,51 @@ EDGES:
 
 ```toon markpact:analysis path=project/calls.toon.yaml
 # code2llm call graph | /home/tom/github/wronai/nlp2dsl
-# generated in 0.18s
-# nodes: 220 | edges: 237 | modules: 42
-# CC̄=2.9
+# generated in 0.27s
+# nodes: 342 | edges: 350 | modules: 72
+# CC̄=3.6
 
 HUBS[20]:
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_detector_config_from_json
+    CC=33  in:0  out:48  total:48
   backend.app.engine._execute_workflow
     CC=11  in:2  out:42  total:44
+  nlp2dsl_sdk.preview.print_workflow_preview
+    CC=11  in:8  out:27  total:35
   nlp-service.app.routing.resolve.resolve_intent
     CC=18  in:1  out:31  total:32
+  nlp2dsl_sdk.cli._run
+    CC=12  in:1  out:30  total:31
+  nlp-service.app.routing.parser.enrich.enrich_entities
+    CC=14  in:1  out:29  total:30
+  nlp2dsl_sdk.artifacts.build_process_trace
+    CC=17  in:1  out:29  total:30
+  nlp-service.app.dsl.mapper._build_config
+    CC=19  in:1  out:29  total:30
+  nlp-service.app.routing.orientation.orient_query
+    CC=16  in:2  out:27  total:29
+  nlp2dsl_sdk.cli._display
+    CC=13  in:1  out:27  total:28
   nlp-service.app.governance.bootstrap._actions_from_yaml_areas
     CC=14  in:1  out:26  total:27
-  nlp-service.app.routing.orientation.orient_query
-    CC=13  in:2  out:21  total:23
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_patterns_from_json
+    CC=19  in:0  out:26  total:26
+  examples.08-multi-object-benchmark.scenario.run_benchmark
+    CC=16  in:2  out:24  total:26
+  examples.12-ir-show.scenario.run
+    CC=13  in:0  out:25  total:25
+  nlp-service.app.routing.orientation._resolve_file_list_host_command
+    CC=15  in:1  out:24  total:25
+  nlp2dsl_sdk.cli.main
+    CC=7  in:0  out:25  total:25
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.nlp2cmd_convert.detection_to_intent_ir
+    CC=10  in:2  out:22  total:24
   nlp-service.app.main.websocket_chat
     CC=10  in:0  out:23  total:23
+  nlp-service.app.settings.SettingsManager.set
+    CC=4  in:12  out:11  total:23
   backend.app.routers.workflow.stream_workflow
     CC=2  in:0  out:22  total:22
-  backend.app.routers.chat.chat_message
-    CC=12  in:0  out:21  total:21
-  nlp-service.app.mapper.map_to_dsl
-    CC=8  in:3  out:17  total:20
-  nlp-service.app.parser_llm.parse_llm
-    CC=3  in:4  out:16  total:20
-  nlp-service.app.governance.config._build_access_config
-    CC=7  in:1  out:18  total:19
-  nlp2dsl_sdk.demos.run_action_catalog_demo
-    CC=6  in:0  out:19  total:19
-  nlp-service.app.audio_parser.stt_audio
-    CC=9  in:5  out:14  total:19
-  worker.worker._deliver_notification
-    CC=5  in:3  out:16  total:19
-  nlp2dsl_sdk.demos._print_workflow_preview
-    CC=4  in:3  out:16  total:19
-  backend.app.routers.chat._proxy_chat_payload
-    CC=9  in:2  out:16  total:18
-  nlp2dsl_sdk.demos._print_execution_result
-    CC=5  in:7  out:11  total:18
-  nlp-service.app.settings.SettingsManager.set
-    CC=4  in:7  out:11  total:18
-  nlp-service.app.governance.config._search_paths
-    CC=6  in:1  out:17  total:18
-  nlp-service.app.system_executor._exec_file_read
-    CC=9  in:0  out:18  total:18
-  nlp-service.app.conversation.orchestrator._process_message
-    CC=6  in:2  out:16  total:18
 
 MODULES:
   backend.app.engine  [7 funcs]
@@ -664,14 +928,39 @@ MODULES:
   backend.app.workflow_events  [2 funcs]
     publish  CC=2  out:4
     subscriber_count  CC=1  out:3
-  examples.01-invoice.main  [1 funcs]
-    main  CC=1  out:1
-  examples.02-email.main  [1 funcs]
-    main  CC=1  out:1
-  examples.03-report-and-notify.main  [1 funcs]
-    main  CC=1  out:1
-  examples.04-scheduled-report.main  [1 funcs]
-    main  CC=1  out:1
+  examples.01-invoice.scenario  [1 funcs]
+    run  CC=7  out:22
+  examples.02-email.scenario  [1 funcs]
+    run  CC=7  out:19
+  examples.03-report-and-notify.scenario  [1 funcs]
+    run  CC=6  out:16
+  examples.04-scheduled-report.scenario  [1 funcs]
+    run  CC=11  out:21
+  examples.05-conversation-flow.scenario  [3 funcs]
+    run  CC=2  out:2
+    run_demo  CC=2  out:15
+    run_interactive  CC=1  out:2
+  examples.06-interactive-chat.scenario  [3 funcs]
+    run  CC=2  out:2
+    run_demo  CC=3  out:9
+    run_interactive  CC=1  out:4
+  examples.07-email-conversation.scenario  [1 funcs]
+    run  CC=3  out:11
+  examples.08-multi-object-benchmark.scenario  [4 funcs]
+    _evaluate  CC=6  out:9
+    _extract_actions  CC=5  out:5
+    run  CC=5  out:15
+    run_benchmark  CC=16  out:24
+  examples.09-execution-smoke.scenario  [1 funcs]
+    run  CC=9  out:22
+  examples.10-llm-benchmark.scenario  [1 funcs]
+    run  CC=3  out:10
+  examples.11-notify-quality.scenario  [1 funcs]
+    run  CC=8  out:17
+  examples.12-ir-show.scenario  [1 funcs]
+    run  CC=13  out:25
+  examples.bootstrap  [1 funcs]
+    bootstrap  CC=3  out:4
   examples.code_generation_examples  [1 funcs]
     main  CC=1  out:1
   nlp-service.app.access.uri_match  [3 funcs]
@@ -684,15 +973,16 @@ MODULES:
     stt_audio  CC=9  out:14
     stt_file  CC=2  out:4
   nlp-service.app.conversation.merge  [1 funcs]
-    merge_into_state  CC=9  out:4
+    merge_into_state  CC=13  out:4
   nlp-service.app.conversation.orchestrator  [5 funcs]
     _attach_routing  CC=1  out:1
     _process_message  CC=6  out:16
     continue_conversation  CC=2  out:8
     get_conversation  CC=2  out:2
     start_conversation  CC=1  out:6
-  nlp-service.app.conversation.responses  [9 funcs]
-    _is_execute_or_continue  CC=2  out:3
+  nlp-service.app.conversation.responses  [10 funcs]
+    _execute_keyword_in_text  CC=3  out:4
+    _is_execute_or_continue  CC=2  out:4
     _nlp_from_state  CC=5  out:5
     build_and_check_dsl  CC=4  out:6
     build_incomplete_response  CC=3  out:6
@@ -703,6 +993,14 @@ MODULES:
     handle_unknown_intent  CC=5  out:6
   nlp-service.app.dsl.forms  [1 funcs]
     get_action_form  CC=5  out:12
+  nlp-service.app.dsl.mapper  [5 funcs]
+    _build_config  CC=19  out:29
+    _get_field_mapping  CC=1  out:1
+    _make_name  CC=3  out:2
+    _resolve_actions  CC=7  out:4
+    map_to_dsl  CC=8  out:17
+  nlp-service.app.dsl.pipeline  [1 funcs]
+    map_to_dsl_with_enrichment  CC=6  out:4
   nlp-service.app.execution.delegate  [2 funcs]
     execution_backend_for_intent  CC=2  out:1
     is_delegated_to_mullm  CC=2  out:1
@@ -733,7 +1031,7 @@ MODULES:
     _scheme_decision  CC=3  out:2
     _unknown_agent_decision  CC=4  out:3
   nlp-service.app.main  [15 funcs]
-    _run_parser  CC=7  out:9
+    _run_parser  CC=3  out:3
     access_check  CC=3  out:6
     access_config  CC=3  out:12
     access_reload  CC=2  out:2
@@ -743,18 +1041,9 @@ MODULES:
     chat_start  CC=5  out:12
     chat_state  CC=2  out:4
     health  CC=3  out:8
-  nlp-service.app.mapper  [5 funcs]
-    _build_config  CC=6  out:10
-    _get_field_mapping  CC=1  out:1
-    _make_name  CC=3  out:2
-    _resolve_actions  CC=7  out:4
-    map_to_dsl  CC=8  out:17
-  nlp-service.app.parser_llm  [3 funcs]
-    _detect_provider  CC=10  out:8
-    _parse_json_response  CC=6  out:10
-    parse_llm  CC=3  out:16
-  nlp-service.app.registry  [3 funcs]
+  nlp-service.app.registry  [4 funcs]
     get_defaults  CC=1  out:3
+    get_quality_required_fields  CC=1  out:3
     get_required_fields  CC=1  out:2
     get_trigger  CC=3  out:2
   nlp-service.app.routing.native  [13 funcs]
@@ -771,22 +1060,35 @@ MODULES:
   nlp-service.app.routing.observability  [2 funcs]
     record_intent_decision  CC=7  out:4
     routing_metrics_snapshot  CC=1  out:1
-  nlp-service.app.routing.orientation  [2 funcs]
+  nlp-service.app.routing.orientation  [4 funcs]
+    _host_list_root  CC=3  out:2
     _is_file_list_query  CC=5  out:8
-    orient_query  CC=13  out:21
+    _resolve_file_list_host_command  CC=15  out:24
+    orient_query  CC=16  out:27
+  nlp-service.app.routing.parser.enrich  [4 funcs]
+    can_enrich_missing  CC=4  out:5
+    enrich_entities  CC=14  out:29
+    get_enrichable_missing  CC=5  out:3
+    is_enrich_enabled  CC=1  out:3
   nlp-service.app.routing.parser.facade  [1 funcs]
-    parse_text  CC=8  out:8
-  nlp-service.app.routing.parser.rules  [25 funcs]
+    parse_text  CC=2  out:4
+  nlp-service.app.routing.parser.llm  [3 funcs]
+    _detect_provider  CC=10  out:8
+    _parse_json_response  CC=6  out:10
+    parse_llm  CC=3  out:16
+  nlp-service.app.routing.parser.resolve_mode  [1 funcs]
+    parse_with_mode  CC=10  out:12
+  nlp-service.app.routing.parser.rules  [30 funcs]
     _action_alias_scores  CC=4  out:3
     _action_category  CC=1  out:2
     _actions_by_score  CC=1  out:2
-    _detect_actions  CC=3  out:3
+    _alias_in_text  CC=3  out:4
+    _apply_context_filters  CC=21  out:17
+    _detect_actions  CC=6  out:6
     _dominant_overlap_action  CC=4  out:5
     _extract_amount  CC=5  out:7
-    _extract_email  CC=2  out:2
-    _extract_entities  CC=1  out:9
-    _extract_fallback_recipient  CC=7  out:5
-    _extract_file_path_entity  CC=3  out:2
+    _extract_body_content_prefix  CC=4  out:4
+    _extract_email  CC=3  out:2
   nlp-service.app.routing.resolve  [4 funcs]
     _intent_from_nlp  CC=2  out:7
     _intent_from_orientation  CC=4  out:9
@@ -808,7 +1110,29 @@ MODULES:
     apply_integrations  CC=5  out:7
     load_integration_registries  CC=5  out:10
   nlp2dsl_sdk.__main__  [1 funcs]
-    main  CC=5  out:9
+    main  CC=5  out:10
+  nlp2dsl_sdk.artifacts  [15 funcs]
+    __init__  CC=5  out:6
+    finalize  CC=4  out:6
+    record  CC=1  out:6
+    _extract_actions  CC=4  out:5
+    _mask_secret  CC=3  out:1
+    _slugify  CC=2  out:5
+    build_process_trace  CC=17  out:29
+    collect_environment  CC=6  out:4
+    example_artifact_root  CC=1  out:2
+    get_example_writer  CC=2  out:4
+  nlp2dsl_sdk.cli  [10 funcs]
+    _actions  CC=3  out:8
+    _analyze  CC=2  out:1
+    _chat_start  CC=2  out:10
+    _client  CC=1  out:1
+    _demo  CC=6  out:5
+    _display  CC=13  out:27
+    _health  CC=2  out:6
+    _run  CC=12  out:30
+    main  CC=7  out:25
+    show  CC=2  out:3
   nlp2dsl_sdk.client  [8 funcs]
     crm_update  CC=2  out:3
     generate_report  CC=1  out:2
@@ -818,17 +1142,106 @@ MODULES:
     send_invoice  CC=1  out:2
     send_invoice_and_notify  CC=4  out:6
     workflow_step  CC=1  out:1
-  nlp2dsl_sdk.demos  [21 funcs]
-    _ensure_services  CC=2  out:2
+  nlp2dsl_sdk.demos  [10 funcs]
     _get_supported_languages  CC=3  out:6
-    _preview_text_examples  CC=3  out:6
     _print_code_generation_preview  CC=3  out:11
-    _print_execution_result  CC=5  out:11
-    _print_json  CC=1  out:2
-    _print_workflow_preview  CC=4  out:16
     _run_conversation_code_example  CC=3  out:14
     _run_direct_code_generation  CC=5  out:9
-    _run_gallery_examples  CC=5  out:14
+    _run_workflow_code_examples  CC=1  out:1
+    list_available_demos  CC=1  out:0
+    run_action_catalog_demo  CC=6  out:16
+    run_automation_gallery_demo  CC=4  out:6
+    run_code_generation_demo  CC=6  out:14
+    run_crm_update_demo  CC=3  out:5
+  nlp2dsl_sdk.encoding  [7 funcs]
+    _apply_utf8_locale_env  CC=2  out:3
+    _auto_configure_once  CC=2  out:1
+    _explicit_utf8_locale  CC=4  out:2
+    _reconfigure_stdio  CC=4  out:2
+    _set_utf8_locale  CC=3  out:1
+    configure_utf8  CC=3  out:4
+    utf8_auto_enabled  CC=1  out:3
+  nlp2dsl_sdk.preview  [9 funcs]
+    ensure_services  CC=2  out:2
+    execute_from_text  CC=8  out:15
+    execute_text_examples  CC=8  out:9
+    finalize_example_artifacts  CC=2  out:2
+    preview_text_examples  CC=9  out:13
+    print_execution_result  CC=5  out:11
+    print_json  CC=1  out:2
+    print_workflow_preview  CC=11  out:27
+    workflow_http_error_result  CC=11  out:13
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.clarification  [2 funcs]
+    clarification_enforced  CC=1  out:3
+    ensure_intent_clear  CC=4  out:3
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files  [3 funcs]
+    _nlp2cmd_data_dir  CC=2  out:3
+    _package_data_dir  CC=2  out:5
+    find_data_files  CC=6  out:17
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.facade  [3 funcs]
+    __init__  CC=4  out:3
+    detect  CC=2  out:4
+    default_intent_detector  CC=1  out:1
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.input  [1 funcs]
+    analyze_query  CC=3  out:8
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector  [14 funcs]
+    _calculate_keyword_confidence  CC=6  out:5
+    _fuzzy_detection  CC=6  out:4
+    _ml_detection  CC=6  out:4
+    _semantic_detection  CC=6  out:4
+    _tokenize_text  CC=11  out:15
+    detect  CC=17  out:21
+    detect_all  CC=8  out:10
+    detect_intent_ir  CC=1  out:2
+    _get_fuzzy_schema_matcher  CC=7  out:7
+    _get_ml_classifier  CC=8  out:6
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns  [7 funcs]
+    __init__  CC=3  out:7
+    _load_detector_config_from_json  CC=33  out:48
+    _load_patterns_from_json  CC=19  out:26
+    add_pattern  CC=6  out:6
+    _dedupe_case_insensitive  CC=3  out:4
+    _find_data_files  CC=1  out:2
+    _normalize_polish_text  CC=1  out:2
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.nlp2cmd_convert  [1 funcs]
+    detection_to_intent_ir  CC=10  out:22
+  packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rest_workflow  [2 funcs]
+    plan  CC=7  out:14
+    supports  CC=4  out:1
+  packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rule_shell  [2 funcs]
+    plan  CC=3  out:6
+    _parse_file_search  CC=10  out:11
+  packages.nlp2cmd-planner.src.nlp2cmd_planner.workflow_backend  [4 funcs]
+    fetch_workflow_from_text  CC=4  out:12
+    workflow_backend_enabled  CC=1  out:3
+    workflow_backend_url  CC=1  out:4
+    workflow_run_path  CC=2  out:2
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter  [8 funcs]
+    _delegate_block  CC=4  out:4
+    _format_json_body  CC=2  out:3
+    _mcp_block  CC=6  out:13
+    _rest_block  CC=2  out:5
+    _shell_block  CC=1  out:1
+    _ws_block  CC=5  out:11
+    plan_to_propact_markdown  CC=2  out:4
+    step_to_propact_block  CC=12  out:17
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.executor  [5 funcs]
+    _run_nlp2cmd_step  CC=5  out:13
+    _run_propact_step  CC=1  out:2
+    run  CC=10  out:20
+    _single_step_plan  CC=1  out:2
+    execution_route  CC=3  out:0
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.runner  [8 funcs]
+    render  CC=1  out:1
+    run  CC=8  out:14
+    _is_shell_only  CC=3  out:2
+    _propact_available  CC=1  out:2
+    _requires_propact  CC=2  out:1
+    _resolve_propact_bin  CC=2  out:2
+    _run_shell_steps  CC=7  out:19
+    _shell_command  CC=3  out:3
+  packages.nlp2dsl-show.src.nlp2dsl_show.cli  [1 funcs]
+    main  CC=7  out:17
   tauri-wrapper.scripts.dev  [3 funcs]
     exitCode  CC=2  out:1
     main  CC=11  out:10
@@ -892,37 +1305,48 @@ EDGES:
   backend.app.routers.settings.update_settings_section → backend.app.logging_setup.get_request_id
   backend.app.routers.settings.set_setting → backend.app.logging_setup.get_request_id
   backend.app.routers.settings.reset_settings → backend.app.logging_setup.get_request_id
-  nlp2dsl_sdk.demos._print_workflow_preview → nlp2dsl_sdk.demos._print_json
-  nlp2dsl_sdk.demos._print_execution_result → nlp2dsl_sdk.demos._print_json
-  nlp2dsl_sdk.demos._preview_text_examples → nlp2dsl_sdk.demos._print_workflow_preview
-  nlp2dsl_sdk.demos.run_crm_update_demo → nlp2dsl_sdk.demos._preview_text_examples
-  nlp2dsl_sdk.demos.run_crm_update_demo → nlp2dsl_sdk.demos._print_execution_result
-  nlp2dsl_sdk.demos.run_crm_update_demo → nlp2dsl_sdk.demos._ensure_services
-  nlp2dsl_sdk.demos.run_action_catalog_demo → nlp2dsl_sdk.demos._ensure_services
-  nlp2dsl_sdk.demos.run_automation_gallery_demo → nlp2dsl_sdk.demos._run_gallery_examples
-  nlp2dsl_sdk.demos.run_automation_gallery_demo → nlp2dsl_sdk.demos._ensure_services
-  nlp2dsl_sdk.demos._run_workflow_examples → nlp2dsl_sdk.demos._print_execution_result
-  nlp2dsl_sdk.demos._run_gallery_examples → nlp2dsl_sdk.demos._print_workflow_preview
-  nlp2dsl_sdk.demos.run_invoice_demo → nlp2dsl_sdk.demos._preview_text_examples
-  nlp2dsl_sdk.demos.run_invoice_demo → nlp2dsl_sdk.demos._print_execution_result
-  nlp2dsl_sdk.demos.run_invoice_demo → nlp2dsl_sdk.demos._ensure_services
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.clarification.ensure_intent_clear → packages.nlp2cmd-intent.src.nlp2cmd_intent.clarification.clarification_enforced
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.facade.KeywordIntentAdapter.detect → packages.nlp2cmd-intent.src.nlp2cmd_intent.nlp2cmd_convert.detection_to_intent_ir
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.facade.IntentPipeline.__init__ → packages.nlp2cmd-intent.src.nlp2cmd_intent.facade.default_intent_detector
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.input.analyze_query → packages.nlp2cmd-intent.src.nlp2cmd_intent.clarification.ensure_intent_clear
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files.find_data_files → nlp-service.app.settings.SettingsManager.set
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files.find_data_files → packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files._package_data_dir
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files.find_data_files → packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files._nlp2cmd_data_dir
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._dedupe_case_insensitive → nlp-service.app.settings.SettingsManager.set
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.__init__ → nlp-service.app.settings.SettingsManager.set
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_patterns_from_json → packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._find_data_files
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_detector_config_from_json → packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._find_data_files
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.add_pattern → packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._normalize_polish_text
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.add_pattern → packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._dedupe_case_insensitive
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector.detect → packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector._get_query_normalizer
 ```
 
 ### Code Analysis (`project/analysis.toon.yaml`)
 
 ```toon markpact:analysis path=project/analysis.toon.yaml
-# code2llm | 121f 10666L | python:79,yaml:8,shell:7,toml:5,txt:4,json:3,yml:2,rust:2,javascript:2,ini:1 | 2026-06-05
-# generated in 0.02s
-# CC̅=2.9 | critical:1/415 | dups:0 | cycles:1
+# code2llm | 208f 23911L | python:144,json:14,shell:11,toml:10,yaml:9,txt:4,yml:2,rust:2,javascript:2,ini:1 | 2026-06-05
+# generated in 0.04s
+# CC̅=3.6 | critical:13/594 | dups:0 | cycles:0
 
-HEALTH[1]:
+HEALTH[13]:
+  🟡 CC    _load_patterns_from_json CC=19 (limit:15)
+  🟡 CC    _load_detector_config_from_json CC=33 (limit:15)
+  🟡 CC    detect CC=17 (limit:15)
+  🟡 CC    _fast_path_detection CC=73 (limit:15)
+  🟡 CC    _keyword_detection CC=15 (limit:15)
+  🟡 CC    build_process_trace CC=17 (limit:15)
+  🟡 CC    run_benchmark CC=16 (limit:15)
+  🟡 CC    _resolve_file_list_host_command CC=15 (limit:15)
+  🟡 CC    orient_query CC=16 (limit:15)
   🟡 CC    resolve_intent CC=18 (limit:15)
+  🟡 CC    parse_rules CC=15 (limit:15)
+  🟡 CC    _apply_context_filters CC=21 (limit:15)
+  🟡 CC    _build_config CC=19 (limit:15)
 
-REFACTOR[2]:
-  1. split 1 high-CC methods  (CC>15)
-  2. break 1 circular dependencies
+REFACTOR[1]:
+  1. split 13 high-CC methods  (CC>15)
 
-PIPELINES[231]:
+PIPELINES[301]:
   [1] Src [main]: main
       PURITY: 100% pure
   [2] Src [main]: main
@@ -1025,23 +1449,115 @@ PIPELINES[231]:
       PURITY: 100% pure
 
 LAYERS:
-  nlp-service/                    CC̄=3.5    ←in:0  →out:0
-  │ !! main                       592L  0C   24m  CC=10     ←1
-  │ registry                   390L  0C    4m  CC=5      ←3
-  │ rules                      381L  0C   25m  CC=7      ←3
+  examples/                       CC̄=5.5    ←in:0  →out:2
+  │ !! benchmark_1780668530.json   642L  0C    0m  CC=0.0    ←0
+  │ !! benchmark_1780672619.json   636L  0C    0m  CC=0.0    ←0
+  │ !! benchmark_1780673613.json   636L  0C    0m  CC=0.0    ←0
+  │ benchmark_1780669461.json   322L  0C    0m  CC=0.0    ←0
+  │ benchmark_1780669469.json   322L  0C    0m  CC=0.0    ←0
+  │ benchmark_1780668482.json   321L  0C    0m  CC=0.0    ←0
+  │ benchmark_1780668555.json   320L  0C    0m  CC=0.0    ←0
+  │ benchmark_1780669486.json   319L  0C    0m  CC=0.0    ←0
+  │ benchmark_1780668647.json   319L  0C    0m  CC=0.0    ←0
+  │ benchmark_queries          158L  1C    0m  CC=0.0    ←0
+  │ !! scenario                   137L  0C    4m  CC=16     ←1
+  │ scenario                    88L  0C    2m  CC=13     ←0
+  │ scenario                    60L  0C    1m  CC=11     ←0
+  │ docker-compose.yml          60L  0C    0m  CC=0.0    ←0
+  │ scenario                    58L  0C    1m  CC=6      ←0
+  │ scenario                    57L  0C    1m  CC=7      ←0
+  │ run-all.sh                  53L  0C    0m  CC=0.0    ←0
+  │ scenario                    49L  0C    1m  CC=8      ←0
+  │ scenario                    48L  0C    1m  CC=7      ←0
+  │ scenario                    45L  0C    3m  CC=3      ←0
+  │ scenario                    44L  0C    1m  CC=9      ←0
+  │ scenario                    44L  0C    3m  CC=2      ←0
+  │ scenario                    37L  0C    1m  CC=3      ←0
+  │ scenario                    36L  0C    1m  CC=3      ←0
+  │ main                        33L  0C    0m  CC=0.0    ←0
+  │ main                        33L  0C    0m  CC=0.0    ←0
+  │ main                        33L  0C    0m  CC=0.0    ←0
+  │ main                        33L  0C    0m  CC=0.0    ←0
+  │ main                        33L  0C    0m  CC=0.0    ←0
+  │ main                        33L  0C    0m  CC=0.0    ←0
+  │ main                        33L  0C    0m  CC=0.0    ←0
+  │ main                        33L  0C    0m  CC=0.0    ←0
+  │ main                        33L  0C    0m  CC=0.0    ←0
+  │ main                        33L  0C    0m  CC=0.0    ←0
+  │ main                        33L  0C    0m  CC=0.0    ←0
+  │ main                        33L  0C    0m  CC=0.0    ←0
+  │ bootstrap                   26L  0C    1m  CC=3      ←0
+  │ code_generation_examples    25L  0C    1m  CC=1      ←0
+  │ Dockerfile                  23L  0C    0m  CC=0.0    ←0
+  │ Dockerfile                  23L  0C    0m  CC=0.0    ←0
+  │ Dockerfile                  23L  0C    0m  CC=0.0    ←0
+  │ Dockerfile                  23L  0C    0m  CC=0.0    ←0
+  │ Dockerfile                  23L  0C    0m  CC=0.0    ←0
+  │ run.sh                       6L  0C    0m  CC=0.0    ←0
+  │ requirements.txt             1L  0C    0m  CC=0.0    ←0
+  │
+  packages/                       CC̄=4.7    ←in:0  →out:0
+  │ !! patterns.json             2016L  0C    0m  CC=0.0    ←0
+  │ !! keyword_detector          1209L  2C   22m  CC=73     ←0
+  │ !! keyword_patterns           228L  1C   15m  CC=33     ←0
+  │ keyword_intent_detector_config.json   215L  0C    0m  CC=0.0    ←0
+  │ runner                     194L  2C   11m  CC=8      ←0
+  │ executor                   155L  1C    6m  CC=10     ←0
+  │ adapter                    134L  0C    8m  CC=12     ←2
+  │ cli                         91L  0C    3m  CC=7      ←0
+  │ rest_workflow               82L  1C    2m  CC=7      ←0
+  │ rule_shell                  74L  1C    3m  CC=10     ←0
+  │ data_files                  67L  0C    4m  CC=6      ←0
+  │ execution_plan              59L  2C    1m  CC=1      ←0
+  │ facade                      54L  3C    6m  CC=4      ←0
+  │ workflow_backend            50L  0C    4m  CC=4      ←1
+  │ nlp2cmd_convert             47L  0C    1m  CC=10     ←2
+  │ intent                      44L  3C    2m  CC=2      ←0
+  │ encoding                    44L  0C    0m  CC=0.0    ←0
+  │ domain_mapping              43L  0C    2m  CC=7      ←1
+  │ clarification               37L  1C    3m  CC=4      ←1
+  │ router                      36L  2C    3m  CC=3      ←0
+  │ input                       34L  0C    1m  CC=3      ←2
+  │ target_kind                 34L  2C    0m  CC=0.0    ←0
+  │ pyproject.toml              34L  0C    0m  CC=0.0    ←0
+  │ __init__                    31L  0C    0m  CC=0.0    ←0
+  │ pyproject.toml              29L  0C    0m  CC=0.0    ←0
+  │ pyproject.toml              29L  0C    0m  CC=0.0    ←0
+  │ pyproject.toml              28L  0C    0m  CC=0.0    ←0
+  │ install-dev.sh              25L  0C    1m  CC=0.0    ←0
+  │ pipeline                    24L  1C    2m  CC=3      ←0
+  │ pyproject.toml              24L  0C    0m  CC=0.0    ←0
+  │ cli                         22L  0C    1m  CC=1      ←0
+  │ __init__                    17L  0C    0m  CC=0.0    ←0
+  │ normalize                   16L  1C    1m  CC=2      ←0
+  │ __init__                    16L  0C    0m  CC=0.0    ←0
+  │ protocols                   15L  2C    2m  CC=1      ←0
+  │ strategy                    15L  1C    2m  CC=1      ←0
+  │ __init__                    15L  0C    0m  CC=0.0    ←0
+  │ __init__                    12L  0C    0m  CC=0.0    ←0
+  │ __init__                     3L  0C    0m  CC=0.0    ←0
+  │
+  nlp-service/                    CC̄=3.9    ←in:0  →out:0
+  │ !! main                       570L  0C   24m  CC=10     ←1
+  │ !! rules                      564L  0C   31m  CC=21     ←2
+  │ registry                   403L  0C    5m  CC=5      ←4
+  │ !! orientation                379L  1C   11m  CC=16     ←2
   │ policy                     302L  2C   14m  CC=5      ←2
+  │ responses                  282L  0C   19m  CC=7      ←1
   │ code_generator             279L  1C    8m  CC=14     ←0
-  │ responses                  272L  0C   18m  CC=7      ←1
-  │ settings                   251L  6C   11m  CC=6      ←5
-  │ orientation                206L  1C    6m  CC=13     ←2
+  │ settings                   251L  6C   11m  CC=6      ←8
+  │ !! mapper                     236L  0C    7m  CC=19     ←1
   │ !! resolve                    194L  0C    6m  CC=18     ←1
   │ config                     165L  1C   13m  CC=8      ←4
   │ audio_parser               148L  1C    8m  CC=9      ←1
+  │ llm                        145L  0C    3m  CC=10     ←3
   │ native                     143L  0C   13m  CC=6      ←1
-  │ schemas                    136L  12C    0m  CC=0.0    ←0
+  │ enrich                     141L  0C    4m  CC=14     ←1
+  │ schemas                    137L  12C    0m  CC=0.0    ←0
   │ orchestrator               107L  0C    5m  CC=6      ←1
   │ logging_setup              100L  2C    6m  CC=3      ←0
-  │ forms                       83L  0C    1m  CC=5      ←2
+  │ forms                       91L  0C    1m  CC=5      ←2
+  │ prompt_catalog              82L  0C    1m  CC=8      ←0
   │ bootstrap                   78L  0C    3m  CC=14     ←0
   │ registry                    66L  0C    0m  CC=0.0    ←0
   │ loader                      62L  0C    3m  CC=5      ←1
@@ -1050,25 +1566,28 @@ LAYERS:
   │ observability               57L  0C    3m  CC=7      ←2
   │ intent                      55L  1C    2m  CC=3      ←0
   │ pyproject.toml              52L  0C    0m  CC=0.0    ←0
+  │ resolve_mode                47L  0C    1m  CC=10     ←2
   │ factory                     46L  0C    1m  CC=4      ←1
-  │ facade                      39L  0C    1m  CC=8      ←0
+  │ merge                       36L  0C    1m  CC=13     ←1
   │ system_executor             35L  0C   13m  CC=12     ←1
+  │ pipeline                    31L  0C    1m  CC=6      ←2
   │ __init__                    30L  1C    4m  CC=1      ←0
   │ manifest.json               30L  0C    0m  CC=0.0    ←0
   │ delegate                    29L  0C    4m  CC=2      ←1
-  │ merge                       25L  0C    1m  CC=9      ←1
   │ memory                      23L  1C    5m  CC=1      ←0
   │ orchestrator                21L  0C    0m  CC=0.0    ←0
+  │ facade                      19L  0C    1m  CC=2      ←0
   │ __init__                    17L  0C    0m  CC=0.0    ←0
+  │ parser_enrich               15L  0C    0m  CC=0.0    ←0
   │ __init__                    15L  0C    0m  CC=0.0    ←0
   │ Dockerfile                  14L  0C    0m  CC=0.0    ←0
   │ __init__                    14L  0C    0m  CC=0.0    ←0
   │ __init__                    14L  0C    0m  CC=0.0    ←0
   │ __init__                    13L  0C    0m  CC=0.0    ←0
   │ requirements.txt            10L  0C    0m  CC=0.0    ←0
-  │ parser_llm                   5L  0C    3m  CC=10     ←2
-  │ mapper                       5L  0C    6m  CC=8      ←2
   │ parser_rules                 5L  0C    0m  CC=0.0    ←0
+  │ parser_llm                   5L  0C    0m  CC=0.0    ←0
+  │ mapper                       5L  0C    0m  CC=0.0    ←0
   │ facade                       5L  0C    0m  CC=0.0    ←0
   │ __init__                     5L  0C    0m  CC=0.0    ←0
   │ __init__                     4L  0C    0m  CC=0.0    ←0
@@ -1081,6 +1600,22 @@ LAYERS:
   │ __init__                     3L  0C    0m  CC=0.0    ←0
   │ __init__                     1L  0C    0m  CC=0.0    ←0
   │
+  scripts/                        CC̄=3.5    ←in:0  →out:0
+  │ aggregate-example-testql    49L  0C    1m  CC=7      ←0
+  │ publish-all.sh              44L  0C    1m  CC=0.0    ←0
+  │ setup-dev.sh                43L  0C    0m  CC=0.0    ←0
+  │
+  nlp2dsl_sdk/                    CC̄=3.2    ←in:34  →out:1
+  │ !! client                     600L  2C   51m  CC=9      ←0
+  │ !! artifacts                  410L  1C   17m  CC=17     ←7
+  │ demos                      354L  1C   11m  CC=6      ←3
+  │ cli                        228L  0C   10m  CC=13     ←0
+  │ preview                    208L  0C    9m  CC=11     ←11
+  │ encoding                    92L  0C    8m  CC=4      ←5
+  │ __main__                    45L  0C    1m  CC=5      ←0
+  │ example_loader              39L  0C    1m  CC=7      ←0
+  │ __init__                    37L  0C    0m  CC=0.0    ←0
+  │
   tauri-wrapper/                  CC̄=2.7    ←in:0  →out:0
   │ serve-dist.js              139L  0C   21m  CC=8      ←0
   │ desktop.sh                  79L  0C    0m  CC=0.0    ←0
@@ -1090,12 +1625,6 @@ LAYERS:
   │ Cargo.toml                  17L  0C    0m  CC=0.0    ←0
   │ main.rs                      7L  0C    1m  CC=2      ←0
   │ build.rs                     3L  0C    1m  CC=1      ←0
-  │
-  nlp2dsl_sdk/                    CC̄=2.4    ←in:5  →out:0
-  │ !! demos                      687L  1C   22m  CC=6      ←6
-  │ !! client                     580L  2C   51m  CC=6      ←0
-  │ __main__                    41L  0C    1m  CC=5      ←0
-  │ __init__                    33L  0C    0m  CC=0.0    ←0
   │
   backend/                        CC̄=2.2    ←in:0  →out:0
   │ engine                     269L  0C    7m  CC=11     ←2
@@ -1127,29 +1656,14 @@ LAYERS:
   │ __init__                     5L  0C    0m  CC=0.0    ←0
   │ requirements.txt             4L  0C    0m  CC=0.0    ←0
   │
-  examples/                       CC̄=1.2    ←in:0  →out:1
-  │ docker-compose.yml          60L  0C    0m  CC=0.0    ←0
-  │ main                        38L  0C    1m  CC=2      ←0
-  │ code_generation_examples    25L  0C    1m  CC=1      ←0
-  │ main                        23L  0C    1m  CC=1      ←0
-  │ main                        23L  0C    1m  CC=1      ←0
-  │ main                        23L  0C    1m  CC=1      ←0
-  │ main                        23L  0C    1m  CC=1      ←0
-  │ Dockerfile                  23L  0C    0m  CC=0.0    ←0
-  │ Dockerfile                  23L  0C    0m  CC=0.0    ←0
-  │ Dockerfile                  23L  0C    0m  CC=0.0    ←0
-  │ Dockerfile                  23L  0C    0m  CC=0.0    ←0
-  │ Dockerfile                  23L  0C    0m  CC=0.0    ←0
-  │ run.sh                       6L  0C    0m  CC=0.0    ←0
-  │ requirements.txt             1L  0C    0m  CC=0.0    ←0
-  │
   ./                              CC̄=0.0    ←in:0  →out:0
-  │ !! planfile.yaml              786L  0C    0m  CC=0.0    ←0
+  │ !! planfile.yaml             1319L  0C    0m  CC=0.0    ←0
   │ !! goal.yaml                  512L  0C    0m  CC=0.0    ←0
   │ nlp2dsl.yaml               186L  0C    0m  CC=0.0    ←0
-  │ docker-compose.yml         113L  0C    0m  CC=0.0    ←0
+  │ docker-compose.yml         114L  0C    0m  CC=0.0    ←0
+  │ Makefile                   102L  0C    0m  CC=0.0    ←0
   │ prefact.yaml                82L  0C    0m  CC=0.0    ←0
-  │ pyproject.toml              61L  0C    0m  CC=0.0    ←0
+  │ pyproject.toml              63L  0C    0m  CC=0.0    ←0
   │ project.sh                  59L  0C    0m  CC=0.0    ←0
   │ metrun-profile.sh           48L  0C    0m  CC=0.0    ←0
   │ run-all-tests.sh            44L  0C    1m  CC=0.0    ←0
@@ -1158,6 +1672,7 @@ LAYERS:
   │ tree.sh                      1L  0C    0m  CC=0.0    ←0
   │
   testql-scenarios/               CC̄=0.0    ←in:0  →out:0
+  │ generated-examples.testql.toon.yaml   400L  0C    0m  CC=0.0    ←0
   │ generated-from-pytests.testql.toon.yaml   128L  0C    0m  CC=0.0    ←0
   │ generated-api-smoke.testql.toon.yaml    39L  0C    0m  CC=0.0    ←0
   │ generated-cli-tests.testql.toon.yaml    20L  0C    0m  CC=0.0    ←0
@@ -1166,18 +1681,25 @@ LAYERS:
      backend/app/__init__.py                   0L
 
 COUPLING:
-                                                   nlp2dsl_sdk                nlp-service.app                    backend.app       nlp-service.integrations                       examples            examples.01-invoice              examples.02-email  examples.03-report-and-notify   examples.04-scheduled-report
-                    nlp2dsl_sdk                             ──                                                                                                                          ←1                             ←1                             ←1                             ←1                             ←1  hub
-                nlp-service.app                                                            ──                             ←2                              1                                                                                                                                                           
-                    backend.app                                                             2                             ──                                                                                                                                                                                          
-       nlp-service.integrations                                                             1                                                            ──                                                                                                                                                           
-                       examples                              1                                                                                                                          ──                                                                                                                            
-            examples.01-invoice                              1                                                                                                                                                         ──                                                                                             
-              examples.02-email                              1                                                                                                                                                                                        ──                                                              
-  examples.03-report-and-notify                              1                                                                                                                                                                                                                       ──                               
-   examples.04-scheduled-report                              1                                                                                                                                                                                                                                                      ──
-  CYCLES: 1
-  HUB: nlp2dsl_sdk/ (fan-in=5)
+                                                             nlp2dsl_sdk                     nlp-service.app             packages.nlp2cmd-intent        examples.04-scheduled-report                 examples.01-invoice                   examples.02-email       examples.03-report-and-notify                 examples.12-ir-show  examples.08-multi-object-benchmark          examples.11-notify-quality                         backend.app                            examples      examples.07-email-conversation         examples.09-execution-smoke           examples.10-llm-benchmark
+                         nlp2dsl_sdk                                  ──                                                                       1                                  ←5                                  ←4                                  ←4                                  ←4                                  ←4                                  ←2                                  ←3                                                                      ←2                                  ←2                                  ←2                                  ←1  hub
+                     nlp-service.app                                                                      ──                                  ←5                                                                                                                                                                                                                                                                                              ←2                                                                                                                                                  hub
+             packages.nlp2cmd-intent                                  ←1                                   5                                  ──                                                                                                                                                                                                                                                                                                                                                                                                                                                
+        examples.04-scheduled-report                                   5                                                                                                          ──                                                                                                                                                                                                                                                                                                                                                                                                            
+                 examples.01-invoice                                   4                                                                                                                                              ──                                                                                                                                                                                                                                                                                                                                                                        
+                   examples.02-email                                   4                                                                                                                                                                                  ──                                                                                                                                                                                                                                                                                                                                    
+       examples.03-report-and-notify                                   4                                                                                                                                                                                                                      ──                                                                                                                                                                                                                                                                                                
+                 examples.12-ir-show                                   4                                                                                                                                                                                                                                                          ──                                                                                                                                                                                                                                                            
+  examples.08-multi-object-benchmark                                   2                                                                                                                                                                                                                                                                                              ──                                                                                                                                                                                                                      ←1
+          examples.11-notify-quality                                   3                                                                                                                                                                                                                                                                                                                                  ──                                                                                                                                                                                    
+                         backend.app                                                                       2                                                                                                                                                                                                                                                                                                                                  ──                                                                                                                                                
+                            examples                                   2                                                                                                                                                                                                                                                                                                                                                                                                          ──                                                                                                            
+      examples.07-email-conversation                                   2                                                                                                                                                                                                                                                                                                                                                                                                                                              ──                                                                        
+         examples.09-execution-smoke                                   2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ──                                    
+           examples.10-llm-benchmark                                   1                                                                                                                                                                                                                                                                                               1                                                                                                                                                                                                                      ──
+  CYCLES: none
+  HUB: nlp-service.app/ (fan-in=8)
+  HUB: nlp2dsl_sdk/ (fan-in=34)
 
 EXTERNAL:
   validation: run `vallm batch .` → validation.toon
@@ -1187,24 +1709,24 @@ EXTERNAL:
 ### Duplication (`project/duplication.toon.yaml`)
 
 ```toon markpact:analysis path=project/duplication.toon.yaml
-# redup/duplication | 12 groups | 85f 8502L | 2026-06-05
+# redup/duplication | 12 groups | 148f 13907L | 2026-06-05
 
 SUMMARY:
-  files_scanned: 85
-  total_lines:   8502
+  files_scanned: 148
+  total_lines:   13907
   dup_groups:    12
-  dup_fragments: 33
-  saved_lines:   153
-  scan_ms:       2427
+  dup_fragments: 30
+  saved_lines:   144
+  scan_ms:       2797
 
 HOTSPOTS[7] (files with most duplication):
-  backend/app/logging_setup.py  dup=49L  groups=5  frags=5  (0.6%)
-  nlp-service/app/logging_setup.py  dup=49L  groups=5  frags=5  (0.6%)
-  worker/logging_setup.py  dup=49L  groups=5  frags=5  (0.6%)
-  backend/app/routers/settings.py  dup=24L  groups=2  frags=4  (0.3%)
-  worker/worker.py  dup=22L  groups=1  frags=2  (0.3%)
-  nlp-service/app/routing/parser/rules.py  dup=20L  groups=2  frags=4  (0.2%)
-  backend/app/routers/workflow.py  dup=6L  groups=1  frags=2  (0.1%)
+  backend/app/logging_setup.py  dup=49L  groups=5  frags=5  (0.4%)
+  nlp-service/app/logging_setup.py  dup=49L  groups=5  frags=5  (0.4%)
+  worker/logging_setup.py  dup=49L  groups=5  frags=5  (0.4%)
+  nlp-service/app/routing/parser/rules.py  dup=27L  groups=3  frags=5  (0.2%)
+  backend/app/routers/settings.py  dup=24L  groups=2  frags=4  (0.2%)
+  worker/worker.py  dup=22L  groups=1  frags=2  (0.2%)
+  nlp-service/app/conversation/responses.py  dup=7L  groups=1  frags=1  (0.1%)
 
 DUPLICATES[12] (ranked by impact):
   [5980042b45ef9ea3] ! STRU  setup_logging  L=22 N=3 saved=44 sim=1.00
@@ -1219,18 +1741,15 @@ DUPLICATES[12] (ranked by impact):
       backend/app/logging_setup.py:68-76  (dispatch)
       nlp-service/app/logging_setup.py:68-76  (dispatch)
       worker/logging_setup.py:68-76  (dispatch)
-  [8e6677ea0d5059a7]   STRU  main  L=4 N=5 saved=16 sim=1.00
-      examples/01-invoice/main.py:16-19  (main)
-      examples/02-email/main.py:16-19  (main)
-      examples/03-report-and-notify/main.py:16-19  (main)
-      examples/04-scheduled-report/main.py:16-19  (main)
-      examples/code_generation_examples.py:18-21  (main)
   [fe1a465464777068]   STRU  handle_notify_slack  L=11 N=2 saved=11 sim=1.00
       worker/worker.py:119-129  (handle_notify_slack)
       worker/worker.py:133-143  (handle_notify_telegram)
   [8e33482aef8974e1]   STRU  action_schema  L=7 N=2 saved=7 sim=1.00
       backend/app/routers/settings.py:29-35  (action_schema)
       backend/app/routers/settings.py:47-53  (get_settings_section)
+  [8aa06fa5f1348ed4]   STRU  _execute_keyword_in_text  L=7 N=2 saved=7 sim=1.00
+      nlp-service/app/conversation/responses.py:54-60  (_execute_keyword_in_text)
+      nlp-service/app/routing/parser/rules.py:240-246  (_alias_in_text)
   [e2bd3c5d1f7d650b]   EXAC  __init__  L=3 N=3 saved=6 sim=1.00
       backend/app/logging_setup.py:36-38  (__init__)
       nlp-service/app/logging_setup.py:36-38  (__init__)
@@ -1244,14 +1763,14 @@ DUPLICATES[12] (ranked by impact):
       backend/app/routers/workflow.py:83-85  (start_workflow_endpoint)
       nlp-service/app/main.py:94-99  (parse_text)
   [d8abcb97f9e3aea3]   STRU  _extract_report_type  L=6 N=2 saved=6 sim=1.00
-      nlp-service/app/routing/parser/rules.py:265-270  (_extract_report_type)
-      nlp-service/app/routing/parser/rules.py:273-278  (_extract_format)
+      nlp-service/app/routing/parser/rules.py:424-429  (_extract_report_type)
+      nlp-service/app/routing/parser/rules.py:432-437  (_extract_format)
   [2ce1096adac6d1a4]   STRU  actions_schema  L=5 N=2 saved=5 sim=1.00
       backend/app/routers/settings.py:21-25  (actions_schema)
       backend/app/routers/settings.py:39-43  (get_settings)
   [88c3564ed3834adc]   STRU  _extract_file_path_entity  L=4 N=2 saved=4 sim=1.00
-      nlp-service/app/routing/parser/rules.py:319-322  (_extract_file_path_entity)
-      nlp-service/app/routing/parser/rules.py:325-328  (_extract_setting_path_entity)
+      nlp-service/app/routing/parser/rules.py:502-505  (_extract_file_path_entity)
+      nlp-service/app/routing/parser/rules.py:508-511  (_extract_setting_path_entity)
 
 REFACTOR[12] (ranked by priority):
   [1] ● extract_function   → utils/setup_logging.py
@@ -1263,15 +1782,15 @@ REFACTOR[12] (ranked by priority):
   [3] ● extract_class      → utils/dispatch.py
       WHY: 3 occurrences of 9-line block across 3 files — saves 18 lines
       FILES: backend/app/logging_setup.py, nlp-service/app/logging_setup.py, worker/logging_setup.py
-  [4] ○ extract_function   → examples/utils/main.py
-      WHY: 5 occurrences of 4-line block across 5 files — saves 16 lines
-      FILES: examples/01-invoice/main.py, examples/02-email/main.py, examples/03-report-and-notify/main.py, examples/04-scheduled-report/main.py, examples/code_generation_examples.py
-  [5] ○ extract_function   → worker/utils/handle_notify_slack.py
+  [4] ○ extract_function   → worker/utils/handle_notify_slack.py
       WHY: 2 occurrences of 11-line block across 1 files — saves 11 lines
       FILES: worker/worker.py
-  [6] ○ extract_function   → backend/app/routers/utils/action_schema.py
+  [5] ○ extract_function   → backend/app/routers/utils/action_schema.py
       WHY: 2 occurrences of 7-line block across 1 files — saves 7 lines
       FILES: backend/app/routers/settings.py
+  [6] ○ extract_function   → nlp-service/app/utils/_execute_keyword_in_text.py
+      WHY: 2 occurrences of 7-line block across 2 files — saves 7 lines
+      FILES: nlp-service/app/conversation/responses.py, nlp-service/app/routing/parser/rules.py
   [7] ● extract_class      → utils/__init__.py
       WHY: 3 occurrences of 3-line block across 3 files — saves 6 lines
       FILES: backend/app/logging_setup.py, nlp-service/app/logging_setup.py, worker/logging_setup.py
@@ -1292,12 +1811,12 @@ REFACTOR[12] (ranked by priority):
       FILES: nlp-service/app/routing/parser/rules.py
 
 QUICK_WINS[5] (low risk, high savings — do first):
-  [4] extract_function   saved=16L  → examples/utils/main.py
-      FILES: main.py, main.py, main.py +2
-  [5] extract_function   saved=11L  → worker/utils/handle_notify_slack.py
+  [4] extract_function   saved=11L  → worker/utils/handle_notify_slack.py
       FILES: worker.py
-  [6] extract_function   saved=7L  → backend/app/routers/utils/action_schema.py
+  [5] extract_function   saved=7L  → backend/app/routers/utils/action_schema.py
       FILES: settings.py
+  [6] extract_function   saved=7L  → nlp-service/app/utils/_execute_keyword_in_text.py
+      FILES: responses.py, rules.py
   [9] extract_function   saved=6L  → utils/run_workflow_endpoint.py
       FILES: workflow.py, main.py
   [10] extract_function   saved=6L  → nlp-service/app/routing/parser/utils/_extract_report_type.py
@@ -1328,13 +1847,13 @@ DEPENDENCY_RISK[6] (duplicates spanning multiple packages):
       backend/app/routers/workflow.py
       nlp-service/app/main.py
 
-EFFORT_ESTIMATE (total ≈ 8.6h):
+EFFORT_ESTIMATE (total ≈ 8.3h):
   hard   setup_logging                       saved=44L  ~176min
   hard   format                              saved=24L  ~96min
   medium dispatch                            saved=18L  ~72min
-  medium main                                saved=16L  ~32min
   easy   handle_notify_slack                 saved=11L  ~22min
   easy   action_schema                       saved=7L  ~14min
+  easy   _execute_keyword_in_text            saved=7L  ~14min
   easy   __init__                            saved=6L  ~24min
   easy   __init__                            saved=6L  ~24min
   easy   run_workflow_endpoint               saved=6L  ~24min
@@ -1343,43 +1862,67 @@ EFFORT_ESTIMATE (total ≈ 8.6h):
 
 METRICS-TARGET:
   dup_groups:  12 → 0
-  saved_lines: 153 lines recoverable
+  saved_lines: 144 lines recoverable
 ```
 
 ### Evolution / Churn (`project/evolution.toon.yaml`)
 
 ```toon markpact:analysis path=project/evolution.toon.yaml
-# code2llm/evolution | 381 func | 49f | 2026-06-05
+# code2llm/evolution | 542 func | 82f | 2026-06-05
 # generated in 0.00s
 
-NEXT[4] (ranked by impact):
-  [1] !! SPLIT           nlp-service/app/main.py
-      WHY: 592L, 0 classes, max CC=10
-      EFFORT: ~4h  IMPACT: 5920
+NEXT[10] (ranked by impact):
+  [1] !! SPLIT           packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py
+      WHY: 1209L, 2 classes, max CC=73
+      EFFORT: ~4h  IMPACT: 88257
 
-  [2] !! SPLIT           nlp2dsl_sdk/demos.py
-      WHY: 687L, 1 classes, max CC=6
-      EFFORT: ~4h  IMPACT: 4122
+  [2] !! SPLIT-FUNC      KeywordIntentDetector._fast_path_detection  CC=73  fan=29
+      WHY: CC=73 exceeds 15
+      EFFORT: ~1h  IMPACT: 2117
 
-  [3] !  SPLIT-FUNC      resolve_intent  CC=18  fan=19
+  [3] !! SPLIT-FUNC      KeywordPatterns._load_detector_config_from_json  CC=33  fan=18
+      WHY: CC=33 exceeds 15
+      EFFORT: ~1h  IMPACT: 594
+
+  [4] !  SPLIT-FUNC      resolve_intent  CC=18  fan=19
       WHY: CC=18 exceeds 15
       EFFORT: ~1h  IMPACT: 342
 
-  [4] !! SPLIT           planfile.yaml
-      WHY: 786L, 0 classes, max CC=0
-      EFFORT: ~4h  IMPACT: 0
+  [5] !  SPLIT-FUNC      KeywordPatterns._load_patterns_from_json  CC=19  fan=17
+      WHY: CC=19 exceeds 15
+      EFFORT: ~1h  IMPACT: 323
+
+  [6] !  SPLIT-FUNC      _build_config  CC=19  fan=16
+      WHY: CC=19 exceeds 15
+      EFFORT: ~1h  IMPACT: 304
+
+  [7] !  SPLIT-FUNC      KeywordIntentDetector.detect  CC=17  fan=17
+      WHY: CC=17 exceeds 15
+      EFFORT: ~1h  IMPACT: 289
+
+  [8] !  SPLIT-FUNC      orient_query  CC=16  fan=16
+      WHY: CC=16 exceeds 15
+      EFFORT: ~1h  IMPACT: 256
+
+  [9] !  SPLIT-FUNC      _resolve_file_list_host_command  CC=15  fan=17
+      WHY: CC=15 exceeds 15
+      EFFORT: ~1h  IMPACT: 255
+
+  [10] !  SPLIT-FUNC      KeywordIntentDetector._keyword_detection  CC=15  fan=12
+      WHY: CC=15 exceeds 15
+      EFFORT: ~1h  IMPACT: 180
 
 
 RISKS[3]:
+  ⚠ Splitting packages/nlp2cmd-intent/src/nlp2cmd_intent/data/patterns.json may break 0 import paths
   ⚠ Splitting planfile.yaml may break 0 import paths
-  ⚠ Splitting nlp2dsl_sdk/demos.py may break 22 import paths
-  ⚠ Splitting nlp-service/app/main.py may break 24 import paths
+  ⚠ Splitting packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py may break 22 import paths
 
 METRICS-TARGET:
-  CC̄:          2.9 → ≤2.0
-  max-CC:      18 → ≤9
-  god-modules: 5 → 0
-  high-CC(≥15): 1 → ≤0
+  CC̄:          3.6 → ≤2.5
+  max-CC:      73 → ≤20
+  god-modules: 7 → 0
+  high-CC(≥15): 12 → ≤6
   hub-types:   0 → ≤0
 
 PATTERNS (language parser shared logic):
@@ -1407,7 +1950,7 @@ PATTERNS (language parser shared logic):
     - Standardized FunctionInfo/ClassInfo models
 
 HISTORY:
-  prev CC̄=2.9 → now CC̄=2.9
+  prev CC̄=3.6 → now CC̄=3.6
 ```
 
 ### Validation (`project/validation.toon.yaml`)

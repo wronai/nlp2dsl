@@ -1,21 +1,21 @@
-# redup/duplication | 12 groups | 85f 8502L | 2026-06-05
+# redup/duplication | 12 groups | 148f 13907L | 2026-06-05
 
 SUMMARY:
-  files_scanned: 85
-  total_lines:   8502
+  files_scanned: 148
+  total_lines:   13907
   dup_groups:    12
-  dup_fragments: 33
-  saved_lines:   153
-  scan_ms:       2427
+  dup_fragments: 30
+  saved_lines:   144
+  scan_ms:       3644
 
 HOTSPOTS[7] (files with most duplication):
-  backend/app/logging_setup.py  dup=49L  groups=5  frags=5  (0.6%)
-  nlp-service/app/logging_setup.py  dup=49L  groups=5  frags=5  (0.6%)
-  worker/logging_setup.py  dup=49L  groups=5  frags=5  (0.6%)
-  backend/app/routers/settings.py  dup=24L  groups=2  frags=4  (0.3%)
-  worker/worker.py  dup=22L  groups=1  frags=2  (0.3%)
-  nlp-service/app/routing/parser/rules.py  dup=20L  groups=2  frags=4  (0.2%)
-  backend/app/routers/workflow.py  dup=6L  groups=1  frags=2  (0.1%)
+  backend/app/logging_setup.py  dup=49L  groups=5  frags=5  (0.4%)
+  nlp-service/app/logging_setup.py  dup=49L  groups=5  frags=5  (0.4%)
+  worker/logging_setup.py  dup=49L  groups=5  frags=5  (0.4%)
+  nlp-service/app/routing/parser/rules.py  dup=27L  groups=3  frags=5  (0.2%)
+  backend/app/routers/settings.py  dup=24L  groups=2  frags=4  (0.2%)
+  worker/worker.py  dup=22L  groups=1  frags=2  (0.2%)
+  nlp-service/app/conversation/responses.py  dup=7L  groups=1  frags=1  (0.1%)
 
 DUPLICATES[12] (ranked by impact):
   [5980042b45ef9ea3] ! STRU  setup_logging  L=22 N=3 saved=44 sim=1.00
@@ -30,18 +30,15 @@ DUPLICATES[12] (ranked by impact):
       backend/app/logging_setup.py:68-76  (dispatch)
       nlp-service/app/logging_setup.py:68-76  (dispatch)
       worker/logging_setup.py:68-76  (dispatch)
-  [8e6677ea0d5059a7]   STRU  main  L=4 N=5 saved=16 sim=1.00
-      examples/01-invoice/main.py:16-19  (main)
-      examples/02-email/main.py:16-19  (main)
-      examples/03-report-and-notify/main.py:16-19  (main)
-      examples/04-scheduled-report/main.py:16-19  (main)
-      examples/code_generation_examples.py:18-21  (main)
   [fe1a465464777068]   STRU  handle_notify_slack  L=11 N=2 saved=11 sim=1.00
       worker/worker.py:119-129  (handle_notify_slack)
       worker/worker.py:133-143  (handle_notify_telegram)
   [8e33482aef8974e1]   STRU  action_schema  L=7 N=2 saved=7 sim=1.00
       backend/app/routers/settings.py:29-35  (action_schema)
       backend/app/routers/settings.py:47-53  (get_settings_section)
+  [8aa06fa5f1348ed4]   STRU  _execute_keyword_in_text  L=7 N=2 saved=7 sim=1.00
+      nlp-service/app/conversation/responses.py:54-60  (_execute_keyword_in_text)
+      nlp-service/app/routing/parser/rules.py:240-246  (_alias_in_text)
   [e2bd3c5d1f7d650b]   EXAC  __init__  L=3 N=3 saved=6 sim=1.00
       backend/app/logging_setup.py:36-38  (__init__)
       nlp-service/app/logging_setup.py:36-38  (__init__)
@@ -55,14 +52,14 @@ DUPLICATES[12] (ranked by impact):
       backend/app/routers/workflow.py:83-85  (start_workflow_endpoint)
       nlp-service/app/main.py:94-99  (parse_text)
   [d8abcb97f9e3aea3]   STRU  _extract_report_type  L=6 N=2 saved=6 sim=1.00
-      nlp-service/app/routing/parser/rules.py:265-270  (_extract_report_type)
-      nlp-service/app/routing/parser/rules.py:273-278  (_extract_format)
+      nlp-service/app/routing/parser/rules.py:424-429  (_extract_report_type)
+      nlp-service/app/routing/parser/rules.py:432-437  (_extract_format)
   [2ce1096adac6d1a4]   STRU  actions_schema  L=5 N=2 saved=5 sim=1.00
       backend/app/routers/settings.py:21-25  (actions_schema)
       backend/app/routers/settings.py:39-43  (get_settings)
   [88c3564ed3834adc]   STRU  _extract_file_path_entity  L=4 N=2 saved=4 sim=1.00
-      nlp-service/app/routing/parser/rules.py:319-322  (_extract_file_path_entity)
-      nlp-service/app/routing/parser/rules.py:325-328  (_extract_setting_path_entity)
+      nlp-service/app/routing/parser/rules.py:502-505  (_extract_file_path_entity)
+      nlp-service/app/routing/parser/rules.py:508-511  (_extract_setting_path_entity)
 
 REFACTOR[12] (ranked by priority):
   [1] ● extract_function   → utils/setup_logging.py
@@ -74,15 +71,15 @@ REFACTOR[12] (ranked by priority):
   [3] ● extract_class      → utils/dispatch.py
       WHY: 3 occurrences of 9-line block across 3 files — saves 18 lines
       FILES: backend/app/logging_setup.py, nlp-service/app/logging_setup.py, worker/logging_setup.py
-  [4] ○ extract_function   → examples/utils/main.py
-      WHY: 5 occurrences of 4-line block across 5 files — saves 16 lines
-      FILES: examples/01-invoice/main.py, examples/02-email/main.py, examples/03-report-and-notify/main.py, examples/04-scheduled-report/main.py, examples/code_generation_examples.py
-  [5] ○ extract_function   → worker/utils/handle_notify_slack.py
+  [4] ○ extract_function   → worker/utils/handle_notify_slack.py
       WHY: 2 occurrences of 11-line block across 1 files — saves 11 lines
       FILES: worker/worker.py
-  [6] ○ extract_function   → backend/app/routers/utils/action_schema.py
+  [5] ○ extract_function   → backend/app/routers/utils/action_schema.py
       WHY: 2 occurrences of 7-line block across 1 files — saves 7 lines
       FILES: backend/app/routers/settings.py
+  [6] ○ extract_function   → nlp-service/app/utils/_execute_keyword_in_text.py
+      WHY: 2 occurrences of 7-line block across 2 files — saves 7 lines
+      FILES: nlp-service/app/conversation/responses.py, nlp-service/app/routing/parser/rules.py
   [7] ● extract_class      → utils/__init__.py
       WHY: 3 occurrences of 3-line block across 3 files — saves 6 lines
       FILES: backend/app/logging_setup.py, nlp-service/app/logging_setup.py, worker/logging_setup.py
@@ -103,12 +100,12 @@ REFACTOR[12] (ranked by priority):
       FILES: nlp-service/app/routing/parser/rules.py
 
 QUICK_WINS[5] (low risk, high savings — do first):
-  [4] extract_function   saved=16L  → examples/utils/main.py
-      FILES: main.py, main.py, main.py +2
-  [5] extract_function   saved=11L  → worker/utils/handle_notify_slack.py
+  [4] extract_function   saved=11L  → worker/utils/handle_notify_slack.py
       FILES: worker.py
-  [6] extract_function   saved=7L  → backend/app/routers/utils/action_schema.py
+  [5] extract_function   saved=7L  → backend/app/routers/utils/action_schema.py
       FILES: settings.py
+  [6] extract_function   saved=7L  → nlp-service/app/utils/_execute_keyword_in_text.py
+      FILES: responses.py, rules.py
   [9] extract_function   saved=6L  → utils/run_workflow_endpoint.py
       FILES: workflow.py, main.py
   [10] extract_function   saved=6L  → nlp-service/app/routing/parser/utils/_extract_report_type.py
@@ -139,13 +136,13 @@ DEPENDENCY_RISK[6] (duplicates spanning multiple packages):
       backend/app/routers/workflow.py
       nlp-service/app/main.py
 
-EFFORT_ESTIMATE (total ≈ 8.6h):
+EFFORT_ESTIMATE (total ≈ 8.3h):
   hard   setup_logging                       saved=44L  ~176min
   hard   format                              saved=24L  ~96min
   medium dispatch                            saved=18L  ~72min
-  medium main                                saved=16L  ~32min
   easy   handle_notify_slack                 saved=11L  ~22min
   easy   action_schema                       saved=7L  ~14min
+  easy   _execute_keyword_in_text            saved=7L  ~14min
   easy   __init__                            saved=6L  ~24min
   easy   __init__                            saved=6L  ~24min
   easy   run_workflow_endpoint               saved=6L  ~24min
@@ -154,4 +151,4 @@ EFFORT_ESTIMATE (total ≈ 8.6h):
 
 METRICS-TARGET:
   dup_groups:  12 → 0
-  saved_lines: 153 lines recoverable
+  saved_lines: 144 lines recoverable

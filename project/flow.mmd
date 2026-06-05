@@ -5,22 +5,22 @@ flowchart TD
     classDef entry fill:#4dabf7,stroke:#1971c2,color:#fff
 
     subgraph CLI
+        nlp2dsl_sdk__cli___analyze["_analyze"]
+        nlp2dsl_sdk__cli___display["_display"]
+        nlp2dsl_sdk__cli__show["show"]
+        nlp2dsl_sdk__cli___client["_client"]
+        nlp2dsl_sdk__cli___health["_health"]
+        nlp2dsl_sdk__cli___run["_run"]
+        nlp2dsl_sdk__cli___actions["_actions"]
+        nlp2dsl_sdk__cli___chat_start["_chat_start"]
+        nlp2dsl_sdk__cli___demo["_demo"]
+        nlp2dsl_sdk__cli__main["main"]
         nlp2dsl_sdk__client__workflow_step["workflow_step"]
         nlp2dsl_sdk__client__NLP2DSLClient__from_env["from_env"]
         nlp2dsl_sdk__client__NLP2DSLClient__close["close"]
         nlp2dsl_sdk__client__NLP2DSLClient____enter__["__enter__"]
         nlp2dsl_sdk__client__NLP2DSLClient____exit__["__exit__"]
-        nlp2dsl_sdk__client__NLP2DSLClient___request["_request"]
-        nlp2dsl_sdk__client__NLP2DSLClient___backend["_backend"]
-        nlp2dsl_sdk__client__NLP2DSLClient___nlp_service["_nlp_service"]
-        nlp2dsl_sdk__client__NLP2DSLClient___worker["_worker"]
-        nlp2dsl_sdk__client__NLP2DSLClient__backend_health["backend_health"]
-        nlp2dsl_sdk__client__NLP2DSLClient__nlp_service_health["nlp_service_health"]
-        nlp2dsl_sdk__client__NLP2DSLClient__worker_health["worker_health"]
-        nlp2dsl_sdk__client__NLP2DSLClient__health["health"]
-        nlp2dsl_sdk__client__NLP2DSLClient__workflow_from_text["workflow_from_text"]
-        nlp2dsl_sdk__client__NLP2DSLClient__run_workflow["run_workflow"]
-        ...["+34 more"]
+        ...["+44 more"]
     end
 
     subgraph Core
@@ -39,7 +39,7 @@ flowchart TD
         backend__app__db__memory__MemoryWorkflowRepo__update_run_status["update_run_status"]
         backend__app__db__memory__MemoryWorkflowRepo__get_run["get_run"]
         backend__app__db__memory__MemoryWorkflowRepo__list_runs["list_runs"]
-        ...["+156 more"]
+        ...["+222 more"]
     end
 
     class tauri_wrapper__src_tauri__build__main,tauri_wrapper__src_tauri__src__main__main,backend__app__logging_setup__JSONFormatter__format,backend__app__logging_setup__RequestIDMiddleware__dispatch,backend__app__logging_setup__setup_logging,backend__app__workflow_events__WorkflowEvent__to_dict,backend__app__workflow_events__WorkflowEventHub__subscribe,backend__app__workflow_events__WorkflowEventHub__unsubscribe,backend__app__workflow_events__WorkflowEventHub__publish,backend__app__workflow_events__WorkflowEventHub__subscriber_count entry

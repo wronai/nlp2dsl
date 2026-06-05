@@ -1,38 +1,143 @@
 project: /home/tom/github/wronai/nlp2dsl
 generated_from: code2llm call graph analysis
 stats:
-  total_nodes: 220
-  total_edges: 237
-  modules_count: 42
+  total_nodes: 346
+  total_edges: 353
+  modules_count: 73
 nodes:
-  backend.app.routers.system.system_execute:
-    name: system_execute
-    module: backend.app.routers.system
-    line: 23
+  nlp-service.app.governance.config._default_agent:
+    name: _default_agent
+    module: nlp-service.app.governance.config
+    line: 142
+    cyclomatic_complexity: 3
+    calls_out: 3
+    calls_in: 1
+  nlp-service.app.routing.parser.llm.parse_llm:
+    name: parse_llm
+    module: nlp-service.app.routing.parser.llm
+    line: 62
+    cyclomatic_complexity: 3
+    calls_out: 16
+    calls_in: 2
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.runner._shell_command:
+    name: _shell_command
+    module: packages.nlp2cmd-propact.src.nlp2cmd_propact.runner
+    line: 53
+    cyclomatic_complexity: 3
+    calls_out: 3
+    calls_in: 1
+  examples.12-ir-show.scenario.run:
+    name: run
+    module: examples.12-ir-show.scenario
+    line: 45
+    cyclomatic_complexity: 13
+    calls_out: 25
+    calls_in: 0
+  backend.app.routers.settings.get_settings:
+    name: get_settings
+    module: backend.app.routers.settings
+    line: 39
+    cyclomatic_complexity: 1
+    calls_out: 5
+    calls_in: 0
+  nlp-service.app.routing.parser.enrich.can_enrich_missing:
+    name: can_enrich_missing
+    module: nlp-service.app.routing.parser.enrich
+    line: 53
+    cyclomatic_complexity: 4
+    calls_out: 5
+    calls_in: 1
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter._rest_block:
+    name: _rest_block
+    module: packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter
+    line: 27
+    cyclomatic_complexity: 2
+    calls_out: 5
+    calls_in: 1
+  nlp2dsl_sdk.cli._health:
+    name: _health
+    module: nlp2dsl_sdk.cli
+    line: 76
+    cyclomatic_complexity: 2
+    calls_out: 6
+    calls_in: 1
+  backend.app.routers.settings.update_settings_section:
+    name: update_settings_section
+    module: backend.app.routers.settings
+    line: 57
     cyclomatic_complexity: 2
     calls_out: 6
     calls_in: 0
-  nlp-service.app.main.chat_message:
-    name: chat_message
-    module: nlp-service.app.main
-    line: 266
-    cyclomatic_complexity: 5
-    calls_out: 13
-    calls_in: 0
-  nlp-service.app.routing.parser.rules._top_system_action_wins:
-    name: _top_system_action_wins
-    module: nlp-service.app.routing.parser.rules
-    line: 184
+  nlp2dsl_sdk.encoding.configure_utf8:
+    name: configure_utf8
+    module: nlp2dsl_sdk.encoding
+    line: 61
+    cyclomatic_complexity: 3
+    calls_out: 4
+    calls_in: 5
+  nlp2dsl_sdk.artifacts.get_example_writer:
+    name: get_example_writer
+    module: nlp2dsl_sdk.artifacts
+    line: 404
+    cyclomatic_complexity: 2
+    calls_out: 4
+    calls_in: 9
+  nlp-service.app.conversation.responses._execute_keyword_in_text:
+    name: _execute_keyword_in_text
+    module: nlp-service.app.conversation.responses
+    line: 54
+    cyclomatic_complexity: 3
+    calls_out: 4
+    calls_in: 1
+  nlp2dsl_sdk.demos._print_code_generation_preview:
+    name: _print_code_generation_preview
+    module: nlp2dsl_sdk.demos
+    line: 39
+    cyclomatic_complexity: 3
+    calls_out: 11
+    calls_in: 1
+  nlp-service.app.routing.orientation.orient_query:
+    name: orient_query
+    module: nlp-service.app.routing.orientation
+    line: 283
+    cyclomatic_complexity: 16
+    calls_out: 27
+    calls_in: 2
+  nlp2dsl_sdk.cli._display:
+    name: _display
+    module: nlp2dsl_sdk.cli
+    line: 20
+    cyclomatic_complexity: 13
+    calls_out: 27
+    calls_in: 1
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.executor._single_step_plan:
+    name: _single_step_plan
+    module: packages.nlp2cmd-propact.src.nlp2cmd_propact.executor
+    line: 39
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 1
+  nlp-service.app.governance.config.reload_access_config:
+    name: reload_access_config
+    module: nlp-service.app.governance.config
+    line: 164
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 1
+  nlp2dsl_sdk.artifacts._extract_actions:
+    name: _extract_actions
+    module: nlp2dsl_sdk.artifacts
+    line: 397
     cyclomatic_complexity: 4
-    calls_out: 0
+    calls_out: 5
     calls_in: 1
-  nlp-service.app.governance.policy._grant_target_matches:
-    name: _grant_target_matches
-    module: nlp-service.app.governance.policy
-    line: 70
-    cyclomatic_complexity: 5
-    calls_out: 6
-    calls_in: 1
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._fuzzy_detection:
+    name: _fuzzy_detection
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector
+    line: 997
+    cyclomatic_complexity: 6
+    calls_out: 4
+    calls_in: 0
   backend.app.engine._track_background_task:
     name: _track_background_task
     module: backend.app.engine
@@ -40,82 +145,271 @@ nodes:
     cyclomatic_complexity: 1
     calls_out: 5
     calls_in: 1
-  backend.app.engine._publish_workflow_event:
-    name: _publish_workflow_event
-    module: backend.app.engine
-    line: 54
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files._package_data_dir:
+    name: _package_data_dir
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files
+    line: 21
     cyclomatic_complexity: 2
-    calls_out: 2
-    calls_in: 7
-  nlp2dsl_sdk.client.NLP2DSLClient.generate_report:
-    name: generate_report
-    module: nlp2dsl_sdk.client
-    line: 304
+    calls_out: 5
+    calls_in: 1
+  scripts.run-example-testql-results._generate_conversation_toon:
+    name: _generate_conversation_toon
+    module: scripts.run-example-testql-results
+    line: 179
+    cyclomatic_complexity: 6
+    calls_out: 18
+    calls_in: 1
+  nlp-service.app.conversation.orchestrator.start_conversation:
+    name: start_conversation
+    module: nlp-service.app.conversation.orchestrator
+    line: 30
+    cyclomatic_complexity: 1
+    calls_out: 6
+    calls_in: 1
+  nlp2dsl_sdk.artifacts.write_manifest:
+    name: write_manifest
+    module: nlp2dsl_sdk.artifacts
+    line: 232
+    cyclomatic_complexity: 1
+    calls_out: 6
+    calls_in: 1
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.nlp2cmd_convert.detection_to_intent_ir:
+    name: detection_to_intent_ir
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.nlp2cmd_convert
+    line: 12
+    cyclomatic_complexity: 10
+    calls_out: 22
+    calls_in: 2
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.clarification.ensure_intent_clear:
+    name: ensure_intent_clear
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.clarification
+    line: 32
+    cyclomatic_complexity: 4
+    calls_out: 3
+    calls_in: 1
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._find_data_files:
+    name: _find_data_files
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns
+    line: 22
     cyclomatic_complexity: 1
     calls_out: 2
+    calls_in: 2
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._ml_detection:
+    name: _ml_detection
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector
+    line: 1017
+    cyclomatic_complexity: 6
+    calls_out: 4
     calls_in: 0
-  nlp-service.app.conversation.responses.deny_message:
-    name: deny_message
-    module: nlp-service.app.conversation.responses
-    line: 29
+  nlp-service.app.routing.native._patterns_match:
+    name: _patterns_match
+    module: nlp-service.app.routing.native
+    line: 19
     cyclomatic_complexity: 3
-    calls_out: 0
+    calls_out: 3
     calls_in: 1
-  nlp2dsl_sdk.demos._run_direct_code_generation:
-    name: _run_direct_code_generation
-    module: nlp2dsl_sdk.demos
-    line: 585
+  nlp-service.app.dsl.forms.get_action_form:
+    name: get_action_form
+    module: nlp-service.app.dsl.forms
+    line: 55
     cyclomatic_complexity: 5
-    calls_out: 9
-    calls_in: 1
-  nlp-service.app.mapper._make_name:
-    name: _make_name
-    module: nlp-service.app.mapper
-    line: 156
-    cyclomatic_complexity: 3
+    calls_out: 12
+    calls_in: 3
+  nlp-service.app.main.parse_text:
+    name: parse_text
+    module: nlp-service.app.main
+    line: 94
+    cyclomatic_complexity: 1
     calls_out: 2
     calls_in: 1
-  nlp-service.app.routing.parser.rules._longest_alias_match:
-    name: _longest_alias_match
-    module: nlp-service.app.routing.parser.rules
-    line: 146
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter._delegate_block:
+    name: _delegate_block
+    module: packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter
+    line: 77
     cyclomatic_complexity: 4
     calls_out: 4
+    calls_in: 2
+  nlp-service.app.system_executor._validate_file_path:
+    name: _validate_file_path
+    module: nlp-service.app.system_executor
+    line: 28
+    cyclomatic_complexity: 5
+    calls_out: 9
+    calls_in: 2
+  nlp-service.app.registry.get_defaults:
+    name: get_defaults
+    module: nlp-service.app.registry
+    line: 394
+    cyclomatic_complexity: 1
+    calls_out: 3
     calls_in: 1
-  nlp-service.app.governance.config._enabled_integrations:
-    name: _enabled_integrations
-    module: nlp-service.app.governance.config
-    line: 133
+  examples.08-multi-object-benchmark.scenario.run_benchmark:
+    name: run_benchmark
+    module: examples.08-multi-object-benchmark.scenario
+    line: 44
+    cyclomatic_complexity: 16
+    calls_out: 24
+    calls_in: 2
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.input.analyze_query:
+    name: analyze_query
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.input
+    line: 10
+    cyclomatic_complexity: 3
+    calls_out: 8
+    calls_in: 2
+  nlp-service.app.conversation.orchestrator.continue_conversation:
+    name: continue_conversation
+    module: nlp-service.app.conversation.orchestrator
+    line: 38
+    cyclomatic_complexity: 2
+    calls_out: 8
+    calls_in: 3
+  nlp2dsl_sdk.artifacts.write_query_artifacts:
+    name: write_query_artifacts
+    module: nlp2dsl_sdk.artifacts
+    line: 191
+    cyclomatic_complexity: 1
+    calls_out: 19
+    calls_in: 1
+  nlp2dsl_sdk.cli._chat_start:
+    name: _chat_start
+    module: nlp2dsl_sdk.cli
+    line: 143
+    cyclomatic_complexity: 2
+    calls_out: 10
+    calls_in: 1
+  nlp2dsl_sdk.demos.run_action_catalog_demo:
+    name: run_action_catalog_demo
+    module: nlp2dsl_sdk.demos
+    line: 66
+    cyclomatic_complexity: 6
+    calls_out: 16
+    calls_in: 0
+  nlp-service.app.routing.parser.enrich.get_enrichable_missing:
+    name: get_enrichable_missing
+    module: nlp-service.app.routing.parser.enrich
+    line: 41
+    cyclomatic_complexity: 5
+    calls_out: 3
+    calls_in: 1
+  nlp-service.app.conversation.responses.check_execute_keyword:
+    name: check_execute_keyword
+    module: nlp-service.app.conversation.responses
+    line: 68
     cyclomatic_complexity: 7
     calls_out: 5
     calls_in: 1
-  nlp2dsl_sdk.client.NLP2DSLClient.send_invoice:
-    name: send_invoice
-    module: nlp2dsl_sdk.client
-    line: 269
+  packages.nlp2cmd-planner.src.nlp2cmd_planner.workflow_backend.workflow_backend_enabled:
+    name: workflow_backend_enabled
+    module: packages.nlp2cmd-planner.src.nlp2cmd_planner.workflow_backend
+    line: 12
+    cyclomatic_complexity: 1
+    calls_out: 3
+    calls_in: 1
+  nlp-service.app.routing.native._substring_pattern_matches:
+    name: _substring_pattern_matches
+    module: nlp-service.app.routing.native
+    line: 46
+    cyclomatic_complexity: 4
+    calls_out: 5
+    calls_in: 1
+  nlp-service.app.routing.parser.rules._extract_email:
+    name: _extract_email
+    module: nlp-service.app.routing.parser.rules
+    line: 365
+    cyclomatic_complexity: 3
+    calls_out: 2
+    calls_in: 1
+  nlp2dsl_sdk.preview.workflow_http_error_result:
+    name: workflow_http_error_result
+    module: nlp2dsl_sdk.preview
+    line: 68
+    cyclomatic_complexity: 11
+    calls_out: 13
+    calls_in: 4
+  nlp-service.app.routing.parser.rules._extract_notification_channels:
+    name: _extract_notification_channels
+    module: nlp-service.app.routing.parser.rules
+    line: 440
+    cyclomatic_complexity: 10
+    calls_out: 9
+    calls_in: 1
+  nlp2dsl_sdk.preview.print_json:
+    name: print_json
+    module: nlp2dsl_sdk.preview
+    line: 17
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 6
+  nlp2dsl_sdk.cli._analyze:
+    name: _analyze
+    module: nlp2dsl_sdk.cli
+    line: 11
+    cyclomatic_complexity: 2
+    calls_out: 1
+    calls_in: 1
+  backend.app.routers.workflow.start_workflow_endpoint:
+    name: start_workflow_endpoint
+    module: backend.app.routers.workflow
+    line: 83
     cyclomatic_complexity: 1
     calls_out: 2
     calls_in: 0
-  nlp-service.app.routing.orientation._is_file_list_query:
-    name: _is_file_list_query
-    module: nlp-service.app.routing.orientation
-    line: 101
+  nlp-service.app.registry.get_quality_required_fields:
+    name: get_quality_required_fields
+    module: nlp-service.app.registry
+    line: 400
+    cyclomatic_complexity: 1
+    calls_out: 3
+    calls_in: 2
+  nlp-service.app.main.access_config:
+    name: access_config
+    module: nlp-service.app.main
+    line: 124
+    cyclomatic_complexity: 3
+    calls_out: 12
+    calls_in: 0
+  nlp-service.app.settings._coerce_type:
+    name: _coerce_type
+    module: nlp-service.app.settings
+    line: 236
+    cyclomatic_complexity: 5
+    calls_out: 6
+    calls_in: 1
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._calculate_keyword_confidence:
+    name: _calculate_keyword_confidence
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector
+    line: 1124
+    cyclomatic_complexity: 6
+    calls_out: 5
+    calls_in: 0
+  tauri-wrapper.scripts.serve-dist.startServer:
+    name: startServer
+    module: tauri-wrapper.scripts.serve-dist
+    line: 107
+    cyclomatic_complexity: 4
+    calls_out: 10
+    calls_in: 0
+  nlp-service.app.governance.policy.authorize_action:
+    name: authorize_action
+    module: nlp-service.app.governance.policy
+    line: 108
     cyclomatic_complexity: 5
     calls_out: 8
-    calls_in: 1
-  nlp-service.app.audio_parser.is_stt_available:
-    name: is_stt_available
-    module: nlp-service.app.audio_parser
-    line: 112
+    calls_in: 4
+  backend.app.routers.system.system_execute:
+    name: system_execute
+    module: backend.app.routers.system
+    line: 23
     cyclomatic_complexity: 2
-    calls_out: 0
-    calls_in: 3
-  nlp-service.app.routing.native._resolve_configured_route:
-    name: _resolve_configured_route
-    module: nlp-service.app.routing.native
-    line: 74
-    cyclomatic_complexity: 5
-    calls_out: 5
+    calls_out: 6
+    calls_in: 0
+  nlp2dsl_sdk.encoding._apply_utf8_locale_env:
+    name: _apply_utf8_locale_env
+    module: nlp2dsl_sdk.encoding
+    line: 29
+    cyclomatic_complexity: 2
+    calls_out: 3
     calls_in: 1
   nlp-service.app.governance.policy._uri_selector_match:
     name: _uri_selector_match
@@ -124,131 +418,19 @@ nodes:
     cyclomatic_complexity: 3
     calls_out: 2
     calls_in: 1
-  worker.worker.handle_generate_code:
-    name: handle_generate_code
-    module: worker.worker
-    line: 162
-    cyclomatic_complexity: 5
-    calls_out: 17
-    calls_in: 0
-  worker.worker.handle_send_email:
-    name: handle_send_email
-    module: worker.worker
-    line: 90
-    cyclomatic_complexity: 1
-    calls_out: 8
-    calls_in: 0
-  nlp-service.app.routing.orientation.orient_query:
-    name: orient_query
-    module: nlp-service.app.routing.orientation
-    line: 123
-    cyclomatic_complexity: 13
-    calls_out: 21
-    calls_in: 2
-  nlp-service.app.access.uri_match.scheme_allowed:
-    name: scheme_allowed
-    module: nlp-service.app.access.uri_match
-    line: 35
-    cyclomatic_complexity: 5
-    calls_out: 2
-    calls_in: 1
-  worker.worker.action:
-    name: action
-    module: worker.worker
-    line: 41
-    cyclomatic_complexity: 1
-    calls_out: 0
-    calls_in: 8
-  nlp-service.app.conversation.responses._nlp_from_state:
-    name: _nlp_from_state
-    module: nlp-service.app.conversation.responses
-    line: 177
-    cyclomatic_complexity: 5
-    calls_out: 5
-    calls_in: 2
-  nlp-service.app.mapper.map_to_dsl:
-    name: map_to_dsl
-    module: nlp-service.app.mapper
-    line: 28
-    cyclomatic_complexity: 8
-    calls_out: 17
-    calls_in: 3
-  nlp-service.app.governance.config._build_access_config:
-    name: _build_access_config
-    module: nlp-service.app.governance.config
-    line: 116
-    cyclomatic_complexity: 7
-    calls_out: 18
-    calls_in: 1
-  nlp-service.app.main.chat_state:
-    name: chat_state
-    module: nlp-service.app.main
-    line: 313
-    cyclomatic_complexity: 2
-    calls_out: 4
-    calls_in: 0
-  backend.app.routers.workflow._format_sse:
-    name: _format_sse
-    module: backend.app.routers.workflow
-    line: 26
-    cyclomatic_complexity: 5
-    calls_out: 6
-    calls_in: 4
-  backend.app.routers.chat._proxy_chat_payload:
-    name: _proxy_chat_payload
-    module: backend.app.routers.chat
-    line: 23
-    cyclomatic_complexity: 9
-    calls_out: 16
-    calls_in: 2
-  nlp-service.app.governance.config._allowed_uri_schemes:
-    name: _allowed_uri_schemes
-    module: nlp-service.app.governance.config
-    line: 150
-    cyclomatic_complexity: 3
-    calls_out: 2
-    calls_in: 1
-  backend.app.routers.settings.actions_schema:
-    name: actions_schema
-    module: backend.app.routers.settings
-    line: 21
-    cyclomatic_complexity: 1
-    calls_out: 5
-    calls_in: 0
-  nlp-service.app.routing.parser.rules._extract_system_entities:
-    name: _extract_system_entities
-    module: nlp-service.app.routing.parser.rules
-    line: 310
-    cyclomatic_complexity: 1
-    calls_out: 5
-    calls_in: 1
-  tauri-wrapper.scripts.dev.shutdown:
-    name: shutdown
-    module: tauri-wrapper.scripts.dev
-    line: 17
-    cyclomatic_complexity: 5
-    calls_out: 5
-    calls_in: 1
-  nlp-service.app.system_executor._validate_file_path:
-    name: _validate_file_path
+  nlp-service.app.system_executor._exec_file_write:
+    name: _exec_file_write
     module: nlp-service.app.system_executor
-    line: 28
-    cyclomatic_complexity: 5
-    calls_out: 9
-    calls_in: 2
-  nlp-service.app.main.access_reload:
-    name: access_reload
-    module: nlp-service.app.main
-    line: 175
+    line: 152
+    cyclomatic_complexity: 4
+    calls_out: 12
+    calls_in: 0
+  nlp-service.app.governance.policy._grant_matches:
+    name: _grant_matches
+    module: nlp-service.app.governance.policy
+    line: 53
     cyclomatic_complexity: 2
     calls_out: 2
-    calls_in: 0
-  nlp2dsl_sdk.demos.run_code_generation_demo:
-    name: run_code_generation_demo
-    module: nlp2dsl_sdk.demos
-    line: 550
-    cyclomatic_complexity: 6
-    calls_out: 14
     calls_in: 1
   nlp-service.app.routing.observability.routing_metrics_snapshot:
     name: routing_metrics_snapshot
@@ -257,12 +439,61 @@ nodes:
     cyclomatic_complexity: 1
     calls_out: 1
     calls_in: 1
-  examples.code_generation_examples.main:
-    name: main
-    module: examples.code_generation_examples
-    line: 18
+  nlp2dsl_sdk.demos._run_direct_code_generation:
+    name: _run_direct_code_generation
+    module: nlp2dsl_sdk.demos
+    line: 245
+    cyclomatic_complexity: 5
+    calls_out: 9
+    calls_in: 1
+  nlp-service.app.main.actions_schema:
+    name: actions_schema
+    module: nlp-service.app.main
+    line: 325
+    cyclomatic_complexity: 3
+    calls_out: 3
+    calls_in: 0
+  nlp-service.app.main.access_check:
+    name: access_check
+    module: nlp-service.app.main
+    line: 151
+    cyclomatic_complexity: 3
+    calls_out: 6
+    calls_in: 0
+  nlp-service.app.routing.parser.rules._resolve_intent:
+    name: _resolve_intent
+    module: nlp-service.app.routing.parser.rules
+    line: 311
+    cyclomatic_complexity: 5
+    calls_out: 6
+    calls_in: 1
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.runner._propact_available:
+    name: _propact_available
+    module: packages.nlp2cmd-propact.src.nlp2cmd_propact.runner
+    line: 40
     cyclomatic_complexity: 1
-    calls_out: 1
+    calls_out: 2
+    calls_in: 1
+  packages.nlp2cmd-planner.src.nlp2cmd_planner.workflow_backend.workflow_run_path:
+    name: workflow_run_path
+    module: packages.nlp2cmd-planner.src.nlp2cmd_planner.workflow_backend
+    line: 24
+    cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 1
+  nlp-service.app.main.access_reload:
+    name: access_reload
+    module: nlp-service.app.main
+    line: 175
+    cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 0
+  nlp2dsl_sdk.__main__.main:
+    name: main
+    module: nlp2dsl_sdk.__main__
+    line: 10
+    cyclomatic_complexity: 5
+    calls_out: 10
     calls_in: 0
   backend.app.routers.settings.get_settings_section:
     name: get_settings_section
@@ -271,45 +502,780 @@ nodes:
     cyclomatic_complexity: 2
     calls_out: 6
     calls_in: 0
-  worker.worker.handle_notify_teams:
-    name: handle_notify_teams
-    module: worker.worker
-    line: 147
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter._mcp_block:
+    name: _mcp_block
+    module: packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter
+    line: 40
+    cyclomatic_complexity: 6
+    calls_out: 13
+    calls_in: 1
+  nlp2dsl_sdk.client.NLP2DSLClient.generate_report:
+    name: generate_report
+    module: nlp2dsl_sdk.client
+    line: 324
     cyclomatic_complexity: 1
-    calls_out: 6
+    calls_out: 2
     calls_in: 0
-  backend.app.engine._workflow_steps_payload:
-    name: _workflow_steps_payload
-    module: backend.app.engine
-    line: 38
-    cyclomatic_complexity: 2
-    calls_out: 1
+  nlp-service.app.conversation.responses._nlp_from_state:
+    name: _nlp_from_state
+    module: nlp-service.app.conversation.responses
+    line: 187
+    cyclomatic_complexity: 5
+    calls_out: 5
     calls_in: 2
-  nlp-service.app.mapper._resolve_actions:
-    name: _resolve_actions
-    module: nlp-service.app.mapper
-    line: 84
+  nlp-service.app.main.system_execute:
+    name: system_execute
+    module: nlp-service.app.main
+    line: 401
+    cyclomatic_complexity: 2
+    calls_out: 7
+    calls_in: 0
+  nlp-service.app.system_executor._is_read_only:
+    name: _is_read_only
+    module: nlp-service.app.system_executor
+    line: 52
+    cyclomatic_complexity: 2
+    calls_out: 5
+    calls_in: 1
+  nlp-service.app.main.chat_message:
+    name: chat_message
+    module: nlp-service.app.main
+    line: 266
+    cyclomatic_complexity: 5
+    calls_out: 13
+    calls_in: 0
+  packages.nlp2dsl-show.src.nlp2dsl_show.cli.main:
+    name: main
+    module: packages.nlp2dsl-show.src.nlp2dsl_show.cli
+    line: 21
     cyclomatic_complexity: 7
+    calls_out: 17
+    calls_in: 0
+  nlp-service.app.routing.parser.rules._extract_numeric_setting_value:
+    name: _extract_numeric_setting_value
+    module: nlp-service.app.routing.parser.rules
+    line: 524
+    cyclomatic_complexity: 3
+    calls_out: 2
+    calls_in: 1
+  examples.09-execution-smoke.scenario.run:
+    name: run
+    module: examples.09-execution-smoke.scenario
+    line: 19
+    cyclomatic_complexity: 9
+    calls_out: 22
+    calls_in: 0
+  nlp2dsl_sdk.artifacts.collect_environment:
+    name: collect_environment
+    module: nlp2dsl_sdk.artifacts
+    line: 62
+    cyclomatic_complexity: 6
     calls_out: 4
     calls_in: 1
+  worker.worker.handle_generate_code:
+    name: handle_generate_code
+    module: worker.worker
+    line: 162
+    cyclomatic_complexity: 5
+    calls_out: 17
+    calls_in: 0
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter.step_to_propact_block:
+    name: step_to_propact_block
+    module: packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter
+    line: 96
+    cyclomatic_complexity: 12
+    calls_out: 17
+    calls_in: 3
+  tauri-wrapper.scripts.serve-dist.fileContents:
+    name: fileContents
+    module: tauri-wrapper.scripts.serve-dist
+    line: 62
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 0
+  nlp-service.app.routing.parser.rules._extract_format:
+    name: _extract_format
+    module: nlp-service.app.routing.parser.rules
+    line: 432
+    cyclomatic_complexity: 3
+    calls_out: 1
+    calls_in: 1
+  nlp-service.app.main.websocket_chat:
+    name: websocket_chat
+    module: nlp-service.app.main
+    line: 482
+    cyclomatic_complexity: 10
+    calls_out: 23
+    calls_in: 0
+  nlp-service.app.execution.delegate.execution_backend_for_intent:
+    name: execution_backend_for_intent
+    module: nlp-service.app.execution.delegate
+    line: 14
+    cyclomatic_complexity: 2
+    calls_out: 1
+    calls_in: 1
+  backend.app.workflow_events.WorkflowEventHub.subscriber_count:
+    name: subscriber_count
+    module: backend.app.workflow_events
+    line: 86
+    cyclomatic_complexity: 1
+    calls_out: 3
+    calls_in: 0
+  worker.worker.handle_generate_report:
+    name: handle_generate_report
+    module: worker.worker
+    line: 99
+    cyclomatic_complexity: 1
+    calls_out: 9
+    calls_in: 0
+  scripts.run-example-testql-results.process_example:
+    name: process_example
+    module: scripts.run-example-testql-results
+    line: 281
+    cyclomatic_complexity: 11
+    calls_out: 38
+    calls_in: 1
+  examples.02-email.scenario.run:
+    name: run
+    module: examples.02-email.scenario
+    line: 28
+    cyclomatic_complexity: 7
+    calls_out: 19
+    calls_in: 0
+  nlp-service.app.routing.parser.llm._detect_provider:
+    name: _detect_provider
+    module: nlp-service.app.routing.parser.llm
+    line: 108
+    cyclomatic_complexity: 10
+    calls_out: 8
+    calls_in: 6
+  nlp-service.app.routing.parser.llm._parse_json_response:
+    name: _parse_json_response
+    module: nlp-service.app.routing.parser.llm
+    line: 131
+    cyclomatic_complexity: 6
+    calls_out: 10
+    calls_in: 2
+  nlp2dsl_sdk.preview.preview_text_examples:
+    name: preview_text_examples
+    module: nlp2dsl_sdk.preview
+    line: 96
+    cyclomatic_complexity: 9
+    calls_out: 13
+    calls_in: 8
+  nlp2dsl_sdk.artifacts._mask_secret:
+    name: _mask_secret
+    module: nlp2dsl_sdk.artifacts
+    line: 56
+    cyclomatic_complexity: 3
+    calls_out: 1
+    calls_in: 1
+  nlp2dsl_sdk.encoding._auto_configure_once:
+    name: _auto_configure_once
+    module: nlp2dsl_sdk.encoding
+    line: 76
+    cyclomatic_complexity: 2
+    calls_out: 1
+    calls_in: 0
+  backend.app.routers.chat._proxy_chat_payload:
+    name: _proxy_chat_payload
+    module: backend.app.routers.chat
+    line: 23
+    cyclomatic_complexity: 9
+    calls_out: 16
+    calls_in: 2
+  nlp2dsl_sdk.demos._get_supported_languages:
+    name: _get_supported_languages
+    module: nlp2dsl_sdk.demos
+    line: 265
+    cyclomatic_complexity: 3
+    calls_out: 6
+    calls_in: 1
+  nlp-service.app.governance.policy.get_agent_id:
+    name: get_agent_id
+    module: nlp-service.app.governance.policy
+    line: 44
+    cyclomatic_complexity: 4
+    calls_out: 5
+    calls_in: 1
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.facade.default_intent_detector:
+    name: default_intent_detector
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.facade
+    line: 32
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 1
+  packages.nlp2cmd-planner.src.nlp2cmd_planner.workflow_backend.fetch_workflow_from_text:
+    name: fetch_workflow_from_text
+    module: packages.nlp2cmd-planner.src.nlp2cmd_planner.workflow_backend
+    line: 29
+    cyclomatic_complexity: 4
+    calls_out: 12
+    calls_in: 1
+  nlp-service.app.routing.parser.rules._second_system_action_wins:
+    name: _second_system_action_wins
+    module: nlp-service.app.routing.parser.rules
+    line: 298
+    cyclomatic_complexity: 3
+    calls_out: 0
+    calls_in: 1
+  examples.bootstrap.bootstrap:
+    name: bootstrap
+    module: examples.bootstrap
+    line: 9
+    cyclomatic_complexity: 3
+    calls_out: 4
+    calls_in: 0
+  nlp2dsl_sdk.artifacts.write_services_snapshot:
+    name: write_services_snapshot
+    module: nlp2dsl_sdk.artifacts
+    line: 302
+    cyclomatic_complexity: 3
+    calls_out: 8
+    calls_in: 1
+  nlp-service.app.routing.parser.enrich.enrich_entities:
+    name: enrich_entities
+    module: nlp-service.app.routing.parser.enrich
+    line: 62
+    cyclomatic_complexity: 14
+    calls_out: 29
+    calls_in: 1
+  nlp-service.app.governance.bootstrap._actions_from_yaml_areas:
+    name: _actions_from_yaml_areas
+    module: nlp-service.app.governance.bootstrap
+    line: 13
+    cyclomatic_complexity: 14
+    calls_out: 26
+    calls_in: 1
+  nlp-service.app.routing.parser.rules._apply_context_filters:
+    name: _apply_context_filters
+    module: nlp-service.app.routing.parser.rules
+    line: 192
+    cyclomatic_complexity: 21
+    calls_out: 17
+    calls_in: 1
+  nlp-service.app.governance.bootstrap.bootstrap_registry:
+    name: bootstrap_registry
+    module: nlp-service.app.governance.bootstrap
+    line: 56
+    cyclomatic_complexity: 1
+    calls_out: 7
+    calls_in: 0
+  nlp2dsl_sdk.encoding._set_utf8_locale:
+    name: _set_utf8_locale
+    module: nlp2dsl_sdk.encoding
+    line: 52
+    cyclomatic_complexity: 3
+    calls_out: 1
+    calls_in: 1
+  nlp2dsl_sdk.artifacts.write_testql_commands:
+    name: write_testql_commands
+    module: nlp2dsl_sdk.artifacts
+    line: 259
+    cyclomatic_complexity: 4
+    calls_out: 8
+    calls_in: 1
+  nlp-service.app.conversation.orchestrator._process_message:
+    name: _process_message
+    module: nlp-service.app.conversation.orchestrator
+    line: 67
+    cyclomatic_complexity: 6
+    calls_out: 16
+    calls_in: 2
+  backend.app.routers.chat.chat_message:
+    name: chat_message
+    module: backend.app.routers.chat
+    line: 69
+    cyclomatic_complexity: 12
+    calls_out: 21
+    calls_in: 0
+  tauri-wrapper.scripts.dev.shutdown:
+    name: shutdown
+    module: tauri-wrapper.scripts.dev
+    line: 17
+    cyclomatic_complexity: 5
+    calls_out: 5
+    calls_in: 1
+  nlp2dsl_sdk.client.NLP2DSLClient.generate_report_and_notify:
+    name: generate_report_and_notify
+    module: nlp2dsl_sdk.client
+    line: 337
+    cyclomatic_complexity: 4
+    calls_out: 6
+    calls_in: 0
+  nlp-service.app.routing.parser.rules._action_alias_scores:
+    name: _action_alias_scores
+    module: nlp-service.app.routing.parser.rules
+    line: 230
+    cyclomatic_complexity: 4
+    calls_out: 3
+    calls_in: 1
+  nlp-service.app.routing.parser.rules._action_category:
+    name: _action_category
+    module: nlp-service.app.routing.parser.rules
+    line: 283
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 3
+  nlp-service.app.routing.parser.rules._extract_body_content_prefix:
+    name: _extract_body_content_prefix
+    module: nlp-service.app.routing.parser.rules
+    line: 375
+    cyclomatic_complexity: 4
+    calls_out: 4
+    calls_in: 1
+  nlp2dsl_sdk.preview.ensure_services:
+    name: ensure_services
+    module: nlp2dsl_sdk.preview
+    line: 202
+    cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 14
+  nlp2dsl_sdk.cli.show:
+    name: show
+    module: nlp2dsl_sdk.cli
+    line: 57
+    cyclomatic_complexity: 2
+    calls_out: 3
+    calls_in: 1
+  examples.08-multi-object-benchmark.scenario._evaluate:
+    name: _evaluate
+    module: examples.08-multi-object-benchmark.scenario
+    line: 25
+    cyclomatic_complexity: 6
+    calls_out: 9
+    calls_in: 1
+  nlp2dsl_sdk.client.NLP2DSLClient.send_invoice:
+    name: send_invoice
+    module: nlp2dsl_sdk.client
+    line: 289
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 0
+  examples.code_generation_examples.main:
+    name: main
+    module: examples.code_generation_examples
+    line: 18
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 0
+  nlp2dsl_sdk.artifacts.build_process_trace:
+    name: build_process_trace
+    module: nlp2dsl_sdk.artifacts
+    line: 96
+    cyclomatic_complexity: 17
+    calls_out: 29
+    calls_in: 1
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.runner._resolve_propact_bin:
+    name: _resolve_propact_bin
+    module: packages.nlp2cmd-propact.src.nlp2cmd_propact.runner
+    line: 36
+    cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 2
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.runner.PropactRunner.render:
+    name: render
+    module: packages.nlp2cmd-propact.src.nlp2cmd_propact.runner
+    line: 123
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 0
+  examples.05-conversation-flow.scenario.run:
+    name: run
+    module: examples.05-conversation-flow.scenario
+    line: 39
+    cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 0
+  nlp-service.app.dsl.mapper._build_config:
+    name: _build_config
+    module: nlp-service.app.dsl.mapper
+    line: 109
+    cyclomatic_complexity: 19
+    calls_out: 29
+    calls_in: 1
+  nlp-service.integrations.loader.apply_integrations:
+    name: apply_integrations
+    module: nlp-service.integrations.loader
+    line: 45
+    cyclomatic_complexity: 5
+    calls_out: 7
+    calls_in: 1
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files.find_data_files:
+    name: find_data_files
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files
+    line: 35
+    cyclomatic_complexity: 6
+    calls_out: 17
+    calls_in: 0
+  examples.10-llm-benchmark.scenario.run:
+    name: run
+    module: examples.10-llm-benchmark.scenario
+    line: 24
+    cyclomatic_complexity: 3
+    calls_out: 10
+    calls_in: 0
+  nlp2dsl_sdk.cli._run:
+    name: _run
+    module: nlp2dsl_sdk.cli
+    line: 88
+    cyclomatic_complexity: 12
+    calls_out: 30
+    calls_in: 1
+  nlp-service.app.conversation.orchestrator.get_conversation:
+    name: get_conversation
+    module: nlp-service.app.conversation.orchestrator
+    line: 52
+    cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 1
+  nlp-service.app.routing.parser.rules._extract_email_subject_and_body:
+    name: _extract_email_subject_and_body
+    module: nlp-service.app.routing.parser.rules
+    line: 386
+    cyclomatic_complexity: 8
+    calls_out: 8
+    calls_in: 1
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.add_pattern:
+    name: add_pattern
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns
+    line: 212
+    cyclomatic_complexity: 6
+    calls_out: 6
+    calls_in: 0
+  nlp-service.app.routing.parser.rules._top_system_action_wins:
+    name: _top_system_action_wins
+    module: nlp-service.app.routing.parser.rules
+    line: 287
+    cyclomatic_complexity: 4
+    calls_out: 0
+    calls_in: 1
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.clarification.clarification_enforced:
+    name: clarification_enforced
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.clarification
+    line: 23
+    cyclomatic_complexity: 1
+    calls_out: 3
+    calls_in: 1
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector._get_spacy_model:
+    name: _get_spacy_model
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector
+    line: 133
+    cyclomatic_complexity: 8
+    calls_out: 9
+    calls_in: 1
+  nlp-service.app.routing.native._resolve_action_alias:
+    name: _resolve_action_alias
+    module: nlp-service.app.routing.native
+    line: 101
+    cyclomatic_complexity: 2
+    calls_out: 6
+    calls_in: 1
+  nlp-service.app.governance.policy._area_selector_match:
+    name: _area_selector_match
+    module: nlp-service.app.governance.policy
+    line: 90
+    cyclomatic_complexity: 3
+    calls_out: 0
+    calls_in: 1
+  tauri-wrapper.scripts.dev.exitCode:
+    name: exitCode
+    module: tauri-wrapper.scripts.dev
+    line: 47
+    cyclomatic_complexity: 2
+    calls_out: 1
+    calls_in: 0
+  nlp2dsl_sdk.cli._actions:
+    name: _actions
+    module: nlp2dsl_sdk.cli
+    line: 129
+    cyclomatic_complexity: 3
+    calls_out: 8
+    calls_in: 1
+  examples.06-interactive-chat.scenario.run:
+    name: run
+    module: examples.06-interactive-chat.scenario
+    line: 41
+    cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 0
+  nlp-service.app.routing.native.resolve_native_intent:
+    name: resolve_native_intent
+    module: nlp-service.app.routing.native
+    line: 55
+    cyclomatic_complexity: 4
+    calls_out: 5
+    calls_in: 1
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor.run:
+    name: run
+    module: packages.nlp2cmd-propact.src.nlp2cmd_propact.executor
+    line: 55
+    cyclomatic_complexity: 10
+    calls_out: 20
+    calls_in: 0
+  backend.app.logging_setup.get_request_id:
+    name: get_request_id
+    module: backend.app.logging_setup
+    line: 29
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 13
+  nlp2dsl_sdk.preview.finalize_example_artifacts:
+    name: finalize_example_artifacts
+    module: nlp2dsl_sdk.preview
+    line: 195
+    cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 0
+  nlp-service.app.routing.native._aliases_match:
+    name: _aliases_match
+    module: nlp-service.app.routing.native
+    line: 51
+    cyclomatic_complexity: 2
+    calls_out: 3
+    calls_in: 1
+  nlp-service.app.routing.parser.rules._extract_file_path_entity:
+    name: _extract_file_path_entity
+    module: nlp-service.app.routing.parser.rules
+    line: 502
+    cyclomatic_complexity: 3
+    calls_out: 2
+    calls_in: 1
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector._get_semantic_matcher:
+    name: _get_semantic_matcher
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector
+    line: 112
+    cyclomatic_complexity: 7
+    calls_out: 6
+    calls_in: 1
+  nlp-service.app.system_executor.execute_system_action:
+    name: execute_system_action
+    module: nlp-service.app.system_executor
+    line: 62
+    cyclomatic_complexity: 3
+    calls_out: 5
+    calls_in: 1
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.runner.PropactRunner.run:
+    name: run
+    module: packages.nlp2cmd-propact.src.nlp2cmd_propact.runner
+    line: 126
+    cyclomatic_complexity: 8
+    calls_out: 14
+    calls_in: 0
+  nlp2dsl_sdk.encoding._reconfigure_stdio:
+    name: _reconfigure_stdio
+    module: nlp2dsl_sdk.encoding
+    line: 41
+    cyclomatic_complexity: 4
+    calls_out: 2
+    calls_in: 1
+  nlp2dsl_sdk.client.workflow_step:
+    name: workflow_step
+    module: nlp2dsl_sdk.client
+    line: 20
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 11
+  examples.08-multi-object-benchmark.scenario._extract_actions:
+    name: _extract_actions
+    module: examples.08-multi-object-benchmark.scenario
+    line: 18
+    cyclomatic_complexity: 5
+    calls_out: 5
+    calls_in: 1
+  nlp-service.app.routing.orientation._is_file_list_query:
+    name: _is_file_list_query
+    module: nlp-service.app.routing.orientation
+    line: 163
+    cyclomatic_complexity: 5
+    calls_out: 8
+    calls_in: 1
+  nlp-service.app.dsl.mapper._make_name:
+    name: _make_name
+    module: nlp-service.app.dsl.mapper
+    line: 202
+    cyclomatic_complexity: 3
+    calls_out: 2
+    calls_in: 1
+  nlp-service.app.dsl.mapper.map_to_dsl:
+    name: map_to_dsl
+    module: nlp-service.app.dsl.mapper
+    line: 29
+    cyclomatic_complexity: 8
+    calls_out: 17
+    calls_in: 2
+  scripts.run-example-testql-results.main:
+    name: main
+    module: scripts.run-example-testql-results
+    line: 368
+    cyclomatic_complexity: 16
+    calls_out: 31
+    calls_in: 0
+  packages.nlp2cmd-planner.src.nlp2cmd_planner.workflow_backend.workflow_backend_url:
+    name: workflow_backend_url
+    module: packages.nlp2cmd-planner.src.nlp2cmd_planner.workflow_backend
+    line: 17
+    cyclomatic_complexity: 1
+    calls_out: 4
+    calls_in: 1
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._semantic_detection:
+    name: _semantic_detection
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector
+    line: 1037
+    cyclomatic_complexity: 6
+    calls_out: 4
+    calls_in: 0
+  nlp-service.integrations.loader._integration_names:
+    name: _integration_names
+    module: nlp-service.integrations.loader
+    line: 18
+    cyclomatic_complexity: 5
+    calls_out: 6
+    calls_in: 1
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector._get_query_normalizer:
+    name: _get_query_normalizer
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector
+    line: 31
+    cyclomatic_complexity: 5
+    calls_out: 2
+    calls_in: 1
+  examples.05-conversation-flow.scenario.run_interactive:
+    name: run_interactive
+    module: examples.05-conversation-flow.scenario
+    line: 35
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 1
+  examples.01-invoice.scenario.run:
+    name: run
+    module: examples.01-invoice.scenario
+    line: 17
+    cyclomatic_complexity: 7
+    calls_out: 22
+    calls_in: 0
+  packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rest_workflow.RestWorkflowPlanStrategy.supports:
+    name: supports
+    module: packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rest_workflow
+    line: 37
+    cyclomatic_complexity: 4
+    calls_out: 1
+    calls_in: 0
+  backend.app.engine.start_workflow:
+    name: start_workflow
+    module: backend.app.engine
+    line: 254
+    cyclomatic_complexity: 1
+    calls_out: 7
+    calls_in: 1
+  examples.06-interactive-chat.scenario.run_demo:
+    name: run_demo
+    module: examples.06-interactive-chat.scenario
+    line: 19
+    cyclomatic_complexity: 3
+    calls_out: 9
+    calls_in: 1
+  nlp-service.app.governance.config._enabled_integrations:
+    name: _enabled_integrations
+    module: nlp-service.app.governance.config
+    line: 133
+    cyclomatic_complexity: 7
+    calls_out: 5
+    calls_in: 1
+  nlp2dsl_sdk.client.NLP2DSLClient.notify_slack:
+    name: notify_slack
+    module: nlp2dsl_sdk.client
+    line: 397
+    cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 0
+  nlp-service.app.conversation.responses.build_incomplete_response:
+    name: build_incomplete_response
+    module: nlp-service.app.conversation.responses
+    line: 167
+    cyclomatic_complexity: 3
+    calls_out: 6
+    calls_in: 2
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_detector_config_from_json:
+    name: _load_detector_config_from_json
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns
+    line: 128
+    cyclomatic_complexity: 33
+    calls_out: 48
+    calls_in: 0
+  backend.app.engine._persist_workflow_snapshot:
+    name: _persist_workflow_snapshot
+    module: backend.app.engine
+    line: 42
+    cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 7
+  nlp2dsl_sdk.demos.run_code_generation_demo:
+    name: run_code_generation_demo
+    module: nlp2dsl_sdk.demos
+    line: 210
+    cyclomatic_complexity: 6
+    calls_out: 14
+    calls_in: 1
+  nlp-service.app.execution.delegate.is_delegated_to_mullm:
+    name: is_delegated_to_mullm
+    module: nlp-service.app.execution.delegate
+    line: 10
+    cyclomatic_complexity: 2
+    calls_out: 1
+    calls_in: 1
+  nlp-service.app.routing.parser.rules._extract_system_entities:
+    name: _extract_system_entities
+    module: nlp-service.app.routing.parser.rules
+    line: 493
+    cyclomatic_complexity: 1
+    calls_out: 5
+    calls_in: 1
+  nlp-service.app.conversation.responses.handle_system_action:
+    name: handle_system_action
+    module: nlp-service.app.conversation.responses
+    line: 117
+    cyclomatic_complexity: 7
+    calls_out: 7
+    calls_in: 1
+  nlp-service.app.routing.native._match_route:
+    name: _match_route
+    module: nlp-service.app.routing.native
+    line: 11
+    cyclomatic_complexity: 4
+    calls_out: 6
+    calls_in: 1
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector._get_ml_classifier:
+    name: _get_ml_classifier
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector
+    line: 89
+    cyclomatic_complexity: 8
+    calls_out: 6
+    calls_in: 1
+  nlp-service.app.access.uri_match.uri_matches:
+    name: uri_matches
+    module: nlp-service.app.access.uri_match
+    line: 13
+    cyclomatic_complexity: 8
+    calls_out: 11
+    calls_in: 1
+  backend.app.routers.settings.reset_settings:
+    name: reset_settings
+    module: backend.app.routers.settings
+    line: 77
+    cyclomatic_complexity: 1
+    calls_out: 5
+    calls_in: 0
+  tauri-wrapper.scripts.serve-dist.server:
+    name: server
+    module: tauri-wrapper.scripts.serve-dist
+    line: 109
+    cyclomatic_complexity: 4
+    calls_out: 5
+    calls_in: 0
   nlp-service.app.store.factory.get_conversation_store:
     name: get_conversation_store
     module: nlp-service.app.store.factory
     line: 22
-    cyclomatic_complexity: 4
-    calls_out: 7
-    calls_in: 1
-  nlp-service.app.routing.resolve.resolve_intent:
-    name: resolve_intent
-    module: nlp-service.app.routing.resolve
-    line: 109
-    cyclomatic_complexity: 18
-    calls_out: 31
-    calls_in: 1
-  nlp-service.app.governance.config._load_merged_config:
-    name: _load_merged_config
-    module: nlp-service.app.governance.config
-    line: 101
     cyclomatic_complexity: 4
     calls_out: 7
     calls_in: 1
@@ -320,145 +1286,54 @@ nodes:
     cyclomatic_complexity: 1
     calls_out: 5
     calls_in: 0
-  backend.app.engine._persist_workflow_snapshot:
-    name: _persist_workflow_snapshot
-    module: backend.app.engine
-    line: 42
-    cyclomatic_complexity: 2
-    calls_out: 2
-    calls_in: 7
-  nlp-service.app.main.parse_text:
-    name: parse_text
-    module: nlp-service.app.main
-    line: 94
+  nlp2dsl_sdk.cli._client:
+    name: _client
+    module: nlp2dsl_sdk.cli
+    line: 71
     cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 1
-  nlp-service.app.governance.config._default_agent:
-    name: _default_agent
+    calls_out: 1
+    calls_in: 4
+  nlp-service.app.governance.config._allowed_uri_schemes:
+    name: _allowed_uri_schemes
     module: nlp-service.app.governance.config
-    line: 142
-    cyclomatic_complexity: 3
-    calls_out: 3
-    calls_in: 1
-  nlp-service.app.mapper._build_config:
-    name: _build_config
-    module: nlp-service.app.mapper
-    line: 108
-    cyclomatic_complexity: 6
-    calls_out: 10
-    calls_in: 1
-  nlp2dsl_sdk.client.NLP2DSLClient.notify_slack:
-    name: notify_slack
-    module: nlp2dsl_sdk.client
-    line: 377
-    cyclomatic_complexity: 2
-    calls_out: 2
-    calls_in: 0
-  nlp-service.app.routing.native._match_route:
-    name: _match_route
-    module: nlp-service.app.routing.native
-    line: 11
-    cyclomatic_complexity: 4
-    calls_out: 6
-    calls_in: 1
-  nlp2dsl_sdk.demos.run_action_catalog_demo:
-    name: run_action_catalog_demo
-    module: nlp2dsl_sdk.demos
-    line: 139
-    cyclomatic_complexity: 6
-    calls_out: 19
-    calls_in: 0
-  nlp-service.app.registry.get_trigger:
-    name: get_trigger
-    module: nlp-service.app.registry
-    line: 372
-    cyclomatic_complexity: 3
-    calls_out: 2
-    calls_in: 3
-  nlp2dsl_sdk.demos._run_conversation_code_example:
-    name: _run_conversation_code_example
-    module: nlp2dsl_sdk.demos
-    line: 623
-    cyclomatic_complexity: 3
-    calls_out: 14
-    calls_in: 1
-  backend.app.routers.workflow.run_workflow_endpoint:
-    name: run_workflow_endpoint
-    module: backend.app.routers.workflow
-    line: 77
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 0
-  nlp-service.app.routing.parser.rules._extract_email:
-    name: _extract_email
-    module: nlp-service.app.routing.parser.rules
-    line: 258
-    cyclomatic_complexity: 2
-    calls_out: 2
-    calls_in: 1
-  tauri-wrapper.scripts.serve-dist.contentType:
-    name: contentType
-    module: tauri-wrapper.scripts.serve-dist
-    line: 26
-    cyclomatic_complexity: 2
-    calls_out: 3
-    calls_in: 3
-  nlp2dsl_sdk.demos.run_report_and_notify_demo:
-    name: run_report_and_notify_demo
-    module: nlp2dsl_sdk.demos
-    line: 500
-    cyclomatic_complexity: 4
-    calls_out: 11
-    calls_in: 1
-  nlp-service.app.parser_llm._detect_provider:
-    name: _detect_provider
-    module: nlp-service.app.parser_llm
     line: 150
-    cyclomatic_complexity: 10
-    calls_out: 8
-    calls_in: 5
-  nlp-service.app.conversation.orchestrator.start_conversation:
-    name: start_conversation
-    module: nlp-service.app.conversation.orchestrator
-    line: 30
-    cyclomatic_complexity: 1
-    calls_out: 6
-    calls_in: 1
-  nlp-service.app.routing.parser.facade.parse_text:
-    name: parse_text
-    module: nlp-service.app.routing.parser.facade
-    line: 16
-    cyclomatic_complexity: 8
-    calls_out: 8
-    calls_in: 0
-  nlp-service.app.routing.parser.rules._extract_amount:
-    name: _extract_amount
-    module: nlp-service.app.routing.parser.rules
-    line: 242
-    cyclomatic_complexity: 5
-    calls_out: 7
-    calls_in: 1
-  nlp-service.app.routing.parser.rules._extract_param_aliases:
-    name: _extract_param_aliases
-    module: nlp-service.app.routing.parser.rules
-    line: 299
-    cyclomatic_complexity: 5
-    calls_out: 5
-    calls_in: 1
-  nlp-service.app.conversation.orchestrator.get_conversation:
-    name: get_conversation
-    module: nlp-service.app.conversation.orchestrator
-    line: 52
-    cyclomatic_complexity: 2
+    cyclomatic_complexity: 3
     calls_out: 2
     calls_in: 1
-  nlp-service.app.routing.parser.rules._extract_fallback_recipient:
-    name: _extract_fallback_recipient
+  nlp-service.app.routing.parser.rules._extract_model_setting_entity:
+    name: _extract_model_setting_entity
     module: nlp-service.app.routing.parser.rules
-    line: 359
-    cyclomatic_complexity: 7
-    calls_out: 5
+    line: 514
+    cyclomatic_complexity: 5
+    calls_out: 1
+    calls_in: 1
+  nlp2dsl_sdk.demos.list_available_demos:
+    name: list_available_demos
+    module: nlp2dsl_sdk.demos
+    line: 331
+    cyclomatic_complexity: 1
+    calls_out: 0
+    calls_in: 2
+  backend.app.routers.settings.action_schema:
+    name: action_schema
+    module: backend.app.routers.settings
+    line: 29
+    cyclomatic_complexity: 2
+    calls_out: 6
+    calls_in: 0
+  examples.11-notify-quality.scenario.run:
+    name: run
+    module: examples.11-notify-quality.scenario
+    line: 19
+    cyclomatic_complexity: 8
+    calls_out: 17
+    calls_in: 0
+  nlp-service.app.routing.parser.rules._extract_mode_setting_entity:
+    name: _extract_mode_setting_entity
+    module: nlp-service.app.routing.parser.rules
+    line: 531
+    cyclomatic_complexity: 6
+    calls_out: 1
     calls_in: 1
   nlp-service.app.audio_parser.stt_audio:
     name: stt_audio
@@ -467,244 +1342,139 @@ nodes:
     cyclomatic_complexity: 9
     calls_out: 14
     calls_in: 5
-  tauri-wrapper.scripts.dev.exitCode:
-    name: exitCode
-    module: tauri-wrapper.scripts.dev
-    line: 47
-    cyclomatic_complexity: 2
+  nlp-service.app.governance.policy._decision:
+    name: _decision
+    module: nlp-service.app.governance.policy
+    line: 285
+    cyclomatic_complexity: 1
     calls_out: 1
+    calls_in: 8
+  nlp-service.app.routing.resolve._parser_source:
+    name: _parser_source
+    module: nlp-service.app.routing.resolve
+    line: 21
+    cyclomatic_complexity: 5
+    calls_out: 4
+    calls_in: 1
+  nlp-service.app.dsl.mapper._get_field_mapping:
+    name: _get_field_mapping
+    module: nlp-service.app.dsl.mapper
+    line: 182
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 1
+  backend.app.routers.settings.actions_schema:
+    name: actions_schema
+    module: backend.app.routers.settings
+    line: 21
+    cyclomatic_complexity: 1
+    calls_out: 5
     calls_in: 0
-  nlp-service.app.routing.native.resolve_native_intent:
-    name: resolve_native_intent
-    module: nlp-service.app.routing.native
-    line: 55
-    cyclomatic_complexity: 4
+  nlp-service.app.main.health:
+    name: health
+    module: nlp-service.app.main
+    line: 198
+    cyclomatic_complexity: 3
+    calls_out: 8
+    calls_in: 0
+  nlp2dsl_sdk.cli._demo:
+    name: _demo
+    module: nlp2dsl_sdk.cli
+    line: 158
+    cyclomatic_complexity: 6
     calls_out: 5
     calls_in: 1
-  nlp-service.app.routing.parser.rules._extract_numeric_setting_value:
-    name: _extract_numeric_setting_value
-    module: nlp-service.app.routing.parser.rules
-    line: 341
+  nlp-service.app.access.uri_match.normalize_uri:
+    name: normalize_uri
+    module: nlp-service.app.access.uri_match
+    line: 9
+    cyclomatic_complexity: 2
+    calls_out: 1
+    calls_in: 1
+  nlp-service.app.governance.config.load_access_config:
+    name: load_access_config
+    module: nlp-service.app.governance.config
+    line: 91
     cyclomatic_complexity: 3
     calls_out: 2
+    calls_in: 2
+  nlp2dsl_sdk.encoding._explicit_utf8_locale:
+    name: _explicit_utf8_locale
+    module: nlp2dsl_sdk.encoding
+    line: 20
+    cyclomatic_complexity: 4
+    calls_out: 2
     calls_in: 1
-  backend.app.workflow_events.WorkflowEventHub.subscriber_count:
-    name: subscriber_count
-    module: backend.app.workflow_events
-    line: 86
-    cyclomatic_complexity: 1
-    calls_out: 3
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector.detect_all:
+    name: detect_all
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector
+    line: 336
+    cyclomatic_complexity: 8
+    calls_out: 10
     calls_in: 0
-  nlp2dsl_sdk.demos._print_execution_result:
-    name: _print_execution_result
-    module: nlp2dsl_sdk.demos
-    line: 69
-    cyclomatic_complexity: 5
-    calls_out: 11
-    calls_in: 7
-  nlp-service.app.routing.parser.rules._second_system_action_wins:
-    name: _second_system_action_wins
-    module: nlp-service.app.routing.parser.rules
-    line: 195
-    cyclomatic_complexity: 3
-    calls_out: 0
-    calls_in: 1
-  nlp-service.app.dsl.forms.get_action_form:
-    name: get_action_form
-    module: nlp-service.app.dsl.forms
-    line: 47
-    cyclomatic_complexity: 5
-    calls_out: 12
-    calls_in: 3
   nlp-service.app.conversation.responses.build_and_check_dsl:
     name: build_and_check_dsl
     module: nlp-service.app.conversation.responses
-    line: 133
+    line: 143
     cyclomatic_complexity: 4
     calls_out: 6
     calls_in: 1
-  nlp2dsl_sdk.demos._print_json:
-    name: _print_json
-    module: nlp2dsl_sdk.demos
-    line: 45
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 4
-  nlp-service.app.conversation.responses._is_execute_or_continue:
-    name: _is_execute_or_continue
-    module: nlp-service.app.conversation.responses
-    line: 53
-    cyclomatic_complexity: 2
-    calls_out: 3
-    calls_in: 2
-  worker.worker.handle_notify_telegram:
-    name: handle_notify_telegram
-    module: worker.worker
-    line: 133
-    cyclomatic_complexity: 1
-    calls_out: 5
-    calls_in: 0
-  nlp-service.app.audio_parser.stt_file:
-    name: stt_file
-    module: nlp-service.app.audio_parser
-    line: 92
-    cyclomatic_complexity: 2
-    calls_out: 4
-    calls_in: 0
-  tauri-wrapper.scripts.serve-dist.resolveRequestPath:
-    name: resolveRequestPath
-    module: tauri-wrapper.scripts.serve-dist
-    line: 35
-    cyclomatic_complexity: 8
-    calls_out: 8
-    calls_in: 1
-  nlp2dsl_sdk.demos.run_crm_update_demo:
-    name: run_crm_update_demo
-    module: nlp2dsl_sdk.demos
-    line: 120
-    cyclomatic_complexity: 3
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector._get_fuzzy_schema_matcher:
+    name: _get_fuzzy_schema_matcher
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector
+    line: 59
+    cyclomatic_complexity: 7
     calls_out: 7
-    calls_in: 0
-  backend.app.routers.settings.get_settings:
-    name: get_settings
-    module: backend.app.routers.settings
-    line: 39
-    cyclomatic_complexity: 1
-    calls_out: 5
-    calls_in: 0
-  nlp-service.app.governance.config.reload_access_config:
-    name: reload_access_config
-    module: nlp-service.app.governance.config
-    line: 164
-    cyclomatic_complexity: 1
-    calls_out: 1
     calls_in: 1
-  nlp-service.app.routing.parser.rules._actions_by_score:
-    name: _actions_by_score
-    module: nlp-service.app.routing.parser.rules
-    line: 155
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 1
-  worker.worker._deliver_notification:
-    name: _deliver_notification
-    module: worker.worker
-    line: 49
-    cyclomatic_complexity: 5
-    calls_out: 16
-    calls_in: 3
-  nlp2dsl_sdk.demos._run_workflow_examples:
-    name: _run_workflow_examples
-    module: nlp2dsl_sdk.demos
-    line: 396
-    cyclomatic_complexity: 3
+  nlp-service.app.routing.observability.record_intent_decision:
+    name: record_intent_decision
+    module: nlp-service.app.routing.observability
+    line: 24
+    cyclomatic_complexity: 7
     calls_out: 4
-    calls_in: 1
-  backend.app.workflow_events.WorkflowEventHub.publish:
-    name: publish
-    module: backend.app.workflow_events
-    line: 79
-    cyclomatic_complexity: 2
-    calls_out: 4
-    calls_in: 0
-  nlp-service.app.access.uri_match.uri_matches:
-    name: uri_matches
-    module: nlp-service.app.access.uri_match
-    line: 13
-    cyclomatic_complexity: 8
-    calls_out: 11
-    calls_in: 1
-  nlp-service.app.settings.SettingsManager.set:
-    name: set
-    module: nlp-service.app.settings
-    line: 126
-    cyclomatic_complexity: 4
-    calls_out: 11
     calls_in: 7
-  nlp-service.app.governance.config._search_paths:
-    name: _search_paths
-    module: nlp-service.app.governance.config
-    line: 20
-    cyclomatic_complexity: 6
-    calls_out: 17
-    calls_in: 1
-  nlp2dsl_sdk.demos.run_automation_gallery_demo:
-    name: run_automation_gallery_demo
-    module: nlp2dsl_sdk.demos
-    line: 174
-    cyclomatic_complexity: 3
-    calls_out: 4
-    calls_in: 0
-  nlp-service.app.conversation.responses.handle_unknown_intent:
-    name: handle_unknown_intent
-    module: nlp-service.app.conversation.responses
-    line: 77
+  nlp-service.app.audio_parser.is_stt_available:
+    name: is_stt_available
+    module: nlp-service.app.audio_parser
+    line: 112
+    cyclomatic_complexity: 2
+    calls_out: 0
+    calls_in: 3
+  examples.08-multi-object-benchmark.scenario.run:
+    name: run
+    module: examples.08-multi-object-benchmark.scenario
+    line: 105
     cyclomatic_complexity: 5
+    calls_out: 15
+    calls_in: 0
+  worker.worker.handle_notify_teams:
+    name: handle_notify_teams
+    module: worker.worker
+    line: 147
+    cyclomatic_complexity: 1
     calls_out: 6
-    calls_in: 1
-  nlp-service.app.routing.native._patterns_match:
-    name: _patterns_match
-    module: nlp-service.app.routing.native
-    line: 19
+    calls_in: 0
+  worker.worker.handle_send_email:
+    name: handle_send_email
+    module: worker.worker
+    line: 90
+    cyclomatic_complexity: 1
+    calls_out: 8
+    calls_in: 0
+  scripts.run-example-testql-results._load_manifest:
+    name: _load_manifest
+    module: scripts.run-example-testql-results
+    line: 59
     cyclomatic_complexity: 3
     calls_out: 3
     calls_in: 1
-  nlp-service.app.routing.native._route_decision:
-    name: _route_decision
-    module: nlp-service.app.routing.native
-    line: 87
-    cyclomatic_complexity: 2
-    calls_out: 4
-    calls_in: 1
-  worker.worker.handle_send_invoice:
-    name: handle_send_invoice
-    module: worker.worker
-    line: 80
-    cyclomatic_complexity: 1
-    calls_out: 9
-    calls_in: 0
-  nlp-service.app.governance.policy._matched_effect:
-    name: _matched_effect
-    module: nlp-service.app.governance.policy
-    line: 266
-    cyclomatic_complexity: 3
-    calls_out: 4
-    calls_in: 1
-  nlp-service.app.registry.get_required_fields:
-    name: get_required_fields
-    module: nlp-service.app.registry
-    line: 381
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._normalize_polish_text:
+    name: _normalize_polish_text
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns
+    line: 28
     cyclomatic_complexity: 1
     calls_out: 2
-    calls_in: 1
-  nlp-service.app.conversation.orchestrator.continue_conversation:
-    name: continue_conversation
-    module: nlp-service.app.conversation.orchestrator
-    line: 38
-    cyclomatic_complexity: 2
-    calls_out: 8
-    calls_in: 3
-  nlp-service.app.routing.parser.rules._extract_notification_channels:
-    name: _extract_notification_channels
-    module: nlp-service.app.routing.parser.rules
-    line: 281
-    cyclomatic_complexity: 6
-    calls_out: 6
-    calls_in: 1
-  worker.worker.handle_generate_report:
-    name: handle_generate_report
-    module: worker.worker
-    line: 99
-    cyclomatic_complexity: 1
-    calls_out: 9
-    calls_in: 0
-  examples.04-scheduled-report.main.main:
-    name: main
-    module: examples.04-scheduled-report.main
-    line: 16
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 0
+    calls_in: 6
   nlp-service.app.governance.policy._grant_action_matches:
     name: _grant_action_matches
     module: nlp-service.app.governance.policy
@@ -712,11 +1482,256 @@ nodes:
     cyclomatic_complexity: 4
     calls_out: 4
     calls_in: 1
-  backend.app.routers.settings.update_settings_section:
-    name: update_settings_section
-    module: backend.app.routers.settings
-    line: 57
+  nlp-service.app.routing.parser.facade.parse_text:
+    name: parse_text
+    module: nlp-service.app.routing.parser.facade
+    line: 13
     cyclomatic_complexity: 2
+    calls_out: 4
+    calls_in: 0
+  nlp-service.app.main.orient_text:
+    name: orient_text
+    module: nlp-service.app.main
+    line: 86
+    cyclomatic_complexity: 1
+    calls_out: 3
+    calls_in: 0
+  tauri-wrapper.scripts.dev.main:
+    name: main
+    module: tauri-wrapper.scripts.dev
+    line: 6
+    cyclomatic_complexity: 11
+    calls_out: 10
+    calls_in: 1
+  nlp-service.app.governance.policy._action_context:
+    name: _action_context
+    module: nlp-service.app.governance.policy
+    line: 153
+    cyclomatic_complexity: 5
+    calls_out: 5
+    calls_in: 1
+  nlp-service.app.governance.config._build_access_config:
+    name: _build_access_config
+    module: nlp-service.app.governance.config
+    line: 116
+    cyclomatic_complexity: 7
+    calls_out: 18
+    calls_in: 1
+  backend.app.engine._publish_workflow_event:
+    name: _publish_workflow_event
+    module: backend.app.engine
+    line: 54
+    cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 7
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector.detect_intent_ir:
+    name: detect_intent_ir
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector
+    line: 330
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 0
+  nlp-service.integrations.loader.load_integration_registries:
+    name: load_integration_registries
+    module: nlp-service.integrations.loader
+    line: 25
+    cyclomatic_complexity: 5
+    calls_out: 10
+    calls_in: 1
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter.plan_to_propact_markdown:
+    name: plan_to_propact_markdown
+    module: packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter
+    line: 117
+    cyclomatic_complexity: 2
+    calls_out: 4
+    calls_in: 2
+  nlp-service.app.routing.native._keywords_pattern_matches:
+    name: _keywords_pattern_matches
+    module: nlp-service.app.routing.native
+    line: 41
+    cyclomatic_complexity: 4
+    calls_out: 5
+    calls_in: 1
+  nlp-service.app.conversation.responses.format_system_result:
+    name: format_system_result
+    module: nlp-service.app.conversation.responses
+    line: 195
+    cyclomatic_complexity: 3
+    calls_out: 6
+    calls_in: 1
+  nlp2dsl_sdk.encoding.utf8_auto_enabled:
+    name: utf8_auto_enabled
+    module: nlp2dsl_sdk.encoding
+    line: 15
+    cyclomatic_complexity: 1
+    calls_out: 3
+    calls_in: 1
+  tauri-wrapper.scripts.serve-dist.sendFile:
+    name: sendFile
+    module: tauri-wrapper.scripts.serve-dist
+    line: 61
+    cyclomatic_complexity: 1
+    calls_out: 4
+    calls_in: 1
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.__init__:
+    name: __init__
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns
+    line: 49
+    cyclomatic_complexity: 3
+    calls_out: 7
+    calls_in: 0
+  nlp-service.app.main.chat_state:
+    name: chat_state
+    module: nlp-service.app.main
+    line: 313
+    cyclomatic_complexity: 2
+    calls_out: 4
+    calls_in: 0
+  nlp-service.app.routing.parser.rules._set_entity:
+    name: _set_entity
+    module: nlp-service.app.routing.parser.rules
+    line: 557
+    cyclomatic_complexity: 3
+    calls_out: 2
+    calls_in: 1
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.runner._is_shell_only:
+    name: _is_shell_only
+    module: packages.nlp2cmd-propact.src.nlp2cmd_propact.runner
+    line: 45
+    cyclomatic_complexity: 3
+    calls_out: 2
+    calls_in: 1
+  nlp2dsl_sdk.artifacts.ExampleArtifactWriter.__init__:
+    name: __init__
+    module: nlp2dsl_sdk.artifacts
+    line: 327
+    cyclomatic_complexity: 5
+    calls_out: 6
+    calls_in: 0
+  nlp2dsl_sdk.client.NLP2DSLClient.send_invoice_and_notify:
+    name: send_invoice_and_notify
+    module: nlp2dsl_sdk.client
+    line: 429
+    cyclomatic_complexity: 4
+    calls_out: 6
+    calls_in: 0
+  worker.worker.handle_send_invoice:
+    name: handle_send_invoice
+    module: worker.worker
+    line: 80
+    cyclomatic_complexity: 1
+    calls_out: 9
+    calls_in: 0
+  backend.app.engine.run_workflow:
+    name: run_workflow
+    module: backend.app.engine
+    line: 248
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 3
+  nlp-service.app.governance.config._load_yaml_file:
+    name: _load_yaml_file
+    module: nlp-service.app.governance.config
+    line: 71
+    cyclomatic_complexity: 3
+    calls_out: 4
+    calls_in: 1
+  nlp-service.app.governance.policy._grant_target_matches:
+    name: _grant_target_matches
+    module: nlp-service.app.governance.policy
+    line: 70
+    cyclomatic_complexity: 5
+    calls_out: 6
+    calls_in: 1
+  nlp2dsl_sdk.demos.run_crm_update_demo:
+    name: run_crm_update_demo
+    module: nlp2dsl_sdk.demos
+    line: 55
+    cyclomatic_complexity: 3
+    calls_out: 5
+    calls_in: 0
+  nlp-service.app.dsl.mapper._resolve_actions:
+    name: _resolve_actions
+    module: nlp-service.app.dsl.mapper
+    line: 85
+    cyclomatic_complexity: 7
+    calls_out: 4
+    calls_in: 1
+  nlp-service.app.routing.parser.rules._extract_param_aliases:
+    name: _extract_param_aliases
+    module: nlp-service.app.routing.parser.rules
+    line: 482
+    cyclomatic_complexity: 5
+    calls_out: 6
+    calls_in: 1
+  nlp-service.app.audio_parser.stt_file:
+    name: stt_file
+    module: nlp-service.app.audio_parser
+    line: 92
+    cyclomatic_complexity: 2
+    calls_out: 4
+    calls_in: 0
+  nlp-service.app.conversation.merge.merge_into_state:
+    name: merge_into_state
+    module: nlp-service.app.conversation.merge
+    line: 11
+    cyclomatic_complexity: 13
+    calls_out: 4
+    calls_in: 1
+  nlp-service.app.registry.get_trigger:
+    name: get_trigger
+    module: nlp-service.app.registry
+    line: 379
+    cyclomatic_complexity: 3
+    calls_out: 2
+    calls_in: 3
+  nlp-service.app.governance.config._merge_dict:
+    name: _merge_dict
+    module: nlp-service.app.governance.config
+    line: 79
+    cyclomatic_complexity: 8
+    calls_out: 6
+    calls_in: 2
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._tokenize_text:
+    name: _tokenize_text
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector
+    line: 1152
+    cyclomatic_complexity: 11
+    calls_out: 15
+    calls_in: 0
+  worker.worker.action:
+    name: action
+    module: worker.worker
+    line: 41
+    cyclomatic_complexity: 1
+    calls_out: 0
+    calls_in: 8
+  nlp-service.app.conversation.responses._is_execute_or_continue:
+    name: _is_execute_or_continue
+    module: nlp-service.app.conversation.responses
+    line: 63
+    cyclomatic_complexity: 2
+    calls_out: 4
+    calls_in: 2
+  nlp-service.app.system_executor._exec_file_read:
+    name: _exec_file_read
+    module: nlp-service.app.system_executor
+    line: 114
+    cyclomatic_complexity: 9
+    calls_out: 18
+    calls_in: 0
+  nlp2dsl_sdk.preview.print_workflow_preview:
+    name: print_workflow_preview
+    module: nlp2dsl_sdk.preview
+    line: 21
+    cyclomatic_complexity: 11
+    calls_out: 27
+    calls_in: 8
+  nlp2dsl_sdk.artifacts.ExampleArtifactWriter.record:
+    name: record
+    module: nlp2dsl_sdk.artifacts
+    line: 346
+    cyclomatic_complexity: 1
     calls_out: 6
     calls_in: 0
   nlp-service.app.governance.policy._effect_decision:
@@ -726,76 +1741,6 @@ nodes:
     cyclomatic_complexity: 4
     calls_out: 4
     calls_in: 1
-  nlp-service.app.main.actions_schema:
-    name: actions_schema
-    module: nlp-service.app.main
-    line: 325
-    cyclomatic_complexity: 3
-    calls_out: 3
-    calls_in: 0
-  nlp2dsl_sdk.client.workflow_step:
-    name: workflow_step
-    module: nlp2dsl_sdk.client
-    line: 17
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 11
-  nlp-service.app.routing.parser.rules._extract_entities:
-    name: _extract_entities
-    module: nlp-service.app.routing.parser.rules
-    line: 226
-    cyclomatic_complexity: 1
-    calls_out: 9
-    calls_in: 1
-  nlp-service.integrations.loader.load_integration_registries:
-    name: load_integration_registries
-    module: nlp-service.integrations.loader
-    line: 25
-    cyclomatic_complexity: 5
-    calls_out: 10
-    calls_in: 1
-  worker.worker.handle_notify_slack:
-    name: handle_notify_slack
-    module: worker.worker
-    line: 119
-    cyclomatic_complexity: 1
-    calls_out: 5
-    calls_in: 0
-  tauri-wrapper.scripts.serve-dist.fileContents:
-    name: fileContents
-    module: tauri-wrapper.scripts.serve-dist
-    line: 62
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 0
-  nlp2dsl_sdk.demos._ensure_services:
-    name: _ensure_services
-    module: nlp2dsl_sdk.demos
-    line: 36
-    cyclomatic_complexity: 2
-    calls_out: 2
-    calls_in: 8
-  nlp-service.app.main.text_to_dsl:
-    name: text_to_dsl
-    module: nlp-service.app.main
-    line: 103
-    cyclomatic_complexity: 2
-    calls_out: 4
-    calls_in: 0
-  nlp-service.app.governance.config._load_yaml_file:
-    name: _load_yaml_file
-    module: nlp-service.app.governance.config
-    line: 71
-    cyclomatic_complexity: 3
-    calls_out: 4
-    calls_in: 1
-  nlp-service.app.governance.policy.authorize_action:
-    name: authorize_action
-    module: nlp-service.app.governance.policy
-    line: 108
-    cyclomatic_complexity: 5
-    calls_out: 8
-    calls_in: 4
   backend.app.routers.chat.chat_start:
     name: chat_start
     module: backend.app.routers.chat
@@ -803,19 +1748,19 @@ nodes:
     cyclomatic_complexity: 2
     calls_out: 4
     calls_in: 0
-  nlp-service.app.execution.delegate.is_delegated_to_mullm:
-    name: is_delegated_to_mullm
-    module: nlp-service.app.execution.delegate
-    line: 10
-    cyclomatic_complexity: 2
-    calls_out: 1
-    calls_in: 1
-  examples.01-invoice.main.main:
-    name: main
-    module: examples.01-invoice.main
-    line: 16
-    cyclomatic_complexity: 1
-    calls_out: 1
+  nlp-service.app.routing.parser.rules.parse_rules:
+    name: parse_rules
+    module: nlp-service.app.routing.parser.rules
+    line: 129
+    cyclomatic_complexity: 15
+    calls_out: 10
+    calls_in: 5
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_patterns_from_json:
+    name: _load_patterns_from_json
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns
+    line: 73
+    cyclomatic_complexity: 19
+    calls_out: 26
     calls_in: 0
   nlp-service.app.conversation.orchestrator._attach_routing:
     name: _attach_routing
@@ -824,38 +1769,178 @@ nodes:
     cyclomatic_complexity: 1
     calls_out: 1
     calls_in: 5
-  nlp-service.integrations.loader.apply_integrations:
-    name: apply_integrations
-    module: nlp-service.integrations.loader
-    line: 45
+  examples.05-conversation-flow.scenario.run_demo:
+    name: run_demo
+    module: examples.05-conversation-flow.scenario
+    line: 10
+    cyclomatic_complexity: 2
+    calls_out: 15
+    calls_in: 1
+  nlp-service.app.routing.parser.resolve_mode.parse_with_mode:
+    name: parse_with_mode
+    module: nlp-service.app.routing.parser.resolve_mode
+    line: 17
+    cyclomatic_complexity: 10
+    calls_out: 12
+    calls_in: 2
+  backend.app.engine._workflow_steps_payload:
+    name: _workflow_steps_payload
+    module: backend.app.engine
+    line: 38
+    cyclomatic_complexity: 2
+    calls_out: 1
+    calls_in: 2
+  nlp-service.app.routing.parser.rules._extract_amount:
+    name: _extract_amount
+    module: nlp-service.app.routing.parser.rules
+    line: 349
     cyclomatic_complexity: 5
     calls_out: 7
     calls_in: 1
-  nlp-service.app.routing.parser.rules._extract_format:
-    name: _extract_format
-    module: nlp-service.app.routing.parser.rules
-    line: 273
-    cyclomatic_complexity: 3
-    calls_out: 1
-    calls_in: 1
-  examples.03-report-and-notify.main.main:
-    name: main
-    module: examples.03-report-and-notify.main
-    line: 16
-    cyclomatic_complexity: 1
-    calls_out: 1
+  packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rest_workflow.RestWorkflowPlanStrategy.plan:
+    name: plan
+    module: packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rest_workflow
+    line: 46
+    cyclomatic_complexity: 7
+    calls_out: 14
     calls_in: 0
-  nlp-service.app.main.websocket_chat:
-    name: websocket_chat
+  nlp-service.app.main._run_parser:
+    name: _run_parser
     module: nlp-service.app.main
-    line: 504
-    cyclomatic_complexity: 10
-    calls_out: 23
+    line: 466
+    cyclomatic_complexity: 3
+    calls_out: 3
+    calls_in: 2
+  nlp-service.app.settings.SettingsManager.set:
+    name: set
+    module: nlp-service.app.settings
+    line: 126
+    cyclomatic_complexity: 4
+    calls_out: 11
+    calls_in: 13
+  backend.app.routers.workflow.run_workflow_endpoint:
+    name: run_workflow_endpoint
+    module: backend.app.routers.workflow
+    line: 77
+    cyclomatic_complexity: 1
+    calls_out: 2
     calls_in: 0
-  nlp-service.app.routing.parser.rules._extract_file_path_entity:
-    name: _extract_file_path_entity
+  nlp-service.app.routing.native._best_action_alias:
+    name: _best_action_alias
+    module: nlp-service.app.routing.native
+    line: 120
+    cyclomatic_complexity: 3
+    calls_out: 3
+    calls_in: 1
+  tauri-wrapper.scripts.serve-dist.contentType:
+    name: contentType
+    module: tauri-wrapper.scripts.serve-dist
+    line: 26
+    cyclomatic_complexity: 2
+    calls_out: 3
+    calls_in: 3
+  backend.app.workflow_events.WorkflowEventHub.publish:
+    name: publish
+    module: backend.app.workflow_events
+    line: 79
+    cyclomatic_complexity: 2
+    calls_out: 4
+    calls_in: 0
+  nlp-service.app.routing.resolve._intent_from_nlp:
+    name: _intent_from_nlp
+    module: nlp-service.app.routing.resolve
+    line: 48
+    cyclomatic_complexity: 2
+    calls_out: 7
+    calls_in: 1
+  nlp-service.app.routing.parser.rules._actions_by_score:
+    name: _actions_by_score
     module: nlp-service.app.routing.parser.rules
-    line: 319
+    line: 258
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 1
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.execution_route:
+    name: execution_route
+    module: packages.nlp2cmd-propact.src.nlp2cmd_propact.executor
+    line: 30
+    cyclomatic_complexity: 3
+    calls_out: 0
+    calls_in: 2
+  examples.06-interactive-chat.scenario.run_interactive:
+    name: run_interactive
+    module: examples.06-interactive-chat.scenario
+    line: 35
+    cyclomatic_complexity: 1
+    calls_out: 4
+    calls_in: 1
+  tauri-wrapper.scripts.serve-dist.stat:
+    name: stat
+    module: tauri-wrapper.scripts.serve-dist
+    line: 48
+    cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 1
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.runner._run_shell_steps:
+    name: _run_shell_steps
+    module: packages.nlp2cmd-propact.src.nlp2cmd_propact.runner
+    line: 60
+    cyclomatic_complexity: 7
+    calls_out: 19
+    calls_in: 1
+  nlp2dsl_sdk.cli.main:
+    name: main
+    module: nlp2dsl_sdk.cli
+    line: 174
+    cyclomatic_complexity: 7
+    calls_out: 25
+    calls_in: 0
+  nlp2dsl_sdk.demos._run_conversation_code_example:
+    name: _run_conversation_code_example
+    module: nlp2dsl_sdk.demos
+    line: 283
+    cyclomatic_complexity: 3
+    calls_out: 14
+    calls_in: 1
+  examples.03-report-and-notify.scenario.run:
+    name: run
+    module: examples.03-report-and-notify.scenario
+    line: 28
+    cyclomatic_complexity: 6
+    calls_out: 16
+    calls_in: 0
+  nlp-service.app.governance.policy._scheme_decision:
+    name: _scheme_decision
+    module: nlp-service.app.governance.policy
+    line: 171
+    cyclomatic_complexity: 3
+    calls_out: 2
+    calls_in: 1
+  worker.worker.handle_notify_telegram:
+    name: handle_notify_telegram
+    module: worker.worker
+    line: 133
+    cyclomatic_complexity: 1
+    calls_out: 5
+    calls_in: 0
+  nlp2dsl_sdk.artifacts._slugify:
+    name: _slugify
+    module: nlp2dsl_sdk.artifacts
+    line: 48
+    cyclomatic_complexity: 2
+    calls_out: 5
+    calls_in: 1
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor._run_nlp2cmd_step:
+    name: _run_nlp2cmd_step
+    module: packages.nlp2cmd-propact.src.nlp2cmd_propact.executor
+    line: 127
+    cyclomatic_complexity: 5
+    calls_out: 13
+    calls_in: 0
+  nlp-service.app.routing.orientation._host_list_root:
+    name: _host_list_root
+    module: nlp-service.app.routing.orientation
+    line: 195
     cyclomatic_complexity: 3
     calls_out: 2
     calls_in: 1
@@ -866,572 +1951,12 @@ nodes:
     cyclomatic_complexity: 6
     calls_out: 5
     calls_in: 1
-  nlp-service.app.settings._coerce_type:
-    name: _coerce_type
-    module: nlp-service.app.settings
-    line: 236
-    cyclomatic_complexity: 5
-    calls_out: 6
-    calls_in: 1
-  nlp-service.app.parser_llm._parse_json_response:
-    name: _parse_json_response
-    module: nlp-service.app.parser_llm
-    line: 173
-    cyclomatic_complexity: 6
-    calls_out: 10
-    calls_in: 1
-  backend.app.engine.start_workflow:
-    name: start_workflow
-    module: backend.app.engine
-    line: 254
-    cyclomatic_complexity: 1
-    calls_out: 7
-    calls_in: 1
-  nlp-service.app.routing.parser.rules._set_entity:
-    name: _set_entity
-    module: nlp-service.app.routing.parser.rules
-    line: 374
-    cyclomatic_complexity: 3
-    calls_out: 2
-    calls_in: 1
-  nlp-service.app.routing.parser.rules._extract_report_type:
-    name: _extract_report_type
-    module: nlp-service.app.routing.parser.rules
-    line: 265
-    cyclomatic_complexity: 3
-    calls_out: 1
-    calls_in: 1
-  backend.app.engine._execute_workflow:
-    name: _execute_workflow
-    module: backend.app.engine
-    line: 81
-    cyclomatic_complexity: 11
-    calls_out: 42
-    calls_in: 2
-  nlp-service.app.routing.resolve._intent_from_nlp:
-    name: _intent_from_nlp
-    module: nlp-service.app.routing.resolve
-    line: 48
-    cyclomatic_complexity: 2
-    calls_out: 7
-    calls_in: 1
-  nlp-service.app.governance.bootstrap.bootstrap_registry:
-    name: bootstrap_registry
-    module: nlp-service.app.governance.bootstrap
-    line: 56
-    cyclomatic_complexity: 1
-    calls_out: 7
-    calls_in: 0
-  nlp-service.app.routing.native._resolve_action_alias:
-    name: _resolve_action_alias
-    module: nlp-service.app.routing.native
-    line: 101
-    cyclomatic_complexity: 2
-    calls_out: 6
-    calls_in: 1
-  backend.app.routers.chat.chat_get_state:
-    name: chat_get_state
-    module: backend.app.routers.chat
-    line: 118
-    cyclomatic_complexity: 2
-    calls_out: 7
-    calls_in: 0
-  nlp-service.app.main.health:
-    name: health
-    module: nlp-service.app.main
-    line: 198
-    cyclomatic_complexity: 3
-    calls_out: 8
-    calls_in: 0
-  tauri-wrapper.scripts.serve-dist.sendFile:
-    name: sendFile
-    module: tauri-wrapper.scripts.serve-dist
-    line: 61
-    cyclomatic_complexity: 1
-    calls_out: 4
-    calls_in: 1
-  nlp-service.app.routing.native._aliases_match:
-    name: _aliases_match
-    module: nlp-service.app.routing.native
-    line: 51
-    cyclomatic_complexity: 2
-    calls_out: 3
-    calls_in: 1
-  nlp2dsl_sdk.demos._run_workflow_code_examples:
-    name: _run_workflow_code_examples
-    module: nlp2dsl_sdk.demos
-    line: 618
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 1
-  tauri-wrapper.scripts.serve-dist.stat:
-    name: stat
-    module: tauri-wrapper.scripts.serve-dist
-    line: 48
-    cyclomatic_complexity: 2
-    calls_out: 2
-    calls_in: 1
-  nlp2dsl_sdk.client.NLP2DSLClient.send_invoice_and_notify:
-    name: send_invoice_and_notify
-    module: nlp2dsl_sdk.client
-    line: 409
-    cyclomatic_complexity: 4
-    calls_out: 6
-    calls_in: 0
-  nlp-service.app.audio_parser.StreamingSTT.send_audio:
-    name: send_audio
-    module: nlp-service.app.audio_parser
-    line: 135
-    cyclomatic_complexity: 2
-    calls_out: 2
-    calls_in: 0
-  nlp2dsl_sdk.demos.run_scheduled_report_demo:
-    name: run_scheduled_report_demo
-    module: nlp2dsl_sdk.demos
-    line: 528
-    cyclomatic_complexity: 4
-    calls_out: 10
-    calls_in: 1
-  nlp-service.app.routing.native._regex_pattern_matches:
-    name: _regex_pattern_matches
-    module: nlp-service.app.routing.native
-    line: 36
-    cyclomatic_complexity: 4
-    calls_out: 4
-    calls_in: 1
-  nlp-service.app.main._run_parser:
-    name: _run_parser
-    module: nlp-service.app.main
-    line: 466
-    cyclomatic_complexity: 7
-    calls_out: 9
-    calls_in: 2
-  nlp-service.app.system_executor.execute_system_action:
-    name: execute_system_action
-    module: nlp-service.app.system_executor
-    line: 62
-    cyclomatic_complexity: 3
-    calls_out: 5
-    calls_in: 1
-  backend.app.routers.settings.reset_settings:
-    name: reset_settings
-    module: backend.app.routers.settings
-    line: 77
-    cyclomatic_complexity: 1
-    calls_out: 5
-    calls_in: 0
-  tauri-wrapper.scripts.serve-dist.isInsideRoot:
-    name: isInsideRoot
-    module: tauri-wrapper.scripts.serve-dist
-    line: 30
-    cyclomatic_complexity: 3
-    calls_out: 3
-    calls_in: 1
-  backend.app.engine.run_workflow:
-    name: run_workflow
-    module: backend.app.engine
-    line: 248
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 3
-  nlp2dsl_sdk.demos.run_email_demo:
-    name: run_email_demo
-    module: nlp2dsl_sdk.demos
-    line: 470
-    cyclomatic_complexity: 5
-    calls_out: 14
-    calls_in: 1
-  nlp-service.app.governance.policy.get_agent_id:
-    name: get_agent_id
-    module: nlp-service.app.governance.policy
-    line: 44
-    cyclomatic_complexity: 4
-    calls_out: 5
-    calls_in: 1
-  nlp-service.app.main.orient_text:
-    name: orient_text
-    module: nlp-service.app.main
-    line: 86
-    cyclomatic_complexity: 1
-    calls_out: 3
-    calls_in: 0
-  backend.app.routers.settings.action_schema:
-    name: action_schema
-    module: backend.app.routers.settings
-    line: 29
-    cyclomatic_complexity: 2
-    calls_out: 6
-    calls_in: 0
-  nlp-service.app.routing.parser.rules._extract_mode_setting_entity:
-    name: _extract_mode_setting_entity
-    module: nlp-service.app.routing.parser.rules
-    line: 348
-    cyclomatic_complexity: 6
-    calls_out: 1
-    calls_in: 1
-  nlp-service.app.conversation.responses.handle_system_action:
-    name: handle_system_action
-    module: nlp-service.app.conversation.responses
-    line: 107
-    cyclomatic_complexity: 7
-    calls_out: 7
-    calls_in: 1
-  nlp-service.app.system_executor._exec_file_read:
-    name: _exec_file_read
-    module: nlp-service.app.system_executor
-    line: 114
-    cyclomatic_complexity: 9
-    calls_out: 18
-    calls_in: 0
-  nlp-service.integrations.loader._integration_names:
-    name: _integration_names
-    module: nlp-service.integrations.loader
-    line: 18
-    cyclomatic_complexity: 5
-    calls_out: 6
-    calls_in: 1
-  backend.app.routers.workflow.stream_workflow:
-    name: stream_workflow
-    module: backend.app.routers.workflow
-    line: 104
-    cyclomatic_complexity: 2
-    calls_out: 22
-    calls_in: 0
-  nlp2dsl_sdk.demos._run_gallery_examples:
-    name: _run_gallery_examples
-    module: nlp2dsl_sdk.demos
-    line: 414
-    cyclomatic_complexity: 5
-    calls_out: 14
-    calls_in: 1
-  nlp-service.app.parser_llm.parse_llm:
-    name: parse_llm
-    module: nlp-service.app.parser_llm
-    line: 104
-    cyclomatic_complexity: 3
-    calls_out: 16
-    calls_in: 4
-  nlp-service.app.conversation.orchestrator._process_message:
-    name: _process_message
-    module: nlp-service.app.conversation.orchestrator
-    line: 67
-    cyclomatic_complexity: 6
-    calls_out: 16
-    calls_in: 2
-  nlp2dsl_sdk.client.NLP2DSLClient.crm_update:
-    name: crm_update
-    module: nlp2dsl_sdk.client
-    line: 396
-    cyclomatic_complexity: 2
-    calls_out: 3
-    calls_in: 0
-  nlp-service.app.conversation.responses.build_incomplete_response:
-    name: build_incomplete_response
-    module: nlp-service.app.conversation.responses
-    line: 157
-    cyclomatic_complexity: 3
-    calls_out: 6
-    calls_in: 2
-  nlp-service.app.routing.parser.rules._detect_actions:
-    name: _detect_actions
-    module: nlp-service.app.routing.parser.rules
-    line: 123
-    cyclomatic_complexity: 3
-    calls_out: 3
-    calls_in: 1
-  nlp-service.app.governance.policy._action_context:
-    name: _action_context
-    module: nlp-service.app.governance.policy
-    line: 153
-    cyclomatic_complexity: 5
-    calls_out: 5
-    calls_in: 1
-  nlp-service.app.routing.parser.rules._resolve_intent:
-    name: _resolve_intent
-    module: nlp-service.app.routing.parser.rules
-    line: 208
-    cyclomatic_complexity: 5
-    calls_out: 6
-    calls_in: 1
-  nlp-service.app.governance.policy._decision:
-    name: _decision
-    module: nlp-service.app.governance.policy
-    line: 285
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 8
-  backend.app.routers.workflow.start_workflow_endpoint:
-    name: start_workflow_endpoint
-    module: backend.app.routers.workflow
-    line: 83
-    cyclomatic_complexity: 1
-    calls_out: 2
-    calls_in: 0
-  nlp-service.app.routing.parser.rules._action_alias_scores:
-    name: _action_alias_scores
-    module: nlp-service.app.routing.parser.rules
-    line: 136
-    cyclomatic_complexity: 4
-    calls_out: 3
-    calls_in: 1
-  nlp2dsl_sdk.demos._preview_text_examples:
-    name: _preview_text_examples
-    module: nlp2dsl_sdk.demos
-    line: 99
-    cyclomatic_complexity: 3
-    calls_out: 6
-    calls_in: 6
-  nlp-service.app.conversation.merge.merge_into_state:
-    name: merge_into_state
-    module: nlp-service.app.conversation.merge
-    line: 11
-    cyclomatic_complexity: 9
-    calls_out: 4
-    calls_in: 1
-  tauri-wrapper.scripts.serve-dist.handleRequest:
-    name: handleRequest
-    module: tauri-wrapper.scripts.serve-dist
-    line: 70
-    cyclomatic_complexity: 6
-    calls_out: 6
-    calls_in: 2
-  nlp-service.app.mapper._get_field_mapping:
-    name: _get_field_mapping
-    module: nlp-service.app.mapper
-    line: 142
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 1
-  nlp-service.app.governance.policy._unknown_agent_decision:
-    name: _unknown_agent_decision
-    module: nlp-service.app.governance.policy
-    line: 243
-    cyclomatic_complexity: 4
-    calls_out: 3
-    calls_in: 1
-  nlp-service.app.system_executor._is_read_only:
-    name: _is_read_only
-    module: nlp-service.app.system_executor
-    line: 52
-    cyclomatic_complexity: 2
-    calls_out: 5
-    calls_in: 1
-  nlp-service.app.system_executor._exec_file_write:
-    name: _exec_file_write
-    module: nlp-service.app.system_executor
-    line: 152
-    cyclomatic_complexity: 4
-    calls_out: 12
-    calls_in: 0
-  tauri-wrapper.scripts.dev.main:
-    name: main
-    module: tauri-wrapper.scripts.dev
-    line: 6
-    cyclomatic_complexity: 11
-    calls_out: 10
-    calls_in: 1
-  backend.app.logging_setup.get_request_id:
-    name: get_request_id
-    module: backend.app.logging_setup
-    line: 29
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 13
-  nlp-service.app.routing.native._best_action_alias:
-    name: _best_action_alias
-    module: nlp-service.app.routing.native
-    line: 120
-    cyclomatic_complexity: 3
-    calls_out: 3
-    calls_in: 1
-  nlp-service.app.execution.delegate.execution_backend_for_intent:
-    name: execution_backend_for_intent
-    module: nlp-service.app.execution.delegate
-    line: 14
-    cyclomatic_complexity: 2
-    calls_out: 1
-    calls_in: 1
-  backend.app.routers.chat.chat_message:
-    name: chat_message
-    module: backend.app.routers.chat
-    line: 69
-    cyclomatic_complexity: 12
-    calls_out: 21
-    calls_in: 0
-  backend.app.routers.workflow._workflow_snapshot:
-    name: _workflow_snapshot
-    module: backend.app.routers.workflow
-    line: 39
-    cyclomatic_complexity: 1
-    calls_out: 7
-    calls_in: 2
-  nlp2dsl_sdk.demos.run_invoice_demo:
-    name: run_invoice_demo
-    module: nlp2dsl_sdk.demos
-    line: 445
-    cyclomatic_complexity: 5
-    calls_out: 14
-    calls_in: 1
-  nlp-service.app.governance.config.get_access_config:
-    name: get_access_config
-    module: nlp-service.app.governance.config
-    line: 160
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 6
-  nlp-service.app.conversation.responses.format_system_result:
-    name: format_system_result
-    module: nlp-service.app.conversation.responses
-    line: 185
-    cyclomatic_complexity: 3
-    calls_out: 6
-    calls_in: 1
-  nlp-service.app.routing.resolve._parser_source:
-    name: _parser_source
-    module: nlp-service.app.routing.resolve
-    line: 21
-    cyclomatic_complexity: 5
-    calls_out: 4
-    calls_in: 1
-  nlp-service.app.main.access_config:
-    name: access_config
-    module: nlp-service.app.main
-    line: 124
-    cyclomatic_complexity: 3
-    calls_out: 12
-    calls_in: 0
-  nlp2dsl_sdk.demos.list_available_demos:
-    name: list_available_demos
-    module: nlp2dsl_sdk.demos
-    line: 671
-    cyclomatic_complexity: 1
-    calls_out: 0
-    calls_in: 1
-  nlp-service.app.governance.config._merge_dict:
-    name: _merge_dict
-    module: nlp-service.app.governance.config
-    line: 79
-    cyclomatic_complexity: 8
-    calls_out: 6
-    calls_in: 2
-  tauri-wrapper.scripts.serve-dist.server:
-    name: server
-    module: tauri-wrapper.scripts.serve-dist
-    line: 109
-    cyclomatic_complexity: 4
-    calls_out: 5
-    calls_in: 0
-  nlp-service.app.governance.policy._grant_matches:
-    name: _grant_matches
-    module: nlp-service.app.governance.policy
-    line: 53
-    cyclomatic_complexity: 2
-    calls_out: 2
-    calls_in: 1
-  nlp2dsl_sdk.demos._print_workflow_preview:
-    name: _print_workflow_preview
-    module: nlp2dsl_sdk.demos
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.runner._requires_propact:
+    name: _requires_propact
+    module: packages.nlp2cmd-propact.src.nlp2cmd_propact.runner
     line: 49
-    cyclomatic_complexity: 4
-    calls_out: 16
-    calls_in: 3
-  nlp-service.app.routing.parser.rules.parse_rules:
-    name: parse_rules
-    module: nlp-service.app.routing.parser.rules
-    line: 91
-    cyclomatic_complexity: 5
-    calls_out: 10
-    calls_in: 5
-  nlp-service.app.routing.native._keywords_pattern_matches:
-    name: _keywords_pattern_matches
-    module: nlp-service.app.routing.native
-    line: 41
-    cyclomatic_complexity: 4
-    calls_out: 5
-    calls_in: 1
-  nlp-service.app.registry.get_defaults:
-    name: get_defaults
-    module: nlp-service.app.registry
-    line: 387
-    cyclomatic_complexity: 1
-    calls_out: 3
-    calls_in: 1
-  nlp-service.app.governance.bootstrap.apply_yaml_actions:
-    name: apply_yaml_actions
-    module: nlp-service.app.governance.bootstrap
-    line: 44
-    cyclomatic_complexity: 4
-    calls_out: 6
-    calls_in: 1
-  examples.02-email.main.main:
-    name: main
-    module: examples.02-email.main
-    line: 16
-    cyclomatic_complexity: 1
-    calls_out: 1
-    calls_in: 0
-  nlp-service.app.conversation.responses.check_execute_keyword:
-    name: check_execute_keyword
-    module: nlp-service.app.conversation.responses
-    line: 58
-    cyclomatic_complexity: 7
-    calls_out: 5
-    calls_in: 1
-  nlp-service.app.governance.policy._area_selector_match:
-    name: _area_selector_match
-    module: nlp-service.app.governance.policy
-    line: 90
-    cyclomatic_complexity: 3
-    calls_out: 0
-    calls_in: 1
-  nlp2dsl_sdk.client.NLP2DSLClient.send_email:
-    name: send_email
-    module: nlp2dsl_sdk.client
-    line: 283
-    cyclomatic_complexity: 3
-    calls_out: 2
-    calls_in: 0
-  nlp-service.app.routing.parser.rules._extract_model_setting_entity:
-    name: _extract_model_setting_entity
-    module: nlp-service.app.routing.parser.rules
-    line: 331
-    cyclomatic_complexity: 5
-    calls_out: 1
-    calls_in: 1
-  nlp-service.app.main.action_schema:
-    name: action_schema
-    module: nlp-service.app.main
-    line: 339
     cyclomatic_complexity: 2
-    calls_out: 3
-    calls_in: 0
-  nlp-service.app.routing.observability.record_intent_decision:
-    name: record_intent_decision
-    module: nlp-service.app.routing.observability
-    line: 24
-    cyclomatic_complexity: 7
-    calls_out: 4
-    calls_in: 7
-  nlp2dsl_sdk.__main__.main:
-    name: main
-    module: nlp2dsl_sdk.__main__
-    line: 10
-    cyclomatic_complexity: 5
-    calls_out: 9
-    calls_in: 0
-  nlp-service.app.main.system_execute:
-    name: system_execute
-    module: nlp-service.app.main
-    line: 401
-    cyclomatic_complexity: 2
-    calls_out: 7
-    calls_in: 0
-  nlp-service.app.routing.native._pattern_matches:
-    name: _pattern_matches
-    module: nlp-service.app.routing.native
-    line: 27
-    cyclomatic_complexity: 4
-    calls_out: 5
+    calls_out: 1
     calls_in: 1
   nlp-service.app.routing.resolve._intent_from_orientation:
     name: _intent_from_orientation
@@ -1440,68 +1965,40 @@ nodes:
     cyclomatic_complexity: 4
     calls_out: 9
     calls_in: 1
-  nlp2dsl_sdk.demos._get_supported_languages:
-    name: _get_supported_languages
-    module: nlp2dsl_sdk.demos
-    line: 605
-    cyclomatic_complexity: 3
-    calls_out: 6
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files._nlp2cmd_data_dir:
+    name: _nlp2cmd_data_dir
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files
+    line: 28
+    cyclomatic_complexity: 2
+    calls_out: 3
     calls_in: 1
-  nlp-service.app.routing.native._substring_pattern_matches:
-    name: _substring_pattern_matches
-    module: nlp-service.app.routing.native
-    line: 46
-    cyclomatic_complexity: 4
-    calls_out: 5
-    calls_in: 1
-  nlp-service.app.routing.parser.rules._extract_setting_path_entity:
-    name: _extract_setting_path_entity
-    module: nlp-service.app.routing.parser.rules
-    line: 325
-    cyclomatic_complexity: 3
-    calls_out: 2
-    calls_in: 1
-  nlp-service.app.main.chat_start:
-    name: chat_start
-    module: nlp-service.app.main
-    line: 220
-    cyclomatic_complexity: 5
-    calls_out: 12
-    calls_in: 0
-  nlp-service.app.routing.parser.rules._action_category:
-    name: _action_category
-    module: nlp-service.app.routing.parser.rules
-    line: 180
+  nlp-service.app.dsl.pipeline.map_to_dsl_with_enrichment:
+    name: map_to_dsl_with_enrichment
+    module: nlp-service.app.dsl.pipeline
+    line: 14
+    cyclomatic_complexity: 6
+    calls_out: 4
+    calls_in: 3
+  nlp-service.app.registry.get_required_fields:
+    name: get_required_fields
+    module: nlp-service.app.registry
+    line: 388
     cyclomatic_complexity: 1
     calls_out: 2
-    calls_in: 2
-  nlp-service.app.governance.config.load_access_config:
-    name: load_access_config
-    module: nlp-service.app.governance.config
-    line: 91
-    cyclomatic_complexity: 3
-    calls_out: 2
-    calls_in: 2
-  nlp-service.app.main.access_check:
-    name: access_check
-    module: nlp-service.app.main
-    line: 151
-    cyclomatic_complexity: 3
-    calls_out: 6
-    calls_in: 0
-  nlp2dsl_sdk.client.NLP2DSLClient.generate_report_and_notify:
-    name: generate_report_and_notify
-    module: nlp2dsl_sdk.client
-    line: 317
+    calls_in: 1
+  nlp2dsl_sdk.demos.run_automation_gallery_demo:
+    name: run_automation_gallery_demo
+    module: nlp2dsl_sdk.demos
+    line: 97
     cyclomatic_complexity: 4
     calls_out: 6
     calls_in: 0
-  nlp2dsl_sdk.demos._print_code_generation_preview:
-    name: _print_code_generation_preview
-    module: nlp2dsl_sdk.demos
-    line: 83
-    cyclomatic_complexity: 3
-    calls_out: 11
+  nlp-service.app.governance.config._search_paths:
+    name: _search_paths
+    module: nlp-service.app.governance.config
+    line: 20
+    cyclomatic_complexity: 6
+    calls_out: 17
     calls_in: 1
   backend.app.routers.settings.set_setting:
     name: set_setting
@@ -1510,39 +2007,424 @@ nodes:
     cyclomatic_complexity: 2
     calls_out: 6
     calls_in: 0
-  nlp-service.app.governance.policy._scheme_decision:
-    name: _scheme_decision
-    module: nlp-service.app.governance.policy
-    line: 171
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.facade.IntentPipeline.__init__:
+    name: __init__
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.facade
+    line: 39
+    cyclomatic_complexity: 4
+    calls_out: 3
+    calls_in: 0
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor._run_propact_step:
+    name: _run_propact_step
+    module: packages.nlp2cmd-propact.src.nlp2cmd_propact.executor
+    line: 123
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 0
+  nlp2dsl_sdk.demos._run_workflow_code_examples:
+    name: _run_workflow_code_examples
+    module: nlp2dsl_sdk.demos
+    line: 278
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 1
+  nlp-service.app.main.text_to_dsl:
+    name: text_to_dsl
+    module: nlp-service.app.main
+    line: 103
+    cyclomatic_complexity: 2
+    calls_out: 4
+    calls_in: 0
+  nlp-service.app.routing.orientation._resolve_file_list_host_command:
+    name: _resolve_file_list_host_command
+    module: nlp-service.app.routing.orientation
+    line: 231
+    cyclomatic_complexity: 15
+    calls_out: 24
+    calls_in: 1
+  tauri-wrapper.scripts.serve-dist.isInsideRoot:
+    name: isInsideRoot
+    module: tauri-wrapper.scripts.serve-dist
+    line: 30
+    cyclomatic_complexity: 3
+    calls_out: 3
+    calls_in: 1
+  worker.worker._deliver_notification:
+    name: _deliver_notification
+    module: worker.worker
+    line: 49
+    cyclomatic_complexity: 5
+    calls_out: 16
+    calls_in: 3
+  backend.app.routers.chat.chat_get_state:
+    name: chat_get_state
+    module: backend.app.routers.chat
+    line: 118
+    cyclomatic_complexity: 2
+    calls_out: 7
+    calls_in: 0
+  nlp2dsl_sdk.client.NLP2DSLClient.send_email:
+    name: send_email
+    module: nlp2dsl_sdk.client
+    line: 303
     cyclomatic_complexity: 3
     calls_out: 2
+    calls_in: 0
+  examples.07-email-conversation.scenario.run:
+    name: run
+    module: examples.07-email-conversation.scenario
+    line: 14
+    cyclomatic_complexity: 3
+    calls_out: 11
+    calls_in: 0
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector._get_polish_support:
+    name: _get_polish_support
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector
+    line: 47
+    cyclomatic_complexity: 4
+    calls_out: 0
     calls_in: 1
-  nlp-service.app.routing.parser.rules._dominant_overlap_action:
-    name: _dominant_overlap_action
+  nlp-service.app.governance.bootstrap.apply_yaml_actions:
+    name: apply_yaml_actions
+    module: nlp-service.app.governance.bootstrap
+    line: 44
+    cyclomatic_complexity: 4
+    calls_out: 6
+    calls_in: 1
+  nlp-service.app.governance.policy._unknown_agent_decision:
+    name: _unknown_agent_decision
+    module: nlp-service.app.governance.policy
+    line: 243
+    cyclomatic_complexity: 4
+    calls_out: 3
+    calls_in: 1
+  nlp-service.app.routing.native._resolve_configured_route:
+    name: _resolve_configured_route
+    module: nlp-service.app.routing.native
+    line: 74
+    cyclomatic_complexity: 5
+    calls_out: 5
+    calls_in: 1
+  nlp2dsl_sdk.artifacts.write_environment_doql:
+    name: write_environment_doql
+    module: nlp2dsl_sdk.artifacts
+    line: 76
+    cyclomatic_complexity: 3
+    calls_out: 11
+    calls_in: 1
+  nlp-service.app.routing.parser.rules._extract_entities:
+    name: _extract_entities
     module: nlp-service.app.routing.parser.rules
-    line: 160
+    line: 329
+    cyclomatic_complexity: 1
+    calls_out: 13
+    calls_in: 1
+  nlp-service.app.governance.config._load_merged_config:
+    name: _load_merged_config
+    module: nlp-service.app.governance.config
+    line: 101
+    cyclomatic_complexity: 4
+    calls_out: 7
+    calls_in: 1
+  worker.worker.handle_notify_slack:
+    name: handle_notify_slack
+    module: worker.worker
+    line: 119
+    cyclomatic_complexity: 1
+    calls_out: 5
+    calls_in: 0
+  backend.app.engine._execute_workflow:
+    name: _execute_workflow
+    module: backend.app.engine
+    line: 81
+    cyclomatic_complexity: 11
+    calls_out: 42
+    calls_in: 2
+  nlp-service.app.routing.parser.rules._detect_actions:
+    name: _detect_actions
+    module: nlp-service.app.routing.parser.rules
+    line: 173
+    cyclomatic_complexity: 6
+    calls_out: 6
+    calls_in: 1
+  nlp-service.app.routing.parser.rules._extract_notification_message:
+    name: _extract_notification_message
+    module: nlp-service.app.routing.parser.rules
+    line: 463
+    cyclomatic_complexity: 6
+    calls_out: 8
+    calls_in: 1
+  packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rule_shell._parse_file_search:
+    name: _parse_file_search
+    module: packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rule_shell
+    line: 20
+    cyclomatic_complexity: 10
+    calls_out: 11
+    calls_in: 1
+  nlp2dsl_sdk.artifacts.ExampleArtifactWriter.finalize:
+    name: finalize
+    module: nlp2dsl_sdk.artifacts
+    line: 373
+    cyclomatic_complexity: 4
+    calls_out: 6
+    calls_in: 0
+  nlp-service.app.main.action_schema:
+    name: action_schema
+    module: nlp-service.app.main
+    line: 339
+    cyclomatic_complexity: 2
+    calls_out: 3
+    calls_in: 0
+  nlp-service.app.routing.native._pattern_matches:
+    name: _pattern_matches
+    module: nlp-service.app.routing.native
+    line: 27
     cyclomatic_complexity: 4
     calls_out: 5
     calls_in: 1
-  nlp-service.app.governance.bootstrap._actions_from_yaml_areas:
-    name: _actions_from_yaml_areas
-    module: nlp-service.app.governance.bootstrap
-    line: 13
-    cyclomatic_complexity: 14
-    calls_out: 26
-    calls_in: 1
-  tauri-wrapper.scripts.serve-dist.startServer:
-    name: startServer
+  tauri-wrapper.scripts.serve-dist.resolveRequestPath:
+    name: resolveRequestPath
     module: tauri-wrapper.scripts.serve-dist
-    line: 107
-    cyclomatic_complexity: 4
-    calls_out: 10
-    calls_in: 0
-  nlp-service.app.access.uri_match.normalize_uri:
-    name: normalize_uri
+    line: 35
+    cyclomatic_complexity: 8
+    calls_out: 8
+    calls_in: 1
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._dedupe_case_insensitive:
+    name: _dedupe_case_insensitive
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns
+    line: 34
+    cyclomatic_complexity: 3
+    calls_out: 4
+    calls_in: 4
+  nlp-service.app.access.uri_match.scheme_allowed:
+    name: scheme_allowed
     module: nlp-service.app.access.uri_match
-    line: 9
+    line: 35
+    cyclomatic_complexity: 5
+    calls_out: 2
+    calls_in: 1
+  nlp2dsl_sdk.preview.execute_text_examples:
+    name: execute_text_examples
+    module: nlp2dsl_sdk.preview
+    line: 163
+    cyclomatic_complexity: 8
+    calls_out: 9
+    calls_in: 1
+  nlp2dsl_sdk.client.NLP2DSLClient.crm_update:
+    name: crm_update
+    module: nlp2dsl_sdk.client
+    line: 416
     cyclomatic_complexity: 2
+    calls_out: 3
+    calls_in: 0
+  nlp-service.app.routing.parser.rules._dominant_overlap_action:
+    name: _dominant_overlap_action
+    module: nlp-service.app.routing.parser.rules
+    line: 263
+    cyclomatic_complexity: 4
+    calls_out: 5
+    calls_in: 1
+  nlp-service.app.routing.native._regex_pattern_matches:
+    name: _regex_pattern_matches
+    module: nlp-service.app.routing.native
+    line: 36
+    cyclomatic_complexity: 4
+    calls_out: 4
+    calls_in: 1
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter._format_json_body:
+    name: _format_json_body
+    module: packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter
+    line: 34
+    cyclomatic_complexity: 2
+    calls_out: 3
+    calls_in: 4
+  nlp-service.app.routing.resolve.resolve_intent:
+    name: resolve_intent
+    module: nlp-service.app.routing.resolve
+    line: 109
+    cyclomatic_complexity: 18
+    calls_out: 31
+    calls_in: 1
+  nlp-service.app.main.chat_start:
+    name: chat_start
+    module: nlp-service.app.main
+    line: 220
+    cyclomatic_complexity: 5
+    calls_out: 12
+    calls_in: 0
+  nlp2dsl_sdk.preview.print_execution_result:
+    name: print_execution_result
+    module: nlp2dsl_sdk.preview
+    line: 54
+    cyclomatic_complexity: 5
+    calls_out: 11
+    calls_in: 1
+  nlp-service.app.routing.parser.enrich.is_enrich_enabled:
+    name: is_enrich_enabled
+    module: nlp-service.app.routing.parser.enrich
+    line: 37
+    cyclomatic_complexity: 1
+    calls_out: 3
+    calls_in: 1
+  nlp-service.app.routing.parser.rules._longest_alias_match:
+    name: _longest_alias_match
+    module: nlp-service.app.routing.parser.rules
+    line: 249
+    cyclomatic_complexity: 4
+    calls_out: 5
+    calls_in: 1
+  nlp-service.app.routing.parser.rules._alias_in_text:
+    name: _alias_in_text
+    module: nlp-service.app.routing.parser.rules
+    line: 240
+    cyclomatic_complexity: 3
+    calls_out: 4
+    calls_in: 2
+  nlp-service.app.routing.parser.rules._extract_reminder_subject:
+    name: _extract_reminder_subject
+    module: nlp-service.app.routing.parser.rules
+    line: 411
+    cyclomatic_complexity: 4
+    calls_out: 5
+    calls_in: 1
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter._shell_block:
+    name: _shell_block
+    module: packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter
+    line: 22
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 1
+  nlp-service.app.audio_parser.StreamingSTT.send_audio:
+    name: send_audio
+    module: nlp-service.app.audio_parser
+    line: 135
+    cyclomatic_complexity: 2
+    calls_out: 2
+    calls_in: 0
+  tauri-wrapper.scripts.serve-dist.handleRequest:
+    name: handleRequest
+    module: tauri-wrapper.scripts.serve-dist
+    line: 70
+    cyclomatic_complexity: 6
+    calls_out: 6
+    calls_in: 2
+  nlp-service.app.conversation.responses.deny_message:
+    name: deny_message
+    module: nlp-service.app.conversation.responses
+    line: 30
+    cyclomatic_complexity: 3
+    calls_out: 0
+    calls_in: 1
+  backend.app.routers.workflow._workflow_snapshot:
+    name: _workflow_snapshot
+    module: backend.app.routers.workflow
+    line: 39
+    cyclomatic_complexity: 1
+    calls_out: 7
+    calls_in: 2
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter._ws_block:
+    name: _ws_block
+    module: packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter
+    line: 61
+    cyclomatic_complexity: 5
+    calls_out: 11
+    calls_in: 1
+  backend.app.routers.workflow.stream_workflow:
+    name: stream_workflow
+    module: backend.app.routers.workflow
+    line: 104
+    cyclomatic_complexity: 2
+    calls_out: 22
+    calls_in: 0
+  nlp-service.app.routing.parser.rules._extract_setting_path_entity:
+    name: _extract_setting_path_entity
+    module: nlp-service.app.routing.parser.rules
+    line: 508
+    cyclomatic_complexity: 3
+    calls_out: 2
+    calls_in: 1
+  packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rule_shell.RuleShellPlanStrategy.plan:
+    name: plan
+    module: packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rule_shell
+    line: 51
+    cyclomatic_complexity: 3
+    calls_out: 6
+    calls_in: 0
+  backend.app.routers.workflow._format_sse:
+    name: _format_sse
+    module: backend.app.routers.workflow
+    line: 26
+    cyclomatic_complexity: 5
+    calls_out: 6
+    calls_in: 4
+  nlp-service.app.conversation.responses.handle_unknown_intent:
+    name: handle_unknown_intent
+    module: nlp-service.app.conversation.responses
+    line: 87
+    cyclomatic_complexity: 5
+    calls_out: 6
+    calls_in: 1
+  nlp2dsl_sdk.artifacts.example_artifact_root:
+    name: example_artifact_root
+    module: nlp2dsl_sdk.artifacts
+    line: 44
+    cyclomatic_complexity: 1
+    calls_out: 2
+    calls_in: 1
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.facade.KeywordIntentAdapter.detect:
+    name: detect
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.facade
+    line: 26
+    cyclomatic_complexity: 2
+    calls_out: 4
+    calls_in: 0
+  nlp-service.app.routing.native._route_decision:
+    name: _route_decision
+    module: nlp-service.app.routing.native
+    line: 87
+    cyclomatic_complexity: 2
+    calls_out: 4
+    calls_in: 1
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector.detect:
+    name: detect
+    module: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector
+    line: 245
+    cyclomatic_complexity: 17
+    calls_out: 21
+    calls_in: 0
+  examples.04-scheduled-report.scenario.run:
+    name: run
+    module: examples.04-scheduled-report.scenario
+    line: 24
+    cyclomatic_complexity: 11
+    calls_out: 21
+    calls_in: 0
+  nlp-service.app.governance.config.get_access_config:
+    name: get_access_config
+    module: nlp-service.app.governance.config
+    line: 160
+    cyclomatic_complexity: 1
+    calls_out: 1
+    calls_in: 6
+  nlp-service.app.governance.policy._matched_effect:
+    name: _matched_effect
+    module: nlp-service.app.governance.policy
+    line: 266
+    cyclomatic_complexity: 3
+    calls_out: 4
+    calls_in: 1
+  nlp2dsl_sdk.preview.execute_from_text:
+    name: execute_from_text
+    module: nlp2dsl_sdk.preview
+    line: 134
+    cyclomatic_complexity: 8
+    calls_out: 15
+    calls_in: 6
+  nlp-service.app.routing.parser.rules._extract_report_type:
+    name: _extract_report_type
+    module: nlp-service.app.routing.parser.rules
+    line: 424
+    cyclomatic_complexity: 3
     calls_out: 1
     calls_in: 1
 edges:
@@ -1654,74 +2536,224 @@ edges:
 - caller: backend.app.routers.settings.reset_settings
   callee: backend.app.logging_setup.get_request_id
   call_type: resolved
-- caller: nlp2dsl_sdk.demos._print_workflow_preview
-  callee: nlp2dsl_sdk.demos._print_json
+- caller: packages.nlp2cmd-intent.src.nlp2cmd_intent.clarification.ensure_intent_clear
+  callee: packages.nlp2cmd-intent.src.nlp2cmd_intent.clarification.clarification_enforced
   call_type: resolved
-- caller: nlp2dsl_sdk.demos._print_execution_result
-  callee: nlp2dsl_sdk.demos._print_json
+- caller: packages.nlp2cmd-intent.src.nlp2cmd_intent.facade.KeywordIntentAdapter.detect
+  callee: packages.nlp2cmd-intent.src.nlp2cmd_intent.nlp2cmd_convert.detection_to_intent_ir
   call_type: resolved
-- caller: nlp2dsl_sdk.demos._preview_text_examples
-  callee: nlp2dsl_sdk.demos._print_workflow_preview
+- caller: packages.nlp2cmd-intent.src.nlp2cmd_intent.facade.IntentPipeline.__init__
+  callee: packages.nlp2cmd-intent.src.nlp2cmd_intent.facade.default_intent_detector
+  call_type: resolved
+- caller: packages.nlp2cmd-intent.src.nlp2cmd_intent.input.analyze_query
+  callee: packages.nlp2cmd-intent.src.nlp2cmd_intent.clarification.ensure_intent_clear
+  call_type: resolved
+- caller: packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files.find_data_files
+  callee: nlp-service.app.settings.SettingsManager.set
+  call_type: resolved
+- caller: packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files.find_data_files
+  callee: packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files._package_data_dir
+  call_type: resolved
+- caller: packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files.find_data_files
+  callee: packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files._nlp2cmd_data_dir
+  call_type: resolved
+- caller: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._dedupe_case_insensitive
+  callee: nlp-service.app.settings.SettingsManager.set
+  call_type: resolved
+- caller: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.__init__
+  callee: nlp-service.app.settings.SettingsManager.set
+  call_type: resolved
+- caller: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_patterns_from_json
+  callee: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._find_data_files
+  call_type: resolved
+- caller: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_detector_config_from_json
+  callee: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._find_data_files
+  call_type: resolved
+- caller: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.add_pattern
+  callee: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._normalize_polish_text
+  call_type: resolved
+- caller: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.add_pattern
+  callee: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._dedupe_case_insensitive
+  call_type: resolved
+- caller: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector.detect
+  callee: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector._get_query_normalizer
+  call_type: resolved
+- caller: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector.detect_intent_ir
+  callee: packages.nlp2cmd-intent.src.nlp2cmd_intent.nlp2cmd_convert.detection_to_intent_ir
+  call_type: resolved
+- caller: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector.detect_all
+  callee: nlp-service.app.settings.SettingsManager.set
+  call_type: resolved
+- caller: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._fuzzy_detection
+  callee: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector._get_fuzzy_schema_matcher
+  call_type: resolved
+- caller: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._ml_detection
+  callee: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector._get_ml_classifier
+  call_type: resolved
+- caller: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._semantic_detection
+  callee: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector._get_semantic_matcher
+  call_type: resolved
+- caller: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._calculate_keyword_confidence
+  callee: nlp-service.app.settings.SettingsManager.set
+  call_type: resolved
+- caller: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._tokenize_text
+  callee: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector._get_spacy_model
+  call_type: resolved
+- caller: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._tokenize_text
+  callee: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector._get_polish_support
+  call_type: resolved
+- caller: packages.nlp2cmd-planner.src.nlp2cmd_planner.workflow_backend.fetch_workflow_from_text
+  callee: packages.nlp2cmd-planner.src.nlp2cmd_planner.workflow_backend.workflow_backend_url
+  call_type: resolved
+- caller: packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rule_shell.RuleShellPlanStrategy.plan
+  callee: packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rule_shell._parse_file_search
+  call_type: resolved
+- caller: packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rest_workflow.RestWorkflowPlanStrategy.supports
+  callee: packages.nlp2cmd-planner.src.nlp2cmd_planner.workflow_backend.workflow_backend_enabled
+  call_type: resolved
+- caller: packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rest_workflow.RestWorkflowPlanStrategy.plan
+  callee: packages.nlp2cmd-planner.src.nlp2cmd_planner.workflow_backend.fetch_workflow_from_text
+  call_type: resolved
+- caller: packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rest_workflow.RestWorkflowPlanStrategy.plan
+  callee: packages.nlp2cmd-planner.src.nlp2cmd_planner.workflow_backend.workflow_run_path
+  call_type: resolved
+- caller: packages.nlp2dsl-show.src.nlp2dsl_show.cli.main
+  callee: nlp2dsl_sdk.encoding.configure_utf8
+  call_type: resolved
+- caller: packages.nlp2cmd-propact.src.nlp2cmd_propact.runner._propact_available
+  callee: packages.nlp2cmd-propact.src.nlp2cmd_propact.runner._resolve_propact_bin
+  call_type: resolved
+- caller: packages.nlp2cmd-propact.src.nlp2cmd_propact.runner._run_shell_steps
+  callee: packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter.plan_to_propact_markdown
+  call_type: resolved
+- caller: packages.nlp2cmd-propact.src.nlp2cmd_propact.runner._run_shell_steps
+  callee: packages.nlp2cmd-propact.src.nlp2cmd_propact.runner._shell_command
+  call_type: resolved
+- caller: packages.nlp2cmd-propact.src.nlp2cmd_propact.runner.PropactRunner.render
+  callee: packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter.plan_to_propact_markdown
+  call_type: resolved
+- caller: packages.nlp2cmd-propact.src.nlp2cmd_propact.runner.PropactRunner.run
+  callee: packages.nlp2cmd-propact.src.nlp2cmd_propact.runner._resolve_propact_bin
+  call_type: resolved
+- caller: packages.nlp2cmd-propact.src.nlp2cmd_propact.runner.PropactRunner.run
+  callee: packages.nlp2cmd-propact.src.nlp2cmd_propact.runner._propact_available
+  call_type: resolved
+- caller: packages.nlp2cmd-propact.src.nlp2cmd_propact.runner.PropactRunner.run
+  callee: packages.nlp2cmd-propact.src.nlp2cmd_propact.runner._requires_propact
+  call_type: resolved
+- caller: packages.nlp2cmd-propact.src.nlp2cmd_propact.runner.PropactRunner.run
+  callee: packages.nlp2cmd-propact.src.nlp2cmd_propact.runner._is_shell_only
+  call_type: resolved
+- caller: packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter._mcp_block
+  callee: packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter._format_json_body
+  call_type: resolved
+- caller: packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter._ws_block
+  callee: packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter._format_json_body
+  call_type: resolved
+- caller: packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter.step_to_propact_block
+  callee: packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter._delegate_block
+  call_type: resolved
+- caller: packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter.step_to_propact_block
+  callee: packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter._shell_block
+  call_type: resolved
+- caller: packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter.step_to_propact_block
+  callee: packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter._rest_block
+  call_type: resolved
+- caller: packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter.step_to_propact_block
+  callee: packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter._mcp_block
+  call_type: resolved
+- caller: packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter.step_to_propact_block
+  callee: packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter._ws_block
+  call_type: resolved
+- caller: packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter.plan_to_propact_markdown
+  callee: packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter.step_to_propact_block
+  call_type: resolved
+- caller: packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor.run
+  callee: packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.execution_route
+  call_type: resolved
+- caller: packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor._run_propact_step
+  callee: packages.nlp2cmd-propact.src.nlp2cmd_propact.executor._single_step_plan
+  call_type: resolved
+- caller: packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor._run_nlp2cmd_step
+  callee: packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter.step_to_propact_block
+  call_type: resolved
+- caller: nlp2dsl_sdk.artifacts.collect_environment
+  callee: nlp2dsl_sdk.artifacts._mask_secret
+  call_type: resolved
+- caller: nlp2dsl_sdk.artifacts.write_query_artifacts
+  callee: nlp2dsl_sdk.artifacts._slugify
+  call_type: resolved
+- caller: nlp2dsl_sdk.artifacts.write_query_artifacts
+  callee: nlp2dsl_sdk.artifacts.build_process_trace
+  call_type: resolved
+- caller: nlp2dsl_sdk.artifacts.ExampleArtifactWriter.__init__
+  callee: nlp2dsl_sdk.artifacts.example_artifact_root
+  call_type: resolved
+- caller: nlp2dsl_sdk.artifacts.ExampleArtifactWriter.record
+  callee: nlp2dsl_sdk.artifacts.write_query_artifacts
+  call_type: resolved
+- caller: nlp2dsl_sdk.artifacts.ExampleArtifactWriter.record
+  callee: nlp2dsl_sdk.artifacts._extract_actions
+  call_type: resolved
+- caller: nlp2dsl_sdk.artifacts.ExampleArtifactWriter.finalize
+  callee: nlp2dsl_sdk.artifacts.collect_environment
+  call_type: resolved
+- caller: nlp2dsl_sdk.artifacts.ExampleArtifactWriter.finalize
+  callee: nlp2dsl_sdk.artifacts.write_environment_doql
+  call_type: resolved
+- caller: nlp2dsl_sdk.artifacts.ExampleArtifactWriter.finalize
+  callee: nlp2dsl_sdk.artifacts.write_testql_commands
+  call_type: resolved
+- caller: nlp2dsl_sdk.artifacts.ExampleArtifactWriter.finalize
+  callee: nlp2dsl_sdk.artifacts.write_manifest
+  call_type: resolved
+- caller: nlp2dsl_sdk.artifacts.ExampleArtifactWriter.finalize
+  callee: nlp2dsl_sdk.artifacts.write_services_snapshot
+  call_type: resolved
+- caller: nlp2dsl_sdk.cli._analyze
+  callee: packages.nlp2cmd-intent.src.nlp2cmd_intent.input.analyze_query
+  call_type: resolved
+- caller: nlp2dsl_sdk.cli.show
+  callee: nlp2dsl_sdk.cli._analyze
+  call_type: resolved
+- caller: nlp2dsl_sdk.cli.show
+  callee: nlp2dsl_sdk.cli._display
+  call_type: resolved
+- caller: nlp2dsl_sdk.cli._health
+  callee: nlp2dsl_sdk.cli._client
+  call_type: resolved
+- caller: nlp2dsl_sdk.cli._run
+  callee: nlp2dsl_sdk.cli._client
+  call_type: resolved
+- caller: nlp2dsl_sdk.cli._actions
+  callee: nlp2dsl_sdk.cli._client
+  call_type: resolved
+- caller: nlp2dsl_sdk.cli._chat_start
+  callee: nlp2dsl_sdk.cli._client
+  call_type: resolved
+- caller: nlp2dsl_sdk.cli._demo
+  callee: nlp2dsl_sdk.demos.list_available_demos
+  call_type: resolved
+- caller: nlp2dsl_sdk.cli.main
+  callee: nlp2dsl_sdk.encoding.configure_utf8
   call_type: resolved
 - caller: nlp2dsl_sdk.demos.run_crm_update_demo
-  callee: nlp2dsl_sdk.demos._preview_text_examples
+  callee: nlp2dsl_sdk.preview.preview_text_examples
   call_type: resolved
 - caller: nlp2dsl_sdk.demos.run_crm_update_demo
-  callee: nlp2dsl_sdk.demos._print_execution_result
+  callee: nlp2dsl_sdk.preview.execute_from_text
   call_type: resolved
 - caller: nlp2dsl_sdk.demos.run_crm_update_demo
-  callee: nlp2dsl_sdk.demos._ensure_services
+  callee: nlp2dsl_sdk.preview.ensure_services
   call_type: resolved
 - caller: nlp2dsl_sdk.demos.run_action_catalog_demo
-  callee: nlp2dsl_sdk.demos._ensure_services
+  callee: nlp2dsl_sdk.preview.ensure_services
   call_type: resolved
 - caller: nlp2dsl_sdk.demos.run_automation_gallery_demo
-  callee: nlp2dsl_sdk.demos._run_gallery_examples
+  callee: nlp2dsl_sdk.preview.ensure_services
   call_type: resolved
 - caller: nlp2dsl_sdk.demos.run_automation_gallery_demo
-  callee: nlp2dsl_sdk.demos._ensure_services
-  call_type: resolved
-- caller: nlp2dsl_sdk.demos._run_workflow_examples
-  callee: nlp2dsl_sdk.demos._print_execution_result
-  call_type: resolved
-- caller: nlp2dsl_sdk.demos._run_gallery_examples
-  callee: nlp2dsl_sdk.demos._print_workflow_preview
-  call_type: resolved
-- caller: nlp2dsl_sdk.demos.run_invoice_demo
-  callee: nlp2dsl_sdk.demos._preview_text_examples
-  call_type: resolved
-- caller: nlp2dsl_sdk.demos.run_invoice_demo
-  callee: nlp2dsl_sdk.demos._print_execution_result
-  call_type: resolved
-- caller: nlp2dsl_sdk.demos.run_invoice_demo
-  callee: nlp2dsl_sdk.demos._ensure_services
-  call_type: resolved
-- caller: nlp2dsl_sdk.demos.run_email_demo
-  callee: nlp2dsl_sdk.demos._preview_text_examples
-  call_type: resolved
-- caller: nlp2dsl_sdk.demos.run_email_demo
-  callee: nlp2dsl_sdk.demos._print_execution_result
-  call_type: resolved
-- caller: nlp2dsl_sdk.demos.run_email_demo
-  callee: nlp2dsl_sdk.demos._ensure_services
-  call_type: resolved
-- caller: nlp2dsl_sdk.demos.run_report_and_notify_demo
-  callee: nlp2dsl_sdk.demos._preview_text_examples
-  call_type: resolved
-- caller: nlp2dsl_sdk.demos.run_report_and_notify_demo
-  callee: nlp2dsl_sdk.demos._print_execution_result
-  call_type: resolved
-- caller: nlp2dsl_sdk.demos.run_report_and_notify_demo
-  callee: nlp2dsl_sdk.demos._ensure_services
-  call_type: resolved
-- caller: nlp2dsl_sdk.demos.run_scheduled_report_demo
-  callee: nlp2dsl_sdk.demos._run_workflow_examples
-  call_type: resolved
-- caller: nlp2dsl_sdk.demos.run_scheduled_report_demo
-  callee: nlp2dsl_sdk.demos._preview_text_examples
-  call_type: resolved
-- caller: nlp2dsl_sdk.demos.run_scheduled_report_demo
-  callee: nlp2dsl_sdk.demos._ensure_services
+  callee: nlp2dsl_sdk.preview.execute_from_text
   call_type: resolved
 - caller: nlp2dsl_sdk.demos.run_code_generation_demo
   callee: nlp2dsl_sdk.demos._run_direct_code_generation
@@ -1739,7 +2771,7 @@ edges:
   callee: nlp2dsl_sdk.demos._print_code_generation_preview
   call_type: resolved
 - caller: nlp2dsl_sdk.demos._run_workflow_code_examples
-  callee: nlp2dsl_sdk.demos._preview_text_examples
+  callee: nlp2dsl_sdk.preview.preview_text_examples
   call_type: resolved
 - caller: nlp2dsl_sdk.client.NLP2DSLClient.send_invoice
   callee: nlp2dsl_sdk.client.workflow_step
@@ -1763,22 +2795,166 @@ edges:
   callee: nlp2dsl_sdk.client.workflow_step
   call_type: resolved
 - caller: nlp2dsl_sdk.__main__.main
+  callee: nlp2dsl_sdk.encoding.configure_utf8
+  call_type: resolved
+- caller: nlp2dsl_sdk.__main__.main
   callee: nlp2dsl_sdk.demos.list_available_demos
+  call_type: resolved
+- caller: nlp2dsl_sdk.encoding._apply_utf8_locale_env
+  callee: nlp2dsl_sdk.encoding._explicit_utf8_locale
+  call_type: resolved
+- caller: nlp2dsl_sdk.encoding.configure_utf8
+  callee: nlp2dsl_sdk.encoding._apply_utf8_locale_env
+  call_type: resolved
+- caller: nlp2dsl_sdk.encoding.configure_utf8
+  callee: nlp2dsl_sdk.encoding._reconfigure_stdio
+  call_type: resolved
+- caller: nlp2dsl_sdk.encoding.configure_utf8
+  callee: nlp2dsl_sdk.encoding._set_utf8_locale
+  call_type: resolved
+- caller: nlp2dsl_sdk.encoding.configure_utf8
+  callee: nlp2dsl_sdk.encoding.utf8_auto_enabled
+  call_type: resolved
+- caller: nlp2dsl_sdk.encoding._auto_configure_once
+  callee: nlp2dsl_sdk.encoding.configure_utf8
+  call_type: resolved
+- caller: nlp2dsl_sdk.preview.print_workflow_preview
+  callee: nlp2dsl_sdk.preview.print_json
+  call_type: resolved
+- caller: nlp2dsl_sdk.preview.print_execution_result
+  callee: nlp2dsl_sdk.preview.print_json
+  call_type: resolved
+- caller: nlp2dsl_sdk.preview.preview_text_examples
+  callee: nlp2dsl_sdk.artifacts.get_example_writer
+  call_type: resolved
+- caller: nlp2dsl_sdk.preview.preview_text_examples
+  callee: nlp2dsl_sdk.preview.print_workflow_preview
+  call_type: resolved
+- caller: nlp2dsl_sdk.preview.preview_text_examples
+  callee: nlp2dsl_sdk.preview.workflow_http_error_result
+  call_type: resolved
+- caller: nlp2dsl_sdk.preview.execute_from_text
+  callee: nlp2dsl_sdk.preview.print_workflow_preview
+  call_type: resolved
+- caller: nlp2dsl_sdk.preview.execute_from_text
+  callee: nlp2dsl_sdk.preview.workflow_http_error_result
+  call_type: resolved
+- caller: nlp2dsl_sdk.preview.execute_text_examples
+  callee: nlp2dsl_sdk.artifacts.get_example_writer
+  call_type: resolved
+- caller: nlp2dsl_sdk.preview.execute_text_examples
+  callee: nlp2dsl_sdk.preview.print_workflow_preview
+  call_type: resolved
+- caller: nlp2dsl_sdk.preview.execute_text_examples
+  callee: nlp2dsl_sdk.preview.workflow_http_error_result
+  call_type: resolved
+- caller: nlp2dsl_sdk.preview.finalize_example_artifacts
+  callee: nlp2dsl_sdk.artifacts.get_example_writer
+  call_type: resolved
+- caller: examples.bootstrap.bootstrap
+  callee: nlp2dsl_sdk.encoding.configure_utf8
   call_type: resolved
 - caller: examples.code_generation_examples.main
   callee: nlp2dsl_sdk.demos.run_code_generation_demo
   call_type: resolved
-- caller: examples.04-scheduled-report.main.main
-  callee: nlp2dsl_sdk.demos.run_scheduled_report_demo
+- caller: examples.10-llm-benchmark.scenario.run
+  callee: examples.08-multi-object-benchmark.scenario.run_benchmark
   call_type: resolved
-- caller: examples.01-invoice.main.main
-  callee: nlp2dsl_sdk.demos.run_invoice_demo
+- caller: examples.10-llm-benchmark.scenario.run
+  callee: nlp2dsl_sdk.preview.ensure_services
   call_type: resolved
-- caller: examples.03-report-and-notify.main.main
-  callee: nlp2dsl_sdk.demos.run_report_and_notify_demo
+- caller: examples.09-execution-smoke.scenario.run
+  callee: nlp2dsl_sdk.preview.ensure_services
   call_type: resolved
-- caller: examples.02-email.main.main
-  callee: nlp2dsl_sdk.demos.run_email_demo
+- caller: examples.09-execution-smoke.scenario.run
+  callee: nlp2dsl_sdk.preview.print_execution_result
+  call_type: resolved
+- caller: examples.05-conversation-flow.scenario.run
+  callee: examples.05-conversation-flow.scenario.run_demo
+  call_type: resolved
+- caller: examples.05-conversation-flow.scenario.run
+  callee: examples.05-conversation-flow.scenario.run_interactive
+  call_type: resolved
+- caller: examples.04-scheduled-report.scenario.run
+  callee: nlp2dsl_sdk.preview.preview_text_examples
+  call_type: resolved
+- caller: examples.04-scheduled-report.scenario.run
+  callee: nlp2dsl_sdk.artifacts.get_example_writer
+  call_type: resolved
+- caller: examples.11-notify-quality.scenario.run
+  callee: nlp2dsl_sdk.preview.preview_text_examples
+  call_type: resolved
+- caller: examples.11-notify-quality.scenario.run
+  callee: nlp2dsl_sdk.preview.execute_text_examples
+  call_type: resolved
+- caller: examples.01-invoice.scenario.run
+  callee: nlp2dsl_sdk.preview.preview_text_examples
+  call_type: resolved
+- caller: examples.01-invoice.scenario.run
+  callee: nlp2dsl_sdk.preview.execute_from_text
+  call_type: resolved
+- caller: examples.01-invoice.scenario.run
+  callee: nlp2dsl_sdk.artifacts.get_example_writer
+  call_type: resolved
+- caller: examples.01-invoice.scenario.run
+  callee: nlp2dsl_sdk.preview.ensure_services
+  call_type: resolved
+- caller: examples.12-ir-show.scenario.run
+  callee: nlp2dsl_sdk.artifacts.get_example_writer
+  call_type: resolved
+- caller: examples.12-ir-show.scenario.run
+  callee: nlp2dsl_sdk.preview.ensure_services
+  call_type: resolved
+- caller: examples.07-email-conversation.scenario.run
+  callee: nlp2dsl_sdk.preview.preview_text_examples
+  call_type: resolved
+- caller: examples.07-email-conversation.scenario.run
+  callee: nlp2dsl_sdk.preview.ensure_services
+  call_type: resolved
+- caller: examples.03-report-and-notify.scenario.run
+  callee: nlp2dsl_sdk.preview.preview_text_examples
+  call_type: resolved
+- caller: examples.03-report-and-notify.scenario.run
+  callee: nlp2dsl_sdk.preview.execute_from_text
+  call_type: resolved
+- caller: examples.03-report-and-notify.scenario.run
+  callee: nlp2dsl_sdk.artifacts.get_example_writer
+  call_type: resolved
+- caller: examples.03-report-and-notify.scenario.run
+  callee: nlp2dsl_sdk.preview.ensure_services
+  call_type: resolved
+- caller: examples.02-email.scenario.run
+  callee: nlp2dsl_sdk.preview.preview_text_examples
+  call_type: resolved
+- caller: examples.02-email.scenario.run
+  callee: nlp2dsl_sdk.preview.execute_from_text
+  call_type: resolved
+- caller: examples.02-email.scenario.run
+  callee: nlp2dsl_sdk.artifacts.get_example_writer
+  call_type: resolved
+- caller: examples.02-email.scenario.run
+  callee: nlp2dsl_sdk.preview.ensure_services
+  call_type: resolved
+- caller: examples.06-interactive-chat.scenario.run
+  callee: examples.06-interactive-chat.scenario.run_demo
+  call_type: resolved
+- caller: examples.06-interactive-chat.scenario.run
+  callee: examples.06-interactive-chat.scenario.run_interactive
+  call_type: resolved
+- caller: examples.08-multi-object-benchmark.scenario._evaluate
+  callee: examples.08-multi-object-benchmark.scenario._extract_actions
+  call_type: resolved
+- caller: examples.08-multi-object-benchmark.scenario.run_benchmark
+  callee: examples.08-multi-object-benchmark.scenario._evaluate
+  call_type: resolved
+- caller: examples.08-multi-object-benchmark.scenario.run
+  callee: nlp2dsl_sdk.artifacts.get_example_writer
+  call_type: resolved
+- caller: examples.08-multi-object-benchmark.scenario.run
+  callee: nlp2dsl_sdk.preview.ensure_services
+  call_type: resolved
+- caller: examples.08-multi-object-benchmark.scenario.run
+  callee: examples.08-multi-object-benchmark.scenario.run_benchmark
   call_type: resolved
 - caller: nlp-service.app.audio_parser.stt_file
   callee: nlp-service.app.audio_parser.stt_audio
@@ -1793,10 +2969,10 @@ edges:
   callee: nlp-service.app.main._run_parser
   call_type: resolved
 - caller: nlp-service.app.main.text_to_dsl
-  callee: nlp-service.app.mapper.map_to_dsl
+  callee: nlp-service.app.main._run_parser
   call_type: resolved
 - caller: nlp-service.app.main.text_to_dsl
-  callee: nlp-service.app.main._run_parser
+  callee: nlp-service.app.dsl.pipeline.map_to_dsl_with_enrichment
   call_type: resolved
 - caller: nlp-service.app.main.access_config
   callee: nlp-service.app.governance.config.get_access_config
@@ -1808,7 +2984,7 @@ edges:
   callee: nlp-service.app.governance.config.reload_access_config
   call_type: resolved
 - caller: nlp-service.app.main.health
-  callee: nlp-service.app.parser_llm._detect_provider
+  callee: nlp-service.app.routing.parser.llm._detect_provider
   call_type: resolved
 - caller: nlp-service.app.main.health
   callee: nlp-service.app.store.factory.get_conversation_store
@@ -1841,13 +3017,10 @@ edges:
   callee: nlp-service.app.system_executor.execute_system_action
   call_type: resolved
 - caller: nlp-service.app.main._run_parser
-  callee: nlp-service.app.routing.parser.rules.parse_rules
+  callee: nlp-service.app.routing.parser.resolve_mode.parse_with_mode
   call_type: resolved
 - caller: nlp-service.app.main._run_parser
-  callee: nlp-service.app.parser_llm._detect_provider
-  call_type: resolved
-- caller: nlp-service.app.main._run_parser
-  callee: nlp-service.app.parser_llm.parse_llm
+  callee: nlp-service.app.routing.parser.llm._detect_provider
   call_type: resolved
 - caller: nlp-service.app.main.websocket_chat
   callee: nlp-service.app.audio_parser.is_stt_available
@@ -1870,6 +3043,9 @@ edges:
 - caller: nlp-service.app.conversation.merge.merge_into_state
   callee: nlp-service.app.registry.get_trigger
   call_type: resolved
+- caller: nlp-service.app.conversation.responses._is_execute_or_continue
+  callee: nlp-service.app.conversation.responses._execute_keyword_in_text
+  call_type: resolved
 - caller: nlp-service.app.conversation.responses.check_execute_keyword
   callee: nlp-service.app.conversation.responses._is_execute_or_continue
   call_type: resolved
@@ -1883,31 +3059,28 @@ edges:
   callee: nlp-service.app.conversation.responses.format_system_result
   call_type: resolved
 - caller: nlp-service.app.conversation.responses.build_and_check_dsl
-  callee: nlp-service.app.mapper.map_to_dsl
-  call_type: resolved
-- caller: nlp-service.app.conversation.responses.build_and_check_dsl
   callee: nlp-service.app.execution.delegate.execution_backend_for_intent
   call_type: resolved
 - caller: nlp-service.app.conversation.responses.build_and_check_dsl
+  callee: nlp-service.app.dsl.pipeline.map_to_dsl_with_enrichment
+  call_type: resolved
+- caller: nlp-service.app.conversation.responses.build_and_check_dsl
   callee: nlp-service.app.conversation.responses._nlp_from_state
   call_type: resolved
 - caller: nlp-service.app.conversation.responses.build_incomplete_response
-  callee: nlp-service.app.mapper.map_to_dsl
-  call_type: resolved
-- caller: nlp-service.app.conversation.responses.build_incomplete_response
-  callee: nlp-service.app.conversation.responses._nlp_from_state
+  callee: nlp-service.app.dsl.pipeline.map_to_dsl_with_enrichment
   call_type: resolved
 - caller: nlp-service.app.conversation.responses.build_incomplete_response
   callee: nlp-service.app.dsl.forms.get_action_form
+  call_type: resolved
+- caller: nlp-service.app.conversation.responses.build_incomplete_response
+  callee: nlp-service.app.conversation.responses._nlp_from_state
   call_type: resolved
 - caller: nlp-service.app.conversation.orchestrator.start_conversation
   callee: nlp-service.app.conversation.orchestrator._process_message
   call_type: resolved
 - caller: nlp-service.app.conversation.orchestrator.continue_conversation
   callee: nlp-service.app.conversation.orchestrator._process_message
-  call_type: resolved
-- caller: nlp-service.app.conversation.orchestrator._process_message
-  callee: nlp-service.app.conversation.responses.check_execute_keyword
   call_type: resolved
 - caller: nlp-service.app.conversation.orchestrator._process_message
   callee: nlp-service.app.conversation.merge.merge_into_state
@@ -1919,10 +3092,10 @@ edges:
   callee: nlp-service.app.conversation.responses.handle_system_action
   call_type: resolved
 - caller: nlp-service.app.conversation.orchestrator._process_message
-  callee: nlp-service.app.conversation.responses.build_and_check_dsl
+  callee: nlp-service.app.conversation.orchestrator._attach_routing
   call_type: resolved
 - caller: nlp-service.app.conversation.orchestrator._process_message
-  callee: nlp-service.app.conversation.orchestrator._attach_routing
+  callee: nlp-service.app.conversation.responses.check_execute_keyword
   call_type: resolved
 - caller: nlp-service.app.conversation.orchestrator._process_message
   callee: nlp-service.app.routing.resolve.resolve_intent
@@ -2074,6 +3247,9 @@ edges:
 - caller: nlp-service.app.routing.native._best_action_alias
   callee: nlp-service.app.routing.native._best_alias_for_action
   call_type: resolved
+- caller: nlp-service.app.routing.orientation._resolve_file_list_host_command
+  callee: nlp-service.app.routing.orientation._host_list_root
+  call_type: resolved
 - caller: nlp-service.app.routing.orientation.orient_query
   callee: nlp-service.app.routing.orientation._is_file_list_query
   call_type: resolved
@@ -2102,19 +3278,40 @@ edges:
   callee: nlp-service.app.routing.observability.record_intent_decision
   call_type: resolved
 - caller: nlp-service.app.routing.parser.facade.parse_text
+  callee: nlp-service.app.routing.parser.resolve_mode.parse_with_mode
+  call_type: resolved
+- caller: nlp-service.app.routing.parser.llm.parse_llm
+  callee: nlp-service.app.routing.parser.llm._detect_provider
+  call_type: resolved
+- caller: nlp-service.app.routing.parser.llm.parse_llm
+  callee: nlp-service.app.routing.parser.llm._parse_json_response
+  call_type: resolved
+- caller: nlp-service.app.routing.parser.resolve_mode.parse_with_mode
   callee: nlp-service.app.routing.parser.rules.parse_rules
   call_type: resolved
-- caller: nlp-service.app.routing.parser.facade.parse_text
-  callee: nlp-service.app.parser_llm._detect_provider
+- caller: nlp-service.app.routing.parser.resolve_mode.parse_with_mode
+  callee: nlp-service.app.routing.parser.llm._detect_provider
   call_type: resolved
-- caller: nlp-service.app.routing.parser.facade.parse_text
-  callee: nlp-service.app.parser_llm.parse_llm
+- caller: nlp-service.app.routing.parser.resolve_mode.parse_with_mode
+  callee: nlp-service.app.routing.parser.llm.parse_llm
   call_type: resolved
-- caller: nlp-service.app.parser_llm.parse_llm
-  callee: nlp-service.app.parser_llm._detect_provider
+- caller: nlp-service.app.routing.parser.enrich.get_enrichable_missing
+  callee: nlp-service.app.registry.get_quality_required_fields
   call_type: resolved
-- caller: nlp-service.app.parser_llm.parse_llm
-  callee: nlp-service.app.parser_llm._parse_json_response
+- caller: nlp-service.app.routing.parser.enrich.can_enrich_missing
+  callee: nlp-service.app.routing.parser.enrich.get_enrichable_missing
+  call_type: resolved
+- caller: nlp-service.app.routing.parser.enrich.can_enrich_missing
+  callee: nlp-service.app.routing.parser.llm._detect_provider
+  call_type: resolved
+- caller: nlp-service.app.routing.parser.enrich.can_enrich_missing
+  callee: nlp-service.app.routing.parser.enrich.is_enrich_enabled
+  call_type: resolved
+- caller: nlp-service.app.routing.parser.enrich.enrich_entities
+  callee: nlp-service.app.routing.parser.enrich.can_enrich_missing
+  call_type: resolved
+- caller: nlp-service.app.routing.parser.enrich.enrich_entities
+  callee: nlp-service.app.routing.parser.llm._parse_json_response
   call_type: resolved
 - caller: nlp-service.app.routing.parser.rules.parse_rules
   callee: nlp-service.app.routing.parser.rules._detect_actions
@@ -2132,13 +3329,22 @@ edges:
   callee: nlp-service.app.routing.parser.rules._action_alias_scores
   call_type: resolved
 - caller: nlp-service.app.routing.parser.rules._detect_actions
+  callee: nlp-service.app.routing.parser.rules._apply_context_filters
+  call_type: resolved
+- caller: nlp-service.app.routing.parser.rules._detect_actions
   callee: nlp-service.app.routing.parser.rules._actions_by_score
   call_type: resolved
 - caller: nlp-service.app.routing.parser.rules._detect_actions
   callee: nlp-service.app.routing.parser.rules._dominant_overlap_action
   call_type: resolved
+- caller: nlp-service.app.routing.parser.rules._detect_actions
+  callee: nlp-service.app.routing.parser.rules._action_category
+  call_type: resolved
 - caller: nlp-service.app.routing.parser.rules._action_alias_scores
   callee: nlp-service.app.routing.parser.rules._longest_alias_match
+  call_type: resolved
+- caller: nlp-service.app.routing.parser.rules._longest_alias_match
+  callee: nlp-service.app.routing.parser.rules._alias_in_text
   call_type: resolved
 - caller: nlp-service.app.routing.parser.rules._dominant_overlap_action
   callee: nlp-service.app.routing.parser.rules._action_category
@@ -2159,6 +3365,15 @@ edges:
   callee: nlp-service.app.routing.parser.rules._extract_email
   call_type: resolved
 - caller: nlp-service.app.routing.parser.rules._extract_entities
+  callee: nlp-service.app.routing.parser.rules._extract_body_content_prefix
+  call_type: resolved
+- caller: nlp-service.app.routing.parser.rules._extract_entities
+  callee: nlp-service.app.routing.parser.rules._extract_email_subject_and_body
+  call_type: resolved
+- caller: nlp-service.app.routing.parser.rules._extract_entities
+  callee: nlp-service.app.routing.parser.rules._extract_reminder_subject
+  call_type: resolved
+- caller: nlp-service.app.routing.parser.rules._extract_entities
   callee: nlp-service.app.routing.parser.rules._extract_report_type
   call_type: resolved
 - caller: nlp-service.app.routing.parser.rules._extract_entities
@@ -2168,13 +3383,10 @@ edges:
   callee: nlp-service.app.routing.parser.rules._extract_notification_channels
   call_type: resolved
 - caller: nlp-service.app.routing.parser.rules._extract_entities
-  callee: nlp-service.app.routing.parser.rules._extract_param_aliases
+  callee: nlp-service.app.routing.parser.rules._extract_notification_message
   call_type: resolved
-- caller: nlp-service.app.routing.parser.rules._extract_entities
-  callee: nlp-service.app.routing.parser.rules._extract_system_entities
-  call_type: resolved
-- caller: nlp-service.app.routing.parser.rules._extract_entities
-  callee: nlp-service.app.routing.parser.rules._extract_fallback_recipient
+- caller: nlp-service.app.routing.parser.rules._extract_param_aliases
+  callee: nlp-service.app.routing.parser.rules._alias_in_text
   call_type: resolved
 - caller: nlp-service.app.routing.parser.rules._extract_param_aliases
   callee: nlp-service.app.routing.parser.rules._set_entity
@@ -2194,26 +3406,35 @@ edges:
 - caller: nlp-service.app.routing.parser.rules._extract_system_entities
   callee: nlp-service.app.routing.parser.rules._extract_mode_setting_entity
   call_type: resolved
-- caller: nlp-service.app.mapper.map_to_dsl
-  callee: nlp-service.app.mapper._resolve_actions
+- caller: nlp-service.app.dsl.mapper.map_to_dsl
+  callee: nlp-service.app.dsl.mapper._resolve_actions
   call_type: resolved
-- caller: nlp-service.app.mapper.map_to_dsl
-  callee: nlp-service.app.mapper._make_name
+- caller: nlp-service.app.dsl.mapper.map_to_dsl
+  callee: nlp-service.app.dsl.mapper._make_name
   call_type: resolved
-- caller: nlp-service.app.mapper.map_to_dsl
-  callee: nlp-service.app.mapper._build_config
+- caller: nlp-service.app.dsl.mapper.map_to_dsl
+  callee: nlp-service.app.dsl.mapper._build_config
   call_type: resolved
-- caller: nlp-service.app.mapper.map_to_dsl
+- caller: nlp-service.app.dsl.mapper.map_to_dsl
   callee: nlp-service.app.registry.get_trigger
   call_type: resolved
-- caller: nlp-service.app.mapper._build_config
+- caller: nlp-service.app.dsl.mapper._build_config
   callee: nlp-service.app.registry.get_required_fields
   call_type: resolved
-- caller: nlp-service.app.mapper._build_config
+- caller: nlp-service.app.dsl.mapper._build_config
   callee: nlp-service.app.registry.get_defaults
   call_type: resolved
-- caller: nlp-service.app.mapper._build_config
-  callee: nlp-service.app.mapper._get_field_mapping
+- caller: nlp-service.app.dsl.mapper._build_config
+  callee: nlp-service.app.dsl.mapper._get_field_mapping
+  call_type: resolved
+- caller: nlp-service.app.dsl.mapper._build_config
+  callee: nlp-service.app.registry.get_quality_required_fields
+  call_type: resolved
+- caller: nlp-service.app.dsl.pipeline.map_to_dsl_with_enrichment
+  callee: nlp-service.app.dsl.mapper.map_to_dsl
+  call_type: resolved
+- caller: nlp-service.app.dsl.pipeline.map_to_dsl_with_enrichment
+  callee: nlp-service.app.routing.parser.enrich.enrich_entities
   call_type: resolved
 - caller: nlp-service.integrations.loader.load_integration_registries
   callee: nlp-service.integrations.loader._integration_names
@@ -2257,6 +3478,15 @@ edges:
 - caller: worker.worker.handle_generate_code
   callee: worker.worker.action
   call_type: resolved
+- caller: scripts.run-example-testql-results.process_example
+  callee: scripts.run-example-testql-results._load_manifest
+  call_type: resolved
+- caller: scripts.run-example-testql-results.process_example
+  callee: scripts.run-example-testql-results._generate_conversation_toon
+  call_type: resolved
+- caller: scripts.run-example-testql-results.main
+  callee: nlp-service.app.settings.SettingsManager.set
+  call_type: resolved
 modules:
   backend.app.engine:
   - backend.app.engine._execute_workflow
@@ -2292,14 +3522,39 @@ modules:
   backend.app.workflow_events:
   - backend.app.workflow_events.WorkflowEventHub.publish
   - backend.app.workflow_events.WorkflowEventHub.subscriber_count
-  examples.01-invoice.main:
-  - examples.01-invoice.main.main
-  examples.02-email.main:
-  - examples.02-email.main.main
-  examples.03-report-and-notify.main:
-  - examples.03-report-and-notify.main.main
-  examples.04-scheduled-report.main:
-  - examples.04-scheduled-report.main.main
+  examples.01-invoice.scenario:
+  - examples.01-invoice.scenario.run
+  examples.02-email.scenario:
+  - examples.02-email.scenario.run
+  examples.03-report-and-notify.scenario:
+  - examples.03-report-and-notify.scenario.run
+  examples.04-scheduled-report.scenario:
+  - examples.04-scheduled-report.scenario.run
+  examples.05-conversation-flow.scenario:
+  - examples.05-conversation-flow.scenario.run
+  - examples.05-conversation-flow.scenario.run_demo
+  - examples.05-conversation-flow.scenario.run_interactive
+  examples.06-interactive-chat.scenario:
+  - examples.06-interactive-chat.scenario.run
+  - examples.06-interactive-chat.scenario.run_demo
+  - examples.06-interactive-chat.scenario.run_interactive
+  examples.07-email-conversation.scenario:
+  - examples.07-email-conversation.scenario.run
+  examples.08-multi-object-benchmark.scenario:
+  - examples.08-multi-object-benchmark.scenario._evaluate
+  - examples.08-multi-object-benchmark.scenario._extract_actions
+  - examples.08-multi-object-benchmark.scenario.run
+  - examples.08-multi-object-benchmark.scenario.run_benchmark
+  examples.09-execution-smoke.scenario:
+  - examples.09-execution-smoke.scenario.run
+  examples.10-llm-benchmark.scenario:
+  - examples.10-llm-benchmark.scenario.run
+  examples.11-notify-quality.scenario:
+  - examples.11-notify-quality.scenario.run
+  examples.12-ir-show.scenario:
+  - examples.12-ir-show.scenario.run
+  examples.bootstrap:
+  - examples.bootstrap.bootstrap
   examples.code_generation_examples:
   - examples.code_generation_examples.main
   nlp-service.app.access.uri_match:
@@ -2320,6 +3575,7 @@ modules:
   - nlp-service.app.conversation.orchestrator.get_conversation
   - nlp-service.app.conversation.orchestrator.start_conversation
   nlp-service.app.conversation.responses:
+  - nlp-service.app.conversation.responses._execute_keyword_in_text
   - nlp-service.app.conversation.responses._is_execute_or_continue
   - nlp-service.app.conversation.responses._nlp_from_state
   - nlp-service.app.conversation.responses.build_and_check_dsl
@@ -2331,6 +3587,14 @@ modules:
   - nlp-service.app.conversation.responses.handle_unknown_intent
   nlp-service.app.dsl.forms:
   - nlp-service.app.dsl.forms.get_action_form
+  nlp-service.app.dsl.mapper:
+  - nlp-service.app.dsl.mapper._build_config
+  - nlp-service.app.dsl.mapper._get_field_mapping
+  - nlp-service.app.dsl.mapper._make_name
+  - nlp-service.app.dsl.mapper._resolve_actions
+  - nlp-service.app.dsl.mapper.map_to_dsl
+  nlp-service.app.dsl.pipeline:
+  - nlp-service.app.dsl.pipeline.map_to_dsl_with_enrichment
   nlp-service.app.execution.delegate:
   - nlp-service.app.execution.delegate.execution_backend_for_intent
   - nlp-service.app.execution.delegate.is_delegated_to_mullm
@@ -2380,18 +3644,9 @@ modules:
   - nlp-service.app.main.system_execute
   - nlp-service.app.main.text_to_dsl
   - nlp-service.app.main.websocket_chat
-  nlp-service.app.mapper:
-  - nlp-service.app.mapper._build_config
-  - nlp-service.app.mapper._get_field_mapping
-  - nlp-service.app.mapper._make_name
-  - nlp-service.app.mapper._resolve_actions
-  - nlp-service.app.mapper.map_to_dsl
-  nlp-service.app.parser_llm:
-  - nlp-service.app.parser_llm._detect_provider
-  - nlp-service.app.parser_llm._parse_json_response
-  - nlp-service.app.parser_llm.parse_llm
   nlp-service.app.registry:
   - nlp-service.app.registry.get_defaults
+  - nlp-service.app.registry.get_quality_required_fields
   - nlp-service.app.registry.get_required_fields
   - nlp-service.app.registry.get_trigger
   nlp-service.app.routing.native:
@@ -2412,27 +3667,45 @@ modules:
   - nlp-service.app.routing.observability.record_intent_decision
   - nlp-service.app.routing.observability.routing_metrics_snapshot
   nlp-service.app.routing.orientation:
+  - nlp-service.app.routing.orientation._host_list_root
   - nlp-service.app.routing.orientation._is_file_list_query
+  - nlp-service.app.routing.orientation._resolve_file_list_host_command
   - nlp-service.app.routing.orientation.orient_query
+  nlp-service.app.routing.parser.enrich:
+  - nlp-service.app.routing.parser.enrich.can_enrich_missing
+  - nlp-service.app.routing.parser.enrich.enrich_entities
+  - nlp-service.app.routing.parser.enrich.get_enrichable_missing
+  - nlp-service.app.routing.parser.enrich.is_enrich_enabled
   nlp-service.app.routing.parser.facade:
   - nlp-service.app.routing.parser.facade.parse_text
+  nlp-service.app.routing.parser.llm:
+  - nlp-service.app.routing.parser.llm._detect_provider
+  - nlp-service.app.routing.parser.llm._parse_json_response
+  - nlp-service.app.routing.parser.llm.parse_llm
+  nlp-service.app.routing.parser.resolve_mode:
+  - nlp-service.app.routing.parser.resolve_mode.parse_with_mode
   nlp-service.app.routing.parser.rules:
   - nlp-service.app.routing.parser.rules._action_alias_scores
   - nlp-service.app.routing.parser.rules._action_category
   - nlp-service.app.routing.parser.rules._actions_by_score
+  - nlp-service.app.routing.parser.rules._alias_in_text
+  - nlp-service.app.routing.parser.rules._apply_context_filters
   - nlp-service.app.routing.parser.rules._detect_actions
   - nlp-service.app.routing.parser.rules._dominant_overlap_action
   - nlp-service.app.routing.parser.rules._extract_amount
+  - nlp-service.app.routing.parser.rules._extract_body_content_prefix
   - nlp-service.app.routing.parser.rules._extract_email
+  - nlp-service.app.routing.parser.rules._extract_email_subject_and_body
   - nlp-service.app.routing.parser.rules._extract_entities
-  - nlp-service.app.routing.parser.rules._extract_fallback_recipient
   - nlp-service.app.routing.parser.rules._extract_file_path_entity
   - nlp-service.app.routing.parser.rules._extract_format
   - nlp-service.app.routing.parser.rules._extract_mode_setting_entity
   - nlp-service.app.routing.parser.rules._extract_model_setting_entity
   - nlp-service.app.routing.parser.rules._extract_notification_channels
+  - nlp-service.app.routing.parser.rules._extract_notification_message
   - nlp-service.app.routing.parser.rules._extract_numeric_setting_value
   - nlp-service.app.routing.parser.rules._extract_param_aliases
+  - nlp-service.app.routing.parser.rules._extract_reminder_subject
   - nlp-service.app.routing.parser.rules._extract_report_type
   - nlp-service.app.routing.parser.rules._extract_setting_path_entity
   - nlp-service.app.routing.parser.rules._extract_system_entities
@@ -2464,6 +3737,33 @@ modules:
   - nlp-service.integrations.loader.load_integration_registries
   nlp2dsl_sdk.__main__:
   - nlp2dsl_sdk.__main__.main
+  nlp2dsl_sdk.artifacts:
+  - nlp2dsl_sdk.artifacts.ExampleArtifactWriter.__init__
+  - nlp2dsl_sdk.artifacts.ExampleArtifactWriter.finalize
+  - nlp2dsl_sdk.artifacts.ExampleArtifactWriter.record
+  - nlp2dsl_sdk.artifacts._extract_actions
+  - nlp2dsl_sdk.artifacts._mask_secret
+  - nlp2dsl_sdk.artifacts._slugify
+  - nlp2dsl_sdk.artifacts.build_process_trace
+  - nlp2dsl_sdk.artifacts.collect_environment
+  - nlp2dsl_sdk.artifacts.example_artifact_root
+  - nlp2dsl_sdk.artifacts.get_example_writer
+  - nlp2dsl_sdk.artifacts.write_environment_doql
+  - nlp2dsl_sdk.artifacts.write_manifest
+  - nlp2dsl_sdk.artifacts.write_query_artifacts
+  - nlp2dsl_sdk.artifacts.write_services_snapshot
+  - nlp2dsl_sdk.artifacts.write_testql_commands
+  nlp2dsl_sdk.cli:
+  - nlp2dsl_sdk.cli._actions
+  - nlp2dsl_sdk.cli._analyze
+  - nlp2dsl_sdk.cli._chat_start
+  - nlp2dsl_sdk.cli._client
+  - nlp2dsl_sdk.cli._demo
+  - nlp2dsl_sdk.cli._display
+  - nlp2dsl_sdk.cli._health
+  - nlp2dsl_sdk.cli._run
+  - nlp2dsl_sdk.cli.main
+  - nlp2dsl_sdk.cli.show
   nlp2dsl_sdk.client:
   - nlp2dsl_sdk.client.NLP2DSLClient.crm_update
   - nlp2dsl_sdk.client.NLP2DSLClient.generate_report
@@ -2474,27 +3774,114 @@ modules:
   - nlp2dsl_sdk.client.NLP2DSLClient.send_invoice_and_notify
   - nlp2dsl_sdk.client.workflow_step
   nlp2dsl_sdk.demos:
-  - nlp2dsl_sdk.demos._ensure_services
   - nlp2dsl_sdk.demos._get_supported_languages
-  - nlp2dsl_sdk.demos._preview_text_examples
   - nlp2dsl_sdk.demos._print_code_generation_preview
-  - nlp2dsl_sdk.demos._print_execution_result
-  - nlp2dsl_sdk.demos._print_json
-  - nlp2dsl_sdk.demos._print_workflow_preview
   - nlp2dsl_sdk.demos._run_conversation_code_example
   - nlp2dsl_sdk.demos._run_direct_code_generation
-  - nlp2dsl_sdk.demos._run_gallery_examples
   - nlp2dsl_sdk.demos._run_workflow_code_examples
-  - nlp2dsl_sdk.demos._run_workflow_examples
   - nlp2dsl_sdk.demos.list_available_demos
   - nlp2dsl_sdk.demos.run_action_catalog_demo
   - nlp2dsl_sdk.demos.run_automation_gallery_demo
   - nlp2dsl_sdk.demos.run_code_generation_demo
   - nlp2dsl_sdk.demos.run_crm_update_demo
-  - nlp2dsl_sdk.demos.run_email_demo
-  - nlp2dsl_sdk.demos.run_invoice_demo
-  - nlp2dsl_sdk.demos.run_report_and_notify_demo
-  - nlp2dsl_sdk.demos.run_scheduled_report_demo
+  nlp2dsl_sdk.encoding:
+  - nlp2dsl_sdk.encoding._apply_utf8_locale_env
+  - nlp2dsl_sdk.encoding._auto_configure_once
+  - nlp2dsl_sdk.encoding._explicit_utf8_locale
+  - nlp2dsl_sdk.encoding._reconfigure_stdio
+  - nlp2dsl_sdk.encoding._set_utf8_locale
+  - nlp2dsl_sdk.encoding.configure_utf8
+  - nlp2dsl_sdk.encoding.utf8_auto_enabled
+  nlp2dsl_sdk.preview:
+  - nlp2dsl_sdk.preview.ensure_services
+  - nlp2dsl_sdk.preview.execute_from_text
+  - nlp2dsl_sdk.preview.execute_text_examples
+  - nlp2dsl_sdk.preview.finalize_example_artifacts
+  - nlp2dsl_sdk.preview.preview_text_examples
+  - nlp2dsl_sdk.preview.print_execution_result
+  - nlp2dsl_sdk.preview.print_json
+  - nlp2dsl_sdk.preview.print_workflow_preview
+  - nlp2dsl_sdk.preview.workflow_http_error_result
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.clarification:
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.clarification.clarification_enforced
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.clarification.ensure_intent_clear
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files:
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files._nlp2cmd_data_dir
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files._package_data_dir
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files.find_data_files
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.facade:
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.facade.IntentPipeline.__init__
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.facade.KeywordIntentAdapter.detect
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.facade.default_intent_detector
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.input:
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.input.analyze_query
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector:
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._calculate_keyword_confidence
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._fuzzy_detection
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._ml_detection
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._semantic_detection
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._tokenize_text
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector.detect
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector.detect_all
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector.detect_intent_ir
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector._get_fuzzy_schema_matcher
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector._get_ml_classifier
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector._get_polish_support
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector._get_query_normalizer
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector._get_semantic_matcher
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector._get_spacy_model
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns:
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.__init__
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_detector_config_from_json
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_patterns_from_json
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.add_pattern
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._dedupe_case_insensitive
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._find_data_files
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._normalize_polish_text
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.nlp2cmd_convert:
+  - packages.nlp2cmd-intent.src.nlp2cmd_intent.nlp2cmd_convert.detection_to_intent_ir
+  packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rest_workflow:
+  - packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rest_workflow.RestWorkflowPlanStrategy.plan
+  - packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rest_workflow.RestWorkflowPlanStrategy.supports
+  packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rule_shell:
+  - packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rule_shell.RuleShellPlanStrategy.plan
+  - packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rule_shell._parse_file_search
+  packages.nlp2cmd-planner.src.nlp2cmd_planner.workflow_backend:
+  - packages.nlp2cmd-planner.src.nlp2cmd_planner.workflow_backend.fetch_workflow_from_text
+  - packages.nlp2cmd-planner.src.nlp2cmd_planner.workflow_backend.workflow_backend_enabled
+  - packages.nlp2cmd-planner.src.nlp2cmd_planner.workflow_backend.workflow_backend_url
+  - packages.nlp2cmd-planner.src.nlp2cmd_planner.workflow_backend.workflow_run_path
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter:
+  - packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter._delegate_block
+  - packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter._format_json_body
+  - packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter._mcp_block
+  - packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter._rest_block
+  - packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter._shell_block
+  - packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter._ws_block
+  - packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter.plan_to_propact_markdown
+  - packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter.step_to_propact_block
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.executor:
+  - packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor._run_nlp2cmd_step
+  - packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor._run_propact_step
+  - packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor.run
+  - packages.nlp2cmd-propact.src.nlp2cmd_propact.executor._single_step_plan
+  - packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.execution_route
+  packages.nlp2cmd-propact.src.nlp2cmd_propact.runner:
+  - packages.nlp2cmd-propact.src.nlp2cmd_propact.runner.PropactRunner.render
+  - packages.nlp2cmd-propact.src.nlp2cmd_propact.runner.PropactRunner.run
+  - packages.nlp2cmd-propact.src.nlp2cmd_propact.runner._is_shell_only
+  - packages.nlp2cmd-propact.src.nlp2cmd_propact.runner._propact_available
+  - packages.nlp2cmd-propact.src.nlp2cmd_propact.runner._requires_propact
+  - packages.nlp2cmd-propact.src.nlp2cmd_propact.runner._resolve_propact_bin
+  - packages.nlp2cmd-propact.src.nlp2cmd_propact.runner._run_shell_steps
+  - packages.nlp2cmd-propact.src.nlp2cmd_propact.runner._shell_command
+  packages.nlp2dsl-show.src.nlp2dsl_show.cli:
+  - packages.nlp2dsl-show.src.nlp2dsl_show.cli.main
+  scripts.run-example-testql-results:
+  - scripts.run-example-testql-results._generate_conversation_toon
+  - scripts.run-example-testql-results._load_manifest
+  - scripts.run-example-testql-results.main
+  - scripts.run-example-testql-results.process_example
   tauri-wrapper.scripts.dev:
   - tauri-wrapper.scripts.dev.exitCode
   - tauri-wrapper.scripts.dev.main
@@ -2575,11 +3962,19 @@ entry_points:
 - backend.app.workflow_events.WorkflowEventHub.subscribe
 - backend.app.workflow_events.WorkflowEventHub.subscriber_count
 - backend.app.workflow_events.WorkflowEventHub.unsubscribe
-- examples.01-invoice.main.main
-- examples.02-email.main.main
-- examples.03-report-and-notify.main.main
-- examples.04-scheduled-report.main.main
-- examples.05-conversation-flow.main.main
+- examples.01-invoice.scenario.run
+- examples.02-email.scenario.run
+- examples.03-report-and-notify.scenario.run
+- examples.04-scheduled-report.scenario.run
+- examples.05-conversation-flow.scenario.run
+- examples.06-interactive-chat.scenario.run
+- examples.07-email-conversation.scenario.run
+- examples.08-multi-object-benchmark.scenario.run
+- examples.09-execution-smoke.scenario.run
+- examples.10-llm-benchmark.scenario.run
+- examples.11-notify-quality.scenario.run
+- examples.12-ir-show.scenario.run
+- examples.bootstrap.bootstrap
 - examples.code_generation_examples.main
 - nlp-service.app.audio_parser.StreamingSTT.__init__
 - nlp-service.app.audio_parser.StreamingSTT.get_transcript
@@ -2644,6 +4039,7 @@ entry_points:
 - nlp-service.app.routing.observability.reset_routing_metrics
 - nlp-service.app.routing.orientation.OrientationResult.to_dict
 - nlp-service.app.routing.parser.facade.parse_text
+- nlp-service.app.routing.parser.prompt_catalog.build_llm_system_prompt
 - nlp-service.app.settings.SettingsManager.__new__
 - nlp-service.app.settings.SettingsManager._load
 - nlp-service.app.settings.SettingsManager._save
@@ -2680,6 +4076,10 @@ entry_points:
 - nlp-service.app.system_executor._exec_settings_set
 - nlp-service.app.system_executor._exec_status
 - nlp2dsl_sdk.__main__.main
+- nlp2dsl_sdk.artifacts.ExampleArtifactWriter.__init__
+- nlp2dsl_sdk.artifacts.ExampleArtifactWriter.finalize
+- nlp2dsl_sdk.artifacts.ExampleArtifactWriter.record
+- nlp2dsl_sdk.cli.main
 - nlp2dsl_sdk.client.ConversationFlow.__init__
 - nlp2dsl_sdk.client.ConversationFlow._handle_completed_response
 - nlp2dsl_sdk.client.ConversationFlow._handle_error_response
@@ -2733,7 +4133,76 @@ entry_points:
 - nlp2dsl_sdk.demos.run_action_catalog_demo
 - nlp2dsl_sdk.demos.run_automation_gallery_demo
 - nlp2dsl_sdk.demos.run_crm_update_demo
+- nlp2dsl_sdk.encoding._auto_configure_once
+- nlp2dsl_sdk.example_loader.load_example_runner
+- nlp2dsl_sdk.preview.finalize_example_artifacts
+- packages.install-dev.install_one
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.clarification.IntentClarificationRequired.__init__
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files.find_data_files
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.facade.IntentPipeline.__init__
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.facade.IntentPipeline.run
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.facade.KeywordIntentAdapter.__init__
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.facade.KeywordIntentAdapter.detect
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.facade.PassthroughEntityExtractor.extract
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.DetectionResult.__post_init__
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector.__init__
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._calculate_keyword_confidence
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._fast_path_detection
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._fuzzy_detection
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._keyword_detection
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._keyword_matches
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._match_keyword
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._ml_detection
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._semantic_detection
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._tokenize_text
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector.add_pattern
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector.detect
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector.detect_all
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector.detect_intent_ir
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.__init__
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_detector_config_from_json
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_patterns_from_json
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.add_pattern
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.get_domain_boosters
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.get_domain_patterns
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.get_intent_patterns
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.get_priority_intents
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.has_domain
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.has_intent
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.list_domains
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.list_intents
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.normalize.QueryNormalizer.normalize
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.protocols.EntityExtractor.extract
+- packages.nlp2cmd-intent.src.nlp2cmd_intent.protocols.IntentDetector.detect
+- packages.nlp2cmd-planner.src.nlp2cmd_planner.pipeline.PlanningPipeline.__init__
+- packages.nlp2cmd-planner.src.nlp2cmd_planner.pipeline.PlanningPipeline.run
+- packages.nlp2cmd-planner.src.nlp2cmd_planner.router.PlanRouter.__init__
+- packages.nlp2cmd-planner.src.nlp2cmd_planner.router.PlanRouter.select
+- packages.nlp2cmd-planner.src.nlp2cmd_planner.router.UnsupportedIntentError.__init__
+- packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rest_workflow.RestWorkflowPlanStrategy.plan
+- packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rest_workflow.RestWorkflowPlanStrategy.supports
+- packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rule_shell.RuleShellPlanStrategy.plan
+- packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rule_shell.RuleShellPlanStrategy.supports
+- packages.nlp2cmd-planner.src.nlp2cmd_planner.strategy.PlanStrategy.plan
+- packages.nlp2cmd-planner.src.nlp2cmd_planner.strategy.PlanStrategy.supports
+- packages.nlp2cmd-propact.src.nlp2cmd_propact.cli.main
+- packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor.__init__
+- packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor._run_nlp2cmd_step
+- packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor._run_propact_step
+- packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor.run
+- packages.nlp2cmd-propact.src.nlp2cmd_propact.runner.PropactRunner.__init__
+- packages.nlp2cmd-propact.src.nlp2cmd_propact.runner.PropactRunner._run_via_propact
+- packages.nlp2cmd-propact.src.nlp2cmd_propact.runner.PropactRunner.render
+- packages.nlp2cmd-propact.src.nlp2cmd_propact.runner.PropactRunner.run
+- packages.nlp2dsl-show.src.nlp2dsl_show.cli.main
+- packages.pact-ir.src.pact_ir.execution_plan.ExecutionPlanIR.from_intent
+- packages.pact-ir.src.pact_ir.intent.EntityBag.get
+- packages.pact-ir.src.pact_ir.intent.IntentIR.needs_clarification
 - run-all-tests.run_tests
+- scripts.aggregate-example-testql.main
+- scripts.publish-all.require_tool
+- scripts.run-example-testql-results.ExampleReport.to_dict
+- scripts.run-example-testql-results.main
 - tauri-wrapper.scripts.dev.child
 - tauri-wrapper.scripts.dev.exitCode
 - tauri-wrapper.scripts.dev.npmCommand

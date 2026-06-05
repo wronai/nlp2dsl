@@ -53,7 +53,7 @@ def run(client: Optional[NLP2DSLClient] = None) -> dict[str, Any]:
         print("--- MVP: /workflow/from-text ---")
         for text in MVP_QUERIES:
             print(f"\n📝 {text}")
-            result = client.workflow_from_text(text, mode="auto")
+            result = client.workflow_from_text(text, execute=True, mode="auto")
             out["mvp"].append(result)
             print_workflow_preview(result)
             if writer:

@@ -5,6 +5,51 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.10] - 2026-06-05
+
+### Fixed
+- Fix unused-imports issues (ticket-808f0627)
+- Fix unused-imports issues (ticket-ae593814)
+- Fix unused-imports issues (ticket-f8a324eb)
+- Fix string-concat issues (ticket-71a31124)
+- Fix unused-imports issues (ticket-6eedcc0d)
+- Fix unused-imports issues (ticket-c5647da9)
+- Fix relative-imports issues (ticket-61a1ce8a)
+- Fix unused-imports issues (ticket-99d85fdb)
+- Fix ai-boilerplate issues (ticket-93020831)
+- Fix relative-imports issues (ticket-16d87497)
+- Fix unused-imports issues (ticket-35431ebc)
+- Fix llm-hallucinations issues (ticket-04b8c97a)
+- Fix magic-numbers issues (ticket-c914348e)
+- Fix llm-generated-code issues (ticket-cc77397e)
+- Fix smart-return-type issues (ticket-b7b9d421)
+- Fix unused-imports issues (ticket-1f4e1aa2)
+- Fix string-concat issues (ticket-9e34bb51)
+- Fix llm-hallucinations issues (ticket-5e716bad)
+- Fix relative-imports issues (ticket-9aeb0d35)
+- Fix unused-imports issues (ticket-46df90a5)
+- Fix relative-imports issues (ticket-e16eb7d9)
+- Fix unused-imports issues (ticket-4952538e)
+- Fix magic-numbers issues (ticket-04696266)
+- Fix unused-imports issues (ticket-6dba0796)
+- Fix unused-imports issues (ticket-018e66cc)
+- Fix unused-imports issues (ticket-cf108012)
+- Fix smart-return-type issues (ticket-f9fd0150)
+- Fix unused-imports issues (ticket-1fb59192)
+- Fix unused-imports issues (ticket-6b52261f)
+- Fix unused-imports issues (ticket-9e1b41d4)
+- Fix llm-generated-code issues (ticket-fec1d591)
+- Fix unused-imports issues (ticket-90f4d3d2)
+- Fix unused-imports issues (ticket-90757fae)
+- Fix relative-imports issues (ticket-6ecbbbfd)
+- Fix smart-return-type issues (ticket-7e98f326)
+- Fix string-concat issues (ticket-6af3ff9e)
+- Fix unused-imports issues (ticket-b4559ca8)
+- Fix llm-generated-code issues (ticket-efd5460e)
+- Fix unused-imports issues (ticket-59c32939)
+- Fix unused-imports issues (ticket-8c51127d)
+- Fix unused-imports issues (ticket-d73753dc)
+
 ## [Unreleased]
 
 ### Added
@@ -14,6 +59,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `examples/bootstrap.py`, `scripts/aggregate-example-testql.py`, [`docs/artifacts.md`](docs/artifacts.md)
 
 ### Changed
+- Audyt examples 01–12 + `demos.py`: wykonanie wyłącznie przez NLP (`workflow_from_text(execute=True)` / `ConversationFlow`); usunięto `ACTION_SAMPLE_RUNNERS` i gallery `runner` lambdas
+- `execute_text_examples()` — batch execute z promptem przy `incomplete`
 - Przykłady 01–04: wykonanie przez `workflow_from_text(execute=True)` zamiast hardkodu `send_email` / `create_scheduled_report`
 - `examples/*/main.py`: ładowanie `scenario.py` przez `importlib` (naprawa kolizji `import scenario`)
 - `execute_from_text()` w `nlp2dsl_sdk/preview.py`
@@ -23,6 +70,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - `nlp2cmd-intent`: normalizer zwracający `str` zamiast obiektu z `.text` w `KeywordIntentDetector`
+
+## [0.0.19] - 2026-06-05
+
+### Docs
+- Update CHANGELOG.md
+- Update README.md
+- Update SUMD.md
+- Update SUMR.md
+- Update TODO.md
+- Update examples/README.md
+- Update project/README.md
+- Update project/context.md
+
+### Test
+- Update testql-scenarios/generated-examples.testql.toon.yaml
+
+### Other
+- Update .gitignore
+- Update app.doql.less
+- Update examples/08-multi-object-benchmark/results/benchmark_1780673613.json
+- Update examples/11-notify-quality/scenario.py
+- Update examples/12-ir-show/scenario.py
+- Update examples/run-all.sh
+- Update examples/testql-results.json
+- Update nlp2dsl_sdk/demos.py
+- Update nlp2dsl_sdk/preview.py
+- Update planfile.yaml
+- ... and 19 more files
 
 ## [0.0.18] - 2026-06-05
 

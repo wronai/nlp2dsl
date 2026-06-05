@@ -2,11 +2,11 @@
 
 app {
   name: nlp2dsl;
-  version: 0.0.15;
+  version: 0.0.18;
 }
 
 dependencies {
-  runtime: requests>=2.31.0;
+  runtime: "requests>=2.31.0, pyyaml>=6.0";
 }
 
 entity[name="NLPIntent"] {
@@ -18,6 +18,7 @@ entity[name="NLPEntities"] {
   amount: float | None;
   currency: str | None;
   to: str | None;
+  email_to: str | None;
   subject: str | None;
   message: str | None;
   channel: str | None;
@@ -99,12 +100,120 @@ interface[type="api"] {
 interface[type="cli"] {
   framework: argparse;
 }
-interface[type="cli"] page[name="nlp2dsl-demo"] {
+interface[type="cli"] page[name="nlp2dsl"] {
 
 }
 
 integration[name="nlp"] {
   type: api;
+}
+
+workflow[name="install"] {
+  trigger: manual;
+  step-1: run cmd=$(PYTHON) -m pip install -e .;
+}
+
+workflow[name="install-dev"] {
+  trigger: manual;
+  step-1: depend target=setup-dev;
+}
+
+workflow[name="setup-dev"] {
+  trigger: manual;
+  step-1: run cmd=./scripts/setup-dev.sh;
+}
+
+workflow[name="update"] {
+  trigger: manual;
+  step-1: run cmd=echo "$(YELLOW)==> update integration stack$(NC)";
+  step-2: run cmd=./scripts/setup-dev.sh;
+}
+
+workflow[name="test"] {
+  trigger: manual;
+  step-1: run cmd=$(PYTHON) -m pytest tests/ -v;
+}
+
+workflow[name="check-pypi-deps"] {
+  trigger: manual;
+  step-1: run cmd=$(PYTHON) -c "import build, twine" 2>/dev/null || $(PYTHON) -m pip install build twine -q;
+}
+
+workflow[name="clean"] {
+  trigger: manual;
+  step-1: run cmd=rm -rf dist/ build/ *.egg-info;
+  step-2: run cmd=for pkg in $(PACKAGES); do \;
+  step-3: run cmd=rm -rf $$pkg/dist $$pkg/build $$pkg/src/*.egg-info 2>/dev/null || true; \;
+  step-4: run cmd=done;
+  step-5: run cmd=find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true;
+}
+
+workflow[name="build"] {
+  trigger: manual;
+  step-1: run cmd=echo "$(YELLOW)==> build root SDK$(NC)";
+  step-2: run cmd=$(PYTHON) -m build .;
+}
+
+workflow[name="build-packages"] {
+  trigger: manual;
+  step-1: run cmd=for pkg in $(PACKAGES); do \;
+  step-2: run cmd=echo "$(YELLOW)==> build $$pkg$(NC)"; \;
+  step-3: run cmd=$(PYTHON) -m build $$pkg; \;
+  step-4: run cmd=done;
+}
+
+workflow[name="build-all"] {
+  trigger: manual;
+  step-1: depend target=build;
+  step-2: depend target=build-packages;
+}
+
+workflow[name="publish-root"] {
+  trigger: manual;
+  step-1: run cmd=echo "$(YELLOW)==> twine upload root SDK$(NC)";
+  step-2: run cmd=$(PYTHON) -m twine upload dist/*;
+}
+
+workflow[name="publish-packages"] {
+  trigger: manual;
+  step-1: run cmd=for pkg in $(PACKAGES); do \;
+  step-2: run cmd=echo "$(YELLOW)==> twine upload $$pkg$(NC)"; \;
+  step-3: run cmd=$(PYTHON) -m twine upload --skip-existing $$pkg/dist/* || exit 1; \;
+  step-4: run cmd=sleep $(PYPI_UPLOAD_DELAY); \;
+  step-5: run cmd=done;
+}
+
+workflow[name="publish-package"] {
+  trigger: manual;
+  step-1: run cmd=test -n "$(PKG)" || (echo "Usage: make publish-package PKG=packages/nlp2dsl-show" && exit 1);
+  step-2: run cmd=echo "$(YELLOW)==> build $(PKG)$(NC)";
+  step-3: run cmd=$(PYTHON) -m build $(PKG);
+  step-4: run cmd=echo "$(YELLOW)==> twine upload $(PKG)$(NC)";
+  step-5: run cmd=$(PYTHON) -m twine upload --skip-existing $(PKG)/dist/*;
+}
+
+workflow[name="publish"] {
+  trigger: manual;
+  step-1: run cmd=echo "$(YELLOW)==> Publishing nlp2dsl + packages to PyPI$(NC)";
+  step-2: run cmd=$(PYTHON) -m twine upload dist/*;
+  step-3: run cmd=for pkg in $(PACKAGES); do \;
+  step-4: run cmd=echo "$(YELLOW)==> twine upload $$pkg$(NC)"; \;
+  step-5: run cmd=$(PYTHON) -m twine upload $$pkg/dist/*; \;
+  step-6: run cmd=done;
+  step-7: run cmd=echo "$(GREEN)Done: nlp2dsl + $(words $(PACKAGES)) packages published$(NC)";
+}
+
+workflow[name="version"] {
+  trigger: manual;
+  step-1: run cmd=grep -m1 '^version = ' pyproject.toml | cut -d'"' -f2;
+}
+
+workflow[name="package-versions"] {
+  trigger: manual;
+  step-1: run cmd=for pkg in $(PACKAGES); do \;
+  step-2: run cmd=v=$$(grep -m1 '^version = ' $$pkg/pyproject.toml | cut -d'"' -f2); \;
+  step-3: run cmd=echo "$$pkg: $$v"; \;
+  step-4: run cmd=done;
 }
 
 deploy {
