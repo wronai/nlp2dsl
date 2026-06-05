@@ -75,6 +75,16 @@ class TestStartConversation:
 # ── continue_conversation ────────────────────────────────────────
 
 
+class TestExecuteKeywordMatching:
+    def test_go_not_matched_inside_zgodnie(self) -> None:
+        from app.conversation.responses import _is_execute_or_continue
+
+        assert not _is_execute_or_continue(
+            "Treść: Projekt idzie zgodnie z planem, raport w załączniku."
+        )
+        assert _is_execute_or_continue("uruchom")
+
+
 class TestContinueConversation:
     """Multi-turn dialog: providing missing data in follow-up messages."""
 
@@ -98,6 +108,24 @@ class TestContinueConversation:
         resp = await continue_conversation("nonexistent_id", "Wyślij fakturę na 100 PLN do a@b.pl")
         assert resp.conversation_id == "nonexistent_id"
         assert resp.status in ("ready", "in_progress")
+
+    @pytest.mark.asyncio
+    async def test_continue_conversation_email_body(self) -> None:
+        """Email missing body → provide 'Treść:' follow-up → ready."""
+        resp1 = await start_conversation(
+            "Wyślij email do team@firma.pl z tematem Status projektu"
+        )
+        cid = resp1.conversation_id
+        assert resp1.status == "in_progress"
+        assert resp1.missing and any("body" in f for f in resp1.missing)
+
+        resp2 = await continue_conversation(
+            cid,
+            "Treść: Projekt idzie zgodnie z planem, raport w załączniku.",
+        )
+        assert resp2.status == "ready"
+        assert resp2.dsl is not None
+        assert resp2.dsl.steps[0].config.get("body")
 
 
 # ── System commands ──────────────────────────────────────────────

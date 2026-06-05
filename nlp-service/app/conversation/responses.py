@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from typing import Callable
 
 from app.dsl.forms import get_action_form
@@ -50,9 +51,18 @@ _EXECUTE_KEYWORDS = (
 )
 
 
+def _execute_keyword_in_text(text_lower: str, keyword: str) -> bool:
+    """Match execute keywords; short tokens use word boundaries ('go' in 'zgodnie' → false)."""
+    if " " in keyword:
+        return keyword in text_lower
+    if len(keyword) <= 4:
+        return bool(re.search(rf"(?<!\w){re.escape(keyword)}(?!\w)", text_lower))
+    return keyword in text_lower
+
+
 def _is_execute_or_continue(text: str) -> bool:
     text_lower = text.lower().strip()
-    return any(kw in text_lower for kw in _EXECUTE_KEYWORDS)
+    return any(_execute_keyword_in_text(text_lower, kw) for kw in _EXECUTE_KEYWORDS)
 
 
 async def check_execute_keyword(state: ConversationState, text: str) -> ConversationResponse | None:

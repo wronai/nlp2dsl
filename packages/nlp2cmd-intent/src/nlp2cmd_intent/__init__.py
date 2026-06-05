@@ -28,4 +28,4 @@ __all__ = [
     "ensure_intent_clear",
 ]
 
-__version__ = "0.0.16"
+__version__ = "0.0.17"

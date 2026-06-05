@@ -49,6 +49,11 @@ EMAIL_COLON_BODY_PATTERN = re.compile(
     r"@[\w.-]+\s*:\s*(.+)$",
 )
 
+BODY_CONTENT_PATTERN = re.compile(
+    r"(?:treść(?:\s+wiadomości)?|body|message)\s*:\s*(.+)$",
+    re.IGNORECASE,
+)
+
 EMAIL_OFFER_PATTERN = re.compile(
     r"z\s+now[aą]\s+ofert[aą]",
     re.IGNORECASE,
@@ -327,6 +332,7 @@ def _extract_entities(text: str, text_lower: str) -> NLPEntities:
 
     _extract_amount(entities, text)
     _extract_email(entities, text)
+    _extract_body_content_prefix(entities, text)
     _extract_email_subject_and_body(entities, text)
     _extract_reminder_subject(entities, text)
     _extract_report_type(entities, text_lower)
@@ -364,6 +370,17 @@ def _extract_email(entities: NLPEntities, text: str) -> None:
     entities.to = emails[0]
     if len(emails) >= 2:
         entities.email_to = emails[1]
+
+
+def _extract_body_content_prefix(entities: NLPEntities, text: str) -> None:
+    """Extract body from 'Treść:' / 'Treść wiadomości:' follow-up phrases."""
+    if entities.message:
+        return
+    match = BODY_CONTENT_PATTERN.search(text.strip())
+    if match:
+        body = match.group(1).strip()
+        if body:
+            entities.message = body
 
 
 def _extract_email_subject_and_body(entities: NLPEntities, text: str) -> None:
@@ -466,7 +483,7 @@ def _extract_param_aliases(entities: NLPEntities, text_lower: str) -> None:
     """Extract entities from registry param_aliases."""
     for action_name, meta in ACTIONS_REGISTRY.items():
         for alias_key, target in meta.get("param_aliases", {}).items():
-            if alias_key in text_lower:
+            if _alias_in_text(text_lower, alias_key):
                 if "=" in target:
                     field, value = target.split("=", 1)
                     _set_entity(entities, field, value)

@@ -89,6 +89,21 @@ class TestParseEmail:
         assert result.entities.to == "manager@firma.pl"
         assert result.entities.message == "Projekt zakończony sukcesem"
 
+    def test_parse_body_content_prefix(self) -> None:
+        """Conversation follow-up 'Treść:' extracts message without email in text."""
+        result = parse_rules("Treść: Projekt idzie zgodnie z planem, raport w załączniku.")
+        assert result.entities.message == "Projekt idzie zgodnie z planem, raport w załączniku."
+        assert result.entities.language is None
+
+    def test_parse_body_content_prefix_long_form(self) -> None:
+        """'Treść wiadomości:' extracts body for multi-turn email dialog."""
+        result = parse_rules(
+            "Treść wiadomości: W załączeniu podsumowanie tygodnia. "
+            "Wszystkie zadania zamknięte na czas."
+        )
+        assert "podsumowanie tygodnia" in (result.entities.message or "")
+        assert result.entities.language is None
+
     def test_parse_email_offer(self) -> None:
         """Offer phrasing fills subject and default body."""
         result = parse_rules("Maila do klient@firma.pl z nową ofertą")
