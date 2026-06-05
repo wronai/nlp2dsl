@@ -5,11 +5,9 @@ from __future__ import annotations
 from typing import Any, Optional
 
 from nlp2dsl_sdk.client import ConversationFlow, NLP2DSLClient
-from nlp2dsl_sdk.encoding import configure_utf8
 
 
 def run_demo(client: Optional[NLP2DSLClient] = None) -> None:
-    configure_utf8(force=True)
     flow = ConversationFlow(client)
     print("=== Demonstracja Konwersacyjnego Flow ===\n")
 
@@ -35,7 +33,6 @@ def run_demo(client: Optional[NLP2DSLClient] = None) -> None:
 
 
 def run_interactive(client: Optional[NLP2DSLClient] = None) -> None:
-    configure_utf8(force=True)
     ConversationFlow(client).run_interactive()
 
 

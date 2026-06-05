@@ -25,7 +25,8 @@ class KeywordIntentAdapter:
 
     def detect(self, query: str, *, entities=None) -> IntentIR:
         del entities
-        return detection_to_intent_ir(self._detector.detect(query), query=query)
+        text = query.text if hasattr(query, "text") else str(query)
+        return detection_to_intent_ir(self._detector.detect(text), query=text)
 
 
 def default_intent_detector() -> IntentDetector:
@@ -48,5 +49,6 @@ class IntentPipeline:
 
     def run(self, query: str) -> IntentIR:
         normalized = self.normalizer.normalize(query)
-        entities = self.entity_extractor.extract(normalized)
-        return self.intent_detector.detect(normalized, entities=entities)
+        text = normalized if isinstance(normalized, str) else getattr(normalized, "text", str(query))
+        entities = self.entity_extractor.extract(text)
+        return self.intent_detector.detect(text, entities=entities)

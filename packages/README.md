@@ -43,7 +43,6 @@ cd /path/to/nlp2dsl
 ./scripts/setup-dev.sh
 
 export NLP2CMD_INTEGRATION=1
-export LANG=C.UTF-8
 ```
 
 ## Przykłady
@@ -134,7 +133,7 @@ Szczegóły: [`../docs/intract-integration.md`](../docs/intract-integration.md) 
 | `NLP2CMD_INTRACT_GATE` | `0` | `contract_check` w `show --plan`; gate w `nlp2cmd plan` i legacy runtime |
 | `NLP2CMD_ENFORCE_CLARIFICATION` | `0` | `show` blokuje `confidence < 0.5` (`plan` — zawsze) |
 | `NLP2CMD_POST_CHECK` | `0` | Po `plan --execute`: walidacja stdout (nlp2cmd) |
-| `LANG` | — | Ustaw `C.UTF-8` dla polskich znaków w terminalu |
+| `NLP2DSL_UTF8` | `1` | Auto UTF-8 w CLI/SDK (`0` = wyłącz) |
 
 ## Publikacja (PyPI)
 

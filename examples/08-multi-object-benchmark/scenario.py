@@ -9,7 +9,7 @@ from typing import Any, Optional
 
 from benchmark_queries import BENCHMARK_QUERIES, BenchmarkQuery
 from nlp2dsl_sdk.client import NLP2DSLClient
-from nlp2dsl_sdk.encoding import configure_utf8
+from nlp2dsl_sdk.artifacts import get_example_writer
 from nlp2dsl_sdk.preview import ensure_services, print_workflow_preview
 
 RESULTS_DIR = Path(__file__).resolve().parent / "results"
@@ -47,6 +47,7 @@ def run_benchmark(
     mode: str = "auto",
     execute: bool = False,
     verbose: bool = True,
+    artifact_writer: Any | None = None,
 ) -> dict[str, Any]:
     rows: list[dict[str, Any]] = []
     t0 = time.perf_counter()
@@ -71,6 +72,8 @@ def run_benchmark(
             **eval_row,
         }
         rows.append(row)
+        if artifact_writer:
+            artifact_writer.record(query.text, result, mode=mode)
 
         if verbose:
             icon = "✅" if row["pass"] else ("⚠️" if row["status"] == "incomplete" else "❌")
@@ -104,17 +107,17 @@ def run(
     *,
     modes: tuple[str, ...] = ("rules", "auto"),
 ) -> dict[str, Any]:
-    configure_utf8(force=True)
     client = client or NLP2DSLClient.from_env()
     print("=== Benchmark: 20 zapytań multi-object ===\n")
 
     if not ensure_services(client):
         return {}
 
+    writer = get_example_writer()
     all_summaries: dict[str, Any] = {}
     for mode in modes:
         print(f"\n{'=' * 60}\n  TRYB: {mode}\n{'=' * 60}")
-        summary = run_benchmark(client, mode=mode, verbose=True)
+        summary = run_benchmark(client, mode=mode, verbose=True, artifact_writer=writer)
         all_summaries[mode] = summary
         print(
             f"\n📊 {mode}: pass={summary['passed']}/{summary['total']} "
@@ -126,5 +129,9 @@ def run(
     out = RESULTS_DIR / f"benchmark_{int(time.time())}.json"
     out.write_text(json.dumps(all_summaries, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"\n💾 Wyniki zapisane: {out}")
+
+    if writer:
+        writer.finalize(client)
+        print(f"📁 Artefakty: {writer.artifact_root}")
 
     return all_summaries

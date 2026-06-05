@@ -5,6 +5,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
+# UTF-8: SDK ustawia to przy imporcie; poniżej dla subprocessów / starszych shelli
 export PYTHONIOENCODING="${PYTHONIOENCODING:-utf-8}"
 export PYTHONUTF8="${PYTHONUTF8:-1}"
 export LANG="${LANG:-C.UTF-8}"
@@ -37,6 +38,10 @@ for dir in "$ROOT"/examples/*/; do
     failed=1
   fi
 done
+
+echo ""
+echo "==> Aggregating testql from examples/*/.nlp2dsl/ ..."
+"$PY" "$ROOT/scripts/aggregate-example-testql.py" || true
 
 if [[ "$failed" -ne 0 ]]; then
   echo ""

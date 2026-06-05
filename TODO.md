@@ -6,6 +6,15 @@
 
 ---
 
+## ✅ Ukończone (ręcznie)
+
+- [x] Automatyczne kodowanie UTF-8 w SDK/CLI/examples — `nlp2dsl_sdk/encoding.py`, `docs/encoding.md`
+- [x] Dokumentacja: README, `examples/README.md`, `packages/README.md`, CHANGELOG
+- [x] Artefakty `.nlp2dsl/` per przykład (DOQL + testql + pipeline + process trace)
+- [x] Fix `nlp2cmd-intent` KeywordIntentDetector + `IntentPipeline` dla normalizera zwracającego `str`
+
+---
+
 ## 📋 Current Issues
 
 - [ ] backend/app/db/memory.py:34 - String concatenation can be converted to f-string

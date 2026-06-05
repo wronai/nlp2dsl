@@ -68,7 +68,6 @@ Repozytorium zawiera dwa poziomy:
 ./packages/install-dev.sh
 
 export NLP2CMD_INTEGRATION=1
-export LANG=C.UTF-8
 ```
 
 ```bash
@@ -108,16 +107,16 @@ flowchart LR
 
 ### Kodowanie UTF-8 (polskie znaki)
 
-CLI (`nlp2dsl`, `nlp2dsl-demo`, `nlp2dsl-show`) automatycznie ustawia stdout na UTF-8.
-Jeśli terminal nadal pokazuje `Przyk?ad` / `znajd?`:
+**Nie wymaga ręcznej konfiguracji.** Import `nlp2dsl_sdk` oraz CLI (`nlp2dsl`, `nlp2dsl-demo`, `nlp2dsl-show`) automatycznie ustawiają stdio i locale na UTF-8 (naprawia m.in. `znajd?` → `znajdź`).
 
-```bash
-export LANG=C.UTF-8
-export PYTHONIOENCODING=utf-8
-./scripts/setup-dev.sh   # ustawia zmienne w skryptach instalacyjnych
-```
+Szczegóły: [`docs/encoding.md`](docs/encoding.md)
 
-Wyłączenie auto-konfiguracji: `NLP2DSL_UTF8=0`.
+Wyłączenie: `NLP2DSL_UTF8=0`
+
+### Artefakty przykładów (NLP → DSL → CMD → process)
+
+`examples/NN-name/.nlp2dsl/` — DOQL env, testql, pipeline JSON/YAML, process trace.  
+Generowanie: `bash examples/run-all.sh` · docs: [`docs/artifacts.md`](docs/artifacts.md)
 
 ## Szybki start
 

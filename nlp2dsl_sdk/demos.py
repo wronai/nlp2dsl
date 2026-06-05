@@ -9,7 +9,6 @@ from typing import Any, Callable, Dict, Mapping, Optional, Sequence
 import requests
 
 from .client import NLP2DSLClient
-from .encoding import configure_utf8
 from .example_loader import load_example_runner
 from .preview import (
     ensure_services,
@@ -43,10 +42,6 @@ class DemoSpec:
     runner: Callable[[Optional[NLP2DSLClient]], Any]
 
 
-def _begin_demo() -> None:
-    configure_utf8(force=True)
-
-
 def _print_code_generation_preview(result: Mapping[str, Any]) -> None:
     language = result.get("language", "unknown")
     code = result.get("code", "")
@@ -64,7 +59,6 @@ def _print_code_generation_preview(result: Mapping[str, Any]) -> None:
 
 
 def run_crm_update_demo(client: Optional[NLP2DSLClient] = None) -> Dict[str, Any]:
-    _begin_demo()
     client = client or NLP2DSLClient.from_env()
     print("=== Przykład: Aktualizacja CRM ===\n")
 
@@ -84,7 +78,6 @@ def run_crm_update_demo(client: Optional[NLP2DSLClient] = None) -> Dict[str, Any
 
 
 def run_action_catalog_demo(client: Optional[NLP2DSLClient] = None) -> Dict[str, Any]:
-    _begin_demo()
     client = client or NLP2DSLClient.from_env()
     print("=== Przykład: Katalog Akcji ===\n")
 
@@ -120,7 +113,6 @@ def run_action_catalog_demo(client: Optional[NLP2DSLClient] = None) -> Dict[str,
 
 
 def run_automation_gallery_demo(client: Optional[NLP2DSLClient] = None) -> list[dict[str, Any]]:
-    _begin_demo()
     client = client or NLP2DSLClient.from_env()
     print("=== Przykład: Galeria automatyzacji bez boilerplate ===\n")
 
@@ -341,7 +333,6 @@ run_ir_show_demo = load_example_runner("12-ir-show")
 
 
 def run_code_generation_demo(client: Optional[NLP2DSLClient] = None) -> Dict[str, Any]:
-    _begin_demo()
     client = client or NLP2DSLClient.from_env()
     print("=== Direct Code Generation API ===\n")
 

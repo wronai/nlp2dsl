@@ -30,7 +30,7 @@ fi
 echo ""
 echo "Done. Suggested env:"
 echo "  export NLP2CMD_INTEGRATION=1"
-echo "  export LANG=C.UTF-8"
+echo "  (UTF-8 locale: automatycznie przez nlp2dsl_sdk — patrz docs/encoding.md)"
 echo ""
 echo "Try:"
 echo "  nlp2dsl show 'znajdz pliki *.py w src'"

@@ -6,21 +6,40 @@ import locale
 import os
 import sys
 
+# Only widely-available locales (pl_PL.UTF-8 often missing → setlocale warnings in bash)
+_UTF8_LOCALES = ("C.UTF-8", "en_US.UTF-8")
+_DISABLE_VALUES = frozenset({"0", "false", "no", "off"})
+_AUTO_CONFIGURED = False
 
-def configure_utf8(*, force: bool = False) -> None:
-    """
-    Reconfigure stdout/stderr to UTF-8 and prefer UTF-8 locale.
 
-    Call at CLI entry (main) before any print with Polish text or emoji.
-    Disable with NLP2DSL_UTF8=0.
-    """
-    if not force and os.environ.get("NLP2DSL_UTF8", "1").strip().lower() in {"0", "false", "no", "off"}:
-        return
+def utf8_auto_enabled() -> bool:
+    """Whether automatic UTF-8 setup is enabled (default: on)."""
+    return os.environ.get("NLP2DSL_UTF8", "1").strip().lower() not in _DISABLE_VALUES
 
+
+def _explicit_utf8_locale() -> bool:
+    """True only when LANG/LC_* explicitly name a UTF-8 locale."""
+    for key in ("LC_ALL", "LANG", "LC_CTYPE"):
+        value = (os.environ.get(key) or "").lower()
+        if "utf" in value:
+            return True
+    return False
+
+
+def _apply_utf8_locale_env() -> None:
+    """Set PYTHONUTF8 env; upgrade C/POSIX/empty locale to C.UTF-8."""
     os.environ.setdefault("PYTHONIOENCODING", "utf-8")
     os.environ.setdefault("PYTHONUTF8", "1")
+    if _explicit_utf8_locale():
+        return
 
-    for stream in (sys.stdout, sys.stderr):
+    os.environ["LANG"] = "C.UTF-8"
+    os.environ["LC_ALL"] = "C.UTF-8"
+    os.environ["LC_CTYPE"] = "C.UTF-8"
+
+
+def _reconfigure_stdio() -> None:
+    for stream in (sys.stdin, sys.stdout, sys.stderr):
         reconfigure = getattr(stream, "reconfigure", None)
         if reconfigure is None:
             continue
@@ -29,19 +48,37 @@ def configure_utf8(*, force: bool = False) -> None:
         except Exception:
             pass
 
-    if not os.environ.get("LANG"):
-        os.environ["LANG"] = "C.UTF-8"
-    if not os.environ.get("LC_ALL"):
-        os.environ["LC_ALL"] = os.environ.get("LANG", "C.UTF-8")
-    if not os.environ.get("LC_CTYPE"):
-        os.environ["LC_CTYPE"] = os.environ.get("LANG", "C.UTF-8")
 
-    for loc in ("C.UTF-8", "en_US.UTF-8", "pl_PL.UTF-8"):
+def _set_utf8_locale() -> None:
+    for loc in _UTF8_LOCALES:
         try:
             locale.setlocale(locale.LC_ALL, loc)
-            break
+            return
         except locale.Error:
             continue
+
+
+def configure_utf8(*, force: bool = False) -> None:
+    """
+    Reconfigure stdio to UTF-8 and prefer a UTF-8 locale.
+
+    Called automatically on ``import nlp2dsl_sdk`` (and when this module loads).
+    Disable with ``NLP2DSL_UTF8=0``.
+    """
+    if not force and not utf8_auto_enabled():
+        return
+
+    _apply_utf8_locale_env()
+    _reconfigure_stdio()
+    _set_utf8_locale()
+
+
+def _auto_configure_once() -> None:
+    global _AUTO_CONFIGURED
+    if _AUTO_CONFIGURED:
+        return
+    _AUTO_CONFIGURED = True
+    configure_utf8()
 
 
 def utf8_open(path, mode="r", **kwargs):
@@ -49,3 +86,7 @@ def utf8_open(path, mode="r", **kwargs):
     if "encoding" not in kwargs and "b" not in mode:
         kwargs["encoding"] = "utf-8"
     return open(path, mode, **kwargs)
+
+
+if utf8_auto_enabled():
+    _auto_configure_once()

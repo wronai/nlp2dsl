@@ -5,7 +5,6 @@ from __future__ import annotations
 from typing import Any, Mapping, Optional
 
 from nlp2dsl_sdk.client import NLP2DSLClient
-from nlp2dsl_sdk.encoding import configure_utf8
 from nlp2dsl_sdk.preview import (
     ensure_services,
     preview_text_examples,
@@ -66,7 +65,6 @@ SCHEDULED_REPORT_TEXT_EXAMPLES: tuple[str, ...] = (
 
 
 def run(client: Optional[NLP2DSLClient] = None) -> dict[str, Any]:
-    configure_utf8(force=True)
     client = client or NLP2DSLClient.from_env()
     print("=== Przykład: Zaplanowane Raporty ===\n")
 

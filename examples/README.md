@@ -306,6 +306,27 @@ cp .env.example .env
 | `NLP2DSL_BACKEND_URL` | `http://localhost:8010` | Gateway |
 | `NLP2DSL_NLP_SERVICE_URL` | `http://localhost:8012` | NLP bezpośrednio |
 | `NLP_ENRICH_MISSING` | `0` | LLM uzupełnia brakujące body |
+| `NLP2DSL_UTF8` | `1` | Auto UTF-8 przy imporcie SDK (wyłącz: `0`) |
+
+### Polskie znaki w terminalu
+
+`examples/bootstrap.py` + import `nlp2dsl_sdk` ustawiają UTF-8 automatycznie — **nie trzeba** `export LANG=C.UTF-8`. Zobacz [`docs/encoding.md`](../docs/encoding.md).
+
+### Artefakty `.nlp2dsl/` (NLP → DSL → CMD → process)
+
+Po każdym `main.py` zapisywany jest katalog `examples/NN-name/.nlp2dsl/`:
+
+- `environment.doql.less` — środowisko (DOQL)
+- `commands.testql.toon.yaml` — testy komend (testql)
+- `pipeline/*.json|yaml` — odpowiedź API per zapytanie
+- `process/*.process.yaml` — warstwowy ślad inferencji
+
+Szczegóły: [`docs/artifacts.md`](../docs/artifacts.md)
+
+```bash
+bash run-all.sh
+python3 ../scripts/aggregate-example-testql.py   # → testql-scenarios/generated-examples.testql.toon.yaml
+```
 
 ---
 

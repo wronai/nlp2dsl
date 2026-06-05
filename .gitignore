@@ -3,6 +3,13 @@ backend/.env.example
 nlp-service/.env.example
 tests/.env.example
 worker/.env.example
+# Generated example artifacts (regenerate via examples/run-all.sh)
+examples/**/.nlp2dsl/pipeline/
+examples/**/.nlp2dsl/process/
+examples/**/.nlp2dsl/manifest.yaml
+examples/**/.nlp2dsl/environment.doql.less
+examples/**/.nlp2dsl/commands.testql.toon.yaml
+examples/**/.nlp2dsl/services.yaml
 __pycache__/
 *.pyc
 .env

@@ -2,7 +2,7 @@
 
 CLI do podglądu **struktury zapytania** (IntentIR). Nie wykonuje poleceń.
 
-UTF-8 jest konfigurowany automatycznie przy starcie (`configure_utf8()`).
+UTF-8 jest konfigurowany automatycznie przy starcie CLI (delegacja do `nlp2dsl_sdk.encoding` gdy SDK zainstalowany). Nie wymaga `export LANG=…`.
 
 ## Instalacja
 
@@ -56,11 +56,4 @@ nlp2dsl demo invoice
 
 ## Kodowanie
 
-Jeśli w terminalu widzisz `znajd?` zamiast `znajdź`:
-
-```bash
-export LANG=C.UTF-8
-export PYTHONIOENCODING=utf-8
-```
-
-Lub wyłącz auto-fix: `NLP2DSL_UTF8=0`.
+UTF-8 jest włączane automatycznie (patrz `../../docs/encoding.md`). Wyłączenie: `NLP2DSL_UTF8=0`.

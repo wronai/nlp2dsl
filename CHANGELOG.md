@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- Automatyczne kodowanie UTF-8 przy imporcie `nlp2dsl_sdk` i w CLI (`configure_utf8` bez ręcznego `export LANG`)
+- Dokumentacja: [`docs/encoding.md`](docs/encoding.md)
+- Artefakty przykładów `examples/*/.nlp2dsl/` — DOQL env, testql, pipeline JSON/YAML, process YAML (`nlp2dsl_sdk/artifacts.py`)
+- `examples/bootstrap.py`, `scripts/aggregate-example-testql.py`, [`docs/artifacts.md`](docs/artifacts.md)
+
+### Changed
+- `configure_utf8` podnosi locale ASCII (`C`, `POSIX`) do `C.UTF-8`; rekonfiguruje też `stdin`
+- Przykłady `examples/*/scenario.py` — usunięte ręczne wywołania `configure_utf8(force=True)`
+- `nlp2dsl-show` deleguje encoding do SDK gdy dostępny
+
+### Fixed
+- `nlp2cmd-intent`: normalizer zwracający `str` zamiast obiektu z `.text` w `KeywordIntentDetector`
+
 ## [0.1.10] - 2026-06-05
 
 ### Fixed

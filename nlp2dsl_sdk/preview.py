@@ -3,10 +3,14 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Mapping, Sequence
+from typing import TYPE_CHECKING, Any, Mapping, Sequence
+
+if TYPE_CHECKING:
+    from .artifacts import ExampleArtifactWriter
 
 import requests
 
+from .artifacts import get_example_writer
 from .client import NLP2DSLClient
 
 
@@ -96,10 +100,13 @@ def preview_text_examples(
     *,
     execute: bool = False,
     mode: str = "auto",
+    artifact_writer: ExampleArtifactWriter | None = None,
+    finalize_artifacts: bool = True,
 ) -> list[dict[str, Any]]:
     if title:
         print(title)
 
+    writer = artifact_writer or get_example_writer()
     results: list[dict[str, Any]] = []
     for text in examples:
         print(f"\n📝 Przykład: {text}")
@@ -110,11 +117,25 @@ def preview_text_examples(
             result = workflow_http_error_result(exc)
             results.append(result)
             print_workflow_preview(result)
+            if writer:
+                writer.record(text, result, mode=mode)
             continue
         results.append(result)
         print_workflow_preview(result)
+        if writer:
+            writer.record(text, result, mode=mode)
+
+    if writer and finalize_artifacts:
+        writer.finalize(client)
 
     return results
+
+
+def finalize_example_artifacts(client: NLP2DSLClient | None = None) -> None:
+    """Flush .nlp2dsl/ when scenario recorded queries with finalize_artifacts=False."""
+    writer = get_example_writer()
+    if writer:
+        writer.finalize(client)
 
 
 def ensure_services(client: NLP2DSLClient) -> bool:

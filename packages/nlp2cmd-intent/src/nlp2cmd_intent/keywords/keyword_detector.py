@@ -260,7 +260,7 @@ class KeywordIntentDetector:
         _normalized = None
         if _normalizer is not None:
             _normalized = _normalizer.normalize(text)
-            text = _normalized.text  # typo-corrected, Unicode-normalized
+            text = _normalized if isinstance(_normalized, str) else _normalized.text
 
         text_lower = text.lower()
 

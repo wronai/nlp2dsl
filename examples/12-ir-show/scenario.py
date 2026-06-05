@@ -8,7 +8,7 @@ import subprocess
 from typing import Any, Optional
 
 from nlp2dsl_sdk.client import NLP2DSLClient
-from nlp2dsl_sdk.encoding import configure_utf8
+from nlp2dsl_sdk.artifacts import get_example_writer
 from nlp2dsl_sdk.preview import ensure_services, print_json, print_workflow_preview
 
 IR_QUERIES: tuple[str, ...] = (
@@ -43,11 +43,11 @@ def _run_show(query: str, *, with_plan: bool = False) -> dict[str, Any] | None:
 
 
 def run(client: Optional[NLP2DSLClient] = None) -> dict[str, Any]:
-    configure_utf8(force=True)
     client = client or NLP2DSLClient.from_env()
     print("=== MVP (Docker workflow) vs IR (nlp2dsl show) ===\n")
 
     out: dict[str, Any] = {"mvp": [], "ir": []}
+    writer = get_example_writer()
 
     if ensure_services(client):
         print("--- MVP: /workflow/from-text ---")
@@ -56,6 +56,8 @@ def run(client: Optional[NLP2DSLClient] = None) -> dict[str, Any]:
             result = client.workflow_from_text(text, mode="auto")
             out["mvp"].append(result)
             print_workflow_preview(result)
+            if writer:
+                writer.record(text, result, mode="auto")
     else:
         print("⚠️  MVP offline — pomijam workflow/from-text")
 
@@ -71,5 +73,16 @@ def run(client: Optional[NLP2DSLClient] = None) -> dict[str, Any]:
         out["ir"].append({"query": text, "result": payload})
         if payload:
             print_json(payload)
+        if writer and payload and not payload.get("error"):
+            writer.record(
+                text,
+                {"status": "ir", "dsl": None, "intent_ir": payload.get("intent_ir")},
+                mode="show",
+                layer_ir=payload,
+            )
+
+    if writer:
+        writer.finalize(client)
+        print(f"\n📁 Artefakty: {writer.artifact_root}")
 
     return out

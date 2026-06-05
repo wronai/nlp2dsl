@@ -5,7 +5,6 @@ from __future__ import annotations
 from typing import Any, Optional
 
 from nlp2dsl_sdk.client import ConversationFlow, NLP2DSLClient
-from nlp2dsl_sdk.encoding import configure_utf8
 
 
 HELP = """
@@ -19,7 +18,6 @@ Komendy w trybie interaktywnym:
 
 def run_demo(client: Optional[NLP2DSLClient] = None) -> dict[str, Any]:
     """Krótka demonstracja bez input() — do run-all.sh."""
-    configure_utf8(force=True)
     flow = ConversationFlow(client)
     print("=== Przykład: Interaktywny chat (demo skryptowane) ===\n")
     print("💡 Pełny tryb interaktywny: python3 main.py --interactive\n")
@@ -35,7 +33,6 @@ def run_demo(client: Optional[NLP2DSLClient] = None) -> dict[str, Any]:
 
 
 def run_interactive(client: Optional[NLP2DSLClient] = None) -> None:
-    configure_utf8(force=True)
     print("=== Interaktywny chat z NLP2DSL ===")
     print(HELP)
     ConversationFlow(client).run_interactive()

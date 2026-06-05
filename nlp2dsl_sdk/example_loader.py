@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 from typing import Any, Callable, Optional
 
+from . import encoding as _encoding  # noqa: F401 — UTF-8 auto
 from .client import NLP2DSLClient
 
 _REPO_ROOT = Path(__file__).resolve().parents[1]

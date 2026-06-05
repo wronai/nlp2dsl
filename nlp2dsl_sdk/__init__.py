@@ -1,5 +1,9 @@
 """Reusable SDK for working with NLP2DSL services."""
 
+from .encoding import configure_utf8
+
+configure_utf8()
+
 from .client import ConversationFlow, NLP2DSLClient, workflow_step
 from .demos import (
     DEMO_REGISTRY,

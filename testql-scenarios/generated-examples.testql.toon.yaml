@@ -1,0 +1,40 @@
+# SCENARIO: NLP2DSL Examples (aggregated)
+# TYPE: cli
+# GENERATED: true
+# PIPELINE: NLP → DSL → CMD → process
+
+CONFIG[2]{key, value}:
+  timeout_ms, 180000
+  repo_root, .
+
+# --- 01-invoice ---
+# PIPELINE: NLP → DSL → CMD → process
+
+CONFIG[3]{key, value}:
+  cli_command, python3 main.py
+  timeout_ms, 120000
+  example_dir, examples/01-invoice
+
+# Run full example scenario
+SHELL "cd examples/01-invoice && python3 main.py" 120000
+ASSERT_EXIT_CODE 0
+
+# Query 1: Wyślij fakturę na 500 PLN do test@firma.pl
+SHELL "nlp2dsl run \"Wyślij fakturę na 500 PLN do test@firma.pl\" --json" 30000
+ASSERT_EXIT_CODE 0
+
+# Query 2: Powiadom #devops: backup gotowy
+SHELL "nlp2dsl run \"Powiadom #devops: backup gotowy\" --json" 30000
+ASSERT_EXIT_CODE 0
+
+# Query 3: znajdź pliki *.py w src
+SHELL "nlp2dsl run \"znajdź pliki *.py w src\" --json" 30000
+ASSERT_EXIT_CODE 0
+
+# Query 4: uruchom testy jednostkowe
+SHELL "nlp2dsl run \"uruchom testy jednostkowe\" --json" 30000
+ASSERT_EXIT_CODE 0
+
+# Query 5: pokaż status systemu
+SHELL "nlp2dsl run \"pokaż status systemu\" --json" 30000
+ASSERT_EXIT_CODE 0
