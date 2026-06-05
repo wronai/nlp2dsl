@@ -41,7 +41,7 @@ REMINDER_SUBJECT_PATTERN = re.compile(
 )
 
 EMAIL_SUBJECT_PATTERN = re.compile(
-    r"z\s+tematem\s+(.+?)(?:\s+i\s+|\s*$)",
+    r"z\s+tematem\s+(.+?)(?:\.\s*(?:treść(?:\s+wiadomości)?|body|message)\s*:|(?:\s+i\s+)|\s*$)",
     re.IGNORECASE,
 )
 

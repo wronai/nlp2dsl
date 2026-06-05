@@ -14,6 +14,7 @@ Endpoints:
 """
 
 from http import HTTPStatus
+import json
 import logging
 from typing import Any
 
@@ -22,6 +23,7 @@ from fastapi import (
     File,
     Form,
     HTTPException,
+    Request,
     UploadFile,
     WebSocket,
     WebSocketDisconnect,
@@ -220,6 +222,8 @@ async def health() -> dict[str, Any]:
 async def chat_start(
     text: str = Form(default=""),
     audio: UploadFile = File(default=None),
+    doql_context_path: str = Form(default=""),
+    context_json: str = Form(default=""),
 ) -> ConversationResponse:
     """
     Rozpocznij nową konwersację. System rozpoznaje intencję i dopytuje o brakujące dane.
@@ -259,7 +263,22 @@ async def chat_start(
             detail="Field 'text' or 'audio' is required",
         )
 
-    return await start_conversation(text)
+    inline = _parse_context_json(context_json)
+    return await start_conversation(
+        text,
+        doql_context_path=doql_context_path or None,
+        context_inline=inline or None,
+    )
+
+
+def _parse_context_json(raw: str) -> dict[str, Any]:
+    if not raw or not raw.strip():
+        return {}
+    try:
+        parsed = json.loads(raw)
+        return parsed if isinstance(parsed, dict) else {}
+    except json.JSONDecodeError:
+        return {}
 
 
 @app.post("/chat/message", response_model=ConversationResponse)
@@ -267,6 +286,7 @@ async def chat_message(
     conversation_id: str = Form(...),
     text: str = Form(default=""),
     audio: UploadFile = File(default=None),
+    context_json: str = Form(default=""),
 ) -> ConversationResponse:
     """
     Kontynuuj rozmowę — uzupełnij brakujące dane.
@@ -306,7 +326,8 @@ async def chat_message(
             detail="Field 'text' or 'audio' is required",
         )
 
-    return await continue_conversation(conversation_id, text)
+    inline = _parse_context_json(context_json)
+    return await continue_conversation(conversation_id, text, context_inline=inline or None)
 
 
 @app.get("/chat/{conversation_id}")
@@ -316,6 +337,51 @@ async def chat_state(conversation_id: str) -> dict[str, Any]:
     if not state:
         raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="Conversation not found")
     return state.model_dump()
+
+
+@app.post("/chat/registry/observe")
+async def chat_registry_observe(request: Request) -> dict[str, Any]:
+    """
+    Merge execution / entities into environment.doql.less (registry loop).
+
+    Body: {"doql_context_path": "...", "phase": "executed", "execution": {...}, "intent": "...", "entities": {}}
+    """
+    body = await request.json()
+    if not isinstance(body, dict):
+        body = {}
+    path_raw = body.get("doql_context_path") or body.get("doqlContextPath")
+    if not path_raw:
+        raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail="doql_context_path required")
+
+    phase = str(body.get("phase") or "executed")
+    execution = body.get("execution")
+    entities = body.get("entities") or {}
+    intent = body.get("intent")
+
+    try:
+        from app.conversation.doql_registry import refresh_registry_for_state
+        from app.schemas import ConversationState
+
+        state = ConversationState(
+            id=str(body.get("conversation_id") or "observe"),
+            intent=intent,
+            entities=dict(entities),
+            doql_context_path=str(path_raw),
+        )
+        out = refresh_registry_for_state(
+            state,
+            phase=phase,
+            execution=execution if isinstance(execution, dict) else None,
+            explicit_path=str(path_raw),
+        )
+        if out is None:
+            raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="Could not refresh registry")
+        return {"path": str(out), "phase": phase}
+    except HTTPException:
+        raise
+    except Exception as exc:
+        log.exception("Registry observe failed")
+        raise HTTPException(status_code=HTTPStatus.INTERNAL_SERVER_ERROR, detail=str(exc)) from exc
 
 
 # ── Schema-driven UI ─────────────────────────────────────────

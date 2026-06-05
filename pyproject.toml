@@ -4,13 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nlp2dsl"
-version = "0.0.19"
+version = "0.0.22"
 description = "Reusable Python SDK for the NLP2DSL platform"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "requests>=2.31.0",
     "pyyaml>=6.0",
+    "pydantic>=2.0",
 ]
 license = "Apache-2.0"
 

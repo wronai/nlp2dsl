@@ -1,0 +1,4 @@
+FAKTURA
+Odbiorca: klient@firma.pl
+Kwota: 1500.0 PLN
+yródBo: fixtures/faktura-2024.pdf (MVP  tekst, nie binarny PDF)

@@ -1,0 +1,41 @@
+# E2E overlay: mock serwisy + montowanie fixture per przykład.
+# Użycie:
+#   docker compose -f docker-compose.yml -f docker-compose.e2e.yml \
+#     --profile invoice --profile email --profile conversation --profile llm up -d --build
+
+services:
+  smtp-mock:
+    image: mailhog/mailhog:latest
+    ports:
+      - "${SMTP_MOCK_PORT:-8025}:8025"
+      - "${SMTP_MOCK_SMTP_PORT:-1025}:1025"
+    profiles: [email, invoice]
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    ports:
+      - "${MINIO_API_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - minio_e2e_data:/data
+    profiles: [storage, reports]
+
+  example-fixtures:
+    image: alpine:3.20
+    profiles: [conversation, invoice, email, reports, scheduled]
+    volumes:
+      - ./examples/01-invoice/.nlp2dsl/fixtures:/fixtures/01-invoice:ro
+      - ./examples/02-email/.nlp2dsl/fixtures:/fixtures/02-email:ro
+      - ./examples/03-report-and-notify/.nlp2dsl/fixtures:/fixtures/03-report-and-notify:ro
+      - ./examples/04-scheduled-report/.nlp2dsl/fixtures:/fixtures/04-scheduled-report:ro
+      - ./examples/05-conversation-flow/.nlp2dsl/fixtures:/fixtures/05-conversation-flow:ro
+      - ./examples/06-interactive-chat/.nlp2dsl/fixtures:/fixtures/06-interactive-chat:ro
+      - ./examples/07-email-conversation/.nlp2dsl/fixtures:/fixtures/07-email-conversation:ro
+    command: ["sh", "-c", "echo example fixtures mounted && sleep infinity"]
+
+volumes:
+  minio_e2e_data:

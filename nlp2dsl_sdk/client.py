@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import os
 import time
 from pathlib import Path
@@ -150,6 +151,15 @@ class NLP2DSLClient:
     def workflow_actions(self) -> list[dict[str, Any]]:
         return self._backend("get", "/workflow/actions").json()
 
+    def workflow_history(self, limit: int = 10) -> list[dict[str, Any]]:
+        data = self._backend("get", "/workflow/history").json()
+        if isinstance(data, list):
+            return data[:limit]
+        if isinstance(data, dict):
+            items = list(data.get("workflows") or data.get("items") or [])
+            return items[:limit]
+        return []
+
     def workflow_action_schema(self, action: Optional[str] = None) -> dict[str, Any]:
         path = "/workflow/actions/schema" if action is None else f"/workflow/actions/schema/{action}"
         return self._backend("get", path).json()
@@ -170,38 +180,60 @@ class NLP2DSLClient:
         return self._backend("post", "/workflow/settings/reset", json=dict(body or {})).json()
 
     def chat_start(self, text: str, audio_path: Optional[str] = None) -> dict[str, Any]:
+        from .doql_context import load_doql_inline_from_env, resolve_doql_context_path
+
+        inline = load_doql_inline_from_env()
+        extra: dict[str, Any] = {}
+        if inline:
+            extra["context_json"] = json.dumps(inline, ensure_ascii=False)
+        doql_path = resolve_doql_context_path()
+        if doql_path:
+            extra["doql_context_path"] = str(doql_path)
         if audio_path:
             path = Path(audio_path)
             with path.open("rb") as audio_file:
                 response = self._backend(
                     "post",
                     "/workflow/chat/start",
-                    data={"text": text},
+                    data={"text": text, **extra},
                     files={"audio": (path.name, audio_file, "application/octet-stream")},
                 )
             return response.json()
-        return self._backend("post", "/workflow/chat/start", json={"text": text}).json()
+        return self._backend("post", "/workflow/chat/start", json={"text": text, **extra}).json()
 
     def chat_message(
         self,
         conversation_id: str,
         text: str,
         audio_path: Optional[str] = None,
+        *,
+        context_inline: Optional[Mapping[str, Any]] = None,
     ) -> dict[str, Any]:
+        from .doql_context import load_doql_inline_from_env, resolve_doql_context_path
+
+        inline = dict(context_inline or {})
+        if not inline:
+            inline = load_doql_inline_from_env()
+        extra: dict[str, Any] = {}
+        if inline:
+            extra["context_json"] = json.dumps(inline, ensure_ascii=False)
+        doql_path = resolve_doql_context_path()
+        if doql_path:
+            extra["doql_context_path"] = str(doql_path)
         if audio_path:
             path = Path(audio_path)
             with path.open("rb") as audio_file:
                 response = self._backend(
                     "post",
                     "/workflow/chat/message",
-                    data={"conversation_id": conversation_id, "text": text},
+                    data={"conversation_id": conversation_id, "text": text, **extra},
                     files={"audio": (path.name, audio_file, "application/octet-stream")},
                 )
             return response.json()
         return self._backend(
             "post",
             "/workflow/chat/message",
-            json={"conversation_id": conversation_id, "text": text},
+            json={"conversation_id": conversation_id, "text": text, **extra},
         ).json()
 
     def chat_state(self, conversation_id: str) -> dict[str, Any]:
@@ -467,30 +499,93 @@ class NLP2DSLClient:
 class ConversationFlow:
     """Convenience helper for the conversational workflow example."""
 
-    def __init__(self, client: Optional[NLP2DSLClient] = None) -> None:
+    def __init__(self, client: Optional[NLP2DSLClient] = None, *, reflect: bool = False) -> None:
         self.client = client or NLP2DSLClient.from_env()
         self.conversation_id: Optional[str] = None
         self.history: list[dict[str, str]] = []
+        self.api_trace: list[dict[str, Any]] = []
+        self.reflections: list[dict[str, Any]] = []
+        self._reflect = reflect
+        self._last_response: dict[str, Any] = {}
+        self._turn_index: int = 0
+        self._run_id: Optional[str] = None
 
     def start(self, text: str, audio_path: Optional[str] = None) -> dict[str, Any]:
+        import os
+
+        from .artifact_layout import current_run_id, ensure_layout
+
+        example_dir = os.environ.get("NLP2DSL_EXAMPLE_DIR", "").strip()
+        if example_dir:
+            ensure_layout(Path(example_dir) / ".nlp2dsl")
+            self._run_id = current_run_id(Path(example_dir) / ".nlp2dsl")
+        self._turn_index = 0
         print(f"👤 Użytkownik: {text}")
 
         data = self.client.chat_start(text, audio_path=audio_path)
         self.conversation_id = data["conversation_id"]
         self.history.append({"role": "user", "text": text})
+        self._record_turn("user", text, "/workflow/chat/start", data)
         self._handle_response(data)
         return data
 
-    def send_message(self, text: str, audio_path: Optional[str] = None) -> dict[str, Any]:
+    def send_message(
+        self,
+        text: str,
+        audio_path: Optional[str] = None,
+        *,
+        context_inline: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
         print(f"👤 Użytkownik: {text}")
 
         if not self.conversation_id:
             raise ValueError("Brak ID konwersacji. Najpierw wywołaj start().")
 
-        data = self.client.chat_message(self.conversation_id, text, audio_path=audio_path)
+        data = self.client.chat_message(
+            self.conversation_id,
+            text,
+            audio_path=audio_path,
+            context_inline=context_inline,
+        )
         self.history.append({"role": "user", "text": text})
+        self._record_turn("user", text, "/workflow/chat/message", data)
         self._handle_response(data)
         return data
+
+    def _record_turn(
+        self,
+        role: str,
+        text: str,
+        endpoint: str,
+        response: dict[str, Any],
+    ) -> None:
+        self._last_response = response
+        self.api_trace.append({
+            "role": role,
+            "text": text,
+            "endpoint": endpoint,
+            "response": response,
+        })
+
+    def save_artifacts(self, artifact_root: Path | str | None = None) -> dict[str, Path]:
+        """Write conversation trace + transcript under .nlp2dsl/."""
+        import os
+
+        from .conversation_artifacts import write_conversation_artifacts
+
+        root = Path(artifact_root or os.environ.get("NLP2DSL_EXAMPLE_DIR", ".")) / ".nlp2dsl"
+        return write_conversation_artifacts(root, self.export_trace())
+
+    def export_trace(self) -> dict[str, Any]:
+        """Full dialog trace for TestQL artifacts and docker E2E reports."""
+        status = self._last_response.get("status", "unknown")
+        return {
+            "conversation_id": self.conversation_id,
+            "status": status,
+            "turns": list(self.api_trace),
+            "history": list(self.history),
+            "reflections": list(self.reflections),
+        }
 
     def _handle_response(self, data: dict[str, Any]) -> None:
         status = data.get("status")
@@ -506,6 +601,107 @@ class ConversationFlow:
             self._handle_error_response(message)
 
         self.history.append({"role": "assistant", "text": message})
+        self._refresh_doql_registry(data)
+        self._persist_reflection(data)
+
+    def _persist_reflection(self, data: dict[str, Any]) -> None:
+        """Store server reflection + optional client-side snapshot."""
+        import os
+
+        reflection = data.get("reflection")
+        if isinstance(reflection, dict):
+            self.reflections.append(reflection)
+            if self._reflect:
+                from .reflection import format_reflection_summary
+
+                print(format_reflection_summary(reflection) + "\n")
+
+        if not self._reflect:
+            return
+
+        example_dir = os.environ.get("NLP2DSL_EXAMPLE_DIR", "").strip()
+        if not example_dir:
+            return
+
+        try:
+            from .artifact_layout import write_reflection_snapshot
+            from .doql_context import resolve_doql_context_path
+            from .reflection import reflect_from_doql_path
+            from .system_map_bridge import doql_file_to_system_map
+
+            phase = str(data.get("status", "unknown"))
+            if isinstance(reflection, dict):
+                report_payload = reflection
+            else:
+                path = resolve_doql_context_path()
+                if path is None:
+                    return
+                report = reflect_from_doql_path(path, data, phase)
+                if report is None:
+                    return
+                report_payload = report.model_dump()
+                self.reflections.append(report_payload)
+
+            write_reflection_snapshot(
+                Path(example_dir) / ".nlp2dsl",
+                turn=self._turn_index,
+                phase=phase,
+                report=report_payload,
+                run_id=self._run_id,
+            )
+        except OSError:
+            pass
+
+    def _refresh_doql_registry(self, data: dict[str, Any]) -> None:
+        """Sync environment.doql.less on client after each chat step (source of truth)."""
+        try:
+            from nlp2dsl_sdk.doql_context import resolve_doql_context_path
+            from nlp2dsl_sdk.doql_registry import refresh_doql_registry
+        except ImportError:
+            return
+
+        path = resolve_doql_context_path()
+        if path is None:
+            return
+
+        status = str(data.get("status", "unknown"))
+        phase = "executed" if status == "executed" else status
+
+        intent: str | None = None
+        entities: dict[str, Any] = {}
+        dsl = data.get("dsl") or {}
+        for step in dsl.get("steps") or []:
+            if isinstance(step, dict):
+                intent = intent or step.get("action")
+                entities.update(step.get("config") or {})
+
+        try:
+            registry_path = refresh_doql_registry(
+                path,
+                intent=intent,
+                entities=entities,
+                execution=data.get("execution"),
+                phase=phase,
+            )
+        except OSError:
+            return
+
+        self._turn_index += 1
+        example_dir = os.environ.get("NLP2DSL_EXAMPLE_DIR", "").strip()
+        if example_dir:
+            try:
+                from .artifact_layout import write_turn_snapshot
+
+                write_turn_snapshot(
+                    Path(example_dir) / ".nlp2dsl",
+                    turn=self._turn_index,
+                    phase=phase,
+                    response=data,
+                    registry_path=registry_path,
+                    run_id=self._run_id,
+                )
+            except OSError:
+                pass
 
     def _handle_in_progress_response(self, data: dict[str, Any], message: str) -> None:
         """Handle in_progress status response."""
@@ -525,6 +721,10 @@ class ConversationFlow:
         missing = data.get("missing")
         if missing:
             print(f"❗ Brakuje: {', '.join(missing)}\n")
+
+        autofill = data.get("autofill_applied")
+        if autofill:
+            print(f"✨ Uzupełniono z DOQL: {', '.join(autofill)}\n")
 
     def _handle_ready_response(self, data: dict[str, Any], message: str) -> None:
         """Handle ready status response."""

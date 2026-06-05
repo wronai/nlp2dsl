@@ -71,6 +71,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - `nlp2cmd-intent`: normalizer zwracający `str` zamiast obiektu z `.text` w `KeywordIntentDetector`
 
+## [0.0.22] - 2026-06-05
+
+### Docs
+- Update README.md
+- Update SUMD.md
+- Update SUMR.md
+- Update TODO.md
+- Update docs/artifacts.md
+- Update docs/autonomous-stack.md
+- Update docs/doql-dynamic-generation.md
+- Update docs/doql-runtimes.md
+- Update docs/doql-system-map.md
+- Update docs/process-agent.md
+- ... and 4 more files
+
+### Test
+- Update testql-scenarios/generated-examples.testql.toon.yaml
+- Update tests/test_artifact_layout.py
+- Update tests/test_compose_generator.py
+- Update tests/test_conversation_testql.py
+- Update tests/test_doql_registry.py
+- Update tests/test_path_resolve.py
+- Update tests/test_reflection.py
+- Update tests/test_system_map_ir.py
+
+### Other
+- Update .gitignore
+- Update VERSION
+- Update app.doql.less
+- Update backend/app/engine.py
+- Update backend/app/main.py
+- Update backend/app/path_resolve.py
+- Update backend/app/routers/chat.py
+- Update backend/app/routers/testql_compat.py
+- Update backend/app/step_validator.py
+- Update backend/tests/test_step_validator.py
+- ... and 87 more files
+
 ## [0.0.19] - 2026-06-05
 
 ### Docs

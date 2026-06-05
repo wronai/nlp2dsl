@@ -19,8 +19,8 @@ CONFIG[3]{key, value}:
 SHELL "cd examples/01-invoice && python3 main.py" 120000
 ASSERT_EXIT_CODE 0
 
-# Query 1: (no queries recorded)
-SHELL "nlp2dsl run \"(no queries recorded)\" --json" 30000
+# Query 1: Wyślij fakturę
+SHELL "nlp2dsl run \"Wyślij fakturę\" --json" 30000
 ASSERT_EXIT_CODE 0
 
 # --- 02-email ---
@@ -35,8 +35,8 @@ CONFIG[3]{key, value}:
 SHELL "cd examples/02-email && python3 main.py" 120000
 ASSERT_EXIT_CODE 0
 
-# Query 1: Wyślij email do team@firma.pl z tematem Status dzienny proje
-SHELL "nlp2dsl run \"Wyślij email do team@firma.pl z tematem Status dzienny projektów: Wszystkie projekty przebiegają zgodnie z harmonogramem.\" --json" 30000
+# Query 1: Wyślij email do team@firma.pl z tematem Status dzienny. Treś
+SHELL "nlp2dsl run \"Wyślij email do team@firma.pl z tematem Status dzienny. Treść: Wszystkie projekty przebiegają zgodnie z harmonogramem.\" --json" 30000
 ASSERT_EXIT_CODE 0
 
 # --- 03-report-and-notify ---
@@ -51,8 +51,8 @@ CONFIG[3]{key, value}:
 SHELL "cd examples/03-report-and-notify && python3 main.py" 120000
 ASSERT_EXIT_CODE 0
 
-# Query 1: (no queries recorded)
-SHELL "nlp2dsl run \"(no queries recorded)\" --json" 30000
+# Query 1: Co tydzień generuj raport sprzedaży PDF, wyślij email do man
+SHELL "nlp2dsl run \"Co tydzień generuj raport sprzedaży PDF, wyślij email do manager@firma.pl i powiadom na Slack #sales\" --json" 30000
 ASSERT_EXIT_CODE 0
 
 # --- 04-scheduled-report ---
@@ -397,4 +397,16 @@ ASSERT_EXIT_CODE 0
 
 # Query 2: Powiadom #devops: backup gotowy
 SHELL "nlp2dsl run \"Powiadom #devops: backup gotowy\" --json" 30000
+ASSERT_EXIT_CODE 0
+
+# Query 3: znajdź pliki *.py w src
+SHELL "nlp2dsl run \"znajdź pliki *.py w src\" --json" 30000
+ASSERT_EXIT_CODE 0
+
+# Query 4: uruchom testy jednostkowe
+SHELL "nlp2dsl run \"uruchom testy jednostkowe\" --json" 30000
+ASSERT_EXIT_CODE 0
+
+# Query 5: pokaż status systemu
+SHELL "nlp2dsl run \"pokaż status systemu\" --json" 30000
 ASSERT_EXIT_CODE 0

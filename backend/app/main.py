@@ -15,6 +15,7 @@ from app.logging_setup import RequestIDMiddleware, setup_logging
 from app.routers.chat import router as chat_router
 from app.routers.settings import router as settings_router
 from app.routers.system import router as system_router
+from app.routers.testql_compat import router as testql_compat_router
 from app.routers.workflow import router as workflow_router
 
 setup_logging(service="backend")
@@ -39,6 +40,7 @@ app.add_middleware(
 
 app.include_router(workflow_router)
 app.include_router(chat_router)
+app.include_router(testql_compat_router)
 app.include_router(settings_router)
 app.include_router(system_router)
 

@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any, Optional
 
 from nlp2dsl_sdk.client import ConversationFlow, NLP2DSLClient
+from nlp2dsl_sdk.conversation_artifacts import write_conversation_artifacts
 from nlp2dsl_sdk.preview import ensure_services, preview_text_examples
 
 
@@ -29,6 +31,12 @@ def run(client: Optional[NLP2DSLClient] = None) -> dict[str, Any]:
         "Wszystkie zadania zamknięte na czas."
     )
     flow.send_message("uruchom")
+
+    write_conversation_artifacts(
+        Path(__file__).resolve().parent / ".nlp2dsl",
+        flow.export_trace(),
+        scenario_name="scenario.py",
+    )
 
     return {
         "conversation_id": flow.conversation_id,

@@ -13,7 +13,7 @@ ACTIONS_REGISTRY: dict[str, dict] = {
     "send_invoice": {
         "description": "Generuje i wysyła fakturę",
         "required": ["amount", "to"],
-        "optional": {"currency": "PLN"},
+        "optional": {"currency": "PLN", "attachment_path": ""},
         "aliases": [
             "faktura", "fakturę", "invoice", "rachunek",
             "wyślij fakturę", "wystaw fakturę", "send invoice",
@@ -27,6 +27,24 @@ ACTIONS_REGISTRY: dict[str, dict] = {
             "klient": "to",
             "do": "to",
             "adresat": "to",
+            "załącznik": "attachment_path",
+            "plik": "attachment_path",
+        },
+    },
+    "generate_invoice": {
+        "description": "Generuje plik faktury PDF",
+        "required": ["amount", "to"],
+        "optional": {"currency": "PLN", "output_path": ""},
+        "aliases": [
+            "wygeneruj fakturę",
+            "generuj fakturę",
+            "wystaw plik faktury",
+            "generate invoice",
+        ],
+        "param_aliases": {
+            "kwota": "amount",
+            "odbiorca": "to",
+            "waluta": "currency",
         },
     },
     "send_email": {

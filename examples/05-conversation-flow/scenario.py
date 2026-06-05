@@ -2,9 +2,18 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any, Optional
 
 from nlp2dsl_sdk.client import ConversationFlow, NLP2DSLClient
+from nlp2dsl_sdk.conversation_artifacts import write_conversation_artifacts
+from nlp2dsl_sdk.conversation_artifacts import write_conversation_artifacts
+
+
+def _save_conversation_artifacts(flow: ConversationFlow, example_dir: Path) -> None:
+    artifact_root = example_dir / ".nlp2dsl"
+    trace = flow.export_trace()
+    write_conversation_artifacts(artifact_root, trace, scenario_name="scenario.py")
 
 
 def run_demo(client: Optional[NLP2DSLClient] = None) -> None:
@@ -30,6 +39,7 @@ def run_demo(client: Optional[NLP2DSLClient] = None) -> None:
     print(f"   ID konwersacji: {flow.conversation_id}")
     print(f"   Liczba wiadomości: {len(flow.history)}")
     print("   Status: Zakończona sukcesem")
+    _save_conversation_artifacts(flow, Path(__file__).resolve().parent)
 
 
 def run_interactive(client: Optional[NLP2DSLClient] = None) -> None:

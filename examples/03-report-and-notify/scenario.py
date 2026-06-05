@@ -53,6 +53,7 @@ def run(client: Optional[NLP2DSLClient] = None) -> dict[str, Any]:
 
     writer = get_example_writer()
     if writer:
+        writer.record(REPORT_EXECUTION_QUERY, result, mode="auto")
         writer.finalize(client)
 
     return result

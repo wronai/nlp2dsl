@@ -1,0 +1,136 @@
+# Examples Docker E2E — platform + scenarios (rules parser, no API key required).
+name: Examples Docker E2E
+
+on:
+  pull_request:
+    paths:
+      - "examples/**"
+      - "scripts/run-example-docker-e2e.py"
+      - "scripts/run-conversation-scenario.py"
+      - "scripts/run-execution-scenario.py"
+      - "scripts/run-example-testql-results.py"
+      - "docker-compose.yml"
+      - "docker-compose.e2e.yml"
+      - "backend/**"
+      - "nlp-service/**"
+      - "worker/**"
+      - "nlp2dsl_sdk/**"
+      - ".github/workflows/examples-docker-e2e.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  docker-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout nlp2dsl
+        uses: actions/checkout@v4
+
+      - name: Checkout testql
+        uses: actions/checkout@v4
+        with:
+          repository: oqlos/testql
+          path: vendor/testql
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install -e vendor/testql
+          pip install pyyaml
+
+      - name: Start Docker stack
+        run: |
+          docker compose -f docker-compose.yml -f docker-compose.e2e.yml \
+            --profile invoice --profile email --profile conversation \
+            --profile reports --profile storage --profile scheduled --profile cache \
+            up -d --build --wait
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+
+      - name: Run examples Docker E2E (01–07)
+        run: |
+          python3 scripts/run-example-docker-e2e.py --skip-main --testql-results \
+            01-invoice 02-email 03-report-and-notify 04-scheduled-report \
+            05-conversation-flow 06-interactive-chat 07-email-conversation
+        env:
+          NLP2DSL_URL: http://localhost:8010
+
+      - name: Upload E2E artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: examples-docker-e2e
+          path: |
+            examples/docker-e2e-results.json
+            examples/testql-results.json
+            examples/*/.nlp2dsl/conversation.transcript.md
+            examples/*/.nlp2dsl/conversation.trace.json
+            examples/*/.nlp2dsl/execution.trace.json
+            examples/*/.nlp2dsl/result.json
+          if-no-files-found: warn
+
+      - name: Stop Docker stack
+        if: always()
+        run: docker compose -f docker-compose.yml -f docker-compose.e2e.yml down --remove-orphans
+
+  docker-e2e-llm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: github.event_name == 'workflow_dispatch' || vars.RUN_LLM_E2E == 'true'
+    continue-on-error: true
+    steps:
+      - name: Checkout nlp2dsl
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -e . pyyaml
+
+      - name: Start Docker stack (LLM profile)
+        run: |
+          docker compose -f docker-compose.yml -f docker-compose.e2e.yml \
+            --profile invoice --profile conversation --profile llm \
+            up -d --build --wait
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+
+      - name: Run LLM scenarios
+        if: ${{ secrets.OPENROUTER_API_KEY != '' }}
+        run: |
+          python3 scripts/run-example-docker-e2e.py --skip-main --llm \
+            05-conversation-flow 10-llm-benchmark
+        env:
+          NLP2DSL_URL: http://localhost:8010
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+
+      - name: Upload LLM artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: examples-llm-e2e
+          path: |
+            examples/docker-e2e-results.json
+            examples/05-conversation-flow/.nlp2dsl/conversation.llm.trace.json
+            examples/10-llm-benchmark/.nlp2dsl/execution.trace.json
+          if-no-files-found: warn
+
+      - name: Stop Docker stack
+        if: always()
+        run: docker compose -f docker-compose.yml -f docker-compose.e2e.yml down --remove-orphans

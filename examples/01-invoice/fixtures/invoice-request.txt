@@ -1,0 +1,4 @@
+Odbiorca: klient@firma.pl
+Kwota: 1500 PLN
+Waluta: PLN
+Akcja: send_invoice

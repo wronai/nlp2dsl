@@ -7,6 +7,9 @@ Pipeline: resolve_intent → merge → unknown → system → DSL → incomplete
 import logging
 from uuid import uuid4
 
+from app.conversation.autonomous_loop import autonomous_resolve_turn
+from app.conversation.doql_autofill import load_context_for_state
+from app.conversation.process_agent import observe_turn, preflight_turn, reflect_turn
 from app.conversation.merge import merge_into_state
 from app.conversation.responses import (
     build_and_check_dsl,
@@ -16,6 +19,7 @@ from app.conversation.responses import (
     handle_system_action,
     handle_unknown_intent,
 )
+from app.request_context import set_example_dir
 from app.routing import IntentDecision, resolve_intent
 from app.schemas import ConversationResponse, ConversationState
 from app.store.factory import get_conversation_store
@@ -27,21 +31,56 @@ _store = get_conversation_store()
 _CONVERSATION_ID_LENGTH: int = int("12")
 
 
-async def start_conversation(text: str) -> ConversationResponse:
+def _apply_request_context(inline: dict | None) -> None:
+    if not inline:
+        return
+    for key in ("example_dir", "NLP2DSL_EXAMPLE_DIR"):
+        raw = inline.get(key)
+        if raw:
+            set_example_dir(str(raw))
+            return
+
+
+async def start_conversation(
+    text: str,
+    *,
+    doql_context_path: str | None = None,
+    context_inline: dict | None = None,
+) -> ConversationResponse:
     state = ConversationState(id=uuid4().hex[:_CONVERSATION_ID_LENGTH])
+    _apply_request_context(context_inline)
+    if doql_context_path:
+        state.doql_context_path = doql_context_path
+    if context_inline:
+        state.doql_inline = dict(context_inline)
+        _merge_inline_entities(state, context_inline)
+        if context_inline.get("attachment_required"):
+            state.attachment_required = bool(context_inline["attachment_required"])
     state.history.append({"role": "user", "text": text})
     result = await _process_message(state, text)
     await _store.save(state.id, state.model_dump())
     return result
 
 
-async def continue_conversation(conversation_id: str, text: str) -> ConversationResponse:
+async def continue_conversation(
+    conversation_id: str,
+    text: str,
+    *,
+    context_inline: dict | None = None,
+) -> ConversationResponse:
     raw = await _store.get(conversation_id)
     if not raw:
         log.info("Conversation %s not found; creating new state lazily", conversation_id)
         state = ConversationState(id=conversation_id)
     else:
         state = ConversationState(**raw)
+
+    _apply_request_context(context_inline)
+    if context_inline:
+        state.doql_inline = {**state.doql_inline, **context_inline}
+        _merge_inline_entities(state, context_inline)
+        if context_inline.get("attachment_required"):
+            state.attachment_required = bool(context_inline["attachment_required"])
 
     state.history.append({"role": "user", "text": text})
     result = await _process_message(state, text)
@@ -61,6 +100,54 @@ def _attach_routing(
     decision: IntentDecision,
 ) -> ConversationResponse:
     resp.routing = decision.to_dict()
+    return resp
+
+
+def _entity_field_from_inline_key(key: str) -> str | None:
+    """Map llmContext / context_json keys to conversation entity fields."""
+    if key.startswith("conversation."):
+        return None
+    key_map = {
+        "attachmentPath": "attachment_path",
+        "attachment_path": "attachment_path",
+        "amount": "amount",
+        "to": "to",
+        "currency": "currency",
+        "recipient": "to",
+    }
+    if key in key_map:
+        return key_map[key]
+    if "." in key and key.count(".") == 1:
+        _, field = key.split(".", 1)
+        return key_map.get(field, field)
+    return key_map.get(key, key)
+
+
+def _merge_inline_entities(state: ConversationState, inline: dict) -> None:
+    """Apply TestQL llmContext / inline context keys directly to entities."""
+    for key, value in inline.items():
+        if value is None or key in ("example_dir", "NLP2DSL_EXAMPLE_DIR"):
+            continue
+        field = _entity_field_from_inline_key(key)
+        if field == "attachment_path" and not state.attachment_required:
+            continue
+        if field is not None:
+            state.entities[field] = value
+
+
+def _attach_autofill(resp: ConversationResponse, state: ConversationState) -> ConversationResponse:
+    if state.autofill_applied:
+        resp.autofill_applied = list(state.autofill_applied)
+    if state.autonomous_steps:
+        resp.autonomous_steps = list(state.autonomous_steps)
+    return resp
+
+
+def _attach_reflection(resp: ConversationResponse, state: ConversationState, phase: str) -> ConversationResponse:
+    try:
+        resp.reflection = reflect_turn(state, phase)
+    except Exception:
+        log.exception("Reflection failed for phase %s", phase)
     return resp
 
 
@@ -92,16 +179,54 @@ async def _process_message(state: ConversationState, text: str) -> ConversationR
 
     merge_into_state(state, nlp)
 
+    blocked = await preflight_turn(state, decision)
+    if blocked:
+        return _attach_reflection(_attach_routing(blocked, decision), state, "preflight_blocked")
+
+    auto = await autonomous_resolve_turn(state)
+    if auto.response:
+        await observe_turn(state, phase="dsl_ready")
+        phase = "dsl_ready" if auto.response.status == "ready" else "validation_failed"
+        ctx = load_context_for_state(state)
+        if ctx and ctx.sync_auto_execute and auto.response.status == "ready":
+            auto.response.auto_execute = True
+            auto.response.message = (auto.response.message or "") + "\n(sync_auto_execute — backend wykona workflow)"
+        return _attach_reflection(
+            _attach_autofill(_attach_routing(auto.response, decision), state),
+            state,
+            phase,
+        )
+
     unknown_response = handle_unknown_intent(state)
     if unknown_response:
-        return _attach_routing(unknown_response, decision)
+        return _attach_reflection(
+            _attach_autofill(_attach_routing(unknown_response, decision), state),
+            state,
+            "unknown_intent",
+        )
 
     system_response = handle_system_action(state)
     if system_response:
-        return _attach_routing(system_response, decision)
+        return _attach_reflection(
+            _attach_autofill(_attach_routing(system_response, decision), state),
+            state,
+            "system_action",
+        )
 
     dsl_response = await build_and_check_dsl(state)
     if dsl_response:
-        return _attach_routing(dsl_response, decision)
+        await observe_turn(state, phase="dsl_ready")
+        phase = "dsl_ready" if dsl_response.status == "ready" else "validation_failed"
+        return _attach_reflection(
+            _attach_autofill(_attach_routing(dsl_response, decision), state),
+            state,
+            phase,
+        )
 
-    return _attach_routing(await build_incomplete_response(state), decision)
+    incomplete = await build_incomplete_response(state)
+    await observe_turn(state, phase="incomplete")
+    return _attach_reflection(
+        _attach_autofill(_attach_routing(incomplete, decision), state),
+        state,
+        "incomplete",
+    )

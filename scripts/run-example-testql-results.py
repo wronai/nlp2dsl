@@ -111,12 +111,17 @@ def _nlp2dsl_run_query(query_entry: dict[str, Any], artifact_root: Path, *, time
         try:
             cached = json.loads(pipeline_path.read_text(encoding="utf-8"))
             cached_status = str(cached.get("status") or manifest_status or "cached")
-            return Check(
-                check_id,
-                "passed",
-                f"offline artifact ok (status={cached_status}): {query[:70]}",
-                {"source": str(pipeline_rel), "mode": mode},
-            )
+            result_status = str((cached.get("result") or {}).get("status") or cached_status)
+            # Re-verify stale incomplete caches when manifest expects executed
+            if manifest_status == "executed" and result_status in {"incomplete", "ir"}:
+                pass  # fall through to live run below
+            else:
+                return Check(
+                    check_id,
+                    "passed",
+                    f"offline artifact ok (status={result_status}): {query[:70]}",
+                    {"source": str(pipeline_rel), "mode": mode},
+                )
         except (json.JSONDecodeError, OSError) as exc:
             return Check(check_id, "failed", f"invalid cached pipeline: {exc}")
 
@@ -176,6 +181,16 @@ def _nlp2dsl_run_query(query_entry: dict[str, Any], artifact_root: Path, *, time
     return Check(check_id, "warning", f"unexpected status={status!r}", {"body_keys": list(body.keys())})
 
 
+def _is_hand_authored_conversation(path: Path) -> bool:
+    if not path.is_file():
+        return False
+    head = path.read_text(encoding="utf-8")[:800]
+    return (
+        "HAND_AUTHORED: true" in head
+        or ("GENERATED: true" not in head and "TYPE: conversation" in head)
+    )
+
+
 def _generate_conversation_toon(example_id: str, manifest: dict[str, Any]) -> str:
     queries = manifest.get("queries") or []
     lines = [
@@ -183,26 +198,90 @@ def _generate_conversation_toon(example_id: str, manifest: dict[str, Any]) -> st
         "# TYPE: conversation",
         "# GENERATED: true",
         "",
-        "CONFIG[2]{key, value}:",
+        "CONFIG[3]{key, value}:",
         f"  example_id, {example_id}",
-        "  nlp2dsl_mode, cli",
+        "  nlp2dsl_mode, conversation",
+        "  nlp2dsl_base_url, ${NLP2DSL_URL:-http://localhost:8010}",
         "",
     ]
     if not queries:
         lines.append("# No queries in manifest")
         return "\n".join(lines) + "\n"
 
-    lines.append(f"CONVERSATION[{len(queries)}]" + "{role, message, expect_status}:")
-    for q in queries:
-        status = q.get("status") or "complete"
-        text = str(q.get("query", "")).replace(",", " ")
-        lines.append(f"  user, {text}, {status}")
-    lines.append("")
-    lines.append(f"NLP_DSL[{len(queries)}]" + "{endpoint, payload}:")
-    for q in queries:
-        text = json.dumps(str(q.get("query", "")), ensure_ascii=False)
-        lines.append(f"  workflowfrom-text, {{text: {text}, execute: false}}")
+    first_query = str(queries[0].get("query", "")).replace('"', '\\"')
+    expect = str(queries[0].get("status") or "ready")
+    lines.extend(
+        [
+            "NLP_DSL[1]{endpoint, payload}:",
+            f'  chatstart, {{"text": "{first_query}"}}',
+            "",
+            "CAPTURE[1]{step, var, from}:",
+            "  1, conversationId, conversation_id",
+            "",
+            f"ASSERT_JSON[1]{{step, path, op, expected}}:",
+            f"  1, status, ==, {expect if expect in {'ready', 'executed', 'in_progress'} else 'ready'}",
+            "",
+            "NLP_DSL[1]{endpoint, payload}:",
+            '  chatmessage, {"conversationId": "${conversationId}", "text": "uruchom"}',
+            "",
+            "ASSERT_JSON[1]{step, path, op, expected}:",
+            "  3, status, ==, executed",
+            "",
+        ]
+    )
     return "\n".join(lines) + "\n"
+
+
+def _conversation_execute(conversation_path: Path, artifact_root: Path) -> Check:
+    try:
+        from testql.adapters.nlp2dsl import Nlp2DslAdapter
+        from testql.conversation import ConversationRunner
+    except ImportError:
+        return Check("check.conversation.execute", "skipped", "testql conversation modules unavailable")
+
+    base_url = os.environ.get("NLP2DSL_URL", "http://localhost:8010")
+    mock_file = artifact_root / "fixtures" / "mock-llm-replies.yaml"
+    mock_replies = str(mock_file) if mock_file.is_file() else None
+
+    adapter = Nlp2DslAdapter()
+    plan = adapter.parse(conversation_path)
+    runner = ConversationRunner(
+        dry_run=False,
+        api_url=base_url,
+        mock_replies=mock_replies,
+    )
+    result = runner.run(plan)
+    trace_path = artifact_root / "conversation.trace.json"
+    trace_path.write_text(
+        json.dumps(result.to_report_dict(), indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+    if result.passed:
+        return Check(
+            "check.conversation.execute",
+            "passed",
+            f"live conversation ok ({len(result.turns)} steps)",
+            {"variables": result.variables},
+        )
+    return Check(
+        "check.conversation.execute",
+        "failed",
+        "; ".join(result.findings) or "conversation execute failed",
+        {"turns": len(result.turns)},
+    )
+
+
+def _conversation_transcript_check(artifact_root: Path) -> Check:
+    md = artifact_root / "conversation.transcript.md"
+    if not md.is_file():
+        return Check("check.conversation.transcript", "skipped", "no conversation.transcript.md")
+    lines = [ln for ln in md.read_text(encoding="utf-8").splitlines() if ln.startswith("## Turn")]
+    return Check(
+        "check.conversation.transcript",
+        "passed" if lines else "warning",
+        f"{len(lines)} turns in transcript",
+        {"path": str(md.name)},
+    )
 
 
 def _conversation_dry_run(conversation_path: Path) -> Check:
@@ -210,7 +289,22 @@ def _conversation_dry_run(conversation_path: Path) -> Check:
         from testql.adapters.nlp2dsl import Nlp2DslAdapter
         from testql.conversation import ConversationRunner
     except ImportError:
-        return Check("check.conversation.dry_run", "skipped", "testql conversation modules unavailable")
+        from nlp2dsl_sdk.conversation_testql import dry_run_conversation_scenario
+
+        result = dry_run_conversation_scenario(conversation_path)
+        if result.passed:
+            return Check(
+                "check.conversation.dry_run",
+                "passed",
+                f"structural dry-run: {result.summary}",
+                {"step_kinds": result.step_kinds, "endpoints": result.endpoints},
+            )
+        return Check(
+            "check.conversation.dry_run",
+            "failed" if result.summary != "testql not installed" else "skipped",
+            result.summary,
+            {"issues": result.issues},
+        )
 
     adapter = Nlp2DslAdapter()
     plan = adapter.parse(conversation_path)
@@ -300,13 +394,25 @@ def process_example(example_dir: Path) -> ExampleReport:
             continue
         report.checks.append(_nlp2dsl_run_query(q, artifact_root))
 
-    conversation_text = _generate_conversation_toon(example_id, manifest)
     conversation_path = artifact_root / "conversation.testql.toon.yaml"
-    conversation_path.write_text(conversation_text, encoding="utf-8")
-    report.checks.append(
-        Check("check.conversation.generated", "passed", f"wrote {conversation_path.name}")
-    )
-    report.checks.append(_conversation_dry_run(conversation_path))
+    if _is_hand_authored_conversation(conversation_path):
+        report.checks.append(
+            Check("check.conversation.generated", "passed", f"hand-authored {conversation_path.name}")
+        )
+    else:
+        conversation_path.write_text(_generate_conversation_toon(example_id, manifest), encoding="utf-8")
+        report.checks.append(
+            Check("check.conversation.generated", "passed", f"wrote {conversation_path.name}")
+        )
+    if manifest.get("queries"):
+        report.checks.append(_conversation_dry_run(conversation_path))
+    else:
+        report.checks.append(
+            Check("check.conversation.dry_run", "skipped", "no queries in manifest")
+        )
+    report.checks.append(_conversation_transcript_check(artifact_root))
+    if os.environ.get("NLP2DSL_EXECUTE", "").strip() in {"1", "true", "yes"}:
+        report.checks.append(_conversation_execute(conversation_path, artifact_root))
 
     for c in report.checks:
         if c.status == "failed":
@@ -337,6 +443,13 @@ def process_example(example_dir: Path) -> ExampleReport:
     result_json.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     result_toon.write_text(_write_toon_report(report), encoding="utf-8")
     result_yaml.write_text(yaml.safe_dump(payload, allow_unicode=True, sort_keys=False), encoding="utf-8")
+    try:
+        from nlp2dsl_sdk.artifact_layout import ensure_layout, write_last_run_report
+
+        ensure_layout(artifact_root)
+        write_last_run_report(artifact_root, payload)
+    except ImportError:
+        pass
 
     summary_md = artifact_root / "summary.md"
     summary_md.write_text(
@@ -352,7 +465,10 @@ def process_example(example_dir: Path) -> ExampleReport:
 
             - `result.toon.yaml` — TestQL-style report
             - `result.json` / `result.yaml` — machine-readable
-            - `conversation.testql.toon.yaml` — generated conversation scenario
+            - `conversation.testql.toon.yaml` — conversation scenario (hand-authored or generated)
+            - `conversation.scenario.yaml` — native multi-turn scenario (Docker E2E)
+            - `conversation.transcript.md` — czytelny dialog user ↔ nlp2dsl
+            - `conversation.trace.json` — pełna ścieżka HTTP + statusy
 
             ## Checks
 

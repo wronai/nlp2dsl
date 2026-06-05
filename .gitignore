@@ -10,6 +10,12 @@ examples/**/.nlp2dsl/pipeline/
 examples/**/.nlp2dsl/process/
 examples/**/.nlp2dsl/manifest.yaml
 examples/**/.nlp2dsl/environment.doql.less
+examples/**/.nlp2dsl/registry/
+examples/**/.nlp2dsl/runs/
+examples/**/.nlp2dsl/report/
+examples/**/.nlp2dsl/conversation.transcript.md
+examples/**/.nlp2dsl/conversation.trace.json
+examples/**/.nlp2dsl/result.*
 examples/**/.nlp2dsl/commands.testql.toon.yaml
 examples/**/.nlp2dsl/services.yaml
 __pycache__/

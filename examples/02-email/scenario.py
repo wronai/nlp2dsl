@@ -20,8 +20,8 @@ EMAIL_TEXT_EXAMPLES: tuple[str, ...] = (
 
 # Pełne zdanie z body — NLP → DSL → wykonanie (bez client.send_email)
 EMAIL_EXECUTION_QUERY = (
-    "Wyślij email do team@firma.pl z tematem Status dzienny projektów: "
-    "Wszystkie projekty przebiegają zgodnie z harmonogramem."
+    "Wyślij email do team@firma.pl z tematem Status dzienny. "
+    "Treść: Wszystkie projekty przebiegają zgodnie z harmonogramem."
 )
 
 

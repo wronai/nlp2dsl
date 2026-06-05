@@ -17,7 +17,7 @@ SUMD - Structured Unified Markdown Descriptor for AI-aware project refactorizati
 ## Metadata
 
 - **name**: `nlp2dsl`
-- **version**: `0.0.18`
+- **version**: `0.0.19`
 - **python_requires**: `>=3.10`
 - **license**: Apache-2.0
 - **ai_model**: `openrouter/qwen/qwen3-coder-next`
@@ -37,7 +37,7 @@ SUMD (description) → DOQL/source (code) → taskfile (automation) → testql (
 
 app {
   name: nlp2dsl;
-  version: 0.0.18;
+  version: 0.0.19;
 }
 
 dependencies {
@@ -327,7 +327,7 @@ pyyaml>=6.0
 
 ## Call Graph
 
-*342 nodes · 350 edges · 72 modules · CC̄=3.6*
+*346 nodes · 353 edges · 73 modules · CC̄=3.7*
 
 ### Hubs (by degree)
 
@@ -335,30 +335,34 @@ pyyaml>=6.0
 |----------|----|----|-----|-------|
 | `_load_detector_config_from_json` *(in packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns)* | 33 ⚠ | 0 | 48 | **48** |
 | `_execute_workflow` *(in backend.app.engine)* | 11 ⚠ | 2 | 42 | **44** |
+| `process_example` *(in scripts.run-example-testql-results)* | 11 ⚠ | 1 | 38 | **39** |
 | `print_workflow_preview` *(in nlp2dsl_sdk.preview)* | 11 ⚠ | 8 | 27 | **35** |
 | `resolve_intent` *(in nlp-service.app.routing.resolve)* | 18 ⚠ | 1 | 31 | **32** |
 | `_run` *(in nlp2dsl_sdk.cli)* | 12 ⚠ | 1 | 30 | **31** |
+| `main` *(in scripts.run-example-testql-results)* | 16 ⚠ | 0 | 31 | **31** |
 | `enrich_entities` *(in nlp-service.app.routing.parser.enrich)* | 14 ⚠ | 1 | 29 | **30** |
-| `build_process_trace` *(in nlp2dsl_sdk.artifacts)* | 17 ⚠ | 1 | 29 | **30** |
-| `_build_config` *(in nlp-service.app.dsl.mapper)* | 19 ⚠ | 1 | 29 | **30** |
 
 ```toon markpact:analysis path=project/calls.toon.yaml
 # code2llm call graph | /home/tom/github/wronai/nlp2dsl
-# generated in 0.27s
-# nodes: 342 | edges: 350 | modules: 72
-# CC̄=3.6
+# generated in 0.26s
+# nodes: 346 | edges: 353 | modules: 73
+# CC̄=3.7
 
 HUBS[20]:
   packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_detector_config_from_json
     CC=33  in:0  out:48  total:48
   backend.app.engine._execute_workflow
     CC=11  in:2  out:42  total:44
+  scripts.run-example-testql-results.process_example
+    CC=11  in:1  out:38  total:39
   nlp2dsl_sdk.preview.print_workflow_preview
     CC=11  in:8  out:27  total:35
   nlp-service.app.routing.resolve.resolve_intent
     CC=18  in:1  out:31  total:32
   nlp2dsl_sdk.cli._run
     CC=12  in:1  out:30  total:31
+  scripts.run-example-testql-results.main
+    CC=16  in:0  out:31  total:31
   nlp-service.app.routing.parser.enrich.enrich_entities
     CC=14  in:1  out:29  total:30
   nlp2dsl_sdk.artifacts.build_process_trace
@@ -371,24 +375,20 @@ HUBS[20]:
     CC=13  in:1  out:27  total:28
   nlp-service.app.governance.bootstrap._actions_from_yaml_areas
     CC=14  in:1  out:26  total:27
-  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_patterns_from_json
-    CC=19  in:0  out:26  total:26
   examples.08-multi-object-benchmark.scenario.run_benchmark
     CC=16  in:2  out:24  total:26
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_patterns_from_json
+    CC=19  in:0  out:26  total:26
   examples.12-ir-show.scenario.run
     CC=13  in:0  out:25  total:25
-  nlp-service.app.routing.orientation._resolve_file_list_host_command
-    CC=15  in:1  out:24  total:25
   nlp2dsl_sdk.cli.main
     CC=7  in:0  out:25  total:25
+  nlp-service.app.routing.orientation._resolve_file_list_host_command
+    CC=15  in:1  out:24  total:25
   packages.nlp2cmd-intent.src.nlp2cmd_intent.nlp2cmd_convert.detection_to_intent_ir
     CC=10  in:2  out:22  total:24
-  nlp-service.app.main.websocket_chat
-    CC=10  in:0  out:23  total:23
   nlp-service.app.settings.SettingsManager.set
-    CC=4  in:12  out:11  total:23
-  backend.app.routers.workflow.stream_workflow
-    CC=2  in:0  out:22  total:22
+    CC=4  in:13  out:11  total:24
 
 MODULES:
   backend.app.engine  [7 funcs]
@@ -739,6 +739,11 @@ MODULES:
     _shell_command  CC=3  out:3
   packages.nlp2dsl-show.src.nlp2dsl_show.cli  [1 funcs]
     main  CC=7  out:17
+  scripts.run-example-testql-results  [4 funcs]
+    _generate_conversation_toon  CC=6  out:18
+    _load_manifest  CC=3  out:3
+    main  CC=16  out:31
+    process_example  CC=11  out:38
   tauri-wrapper.scripts.dev  [3 funcs]
     exitCode  CC=2  out:1
     main  CC=11  out:10
@@ -847,21 +852,25 @@ EDGES:
 
 ```toon markpact:analysis path=project/calls.toon.yaml
 # code2llm call graph | /home/tom/github/wronai/nlp2dsl
-# generated in 0.27s
-# nodes: 342 | edges: 350 | modules: 72
-# CC̄=3.6
+# generated in 0.26s
+# nodes: 346 | edges: 353 | modules: 73
+# CC̄=3.7
 
 HUBS[20]:
   packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_detector_config_from_json
     CC=33  in:0  out:48  total:48
   backend.app.engine._execute_workflow
     CC=11  in:2  out:42  total:44
+  scripts.run-example-testql-results.process_example
+    CC=11  in:1  out:38  total:39
   nlp2dsl_sdk.preview.print_workflow_preview
     CC=11  in:8  out:27  total:35
   nlp-service.app.routing.resolve.resolve_intent
     CC=18  in:1  out:31  total:32
   nlp2dsl_sdk.cli._run
     CC=12  in:1  out:30  total:31
+  scripts.run-example-testql-results.main
+    CC=16  in:0  out:31  total:31
   nlp-service.app.routing.parser.enrich.enrich_entities
     CC=14  in:1  out:29  total:30
   nlp2dsl_sdk.artifacts.build_process_trace
@@ -874,24 +883,20 @@ HUBS[20]:
     CC=13  in:1  out:27  total:28
   nlp-service.app.governance.bootstrap._actions_from_yaml_areas
     CC=14  in:1  out:26  total:27
-  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_patterns_from_json
-    CC=19  in:0  out:26  total:26
   examples.08-multi-object-benchmark.scenario.run_benchmark
     CC=16  in:2  out:24  total:26
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_patterns_from_json
+    CC=19  in:0  out:26  total:26
   examples.12-ir-show.scenario.run
     CC=13  in:0  out:25  total:25
-  nlp-service.app.routing.orientation._resolve_file_list_host_command
-    CC=15  in:1  out:24  total:25
   nlp2dsl_sdk.cli.main
     CC=7  in:0  out:25  total:25
+  nlp-service.app.routing.orientation._resolve_file_list_host_command
+    CC=15  in:1  out:24  total:25
   packages.nlp2cmd-intent.src.nlp2cmd_intent.nlp2cmd_convert.detection_to_intent_ir
     CC=10  in:2  out:22  total:24
-  nlp-service.app.main.websocket_chat
-    CC=10  in:0  out:23  total:23
   nlp-service.app.settings.SettingsManager.set
-    CC=4  in:12  out:11  total:23
-  backend.app.routers.workflow.stream_workflow
-    CC=2  in:0  out:22  total:22
+    CC=4  in:13  out:11  total:24
 
 MODULES:
   backend.app.engine  [7 funcs]
@@ -1242,6 +1247,11 @@ MODULES:
     _shell_command  CC=3  out:3
   packages.nlp2dsl-show.src.nlp2dsl_show.cli  [1 funcs]
     main  CC=7  out:17
+  scripts.run-example-testql-results  [4 funcs]
+    _generate_conversation_toon  CC=6  out:18
+    _load_manifest  CC=3  out:3
+    main  CC=16  out:31
+    process_example  CC=11  out:38
   tauri-wrapper.scripts.dev  [3 funcs]
     exitCode  CC=2  out:1
     main  CC=11  out:10
@@ -1324,11 +1334,11 @@ EDGES:
 ### Code Analysis (`project/analysis.toon.yaml`)
 
 ```toon markpact:analysis path=project/analysis.toon.yaml
-# code2llm | 208f 23911L | python:144,json:14,shell:11,toml:10,yaml:9,txt:4,yml:2,rust:2,javascript:2,ini:1 | 2026-06-05
-# generated in 0.04s
-# CC̅=3.6 | critical:13/594 | dups:0 | cycles:0
+# code2llm | 210f 26410L | python:145,json:15,shell:11,toml:10,yaml:9,txt:4,yml:2,rust:2,javascript:2,ini:1 | 2026-06-05
+# generated in 0.06s
+# CC̅=3.7 | critical:15/605 | dups:0 | cycles:0
 
-HEALTH[13]:
+HEALTH[15]:
   🟡 CC    _load_patterns_from_json CC=19 (limit:15)
   🟡 CC    _load_detector_config_from_json CC=33 (limit:15)
   🟡 CC    detect CC=17 (limit:15)
@@ -1342,11 +1352,13 @@ HEALTH[13]:
   🟡 CC    parse_rules CC=15 (limit:15)
   🟡 CC    _apply_context_filters CC=21 (limit:15)
   🟡 CC    _build_config CC=19 (limit:15)
+  🟡 CC    _nlp2dsl_run_query CC=19 (limit:15)
+  🟡 CC    main CC=16 (limit:15)
 
 REFACTOR[1]:
-  1. split 13 high-CC methods  (CC>15)
+  1. split 15 high-CC methods  (CC>15)
 
-PIPELINES[301]:
+PIPELINES[303]:
   [1] Src [main]: main
       PURITY: 100% pure
   [2] Src [main]: main
@@ -1449,7 +1461,14 @@ PIPELINES[301]:
       PURITY: 100% pure
 
 LAYERS:
+  scripts/                        CC̄=7.4    ←in:0  →out:1
+  │ !! run-example-testql-results   408L  2C   11m  CC=19     ←0
+  │ aggregate-example-testql    49L  0C    1m  CC=7      ←0
+  │ publish-all.sh              44L  0C    1m  CC=0.0    ←0
+  │ setup-dev.sh                43L  0C    0m  CC=0.0    ←0
+  │
   examples/                       CC̄=5.5    ←in:0  →out:2
+  │ !! testql-results.json       2077L  0C    0m  CC=0.0    ←0
   │ !! benchmark_1780668530.json   642L  0C    0m  CC=0.0    ←0
   │ !! benchmark_1780672619.json   636L  0C    0m  CC=0.0    ←0
   │ !! benchmark_1780673613.json   636L  0C    0m  CC=0.0    ←0
@@ -1462,11 +1481,11 @@ LAYERS:
   │ benchmark_queries          158L  1C    0m  CC=0.0    ←0
   │ !! scenario                   137L  0C    4m  CC=16     ←1
   │ scenario                    88L  0C    2m  CC=13     ←0
+  │ run-all.sh                  67L  0C    0m  CC=0.0    ←0
   │ scenario                    60L  0C    1m  CC=11     ←0
   │ docker-compose.yml          60L  0C    0m  CC=0.0    ←0
   │ scenario                    58L  0C    1m  CC=6      ←0
   │ scenario                    57L  0C    1m  CC=7      ←0
-  │ run-all.sh                  53L  0C    0m  CC=0.0    ←0
   │ scenario                    49L  0C    1m  CC=8      ←0
   │ scenario                    48L  0C    1m  CC=7      ←0
   │ scenario                    45L  0C    3m  CC=3      ←0
@@ -1545,7 +1564,7 @@ LAYERS:
   │ policy                     302L  2C   14m  CC=5      ←2
   │ responses                  282L  0C   19m  CC=7      ←1
   │ code_generator             279L  1C    8m  CC=14     ←0
-  │ settings                   251L  6C   11m  CC=6      ←8
+  │ settings                   251L  6C   11m  CC=6      ←9
   │ !! mapper                     236L  0C    7m  CC=19     ←1
   │ !! resolve                    194L  0C    6m  CC=18     ←1
   │ config                     165L  1C   13m  CC=8      ←4
@@ -1599,11 +1618,6 @@ LAYERS:
   │ __init__                     3L  0C    0m  CC=0.0    ←0
   │ __init__                     3L  0C    0m  CC=0.0    ←0
   │ __init__                     1L  0C    0m  CC=0.0    ←0
-  │
-  scripts/                        CC̄=3.5    ←in:0  →out:0
-  │ aggregate-example-testql    49L  0C    1m  CC=7      ←0
-  │ publish-all.sh              44L  0C    1m  CC=0.0    ←0
-  │ setup-dev.sh                43L  0C    0m  CC=0.0    ←0
   │
   nlp2dsl_sdk/                    CC̄=3.2    ←in:34  →out:1
   │ !! client                     600L  2C   51m  CC=9      ←0
@@ -1698,7 +1712,7 @@ COUPLING:
          examples.09-execution-smoke                                   2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ──                                    
            examples.10-llm-benchmark                                   1                                                                                                                                                                                                                                                                                               1                                                                                                                                                                                                                      ──
   CYCLES: none
-  HUB: nlp-service.app/ (fan-in=8)
+  HUB: nlp-service.app/ (fan-in=9)
   HUB: nlp2dsl_sdk/ (fan-in=34)
 
 EXTERNAL:
@@ -1717,7 +1731,7 @@ SUMMARY:
   dup_groups:    12
   dup_fragments: 30
   saved_lines:   144
-  scan_ms:       2797
+  scan_ms:       3644
 
 HOTSPOTS[7] (files with most duplication):
   backend/app/logging_setup.py  dup=49L  groups=5  frags=5  (0.4%)

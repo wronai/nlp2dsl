@@ -205,6 +205,7 @@ run_execution_smoke = load_example_runner("09-execution-smoke")
 run_llm_benchmark = load_example_runner("10-llm-benchmark")
 run_notify_quality_demo = load_example_runner("11-notify-quality")
 run_ir_show_demo = load_example_runner("12-ir-show")
+run_autonomous_invoice_stack_demo = load_example_runner("13-autonomous-invoice-stack")
 
 
 def run_code_generation_demo(client: Optional[NLP2DSLClient] = None) -> Dict[str, Any]:

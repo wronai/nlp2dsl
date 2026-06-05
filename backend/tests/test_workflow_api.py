@@ -118,7 +118,12 @@ class TestRunWorkflow:
                 "/workflow/run",
                 json={
                     "name": "fail_workflow",
-                    "steps": [{"action": "send_invoice", "config": {}}],
+                    "steps": [
+                        {
+                            "action": "send_invoice",
+                            "config": {"amount": 1500, "to": "a@b.pl"},
+                        }
+                    ],
                 },
             )
             assert resp.status_code == 400

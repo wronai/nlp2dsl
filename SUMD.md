@@ -23,7 +23,7 @@ Reusable Python SDK for the NLP2DSL platform
 ## Metadata
 
 - **name**: `nlp2dsl`
-- **version**: `0.0.18`
+- **version**: `0.0.19`
 - **python_requires**: `>=3.10`
 - **license**: Apache-2.0
 - **ai_model**: `openrouter/qwen/qwen3-coder-next`
@@ -43,7 +43,7 @@ SUMD (description) → DOQL/source (code) → taskfile (automation) → testql (
 
 app {
   name: nlp2dsl;
-  version: 0.0.18;
+  version: 0.0.19;
 }
 
 dependencies {
@@ -943,7 +943,7 @@ pipeline:
 ```yaml
 project:
   name: nlp2dsl
-  version: 0.0.18
+  version: 0.0.19
   env: local
 ```
 
@@ -1027,13 +1027,13 @@ pip install -e .[dev]
 ### `project/map.toon.yaml`
 
 ```toon markpact:analysis path=project/map.toon.yaml
-# nlp2dsl | 220f 20642L | python:197,shell:17,javascript:3,rust:2,less:1 | 2026-06-05
-# stats: 543 func | 165 cls | 220 mod | CC̄=3.8 | critical:37 | cycles:0
-# alerts[5]: CC _apply_context_filters=21; CC _build_config=19; CC resolve_intent=18; CC build_process_trace=17; CC test_workflow_and_conversation_endpoints=17
-# hotspots[5]: process_example fan=24; _execute_workflow fan=19; enrich_entities fan=19; main fan=18; resolve_intent fan=17
+# nlp2dsl | 224f 21522L | python:201,shell:17,javascript:3,rust:2,less:1 | 2026-06-05
+# stats: 577 func | 168 cls | 224 mod | CC̄=4.0 | critical:44 | cycles:0
+# alerts[5]: CC format_transcript=25; CC main=24; CC _apply_context_filters=21; CC _build_config=19; CC _check_expect=19
+# hotspots[5]: main fan=27; process_example fan=27; run_scenario fan=20; _execute_workflow fan=19; enrich_entities fan=19
 # evolution: baseline
 # Keys: M=modules, D=details, i=imports, e=exports, c=classes, f=functions, m=methods
-M[220]:
+M[224]:
   .pfix-test-wrapper.sh,16
   app.doql.less,234
   backend/app/__init__.py,1
@@ -1043,11 +1043,12 @@ M[220]:
   backend/app/db/postgres.py,173
   backend/app/engine.py,270
   backend/app/logging_setup.py,101
-  backend/app/main.py,49
+  backend/app/main.py,51
   backend/app/routers/__init__.py,1
   backend/app/routers/chat.py,125
   backend/app/routers/settings.py,82
   backend/app/routers/system.py,30
+  backend/app/routers/testql_compat.py,140
   backend/app/routers/workflow.py,200
   backend/app/schemas.py,65
   backend/app/workflow.py,23
@@ -1072,11 +1073,11 @@ M[220]:
   examples/04-scheduled-report/scenario.py,61
   examples/05-conversation-flow/main.py,34
   examples/05-conversation-flow/run.sh,7
-  examples/05-conversation-flow/scenario.py,45
+  examples/05-conversation-flow/scenario.py,55
   examples/06-interactive-chat/main.py,34
-  examples/06-interactive-chat/scenario.py,46
+  examples/06-interactive-chat/scenario.py,53
   examples/07-email-conversation/main.py,34
-  examples/07-email-conversation/scenario.py,37
+  examples/07-email-conversation/scenario.py,45
   examples/08-multi-object-benchmark/benchmark_queries.py,159
   examples/08-multi-object-benchmark/main.py,34
   examples/08-multi-object-benchmark/scenario.py,138
@@ -1091,7 +1092,7 @@ M[220]:
   examples/basic/invoice/run.sh,1
   examples/bootstrap.py,27
   examples/code_generation_examples.py,26
-  examples/run-all.sh,54
+  examples/run-all.sh,68
   metrun-profile.sh,49
   nlp-service/app/__init__.py,1
   nlp-service/app/access/__init__.py,16
@@ -1171,7 +1172,8 @@ M[220]:
   nlp2dsl_sdk/__main__.py,46
   nlp2dsl_sdk/artifacts.py,411
   nlp2dsl_sdk/cli.py,229
-  nlp2dsl_sdk/client.py,601
+  nlp2dsl_sdk/client.py,630
+  nlp2dsl_sdk/conversation_artifacts.py,114
   nlp2dsl_sdk/demos.py,355
   nlp2dsl_sdk/encoding.py,93
   nlp2dsl_sdk/example_loader.py,40
@@ -1225,7 +1227,9 @@ M[220]:
   run-all-tests.sh,45
   scripts/aggregate-example-testql.py,50
   scripts/publish-all.sh,45
-  scripts/run-example-testql-results.py,365
+  scripts/run-conversation-scenario.py,194
+  scripts/run-example-docker-e2e.py,249
+  scripts/run-example-testql-results.py,478
   scripts/setup-dev.sh,44
   tauri-wrapper/desktop.sh,80
   tauri-wrapper/scripts/dev.js,57
@@ -1308,6 +1312,19 @@ D:
   backend/app/routers/system.py:
     e: system_execute
     system_execute(body)
+  backend/app/routers/testql_compat.py:
+    e: _alias_response,_resolve_text,_resolve_conv_id,_maybe_execute_on_message,testql_chatstart,testql_chatmessage,testql_runworkflow,testql_workflow_from_text,TestqlChatStart,TestqlChatMessage,TestqlRunWorkflow
+    TestqlChatStart:
+    TestqlChatMessage:
+    TestqlRunWorkflow:
+    _alias_response(data)
+    _resolve_text(body)
+    _resolve_conv_id(body)
+    _maybe_execute_on_message(result;text)
+    testql_chatstart(body)
+    testql_chatmessage(body)
+    testql_runworkflow(body)
+    testql_workflow_from_text(body)
   backend/app/routers/workflow.py:
     e: _format_sse,_workflow_snapshot,orient_nlp,list_actions,run_workflow_endpoint,start_workflow_endpoint,get_history,get_workflow,stream_workflow,workflow_from_text
     _format_sse(event;data)
@@ -1380,7 +1397,8 @@ D:
     run(client)
   examples/05-conversation-flow/main.py:
   examples/05-conversation-flow/scenario.py:
-    e: run_demo,run_interactive,run
+    e: _save_conversation_artifacts,run_demo,run_interactive,run
+    _save_conversation_artifacts(flow;example_dir)
     run_demo(client)
     run_interactive(client)
     run(client)
@@ -1890,8 +1908,13 @@ D:
   nlp2dsl_sdk/client.py:
     e: workflow_step,NLP2DSLClient,ConversationFlow
     NLP2DSLClient: __init__(5),from_env(2),close(0),__enter__(0),__exit__(3),_request(3),_backend(2),_nlp_service(2),_worker(2),backend_health(0),nlp_service_health(0),worker_health(0),health(0),workflow_from_text(3),run_workflow(4),workflow_actions(0),workflow_action_schema(1),settings(0),settings_section(1),update_settings_section(2),set_setting(2),reset_settings(1),chat_start(2),chat_message(3),chat_state(1),nlp_chat_start(2),nlp_chat_message(3),nlp_chat_state(1),generate_code(4),supported_languages(0),worker_execute(3),worker_generate_code(5),send_invoice(5),send_email(5),generate_report(4),generate_report_and_notify(7),create_scheduled_report(7),notify_slack(4),crm_update(4),send_invoice_and_notify(7)  # Small reusable SDK for the NLP2DSL services.
-    ConversationFlow: __init__(1),start(2),send_message(2),_handle_response(1),_handle_in_progress_response(2),_handle_ready_response(2),_handle_completed_response(2),_handle_error_response(1),run_demo(0),run_interactive(0)  # Convenience helper for the conversational workflow example.
+    ConversationFlow: __init__(1),start(2),send_message(2),_record_turn(4),export_trace(0),_handle_response(1),_handle_in_progress_response(2),_handle_ready_response(2),_handle_completed_response(2),_handle_error_response(1),run_demo(0),run_interactive(0)  # Convenience helper for the conversational workflow example.
     workflow_step(action)
+  nlp2dsl_sdk/conversation_artifacts.py:
+    e: _routing_summary,format_transcript,write_conversation_artifacts
+    _routing_summary(data)
+    format_transcript(trace)
+    write_conversation_artifacts(artifact_root;trace)
   nlp2dsl_sdk/demos.py:
     e: _print_code_generation_preview,run_crm_update_demo,run_action_catalog_demo,run_automation_gallery_demo,run_code_generation_demo,_run_direct_code_generation,_get_supported_languages,_run_workflow_code_examples,_run_conversation_code_example,_run_worker_code_generation,list_available_demos,DemoSpec
     DemoSpec:  # Metadata for a runnable demo exposed by the package CLI.
@@ -2137,15 +2160,41 @@ D:
   scripts/aggregate-example-testql.py:
     e: main
     main()
+  scripts/run-conversation-scenario.py:
+    e: _load_yaml,_wait_health,_dsl_actions,_execution_completed,_check_expect,_run_validation,run_scenario,main
+    _load_yaml(path)
+    _wait_health(base_url;timeout_s)
+    _dsl_actions(response)
+    _execution_completed(response)
+    _check_expect(response;expect)
+    _run_validation(v;last_response)
+    run_scenario(scenario_path)
+    main(argv)
+  scripts/run-example-docker-e2e.py:
+    e: _py,_load_profiles,_health_ok,_collect_profiles,docker_up,docker_down,wait_platform,run_example_main,run_conversation,process_example,main
+    _py()
+    _load_profiles()
+    _health_ok(base_url)
+    _collect_profiles(example_ids;cfg)
+    docker_up(profiles)
+    docker_down()
+    wait_platform(base_url;timeout_s)
+    run_example_main(example_dir)
+    run_conversation(example_dir;entry;base_url)
+    process_example(example_id;entry)
+    main(argv)
   scripts/run-example-testql-results.py:
-    e: _load_manifest,_testql_dry_run,_testql_ir_parse,_nlp2dsl_run_query,_generate_conversation_toon,_conversation_dry_run,_manifest_consistency,_write_toon_report,process_example,main,Check,ExampleReport
+    e: _load_manifest,_testql_dry_run,_testql_ir_parse,_nlp2dsl_run_query,_is_hand_authored_conversation,_generate_conversation_toon,_conversation_execute,_conversation_transcript_check,_conversation_dry_run,_manifest_consistency,_write_toon_report,process_example,main,Check,ExampleReport
     Check:
     ExampleReport: failures(0),to_dict(0)
     _load_manifest(path)
     _testql_dry_run(commands_path)
     _testql_ir_parse(commands_path)
-    _nlp2dsl_run_query(query)
+    _nlp2dsl_run_query(query_entry;artifact_root)
+    _is_hand_authored_conversation(path)
     _generate_conversation_toon(example_id;manifest)
+    _conversation_execute(conversation_path;artifact_root)
+    _conversation_transcript_check(artifact_root)
     _conversation_dry_run(conversation_path)
     _manifest_consistency(manifest;artifact_root)
     _write_toon_report(report)
@@ -2309,7 +2358,7 @@ D:
 
 ```prolog markpact:analysis path=project/logic.pl
 % ── Project Metadata ─────────────────────────────────────
-project_metadata('nlp2dsl', '0.0.18', 'python').
+project_metadata('nlp2dsl', '0.0.19', 'python').
 
 % ── Project Files ────────────────────────────────────────
 project_file('.pfix-test-wrapper.sh', 16, 'shell').
@@ -2321,11 +2370,12 @@ project_file('backend/app/db/memory.py', 38, 'python').
 project_file('backend/app/db/postgres.py', 173, 'python').
 project_file('backend/app/engine.py', 270, 'python').
 project_file('backend/app/logging_setup.py', 101, 'python').
-project_file('backend/app/main.py', 49, 'python').
+project_file('backend/app/main.py', 51, 'python').
 project_file('backend/app/routers/__init__.py', 1, 'python').
 project_file('backend/app/routers/chat.py', 125, 'python').
 project_file('backend/app/routers/settings.py', 82, 'python').
 project_file('backend/app/routers/system.py', 30, 'python').
+project_file('backend/app/routers/testql_compat.py', 140, 'python').
 project_file('backend/app/routers/workflow.py', 200, 'python').
 project_file('backend/app/schemas.py', 65, 'python').
 project_file('backend/app/workflow.py', 23, 'python').
@@ -2350,11 +2400,11 @@ project_file('examples/04-scheduled-report/run.sh', 7, 'shell').
 project_file('examples/04-scheduled-report/scenario.py', 61, 'python').
 project_file('examples/05-conversation-flow/main.py', 34, 'python').
 project_file('examples/05-conversation-flow/run.sh', 7, 'shell').
-project_file('examples/05-conversation-flow/scenario.py', 45, 'python').
+project_file('examples/05-conversation-flow/scenario.py', 55, 'python').
 project_file('examples/06-interactive-chat/main.py', 34, 'python').
-project_file('examples/06-interactive-chat/scenario.py', 46, 'python').
+project_file('examples/06-interactive-chat/scenario.py', 53, 'python').
 project_file('examples/07-email-conversation/main.py', 34, 'python').
-project_file('examples/07-email-conversation/scenario.py', 37, 'python').
+project_file('examples/07-email-conversation/scenario.py', 45, 'python').
 project_file('examples/08-multi-object-benchmark/benchmark_queries.py', 159, 'python').
 project_file('examples/08-multi-object-benchmark/main.py', 34, 'python').
 project_file('examples/08-multi-object-benchmark/scenario.py', 138, 'python').
@@ -2369,7 +2419,7 @@ project_file('examples/12-ir-show/scenario.py', 89, 'python').
 project_file('examples/basic/invoice/run.sh', 1, 'shell').
 project_file('examples/bootstrap.py', 27, 'python').
 project_file('examples/code_generation_examples.py', 26, 'python').
-project_file('examples/run-all.sh', 54, 'shell').
+project_file('examples/run-all.sh', 68, 'shell').
 project_file('metrun-profile.sh', 49, 'shell').
 project_file('nlp-service/app/__init__.py', 1, 'python').
 project_file('nlp-service/app/access/__init__.py', 16, 'python').
@@ -2449,7 +2499,8 @@ project_file('nlp2dsl_sdk/__init__.py', 38, 'python').
 project_file('nlp2dsl_sdk/__main__.py', 46, 'python').
 project_file('nlp2dsl_sdk/artifacts.py', 411, 'python').
 project_file('nlp2dsl_sdk/cli.py', 229, 'python').
-project_file('nlp2dsl_sdk/client.py', 601, 'python').
+project_file('nlp2dsl_sdk/client.py', 630, 'python').
+project_file('nlp2dsl_sdk/conversation_artifacts.py', 114, 'python').
 project_file('nlp2dsl_sdk/demos.py', 355, 'python').
 project_file('nlp2dsl_sdk/encoding.py', 93, 'python').
 project_file('nlp2dsl_sdk/example_loader.py', 40, 'python').
@@ -2503,7 +2554,9 @@ project_file('project.sh', 59, 'shell').
 project_file('run-all-tests.sh', 45, 'shell').
 project_file('scripts/aggregate-example-testql.py', 50, 'python').
 project_file('scripts/publish-all.sh', 45, 'shell').
-project_file('scripts/run-example-testql-results.py', 365, 'python').
+project_file('scripts/run-conversation-scenario.py', 194, 'python').
+project_file('scripts/run-example-docker-e2e.py', 249, 'python').
+project_file('scripts/run-example-testql-results.py', 478, 'python').
 project_file('scripts/setup-dev.sh', 44, 'shell').
 project_file('tauri-wrapper/desktop.sh', 80, 'shell').
 project_file('tauri-wrapper/scripts/dev.js', 57, 'javascript').
@@ -2557,6 +2610,14 @@ python_function('backend/app/routers/settings.py', 'update_settings_section', 2,
 python_function('backend/app/routers/settings.py', 'set_setting', 1, 2, 5).
 python_function('backend/app/routers/settings.py', 'reset_settings', 1, 1, 4).
 python_function('backend/app/routers/system.py', 'system_execute', 1, 2, 5).
+python_function('backend/app/routers/testql_compat.py', '_alias_response', 1, 3, 1).
+python_function('backend/app/routers/testql_compat.py', '_resolve_text', 1, 8, 5).
+python_function('backend/app/routers/testql_compat.py', '_resolve_conv_id', 1, 3, 2).
+python_function('backend/app/routers/testql_compat.py', '_maybe_execute_on_message', 2, 6, 8).
+python_function('backend/app/routers/testql_compat.py', 'testql_chatstart', 1, 3, 6).
+python_function('backend/app/routers/testql_compat.py', 'testql_chatmessage', 1, 2, 8).
+python_function('backend/app/routers/testql_compat.py', 'testql_runworkflow', 1, 4, 11).
+python_function('backend/app/routers/testql_compat.py', 'testql_workflow_from_text', 1, 1, 2).
 python_function('backend/app/routers/workflow.py', '_format_sse', 2, 5, 4).
 python_function('backend/app/routers/workflow.py', '_workflow_snapshot', 1, 1, 1).
 python_function('backend/app/routers/workflow.py', 'orient_nlp', 1, 2, 4).
@@ -2573,13 +2634,14 @@ python_function('examples/01-invoice/scenario.py', 'run', 1, 7, 8).
 python_function('examples/02-email/scenario.py', 'run', 1, 7, 9).
 python_function('examples/03-report-and-notify/scenario.py', 'run', 1, 6, 8).
 python_function('examples/04-scheduled-report/scenario.py', 'run', 1, 11, 12).
-python_function('examples/05-conversation-flow/scenario.py', 'run_demo', 1, 2, 6).
+python_function('examples/05-conversation-flow/scenario.py', '_save_conversation_artifacts', 2, 1, 2).
+python_function('examples/05-conversation-flow/scenario.py', 'run_demo', 1, 2, 9).
 python_function('examples/05-conversation-flow/scenario.py', 'run_interactive', 1, 1, 2).
 python_function('examples/05-conversation-flow/scenario.py', 'run', 1, 2, 2).
-python_function('examples/06-interactive-chat/scenario.py', 'run_demo', 1, 3, 6).
+python_function('examples/06-interactive-chat/scenario.py', 'run_demo', 1, 3, 10).
 python_function('examples/06-interactive-chat/scenario.py', 'run_interactive', 1, 1, 3).
 python_function('examples/06-interactive-chat/scenario.py', 'run', 1, 2, 2).
-python_function('examples/07-email-conversation/scenario.py', 'run', 1, 3, 8).
+python_function('examples/07-email-conversation/scenario.py', 'run', 1, 3, 12).
 python_function('examples/08-multi-object-benchmark/scenario.py', '_extract_actions', 1, 5, 1).
 python_function('examples/08-multi-object-benchmark/scenario.py', '_evaluate', 2, 6, 5).
 python_function('examples/08-multi-object-benchmark/scenario.py', 'run_benchmark', 1, 16, 11).
@@ -2830,6 +2892,9 @@ python_function('nlp2dsl_sdk/cli.py', '_chat_start', 1, 2, 5).
 python_function('nlp2dsl_sdk/cli.py', '_demo', 2, 6, 3).
 python_function('nlp2dsl_sdk/cli.py', 'main', 1, 7, 13).
 python_function('nlp2dsl_sdk/client.py', 'workflow_step', 1, 1, 1).
+python_function('nlp2dsl_sdk/conversation_artifacts.py', '_routing_summary', 1, 6, 4).
+python_function('nlp2dsl_sdk/conversation_artifacts.py', 'format_transcript', 1, 25, 10).
+python_function('nlp2dsl_sdk/conversation_artifacts.py', 'write_conversation_artifacts', 2, 1, 10).
 python_function('nlp2dsl_sdk/demos.py', '_print_code_generation_preview', 1, 3, 3).
 python_function('nlp2dsl_sdk/demos.py', 'run_crm_update_demo', 1, 3, 5).
 python_function('nlp2dsl_sdk/demos.py', 'run_action_catalog_demo', 1, 6, 9).
@@ -2957,15 +3022,37 @@ python_function('packages/nlp2dsl-show/tests/test_cli.py', 'test_cli_show_reject
 python_function('packages/pact-ir/tests/test_ir_roundtrip.py', 'test_intent_ir_roundtrip_json', 0, 3, 3).
 python_function('packages/pact-ir/tests/test_ir_roundtrip.py', 'test_execution_plan_from_intent', 0, 4, 4).
 python_function('scripts/aggregate-example-testql.py', 'main', 0, 7, 11).
+python_function('scripts/run-conversation-scenario.py', '_load_yaml', 1, 2, 2).
+python_function('scripts/run-conversation-scenario.py', '_wait_health', 2, 4, 5).
+python_function('scripts/run-conversation-scenario.py', '_dsl_actions', 1, 5, 3).
+python_function('scripts/run-conversation-scenario.py', '_execution_completed', 1, 7, 4).
+python_function('scripts/run-conversation-scenario.py', '_check_expect', 2, 19, 6).
+python_function('scripts/run-conversation-scenario.py', '_run_validation', 2, 5, 4).
+python_function('scripts/run-conversation-scenario.py', 'run_scenario', 1, 16, 20).
+python_function('scripts/run-conversation-scenario.py', 'main', 1, 11, 9).
+python_function('scripts/run-example-docker-e2e.py', '_py', 0, 3, 2).
+python_function('scripts/run-example-docker-e2e.py', '_load_profiles', 0, 2, 2).
+python_function('scripts/run-example-docker-e2e.py', '_health_ok', 1, 2, 3).
+python_function('scripts/run-example-docker-e2e.py', '_collect_profiles', 2, 6, 4).
+python_function('scripts/run-example-docker-e2e.py', 'docker_up', 1, 3, 7).
+python_function('scripts/run-example-docker-e2e.py', 'docker_down', 0, 1, 2).
+python_function('scripts/run-example-docker-e2e.py', 'wait_platform', 2, 3, 3).
+python_function('scripts/run-example-docker-e2e.py', 'run_example_main', 1, 2, 4).
+python_function('scripts/run-example-docker-e2e.py', 'run_conversation', 3, 6, 7).
+python_function('scripts/run-example-docker-e2e.py', 'process_example', 2, 15, 6).
+python_function('scripts/run-example-docker-e2e.py', 'main', 1, 24, 27).
 python_function('scripts/run-example-testql-results.py', '_load_manifest', 1, 3, 3).
 python_function('scripts/run-example-testql-results.py', '_testql_dry_run', 1, 2, 4).
 python_function('scripts/run-example-testql-results.py', '_testql_ir_parse', 1, 4, 4).
-python_function('scripts/run-example-testql-results.py', '_nlp2dsl_run_query', 1, 5, 8).
+python_function('scripts/run-example-testql-results.py', '_nlp2dsl_run_query', 2, 19, 11).
+python_function('scripts/run-example-testql-results.py', '_is_hand_authored_conversation', 1, 4, 2).
 python_function('scripts/run-example-testql-results.py', '_generate_conversation_toon', 2, 6, 7).
+python_function('scripts/run-example-testql-results.py', '_conversation_execute', 2, 5, 13).
+python_function('scripts/run-example-testql-results.py', '_conversation_transcript_check', 1, 5, 7).
 python_function('scripts/run-example-testql-results.py', '_conversation_dry_run', 1, 8, 8).
 python_function('scripts/run-example-testql-results.py', '_manifest_consistency', 2, 10, 5).
 python_function('scripts/run-example-testql-results.py', '_write_toon_report', 1, 4, 5).
-python_function('scripts/run-example-testql-results.py', 'process_example', 1, 11, 24).
+python_function('scripts/run-example-testql-results.py', 'process_example', 1, 13, 27).
 python_function('scripts/run-example-testql-results.py', 'main', 1, 16, 18).
 python_function('test_code_generation.py', 'test_code_generation', 0, 11, 14).
 python_function('tests/e2e/conftest.py', '_resolve_browser_executable', 0, 3, 1).
@@ -3113,6 +3200,9 @@ python_method('JSONFormatter', 'format', 1, 2, 6).
 python_class('backend/app/logging_setup.py', 'RequestIDMiddleware').
 python_method('RequestIDMiddleware', '__init__', 2, 1, 2).
 python_method('RequestIDMiddleware', 'dispatch', 2, 2, 5).
+python_class('backend/app/routers/testql_compat.py', 'TestqlChatStart').
+python_class('backend/app/routers/testql_compat.py', 'TestqlChatMessage').
+python_class('backend/app/routers/testql_compat.py', 'TestqlRunWorkflow').
 python_class('backend/app/schemas.py', 'StepStatus').
 python_class('backend/app/schemas.py', 'Step').
 python_class('backend/app/schemas.py', 'RunWorkflowRequest').
@@ -3542,8 +3632,10 @@ python_method('NLP2DSLClient', 'crm_update', 4, 2, 3).
 python_method('NLP2DSLClient', 'send_invoice_and_notify', 7, 4, 3).
 python_class('nlp2dsl_sdk/client.py', 'ConversationFlow').
 python_method('ConversationFlow', '__init__', 1, 2, 1).
-python_method('ConversationFlow', 'start', 2, 1, 4).
-python_method('ConversationFlow', 'send_message', 2, 2, 5).
+python_method('ConversationFlow', 'start', 2, 1, 5).
+python_method('ConversationFlow', 'send_message', 2, 2, 6).
+python_method('ConversationFlow', '_record_turn', 4, 1, 1).
+python_method('ConversationFlow', 'export_trace', 0, 1, 2).
 python_method('ConversationFlow', '_handle_response', 1, 5, 6).
 python_method('ConversationFlow', '_handle_in_progress_response', 2, 6, 3).
 python_method('ConversationFlow', '_handle_ready_response', 2, 4, 5).
@@ -3795,7 +3887,7 @@ sumd_deploy_compose_file('docker-compose.yml').
 
 ## Call Graph
 
-*342 nodes · 350 edges · 72 modules · CC̄=3.6*
+*346 nodes · 353 edges · 73 modules · CC̄=3.7*
 
 ### Hubs (by degree)
 
@@ -3803,30 +3895,34 @@ sumd_deploy_compose_file('docker-compose.yml').
 |----------|----|----|-----|-------|
 | `_load_detector_config_from_json` *(in packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns)* | 33 ⚠ | 0 | 48 | **48** |
 | `_execute_workflow` *(in backend.app.engine)* | 11 ⚠ | 2 | 42 | **44** |
+| `process_example` *(in scripts.run-example-testql-results)* | 11 ⚠ | 1 | 38 | **39** |
 | `print_workflow_preview` *(in nlp2dsl_sdk.preview)* | 11 ⚠ | 8 | 27 | **35** |
 | `resolve_intent` *(in nlp-service.app.routing.resolve)* | 18 ⚠ | 1 | 31 | **32** |
 | `_run` *(in nlp2dsl_sdk.cli)* | 12 ⚠ | 1 | 30 | **31** |
+| `main` *(in scripts.run-example-testql-results)* | 16 ⚠ | 0 | 31 | **31** |
 | `enrich_entities` *(in nlp-service.app.routing.parser.enrich)* | 14 ⚠ | 1 | 29 | **30** |
-| `build_process_trace` *(in nlp2dsl_sdk.artifacts)* | 17 ⚠ | 1 | 29 | **30** |
-| `_build_config` *(in nlp-service.app.dsl.mapper)* | 19 ⚠ | 1 | 29 | **30** |
 
 ```toon markpact:analysis path=project/calls.toon.yaml
 # code2llm call graph | /home/tom/github/wronai/nlp2dsl
-# generated in 0.27s
-# nodes: 342 | edges: 350 | modules: 72
-# CC̄=3.6
+# generated in 0.26s
+# nodes: 346 | edges: 353 | modules: 73
+# CC̄=3.7
 
 HUBS[20]:
   packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_detector_config_from_json
     CC=33  in:0  out:48  total:48
   backend.app.engine._execute_workflow
     CC=11  in:2  out:42  total:44
+  scripts.run-example-testql-results.process_example
+    CC=11  in:1  out:38  total:39
   nlp2dsl_sdk.preview.print_workflow_preview
     CC=11  in:8  out:27  total:35
   nlp-service.app.routing.resolve.resolve_intent
     CC=18  in:1  out:31  total:32
   nlp2dsl_sdk.cli._run
     CC=12  in:1  out:30  total:31
+  scripts.run-example-testql-results.main
+    CC=16  in:0  out:31  total:31
   nlp-service.app.routing.parser.enrich.enrich_entities
     CC=14  in:1  out:29  total:30
   nlp2dsl_sdk.artifacts.build_process_trace
@@ -3839,24 +3935,20 @@ HUBS[20]:
     CC=13  in:1  out:27  total:28
   nlp-service.app.governance.bootstrap._actions_from_yaml_areas
     CC=14  in:1  out:26  total:27
-  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_patterns_from_json
-    CC=19  in:0  out:26  total:26
   examples.08-multi-object-benchmark.scenario.run_benchmark
     CC=16  in:2  out:24  total:26
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_patterns_from_json
+    CC=19  in:0  out:26  total:26
   examples.12-ir-show.scenario.run
     CC=13  in:0  out:25  total:25
-  nlp-service.app.routing.orientation._resolve_file_list_host_command
-    CC=15  in:1  out:24  total:25
   nlp2dsl_sdk.cli.main
     CC=7  in:0  out:25  total:25
+  nlp-service.app.routing.orientation._resolve_file_list_host_command
+    CC=15  in:1  out:24  total:25
   packages.nlp2cmd-intent.src.nlp2cmd_intent.nlp2cmd_convert.detection_to_intent_ir
     CC=10  in:2  out:22  total:24
-  nlp-service.app.main.websocket_chat
-    CC=10  in:0  out:23  total:23
   nlp-service.app.settings.SettingsManager.set
-    CC=4  in:12  out:11  total:23
-  backend.app.routers.workflow.stream_workflow
-    CC=2  in:0  out:22  total:22
+    CC=4  in:13  out:11  total:24
 
 MODULES:
   backend.app.engine  [7 funcs]
@@ -4207,6 +4299,11 @@ MODULES:
     _shell_command  CC=3  out:3
   packages.nlp2dsl-show.src.nlp2dsl_show.cli  [1 funcs]
     main  CC=7  out:17
+  scripts.run-example-testql-results  [4 funcs]
+    _generate_conversation_toon  CC=6  out:18
+    _load_manifest  CC=3  out:3
+    main  CC=16  out:31
+    process_example  CC=11  out:38
   tauri-wrapper.scripts.dev  [3 funcs]
     exitCode  CC=2  out:1
     main  CC=11  out:10

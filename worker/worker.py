@@ -14,6 +14,7 @@ import os
 from http import HTTPStatus
 from collections.abc import Callable
 from datetime import UTC, datetime
+from pathlib import Path
 from typing import Any
 
 from fastapi import FastAPI, HTTPException
@@ -78,12 +79,42 @@ async def _deliver_notification(provider: str, config: dict, payload: dict, env_
 
 @action("send_invoice")
 async def handle_send_invoice(config: dict) -> dict:
-    log.info("⚡ Generating invoice → %s, amount: %s",
-             config.get("to", "?"), config.get("amount", "?"))
+    attachment = config.get("attachment_path", "")
+    log.info(
+        "⚡ Generating invoice → %s, amount: %s, attachment: %s",
+        config.get("to", "?"),
+        config.get("amount", "?"),
+        attachment or "(brak)",
+    )
     await asyncio.sleep(0.5)  # symulacja
     invoice_id = f"INV-{datetime.now(UTC).strftime('%Y%m%d%H%M%S')}"
     log.info("✅ Invoice %s created", invoice_id)
-    return {"invoice_id": invoice_id, "sent_to": config.get("to")}
+    result: dict[str, Any] = {"invoice_id": invoice_id, "sent_to": config.get("to")}
+    if attachment:
+        result["attachment_path"] = attachment
+        result["attachment_used"] = True
+    return result
+
+
+@action("generate_invoice")
+async def handle_generate_invoice(config: dict) -> dict:
+    amount = config.get("amount")
+    to_addr = config.get("to", "?")
+    currency = config.get("currency", "PLN")
+    output_path = config.get("output_path") or ""
+    if not output_path:
+        out_dir = Path(os.environ.get("NLP2DSL_INVOICE_DIR", "/tmp/nlp2dsl-invoices"))
+        out_dir.mkdir(parents=True, exist_ok=True)
+        stamp = datetime.now(UTC).strftime("%Y%m%d%H%M%S")
+        output_path = str(out_dir / f"INV-{stamp}-{amount}-{currency}.pdf")
+    path = Path(output_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        f"FAKTURA\nOdbiorca: {to_addr}\nKwota: {amount} {currency}\n",
+        encoding="utf-8",
+    )
+    log.info("✅ Invoice file generated: %s", path)
+    return {"attachment_path": str(path), "amount": amount, "to": to_addr, "currency": currency}
 
 
 @action("send_email")

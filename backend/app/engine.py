@@ -16,6 +16,7 @@ from httpx import AsyncClient
 from app.config import settings
 from app.db import create_workflow_repo
 from app.logging_setup import get_request_id
+from app.step_validator import validate_step_config
 from app.workflow_events import WorkflowEvent, workflow_event_hub
 from app.schemas import (
     RunWorkflowRequest,
@@ -135,6 +136,43 @@ async def _execute_workflow(
                     payload={"config": step.config},
                 )
                 await _persist_workflow_snapshot(req, result)
+
+                pre_issues = validate_step_config(step.action, step.config)
+                if pre_issues:
+                    step_result.status = StepStatus.FAILED
+                    step_result.error = "; ".join(pre_issues)
+                    step_result.finished_at = datetime.now(UTC)
+                    log.error("✗ Step %s validation failed: %s", step.id, step_result.error)
+                    result.status = StepStatus.FAILED
+                    await _persist_workflow_snapshot(req, result)
+                    await _publish_workflow_event(
+                        workflow_id,
+                        "step_failed",
+                        StepStatus.FAILED.value,
+                        f"Krok {step_index}/{total_steps} — walidacja: {step.action}",
+                        step_id=step.id,
+                        action=step.action,
+                        step_index=step_index,
+                        total_steps=total_steps,
+                        payload={"error": step_result.error, "validation": pre_issues},
+                    )
+                    await _publish_workflow_event(
+                        workflow_id,
+                        "workflow_failed",
+                        StepStatus.FAILED.value,
+                        f"Workflow '{req.name}' zatrzymany — błąd walidacji kroku {step.action}",
+                        step_id=step.id,
+                        action=step.action,
+                        step_index=step_index,
+                        total_steps=total_steps,
+                        payload={"error": step_result.error},
+                    )
+                    if raise_on_failure:
+                        raise HTTPException(
+                            status_code=HTTPStatus.UNPROCESSABLE_ENTITY,
+                            detail=step_result.error,
+                        )
+                    return result
 
                 try:
                     payload = {"step_id": step.id, "action": step.action, "config": step.config}

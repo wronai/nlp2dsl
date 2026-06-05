@@ -35,6 +35,7 @@ class NLPEntities(BaseModel):
     setting_value: str | None = None     # np. "gpt-4o-mini"
     section: str | None = None           # np. "llm", "nlp", "worker"
     file_path: str | None = None         # np. "worker/worker.py"
+    attachment_path: str | None = None   # plik faktury / załącznik
     content: str | None = None           # treść pliku
     directory: str | None = None         # katalog
     pattern: str | None = None           # glob pattern
@@ -107,6 +108,11 @@ class ConversationState(BaseModel):
     dsl: WorkflowDSL | None = None
     status: str = "in_progress"   # in_progress | ready | done | error
     history: list[dict] = []      # [{"role": "user"|"assistant", "text": "..."}]
+    doql_context_path: str | None = None
+    doql_inline: dict = {}
+    autofill_applied: list[str] = []
+    attachment_required: bool = False
+    autonomous_steps: list[str] = []
 
 
 # ── Schema-driven UI ─────────────────────────────────────────
@@ -135,3 +141,7 @@ class ConversationResponse(BaseModel):
     form: ActionFormSchema | None = None
     execution_backend: str | None = None  # worker | mullm | system
     routing: dict | None = None  # IntentDecision — debug / Mullm ingress trace
+    autofill_applied: list[str] = []
+    reflection: dict | None = None  # ReflectionReport — target vs current after each decision
+    autonomous_steps: list[str] = []
+    auto_execute: bool = False

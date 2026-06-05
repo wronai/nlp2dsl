@@ -1,0 +1,8 @@
+# Stack request — metadata for DOQL autofill
+
+amount: 1500
+currency: PLN
+to: klient@firma.pl
+schedule: "0 9 * * *"
+schedule_human: codziennie o 9:00
+attachment_required: true

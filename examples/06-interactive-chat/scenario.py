@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any, Optional
 
 from nlp2dsl_sdk.client import ConversationFlow, NLP2DSLClient
+from nlp2dsl_sdk.conversation_artifacts import write_conversation_artifacts
 
 
 HELP = """
@@ -29,6 +31,11 @@ def run_demo(client: Optional[NLP2DSLClient] = None) -> dict[str, Any]:
         flow.send_message("uruchom")
 
     print(f"\n📊 conversation_id={flow.conversation_id}")
+    write_conversation_artifacts(
+        Path(__file__).resolve().parent / ".nlp2dsl",
+        flow.export_trace(),
+        scenario_name="scenario.py",
+    )
     return {"conversation_id": flow.conversation_id}
 
 

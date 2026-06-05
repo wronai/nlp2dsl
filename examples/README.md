@@ -18,6 +18,7 @@ examples/
 ├── 10-llm-benchmark/        # 20 zapytań tylko mode=llm (OpenRouter)
 ├── 11-notify-quality/       # Powiadomienia: quality_required + enrich
 ├── 12-ir-show/              # MVP workflow vs nlp2dsl show (IntentIR)
+├── 13-autonomous-invoice-stack/  # Stack autonomiczny: multi-turn + compose + cron
 └── README.md
 ```
 
@@ -78,6 +79,48 @@ Pola w logu: `ts`, `level`, `service`, `request_id`, `logger`, `msg`.
 Kluczowe loggery: `nlp.mapper`, `nlp.enrich`, `nlp.llm`, `orchestrator`.
 
 Poziom: `LOG_LEVEL=DEBUG` w env nlp-service (domyślnie `INFO`).
+
+---
+
+## Docker E2E — konwersacje + serwisy per przykład
+
+Każdy przykład ma profil w `examples/example-profiles.yaml` (wymagane serwisy Docker, profile compose, walidacje).
+
+### Struktura `.nlp2dsl/` (konwersacje)
+
+| Plik / katalog | Opis |
+|----------------|------|
+| `registry/environment.doql.less` | **Live mapa systemu** (SystemMapIR / DOQL) — źródło prawdy |
+| `environment.doql.less` | Mirror legacy (kompatybilność ze starymi ścieżkami) |
+| `runs/{run_id}/turn-NN-*.json` | Snapshot stanu po każdej turze konwersacji |
+| `report/last-run.result.json` | Ostatni wynik TestQL / E2E |
+| `conversation.scenario.yaml` | Scenariusz multi-turn (user → nlp2dsl → worker) |
+| `conversation.testql.toon.yaml` | Scenariusz TestQL (`chatstart` / `chatmessage`) |
+| `conversation.transcript.md` | **Czytelny dialog** user ↔ nlp2dsl (+ parser/LLM routing) |
+| `conversation.trace.json` | Pełna ścieżka HTTP, statusy, execution |
+| `fixtures/mock-llm-replies.yaml` | Deterministyczne uzupełnienia pól (CI bez klucza LLM) |
+| `../fixtures/` (poza `.nlp2dsl`) | Statyczne pliki autofill — nie kasowane przy `rm -rf .nlp2dsl/*` |
+
+### Uruchomienie pełnego stacku + test konwersacji
+
+```bash
+# Platforma + mocki (01–07)
+docker compose -f docker-compose.yml -f docker-compose.e2e.yml \
+  --profile invoice --profile email --profile conversation \
+  --profile reports --profile storage up -d --build
+
+# E2E scenariusze (execution + conversation) bez ponownego main.py
+python3 scripts/run-example-docker-e2e.py --skip-main --testql-results \
+  01-invoice 02-email 05-conversation-flow 07-email-conversation
+
+# Wariant LLM (wymaga OPENROUTER_API_KEY w .env)
+python3 scripts/run-example-docker-e2e.py --skip-main --llm \
+  05-conversation-flow 10-llm-benchmark
+```
+
+Wyniki agregatu: `examples/docker-e2e-results.json`, per przykład: `.nlp2dsl/result.*` + `conversation.transcript.md`.
+
+Backend udostępnia aliasy TestQL (`/chatstart`, `/chatmessage`, `/runworkflow`) — wymaga `docker compose up --build backend` po aktualizacji.
 
 ---
 
@@ -338,7 +381,10 @@ cp .env.example .env
 
 Po każdym `main.py` zapisywany jest katalog `examples/NN-name/.nlp2dsl/`:
 
-- `environment.doql.less` — środowisko (DOQL)
+- `registry/environment.doql.less` — live mapa systemu (DOQL / SystemMapIR)
+- `environment.doql.less` — mirror legacy
+- `runs/` — snapshoty tur konwersacji
+- `report/` — ostatni wynik TestQL
 - `commands.testql.toon.yaml` — testy komend (testql)
 - `pipeline/*.json|yaml` — odpowiedź API per zapytanie
 - `process/*.process.yaml` — warstwowy ślad inferencji

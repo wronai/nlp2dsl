@@ -1,0 +1,86 @@
+{
+  "generated_at": "2026-06-05T17:12:47.571672+00:00",
+  "base_url": "http://localhost:8010",
+  "docker_profiles": [
+    "conversation",
+    "invoice",
+    "llm"
+  ],
+  "examples": 2,
+  "passed": 2,
+  "failed": 0,
+  "skipped": 0,
+  "results": [
+    {
+      "example_id": "05-conversation-flow",
+      "title": "Dialog faktury (multi-turn)",
+      "services": [
+        "backend",
+        "nlp-service",
+        "worker",
+        "postgres",
+        "redis"
+      ],
+      "docker_profiles": [
+        "invoice",
+        "conversation"
+      ],
+      "passed": true,
+      "checks": [
+        {
+          "id": "conversation.e2e",
+          "status": "passed",
+          "summary": "conversation_id=a33a4c7ef915 status=executed",
+          "transcript": "/home/tom/github/wronai/nlp2dsl/examples/05-conversation-flow/.nlp2dsl/conversation.transcript.md"
+        },
+        {
+          "id": "conversation.llm",
+          "status": "passed",
+          "summary": "LLM dialog status=executed",
+          "transcript": "/home/tom/github/wronai/nlp2dsl/examples/05-conversation-flow/.nlp2dsl/conversation.transcript.md"
+        }
+      ],
+      "conversation": {
+        "conversation_id": "a33a4c7ef915",
+        "status": "executed",
+        "errors": [],
+        "validations": [
+          {
+            "id": "dsl.send_invoice",
+            "passed": true,
+            "summary": "dsl action 'send_invoice' present"
+          },
+          {
+            "id": "execution.completed",
+            "passed": true,
+            "summary": "execution completed"
+          }
+        ]
+      },
+      "status": "passed"
+    },
+    {
+      "example_id": "10-llm-benchmark",
+      "title": "Benchmark mode=llm",
+      "services": [
+        "backend",
+        "nlp-service",
+        "worker",
+        "postgres",
+        "redis"
+      ],
+      "docker_profiles": [
+        "llm"
+      ],
+      "passed": true,
+      "checks": [
+        {
+          "id": "execution.e2e",
+          "status": "passed",
+          "summary": "status=complete queries=1"
+        }
+      ],
+      "status": "passed"
+    }
+  ]
+}

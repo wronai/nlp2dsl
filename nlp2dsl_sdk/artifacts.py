@@ -22,6 +22,7 @@ from typing import Any, Mapping, Sequence
 
 import yaml
 
+from .doql_context import collect_task_context, enrich_task_context_from_client, write_doql_context
 from .encoding import utf8_open
 
 _PROCESS_FORMAT = "nlp2dsl.process.v1"
@@ -73,24 +74,26 @@ def collect_environment() -> dict[str, str]:
     return out
 
 
-def write_environment_doql(artifact_root: Path, example_name: str, env: Mapping[str, str]) -> Path:
+def write_environment_doql(
+    artifact_root: Path,
+    example_name: str,
+    env: Mapping[str, str],
+    *,
+    example_dir: Path | None = None,
+    queries_meta: Sequence[Mapping[str, Any]] | None = None,
+) -> Path:
+    from .artifact_layout import ensure_layout, write_registry
+    from .doql_context import render_doql_context
+
     artifact_root.mkdir(parents=True, exist_ok=True)
-    path = artifact_root / "environment.doql.less"
-    lines = [
-        f"// DOQL environment snapshot — {example_name}",
-        f"// generated: {env.get('generated_at', '')}",
-        "",
-        f'environment[name="{example_name}"] {{',
-    ]
-    for key, value in sorted(env.items()):
-        if key == "generated_at":
-            continue
-        safe = str(value).replace('"', '\\"')
-        lines.append(f'  {key}: "{safe}";')
-    lines.append("}")
-    lines.append("")
-    path.write_text("\n".join(lines), encoding="utf-8")
-    return path
+    ensure_layout(artifact_root)
+    ctx = collect_task_context(
+        example_dir or artifact_root.parent,
+        example_name=example_name,
+        environment=dict(env),
+        queries=list(queries_meta or []),
+    )
+    return write_registry(artifact_root, render_doql_context(ctx))
 
 
 def build_process_trace(
@@ -244,7 +247,7 @@ def write_manifest(
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "queries": list(queries),
         "artifacts": {
-            "environment": "environment.doql.less",
+            "environment": "registry/environment.doql.less",
             "testql": "commands.testql.toon.yaml",
             "services": "services.yaml",
             "pipeline_dir": "pipeline/",
@@ -372,7 +375,26 @@ class ExampleArtifactWriter:
 
     def finalize(self, client: Any | None = None) -> Path:
         env = collect_environment()
-        write_environment_doql(self.artifact_root, self.example_id, env)
+        from .doql_registry import merge_registry_observations
+        from .system_map_generator import generate_system_map
+        from .system_map_render import render_system_map_doql
+
+        system_map = generate_system_map(
+            self.example_dir,
+            example_id=self.example_id,
+            environment=env,
+            queries=self._queries_meta,
+            client=client,
+        )
+        legacy = self.artifact_root / "registry" / "environment.doql.less"
+        if not legacy.is_file():
+            legacy = self.artifact_root / "environment.doql.less"
+        merge_registry_observations(system_map, legacy)
+        from .artifact_layout import ensure_layout, write_registry
+
+        ensure_layout(self.artifact_root)
+        doql_path = write_registry(self.artifact_root, render_system_map_doql(system_map))
+        os.environ.setdefault("NLP2DSL_DOQL_CONTEXT", str(doql_path))
         write_testql_commands(
             self.artifact_root,
             example_id=self.example_id,

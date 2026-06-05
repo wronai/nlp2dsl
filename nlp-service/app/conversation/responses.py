@@ -7,15 +7,18 @@ import logging
 import re
 from typing import Callable
 
+from app.conversation.attachment_gate import workflow_needs_attachment
 from app.dsl.forms import get_action_form
 from app.dsl.pipeline import map_to_dsl_with_enrichment
 from app.execution.system import SYSTEM_EXECUTORS
 from app.execution.delegate import execution_backend_for_intent
 from app.registry import SYSTEM_ACTIONS
 from app.routing import IntentDecision
+from app.validation.step_validator import format_validation_message, validate_workflow_steps
 from app.schemas import (
     ConversationResponse,
     ConversationState,
+    DialogResponse,
     NLPEntities,
     NLPIntent,
     NLPResult,
@@ -69,6 +72,17 @@ async def check_execute_keyword(state: ConversationState, text: str) -> Conversa
     if not _is_execute_or_continue(text):
         return None
     if state.status == "ready" and state.dsl:
+        validation_failures = validate_workflow_steps(state.dsl.steps)
+        if validation_failures:
+            msg = format_validation_message(validation_failures)
+            state.history.append({"role": "assistant", "text": msg})
+            state.status = "in_progress"
+            return ConversationResponse(
+                conversation_id=state.id,
+                status="in_progress",
+                message=msg,
+                dsl=state.dsl,
+            )
         log.info("Workflow already ready, preserving DSL for execution")
         return ConversationResponse(
             conversation_id=state.id,
@@ -141,9 +155,36 @@ def handle_system_action(state: ConversationState) -> ConversationResponse | Non
 
 
 async def build_and_check_dsl(state: ConversationState) -> ConversationResponse | None:
+    from app.validation.path_resolve import resolve_attachment_path
+
     dialog = await map_to_dsl_with_enrichment(_nlp_from_state(state))
+    if dialog.status == "complete" and dialog.workflow and workflow_needs_attachment(state, dialog):
+        return None
     if not (dialog.status == "complete" and dialog.workflow):
         return None
+
+    for step in dialog.workflow.steps:
+        raw_att = step.config.get("attachment_path")
+        if raw_att and isinstance(raw_att, str) and str(raw_att).strip():
+            step.config["attachment_path"] = resolve_attachment_path(str(raw_att))
+
+    validation_failures = validate_workflow_steps(dialog.workflow.steps)
+    if validation_failures:
+        msg = format_validation_message(validation_failures)
+        missing = [
+            issue.split(":", 1)[0].strip()
+            for _, _, issues in validation_failures
+            for issue in issues
+            if issue.startswith("brak ")
+        ]
+        state.missing = missing or ["validation"]
+        state.history.append({"role": "assistant", "text": msg})
+        return ConversationResponse(
+            conversation_id=state.id,
+            status="in_progress",
+            message=msg,
+            missing=state.missing,
+        )
 
     state.dsl = dialog.workflow
     state.status = "ready"
@@ -154,6 +195,8 @@ async def build_and_check_dsl(state: ConversationState) -> ConversationResponse 
         f"Wyślij 'uruchom' aby wykonać"
         + (" (Mullm)." if backend == "mullm" else ".")
     )
+    if state.autofill_applied:
+        msg += f"\n(Uzupełniono z environment.doql.less: {', '.join(state.autofill_applied)})"
     state.history.append({"role": "assistant", "text": msg})
     return ConversationResponse(
         conversation_id=state.id,
@@ -166,6 +209,13 @@ async def build_and_check_dsl(state: ConversationState) -> ConversationResponse 
 
 async def build_incomplete_response(state: ConversationState) -> ConversationResponse:
     dialog = await map_to_dsl_with_enrichment(_nlp_from_state(state))
+    if dialog.status == "complete" and dialog.workflow and workflow_needs_attachment(state, dialog):
+        dialog = DialogResponse(
+            status="incomplete",
+            workflow=dialog.workflow,
+            missing_fields=["send_invoice.attachment_path"],
+            prompt_user="Podaj nazwę pliku faktury (PDF).",
+        )
     state.missing = dialog.missing_fields
     question = dialog.prompt_user or "Podaj brakujące dane."
 

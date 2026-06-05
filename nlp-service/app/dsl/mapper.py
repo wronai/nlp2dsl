@@ -108,7 +108,9 @@ def _resolve_actions(intent: str) -> list[str]:
 
 def _build_config(action: str, entities: NLPEntities) -> tuple[dict, list[str]]:
     """Build config dict for action from entities. Returns (config, missing_fields)."""
-    required = get_required_fields(action)
+    from app.conversation.system_map import required_fields_for_action
+
+    required = required_fields_for_action(action) or get_required_fields(action)
     defaults = get_defaults(action)
     entities_dict = entities.model_dump(exclude_none=True)
 
@@ -163,6 +165,10 @@ def _build_config(action: str, entities: NLPEntities) -> tuple[dict, list[str]]:
         if value is None or (isinstance(value, str) and not value.strip()):
             missing.append(field)
 
+    if action == "send_invoice" and entities_dict.get("_doql_attachment_required"):
+        if not str(config.get("attachment_path", "")).strip():
+            missing.append("attachment_path")
+
     return config, missing
 
 
@@ -182,9 +188,10 @@ def _auto_notify_message(config: dict, entities_dict: dict) -> str | None:
 def _get_field_mapping(action: str) -> dict[str, str]:
     """Standard field mappings per action."""
     mappings = {
-        "send_invoice": {"to": "to", "amount": "amount", "currency": "currency"},
+        "send_invoice": {"to": "to", "amount": "amount", "currency": "currency", "attachment_path": "attachment_path"},
         "send_email": {"to": "to", "subject": "subject", "body": "message"},
         "generate_report": {"report_type": "report_type", "format": "format"},
+        "generate_invoice": {"to": "to", "amount": "amount", "currency": "currency", "output_path": "output_path"},
         "crm_update": {"entity": "entity", "data": "data"},
         "notify_slack": {"channel": "channel", "message": "message"},
         "notify_telegram": {"chat_id": "chat_id", "message": "message"},
@@ -223,6 +230,7 @@ def _build_prompt(missing: list[str]) -> str:
         "title": "tytuł powiadomienia",
         "message": "treść wiadomości",
         "entity": "typ encji CRM (np. contact, client)",
+        "attachment_path": "nazwę pliku faktury (PDF)",
     }
 
     parts = []

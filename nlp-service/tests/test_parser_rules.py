@@ -82,6 +82,16 @@ class TestParseEmail:
         assert result.entities.to == "team@firma.pl"
         assert result.entities.subject == "Status projektu"
 
+    def test_parse_email_subject_and_body_same_line(self) -> None:
+        """'z tematem X. Treść: Y' splits subject and body on one line."""
+        result = parse_rules(
+            "Wyślij email do team@firma.pl z tematem Status dzienny. "
+            "Treść: Wszystkie projekty przebiegają zgodnie z harmonogramem."
+        )
+        assert result.entities.to == "team@firma.pl"
+        assert result.entities.subject == "Status dzienny"
+        assert result.entities.message == "Wszystkie projekty przebiegają zgodnie z harmonogramem."
+
     def test_parse_email_colon_body(self) -> None:
         """'Napisz do X: treść' extracts message body."""
         result = parse_rules("Napisz do manager@firma.pl: Projekt zakończony sukcesem")

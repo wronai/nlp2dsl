@@ -1,5 +1,5 @@
 % ── Project Metadata ─────────────────────────────────────
-project_metadata('nlp2dsl', '0.0.18', 'python').
+project_metadata('nlp2dsl', '0.0.19', 'python').
 
 % ── Project Files ────────────────────────────────────────
 project_file('.pfix-test-wrapper.sh', 16, 'shell').
@@ -11,11 +11,12 @@ project_file('backend/app/db/memory.py', 38, 'python').
 project_file('backend/app/db/postgres.py', 173, 'python').
 project_file('backend/app/engine.py', 270, 'python').
 project_file('backend/app/logging_setup.py', 101, 'python').
-project_file('backend/app/main.py', 49, 'python').
+project_file('backend/app/main.py', 51, 'python').
 project_file('backend/app/routers/__init__.py', 1, 'python').
 project_file('backend/app/routers/chat.py', 125, 'python').
 project_file('backend/app/routers/settings.py', 82, 'python').
 project_file('backend/app/routers/system.py', 30, 'python').
+project_file('backend/app/routers/testql_compat.py', 140, 'python').
 project_file('backend/app/routers/workflow.py', 200, 'python').
 project_file('backend/app/schemas.py', 65, 'python').
 project_file('backend/app/workflow.py', 23, 'python').
@@ -40,11 +41,11 @@ project_file('examples/04-scheduled-report/run.sh', 7, 'shell').
 project_file('examples/04-scheduled-report/scenario.py', 61, 'python').
 project_file('examples/05-conversation-flow/main.py', 34, 'python').
 project_file('examples/05-conversation-flow/run.sh', 7, 'shell').
-project_file('examples/05-conversation-flow/scenario.py', 45, 'python').
+project_file('examples/05-conversation-flow/scenario.py', 55, 'python').
 project_file('examples/06-interactive-chat/main.py', 34, 'python').
-project_file('examples/06-interactive-chat/scenario.py', 46, 'python').
+project_file('examples/06-interactive-chat/scenario.py', 53, 'python').
 project_file('examples/07-email-conversation/main.py', 34, 'python').
-project_file('examples/07-email-conversation/scenario.py', 37, 'python').
+project_file('examples/07-email-conversation/scenario.py', 45, 'python').
 project_file('examples/08-multi-object-benchmark/benchmark_queries.py', 159, 'python').
 project_file('examples/08-multi-object-benchmark/main.py', 34, 'python').
 project_file('examples/08-multi-object-benchmark/scenario.py', 138, 'python').
@@ -59,7 +60,7 @@ project_file('examples/12-ir-show/scenario.py', 89, 'python').
 project_file('examples/basic/invoice/run.sh', 1, 'shell').
 project_file('examples/bootstrap.py', 27, 'python').
 project_file('examples/code_generation_examples.py', 26, 'python').
-project_file('examples/run-all.sh', 54, 'shell').
+project_file('examples/run-all.sh', 68, 'shell').
 project_file('metrun-profile.sh', 49, 'shell').
 project_file('nlp-service/app/__init__.py', 1, 'python').
 project_file('nlp-service/app/access/__init__.py', 16, 'python').
@@ -139,7 +140,8 @@ project_file('nlp2dsl_sdk/__init__.py', 38, 'python').
 project_file('nlp2dsl_sdk/__main__.py', 46, 'python').
 project_file('nlp2dsl_sdk/artifacts.py', 411, 'python').
 project_file('nlp2dsl_sdk/cli.py', 229, 'python').
-project_file('nlp2dsl_sdk/client.py', 601, 'python').
+project_file('nlp2dsl_sdk/client.py', 630, 'python').
+project_file('nlp2dsl_sdk/conversation_artifacts.py', 114, 'python').
 project_file('nlp2dsl_sdk/demos.py', 355, 'python').
 project_file('nlp2dsl_sdk/encoding.py', 93, 'python').
 project_file('nlp2dsl_sdk/example_loader.py', 40, 'python').
@@ -193,7 +195,9 @@ project_file('project.sh', 59, 'shell').
 project_file('run-all-tests.sh', 45, 'shell').
 project_file('scripts/aggregate-example-testql.py', 50, 'python').
 project_file('scripts/publish-all.sh', 45, 'shell').
-project_file('scripts/run-example-testql-results.py', 410, 'python').
+project_file('scripts/run-conversation-scenario.py', 198, 'python').
+project_file('scripts/run-example-docker-e2e.py', 249, 'python').
+project_file('scripts/run-example-testql-results.py', 478, 'python').
 project_file('scripts/setup-dev.sh', 44, 'shell').
 project_file('tauri-wrapper/desktop.sh', 80, 'shell').
 project_file('tauri-wrapper/scripts/dev.js', 57, 'javascript').
@@ -247,6 +251,14 @@ python_function('backend/app/routers/settings.py', 'update_settings_section', 2,
 python_function('backend/app/routers/settings.py', 'set_setting', 1, 2, 5).
 python_function('backend/app/routers/settings.py', 'reset_settings', 1, 1, 4).
 python_function('backend/app/routers/system.py', 'system_execute', 1, 2, 5).
+python_function('backend/app/routers/testql_compat.py', '_alias_response', 1, 3, 1).
+python_function('backend/app/routers/testql_compat.py', '_resolve_text', 1, 8, 5).
+python_function('backend/app/routers/testql_compat.py', '_resolve_conv_id', 1, 3, 2).
+python_function('backend/app/routers/testql_compat.py', '_maybe_execute_on_message', 2, 6, 8).
+python_function('backend/app/routers/testql_compat.py', 'testql_chatstart', 1, 3, 6).
+python_function('backend/app/routers/testql_compat.py', 'testql_chatmessage', 1, 2, 8).
+python_function('backend/app/routers/testql_compat.py', 'testql_runworkflow', 1, 4, 11).
+python_function('backend/app/routers/testql_compat.py', 'testql_workflow_from_text', 1, 1, 2).
 python_function('backend/app/routers/workflow.py', '_format_sse', 2, 5, 4).
 python_function('backend/app/routers/workflow.py', '_workflow_snapshot', 1, 1, 1).
 python_function('backend/app/routers/workflow.py', 'orient_nlp', 1, 2, 4).
@@ -263,13 +275,14 @@ python_function('examples/01-invoice/scenario.py', 'run', 1, 7, 8).
 python_function('examples/02-email/scenario.py', 'run', 1, 7, 9).
 python_function('examples/03-report-and-notify/scenario.py', 'run', 1, 6, 8).
 python_function('examples/04-scheduled-report/scenario.py', 'run', 1, 11, 12).
-python_function('examples/05-conversation-flow/scenario.py', 'run_demo', 1, 2, 6).
+python_function('examples/05-conversation-flow/scenario.py', '_save_conversation_artifacts', 2, 1, 2).
+python_function('examples/05-conversation-flow/scenario.py', 'run_demo', 1, 2, 9).
 python_function('examples/05-conversation-flow/scenario.py', 'run_interactive', 1, 1, 2).
 python_function('examples/05-conversation-flow/scenario.py', 'run', 1, 2, 2).
-python_function('examples/06-interactive-chat/scenario.py', 'run_demo', 1, 3, 6).
+python_function('examples/06-interactive-chat/scenario.py', 'run_demo', 1, 3, 10).
 python_function('examples/06-interactive-chat/scenario.py', 'run_interactive', 1, 1, 3).
 python_function('examples/06-interactive-chat/scenario.py', 'run', 1, 2, 2).
-python_function('examples/07-email-conversation/scenario.py', 'run', 1, 3, 8).
+python_function('examples/07-email-conversation/scenario.py', 'run', 1, 3, 12).
 python_function('examples/08-multi-object-benchmark/scenario.py', '_extract_actions', 1, 5, 1).
 python_function('examples/08-multi-object-benchmark/scenario.py', '_evaluate', 2, 6, 5).
 python_function('examples/08-multi-object-benchmark/scenario.py', 'run_benchmark', 1, 16, 11).
@@ -520,6 +533,9 @@ python_function('nlp2dsl_sdk/cli.py', '_chat_start', 1, 2, 5).
 python_function('nlp2dsl_sdk/cli.py', '_demo', 2, 6, 3).
 python_function('nlp2dsl_sdk/cli.py', 'main', 1, 7, 13).
 python_function('nlp2dsl_sdk/client.py', 'workflow_step', 1, 1, 1).
+python_function('nlp2dsl_sdk/conversation_artifacts.py', '_routing_summary', 1, 6, 4).
+python_function('nlp2dsl_sdk/conversation_artifacts.py', 'format_transcript', 1, 25, 10).
+python_function('nlp2dsl_sdk/conversation_artifacts.py', 'write_conversation_artifacts', 2, 1, 10).
 python_function('nlp2dsl_sdk/demos.py', '_print_code_generation_preview', 1, 3, 3).
 python_function('nlp2dsl_sdk/demos.py', 'run_crm_update_demo', 1, 3, 5).
 python_function('nlp2dsl_sdk/demos.py', 'run_action_catalog_demo', 1, 6, 9).
@@ -647,15 +663,37 @@ python_function('packages/nlp2dsl-show/tests/test_cli.py', 'test_cli_show_reject
 python_function('packages/pact-ir/tests/test_ir_roundtrip.py', 'test_intent_ir_roundtrip_json', 0, 3, 3).
 python_function('packages/pact-ir/tests/test_ir_roundtrip.py', 'test_execution_plan_from_intent', 0, 4, 4).
 python_function('scripts/aggregate-example-testql.py', 'main', 0, 7, 11).
+python_function('scripts/run-conversation-scenario.py', '_load_yaml', 1, 2, 2).
+python_function('scripts/run-conversation-scenario.py', '_wait_health', 2, 4, 5).
+python_function('scripts/run-conversation-scenario.py', '_dsl_actions', 1, 5, 3).
+python_function('scripts/run-conversation-scenario.py', '_execution_completed', 1, 7, 4).
+python_function('scripts/run-conversation-scenario.py', '_check_expect', 2, 19, 6).
+python_function('scripts/run-conversation-scenario.py', '_run_validation', 2, 5, 4).
+python_function('scripts/run-conversation-scenario.py', 'run_scenario', 1, 21, 20).
+python_function('scripts/run-conversation-scenario.py', 'main', 1, 11, 9).
+python_function('scripts/run-example-docker-e2e.py', '_py', 0, 3, 2).
+python_function('scripts/run-example-docker-e2e.py', '_load_profiles', 0, 2, 2).
+python_function('scripts/run-example-docker-e2e.py', '_health_ok', 1, 2, 3).
+python_function('scripts/run-example-docker-e2e.py', '_collect_profiles', 2, 6, 4).
+python_function('scripts/run-example-docker-e2e.py', 'docker_up', 1, 3, 7).
+python_function('scripts/run-example-docker-e2e.py', 'docker_down', 0, 1, 2).
+python_function('scripts/run-example-docker-e2e.py', 'wait_platform', 2, 3, 3).
+python_function('scripts/run-example-docker-e2e.py', 'run_example_main', 1, 2, 4).
+python_function('scripts/run-example-docker-e2e.py', 'run_conversation', 3, 6, 7).
+python_function('scripts/run-example-docker-e2e.py', 'process_example', 2, 15, 6).
+python_function('scripts/run-example-docker-e2e.py', 'main', 1, 24, 27).
 python_function('scripts/run-example-testql-results.py', '_load_manifest', 1, 3, 3).
 python_function('scripts/run-example-testql-results.py', '_testql_dry_run', 1, 2, 4).
 python_function('scripts/run-example-testql-results.py', '_testql_ir_parse', 1, 4, 4).
 python_function('scripts/run-example-testql-results.py', '_nlp2dsl_run_query', 2, 19, 11).
+python_function('scripts/run-example-testql-results.py', '_is_hand_authored_conversation', 1, 4, 2).
 python_function('scripts/run-example-testql-results.py', '_generate_conversation_toon', 2, 6, 7).
+python_function('scripts/run-example-testql-results.py', '_conversation_execute', 2, 5, 13).
+python_function('scripts/run-example-testql-results.py', '_conversation_transcript_check', 1, 5, 7).
 python_function('scripts/run-example-testql-results.py', '_conversation_dry_run', 1, 8, 8).
 python_function('scripts/run-example-testql-results.py', '_manifest_consistency', 2, 10, 5).
 python_function('scripts/run-example-testql-results.py', '_write_toon_report', 1, 4, 5).
-python_function('scripts/run-example-testql-results.py', 'process_example', 1, 11, 24).
+python_function('scripts/run-example-testql-results.py', 'process_example', 1, 13, 27).
 python_function('scripts/run-example-testql-results.py', 'main', 1, 16, 18).
 python_function('test_code_generation.py', 'test_code_generation', 0, 11, 14).
 python_function('tests/e2e/conftest.py', '_resolve_browser_executable', 0, 3, 1).
@@ -803,6 +841,9 @@ python_method('JSONFormatter', 'format', 1, 2, 6).
 python_class('backend/app/logging_setup.py', 'RequestIDMiddleware').
 python_method('RequestIDMiddleware', '__init__', 2, 1, 2).
 python_method('RequestIDMiddleware', 'dispatch', 2, 2, 5).
+python_class('backend/app/routers/testql_compat.py', 'TestqlChatStart').
+python_class('backend/app/routers/testql_compat.py', 'TestqlChatMessage').
+python_class('backend/app/routers/testql_compat.py', 'TestqlRunWorkflow').
 python_class('backend/app/schemas.py', 'StepStatus').
 python_class('backend/app/schemas.py', 'Step').
 python_class('backend/app/schemas.py', 'RunWorkflowRequest').
@@ -1232,8 +1273,10 @@ python_method('NLP2DSLClient', 'crm_update', 4, 2, 3).
 python_method('NLP2DSLClient', 'send_invoice_and_notify', 7, 4, 3).
 python_class('nlp2dsl_sdk/client.py', 'ConversationFlow').
 python_method('ConversationFlow', '__init__', 1, 2, 1).
-python_method('ConversationFlow', 'start', 2, 1, 4).
-python_method('ConversationFlow', 'send_message', 2, 2, 5).
+python_method('ConversationFlow', 'start', 2, 1, 5).
+python_method('ConversationFlow', 'send_message', 2, 2, 6).
+python_method('ConversationFlow', '_record_turn', 4, 1, 1).
+python_method('ConversationFlow', 'export_trace', 0, 1, 2).
 python_method('ConversationFlow', '_handle_response', 1, 5, 6).
 python_method('ConversationFlow', '_handle_in_progress_response', 2, 6, 3).
 python_method('ConversationFlow', '_handle_ready_response', 2, 4, 5).

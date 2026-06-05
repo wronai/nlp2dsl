@@ -1,0 +1,636 @@
+{
+  "rules": {
+    "mode": "rules",
+    "total": 20,
+    "passed": 20,
+    "complete": 20,
+    "intent_ok": 20,
+    "pass_rate": 100.0,
+    "complete_rate": 100.0,
+    "elapsed_s": 0.4,
+    "rows": [
+      {
+        "id": "q01",
+        "text": "Wystaw fakturę na 3200 PLN do dostawca@firma.pl",
+        "category": "invoice",
+        "mode": "rules",
+        "status": "complete",
+        "actions": [
+          "send_invoice"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q02",
+        "text": "Invoice for 890 USD to billing@corp.com",
+        "category": "invoice",
+        "mode": "rules",
+        "status": "complete",
+        "actions": [
+          "send_invoice"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q03",
+        "text": "Wyślij powiadomienie na Slack #devops: deploy produkcji zakończony",
+        "category": "slack",
+        "mode": "rules",
+        "status": "complete",
+        "actions": [
+          "notify_slack"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q04",
+        "text": "Notify Telegram chat -1001234567890: serwer API nie odpowiada",
+        "category": "telegram",
+        "mode": "rules",
+        "status": "complete",
+        "actions": [
+          "notify_telegram"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q05",
+        "text": "Wyślij na Microsoft Teams kanał general: spotkanie sprint review jutro 10:00",
+        "category": "teams",
+        "mode": "rules",
+        "status": "complete",
+        "actions": [
+          "notify_teams"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q06",
+        "text": "Zaktualizuj lead w CRM: firma ACME, status qualified, owner Jan Kowalski",
+        "category": "crm",
+        "mode": "rules",
+        "status": "complete",
+        "actions": [
+          "crm_update"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q07",
+        "text": "Generuj raport marketingowy w CSV",
+        "category": "report",
+        "mode": "rules",
+        "status": "complete",
+        "actions": [
+          "generate_report"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q08",
+        "text": "Co tydzień raport HR w formacie xlsx",
+        "category": "report",
+        "mode": "rules",
+        "status": "complete",
+        "actions": [
+          "generate_report"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q09",
+        "text": "Wyślij fakturę 1500 PLN do klient@firma.pl i powiadom #billing na Slacku",
+        "category": "composite",
+        "mode": "rules",
+        "status": "complete",
+        "actions": [
+          "send_invoice",
+          "notify_slack"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q10",
+        "text": "Miesięczny raport finansów PDF i wyślij email do cfo@firma.pl",
+        "category": "composite",
+        "mode": "rules",
+        "status": "complete",
+        "actions": [
+          "generate_report",
+          "send_email"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q11",
+        "text": "Napisz w Pythonie funkcję obliczającą medianę listy liczb z testami",
+        "category": "code",
+        "mode": "rules",
+        "status": "complete",
+        "actions": [
+          "generate_code"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q12",
+        "text": "Pokaż status systemu i wersję",
+        "category": "system",
+        "mode": "rules",
+        "status": "complete",
+        "actions": [
+          "system_status"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q13",
+        "text": "Jakie akcje biznesowe są dostępne?",
+        "category": "system",
+        "mode": "rules",
+        "status": "complete",
+        "actions": [
+          "system_registry_list"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q14",
+        "text": "Przypomnij dev@firma.pl o code review PR-442",
+        "category": "email",
+        "mode": "rules",
+        "status": "complete",
+        "actions": [
+          "send_email"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q15",
+        "text": "Powiadom kanał #sales o podpisaniu umowy z klientem Beta Corp",
+        "category": "slack",
+        "mode": "rules",
+        "status": "complete",
+        "actions": [
+          "notify_slack"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q16",
+        "text": "Raport kwartalny sprzedaży CSV i wyślij go na #analytics",
+        "category": "composite",
+        "mode": "rules",
+        "status": "complete",
+        "actions": [
+          "generate_report",
+          "notify_slack"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q17",
+        "text": "Dodaj kontakt do CRM typ contact z emailem anna@firma.pl",
+        "category": "crm",
+        "mode": "rules",
+        "status": "complete",
+        "actions": [
+          "crm_update"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q18",
+        "text": "Przygotuj raport finansowy PDF na koniec miesiąca",
+        "category": "report",
+        "mode": "rules",
+        "status": "complete",
+        "actions": [
+          "generate_report"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q19",
+        "text": "Napisz do hr@firma.pl: wniosek urlopowy został zaakceptowany",
+        "category": "email",
+        "mode": "rules",
+        "status": "complete",
+        "actions": [
+          "send_email"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q20",
+        "text": "Pełny flow: faktura 12000 PLN do enterprise@corp.com, email do ksiegowosc@firma.pl i Slack #finance",
+        "category": "composite",
+        "mode": "rules",
+        "status": "complete",
+        "actions": [
+          "send_invoice",
+          "send_email",
+          "notify_slack"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      }
+    ]
+  },
+  "auto": {
+    "mode": "auto",
+    "total": 20,
+    "passed": 20,
+    "complete": 20,
+    "intent_ok": 20,
+    "pass_rate": 100.0,
+    "complete_rate": 100.0,
+    "elapsed_s": 0.3,
+    "rows": [
+      {
+        "id": "q01",
+        "text": "Wystaw fakturę na 3200 PLN do dostawca@firma.pl",
+        "category": "invoice",
+        "mode": "auto",
+        "status": "complete",
+        "actions": [
+          "send_invoice"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q02",
+        "text": "Invoice for 890 USD to billing@corp.com",
+        "category": "invoice",
+        "mode": "auto",
+        "status": "complete",
+        "actions": [
+          "send_invoice"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q03",
+        "text": "Wyślij powiadomienie na Slack #devops: deploy produkcji zakończony",
+        "category": "slack",
+        "mode": "auto",
+        "status": "complete",
+        "actions": [
+          "notify_slack"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q04",
+        "text": "Notify Telegram chat -1001234567890: serwer API nie odpowiada",
+        "category": "telegram",
+        "mode": "auto",
+        "status": "complete",
+        "actions": [
+          "notify_telegram"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q05",
+        "text": "Wyślij na Microsoft Teams kanał general: spotkanie sprint review jutro 10:00",
+        "category": "teams",
+        "mode": "auto",
+        "status": "complete",
+        "actions": [
+          "notify_teams"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q06",
+        "text": "Zaktualizuj lead w CRM: firma ACME, status qualified, owner Jan Kowalski",
+        "category": "crm",
+        "mode": "auto",
+        "status": "complete",
+        "actions": [
+          "crm_update"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q07",
+        "text": "Generuj raport marketingowy w CSV",
+        "category": "report",
+        "mode": "auto",
+        "status": "complete",
+        "actions": [
+          "generate_report"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q08",
+        "text": "Co tydzień raport HR w formacie xlsx",
+        "category": "report",
+        "mode": "auto",
+        "status": "complete",
+        "actions": [
+          "generate_report"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q09",
+        "text": "Wyślij fakturę 1500 PLN do klient@firma.pl i powiadom #billing na Slacku",
+        "category": "composite",
+        "mode": "auto",
+        "status": "complete",
+        "actions": [
+          "send_invoice",
+          "notify_slack"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q10",
+        "text": "Miesięczny raport finansów PDF i wyślij email do cfo@firma.pl",
+        "category": "composite",
+        "mode": "auto",
+        "status": "complete",
+        "actions": [
+          "generate_report",
+          "send_email"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q11",
+        "text": "Napisz w Pythonie funkcję obliczającą medianę listy liczb z testami",
+        "category": "code",
+        "mode": "auto",
+        "status": "complete",
+        "actions": [
+          "generate_code"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q12",
+        "text": "Pokaż status systemu i wersję",
+        "category": "system",
+        "mode": "auto",
+        "status": "complete",
+        "actions": [
+          "system_status"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q13",
+        "text": "Jakie akcje biznesowe są dostępne?",
+        "category": "system",
+        "mode": "auto",
+        "status": "complete",
+        "actions": [
+          "system_registry_list"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q14",
+        "text": "Przypomnij dev@firma.pl o code review PR-442",
+        "category": "email",
+        "mode": "auto",
+        "status": "complete",
+        "actions": [
+          "send_email"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q15",
+        "text": "Powiadom kanał #sales o podpisaniu umowy z klientem Beta Corp",
+        "category": "slack",
+        "mode": "auto",
+        "status": "complete",
+        "actions": [
+          "notify_slack"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q16",
+        "text": "Raport kwartalny sprzedaży CSV i wyślij go na #analytics",
+        "category": "composite",
+        "mode": "auto",
+        "status": "complete",
+        "actions": [
+          "generate_report",
+          "notify_slack"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q17",
+        "text": "Dodaj kontakt do CRM typ contact z emailem anna@firma.pl",
+        "category": "crm",
+        "mode": "auto",
+        "status": "complete",
+        "actions": [
+          "crm_update"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q18",
+        "text": "Przygotuj raport finansowy PDF na koniec miesiąca",
+        "category": "report",
+        "mode": "auto",
+        "status": "complete",
+        "actions": [
+          "generate_report"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q19",
+        "text": "Napisz do hr@firma.pl: wniosek urlopowy został zaakceptowany",
+        "category": "email",
+        "mode": "auto",
+        "status": "complete",
+        "actions": [
+          "send_email"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      },
+      {
+        "id": "q20",
+        "text": "Pełny flow: faktura 12000 PLN do enterprise@corp.com, email do ksiegowosc@firma.pl i Slack #finance",
+        "category": "composite",
+        "mode": "auto",
+        "status": "complete",
+        "actions": [
+          "send_invoice",
+          "send_email",
+          "notify_slack"
+        ],
+        "intent_ok": true,
+        "actions_ok": true,
+        "complete": true,
+        "missing": [],
+        "pass": true
+      }
+    ]
+  }
+}

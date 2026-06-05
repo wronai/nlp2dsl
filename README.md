@@ -3,11 +3,11 @@
 
 ## AI Cost Tracking
 
-![PyPI](https://img.shields.io/badge/pypi-costs-blue) ![Version](https://img.shields.io/badge/version-0.0.19-blue) ![Python](https://img.shields.io/badge/python-3.9+-blue) ![License](https://img.shields.io/badge/license-Apache--2.0-green)
-![AI Cost](https://img.shields.io/badge/AI%20Cost-$5.08-orange) ![Human Time](https://img.shields.io/badge/Human%20Time-13.4h-blue) ![Model](https://img.shields.io/badge/Model-openrouter%2Fqwen%2Fqwen3--coder--next-lightgrey)
+![PyPI](https://img.shields.io/badge/pypi-costs-blue) ![Version](https://img.shields.io/badge/version-0.0.22-blue) ![Python](https://img.shields.io/badge/python-3.9+-blue) ![License](https://img.shields.io/badge/license-Apache--2.0-green)
+![AI Cost](https://img.shields.io/badge/AI%20Cost-$6.03-orange) ![Human Time](https://img.shields.io/badge/Human%20Time-13.9h-blue) ![Model](https://img.shields.io/badge/Model-openrouter%2Fqwen%2Fqwen3--coder--next-lightgrey)
 
-- 🤖 **LLM usage:** $5.0844 (28 commits)
-- 👤 **Human dev:** ~$1338 (13.4h @ $100/h, 30min dedup)
+- 🤖 **LLM usage:** $6.0304 (29 commits)
+- 👤 **Human dev:** ~$1390 (13.9h @ $100/h, 30min dedup)
 
 Generated on 2026-06-05 using [openrouter/qwen/qwen3-coder-next](https://openrouter.ai/qwen/qwen3-coder-next)
 
@@ -464,7 +464,7 @@ done
 
 | Przykład | Link | Opis | Koncepcje |
 |----------|------|------|-----------|
-| **01-invoice** | [📁 examples/01-invoice/](examples/01-invoice/) | Wysyłanie faktur z kwotą i odbiorcą | One-shot API, DSL |
+| **01-invoice** | [📁 examples/01-invoice/](examples/01-invoice/) | Faktura: conversation + DOQL autofill, opcjonalnie załącznik | SystemMapIR, ProcessAgent, registry loop |
 | **02-email** | [📁 examples/02-email/](examples/02-email/) | Różne sposoby wysyłania e-maili | Aliasy komend, parametry |
 | **03-report-and-notify** | [📁 examples/03-report-and-notify/](examples/03-report-and-notify/) | Raporty + powiadomienia na wiele kanałów | Composite intents, multi-step |
 | **04-scheduled-report** | [📁 examples/04-scheduled-report/](examples/04-scheduled-report/) | Zaplanowane raporty (daily/weekly/monthly) | Triggers, schedule |

@@ -9,6 +9,7 @@ services:
       - WORKER_URL=http://worker:8000
       - NLP_SERVICE_URL=http://nlp-service:8002
       - POSTGRES_URL=postgresql://app:app@postgres:5432/automation
+      - NLP2DSL_EXAMPLES_MOUNT=/examples
     depends_on:
       postgres:
         condition: service_healthy
@@ -16,6 +17,8 @@ services:
         condition: service_started
       nlp-service:
         condition: service_started
+    volumes:
+      - ./examples:/examples:ro
     restart: unless-stopped
 
   # ── NLP → DSL Pipeline (LiteLLM) ────────────────────────────
@@ -66,11 +69,13 @@ services:
       # ── Zasoby i ACL (nlp2dsl.yaml) ───────────────────────────
       - NLP2DSL_CONFIG=/app/nlp2dsl.yaml
       - NLP2DSL_AGENT_ID=${NLP2DSL_AGENT_ID:-user}
+      - NLP2DSL_EXAMPLES_MOUNT=/examples
     depends_on:
       - redis
     volumes:
       - ./nlp-service/static:/app/static:ro
       - ./nlp2dsl.yaml:/app/nlp2dsl.yaml:ro
+      - ./examples:/examples:ro
     restart: unless-stopped
 
   # ── Imperative Worker ────────────────────────────────────────

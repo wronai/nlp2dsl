@@ -52,6 +52,74 @@ async def _proxy_chat_payload(request: Request, endpoint: str) -> tuple[Response
     return resp, body
 
 
+async def _maybe_auto_execute(result: dict[str, Any], body: dict[str, Any]) -> dict[str, Any]:
+    """Run workflow when status=ready and sync_auto_execute or explicit execute keyword."""
+    text_lower = str(body.get("text", "")).lower()
+    execute_keywords = ["uruchom", "wykonaj", "start", "run", "ok", "tak", "go"]
+    explicit_execute = any(kw in text_lower for kw in execute_keywords)
+    auto_flag = bool(
+        result.get("auto_execute")
+        or body.get("sync_auto_execute")
+        or body.get("auto_execute")
+    )
+    if result.get("status") != "ready" or not (explicit_execute or auto_flag):
+        return result
+    return await _execute_ready_dsl(result, body)
+
+
+async def _execute_ready_dsl(result: dict[str, Any], body: dict[str, Any]) -> dict[str, Any]:
+    dsl = result.get("dsl")
+    if not dsl:
+        return result
+    steps = dsl.get("steps", [])
+    mullm_steps = [s for s in steps if str(s.get("action", "")).startswith("mullm_")]
+    if mullm_steps or result.get("execution_backend") == "mullm":
+        result["status"] = "ready"
+        result["execution_backend"] = "mullm"
+        result["execution"] = {
+            "backend": "mullm",
+            "steps": mullm_steps or steps,
+            "hint": "Wykonaj w Mullm workspace (conductor / BFF).",
+        }
+        return result
+
+    req = RunWorkflowRequest(
+        name=dsl.get("name", "chat_generated"),
+        trigger=dsl.get("trigger", "manual"),
+        steps=[Step(action=s["action"], config=s.get("config", {})) for s in steps],
+    )
+    wf_result = await run_workflow(req)
+    result["status"] = "executed"
+    result["execution"] = wf_result.model_dump()
+    result["execution_backend"] = "worker"
+
+    doql_path = body.get("doql_context_path") or body.get("doqlContextPath")
+    if doql_path:
+        dsl = result.get("dsl") or {}
+        entities: dict[str, Any] = {}
+        intent: str | None = None
+        for step in dsl.get("steps") or []:
+            if isinstance(step, dict):
+                intent = intent or step.get("action")
+                entities.update(step.get("config") or {})
+        try:
+            async with AsyncClient(timeout=_PROXY_TIMEOUT_SECONDS) as observe_client:
+                await observe_client.post(
+                    f"{NLP_SERVICE_URL}/chat/registry/observe",
+                    json={
+                        "doql_context_path": doql_path,
+                        "conversation_id": result.get("conversation_id"),
+                        "phase": "executed",
+                        "execution": result.get("execution"),
+                        "intent": intent,
+                        "entities": entities,
+                    },
+                )
+        except Exception:
+            log.debug("Registry observe after execute skipped", exc_info=True)
+    return result
+
+
 @router.post("/chat/start")
 async def chat_start(request: Request) -> dict[str, Any]:
     """
@@ -59,10 +127,11 @@ async def chat_start(request: Request) -> dict[str, Any]:
 
     Body: {"text": "Wyślij fakturę na 1500 PLN"}
     """
-    resp, _ = await _proxy_chat_payload(request, "/chat/start")
+    resp, body = await _proxy_chat_payload(request, "/chat/start")
     if not resp.is_success:
         raise HTTPException(status_code=resp.status_code, detail=resp.text)
-    return resp.json()
+    result = resp.json()
+    return await _maybe_auto_execute(result, body)
 
 
 @router.post("/chat/message")
@@ -77,41 +146,7 @@ async def chat_message(request: Request) -> dict[str, Any]:
         raise HTTPException(status_code=resp.status_code, detail=resp.text)
 
     result = resp.json()
-
-    text_lower = body.get("text", "").lower()
-    execute_keywords = ["uruchom", "wykonaj", "start", "run", "ok", "tak", "go"]
-
-    if result.get("status") == "ready" and any(kw in text_lower for kw in execute_keywords):
-        dsl = result.get("dsl")
-        if dsl:
-            steps = dsl.get("steps", [])
-            mullm_steps = [
-                s for s in steps
-                if str(s.get("action", "")).startswith("mullm_")
-            ]
-            if mullm_steps or result.get("execution_backend") == "mullm":
-                result["status"] = "ready"
-                result["execution_backend"] = "mullm"
-                result["execution"] = {
-                    "backend": "mullm",
-                    "steps": mullm_steps or steps,
-                    "hint": "Wykonaj w Mullm workspace (conductor / BFF).",
-                }
-            else:
-                req = RunWorkflowRequest(
-                    name=dsl.get("name", "chat_generated"),
-                    trigger=dsl.get("trigger", "manual"),
-                    steps=[
-                        Step(action=s["action"], config=s.get("config", {}))
-                        for s in steps
-                    ],
-                )
-                wf_result = await run_workflow(req)
-                result["status"] = "executed"
-                result["execution"] = wf_result.model_dump()
-                result["execution_backend"] = "worker"
-
-    return result
+    return await _maybe_auto_execute(result, body)
 
 
 @router.get("/chat/{conversation_id}")
