@@ -71,6 +71,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - `nlp2cmd-intent`: normalizer zwracający `str` zamiast obiektu z `.text` w `KeywordIntentDetector`
 
+## [0.0.24] - 2026-06-05
+
+### Docs
+- Update README.md
+
 ## [0.0.23] - 2026-06-05
 
 ### Docs
