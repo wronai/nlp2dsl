@@ -76,6 +76,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - `nlp2cmd-intent`: normalizer zwracający `str` zamiast obiektu z `.text` w `KeywordIntentDetector`
 
+## [0.0.36] - 2026-06-06
+
+### Docs
+- Update README.md
+- Update project/README.md
+- Update project/context.md
+
+### Other
+- Update examples/08-multi-object-benchmark/results/benchmark_1780751306.json
+- Update examples/16-golden-eval/results/golden_1780751517.json
+- Update examples/testql-results.json
+- Update project/analysis.toon.yaml
+- Update project/calls.mmd
+- Update project/calls.png
+- Update project/calls.toon.yaml
+- Update project/calls.yaml
+- Update project/compact_flow.mmd
+- Update project/compact_flow.png
+- ... and 10 more files
+
 ## [0.0.35] - 2026-06-06
 
 ### Docs

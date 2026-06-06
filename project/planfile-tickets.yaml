@@ -1,8 +1,44 @@
 source: code2llm
-# generated in 0.23s
+# generated in 0.28s
 schema: code2llm.planfile_tickets.v1
 project_root: /home/tom/github/wronai/nlp2dsl
 tickets:
+- signal: code2llm_cc
+  title: 'Reduce cyclomatic complexity: backend.app.execution_policy.build_policy_context
+    (CC=26)'
+  description: 'code2llm reports `backend.app.execution_policy.build_policy_context`
+    at `backend/app/execution_policy.py:40` with cyclomatic complexity 26 (limit 15).
+
+
+    Extract smaller functions, flatten conditionals, or split strategy branches. Re-run
+    code2llm after the change and keep tests green.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - complexity
+  - refactor
+  files:
+  - backend/app/execution_policy.py
+  dedupe_key: code2llm:cc:backend/app/execution_policy.py:backend.app.execution_policy.build_policy_context
+- signal: code2llm_cc
+  title: 'Reduce cyclomatic complexity: nlp2dsl_sdk.mullm.payloads.build_task_payload
+    (CC=39)'
+  description: 'code2llm reports `nlp2dsl_sdk.mullm.payloads.build_task_payload` at
+    `nlp2dsl_sdk/mullm/payloads.py:28` with cyclomatic complexity 39 (limit 15).
+
+
+    Extract smaller functions, flatten conditionals, or split strategy branches. Re-run
+    code2llm after the change and keep tests green.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - complexity
+  - refactor
+  files:
+  - nlp2dsl_sdk/mullm/payloads.py
+  dedupe_key: code2llm:cc:nlp2dsl_sdk/mullm/payloads.py:nlp2dsl_sdk.mullm.payloads.build_task_payload
 - signal: code2llm_cc
   title: 'Reduce cyclomatic complexity: nlp2dsl_sdk.system_map_bridge.task_context_to_system_map
     (CC=25)'
@@ -22,6 +58,25 @@ tickets:
   files:
   - nlp2dsl_sdk/system_map_bridge.py
   dedupe_key: code2llm:cc:nlp2dsl_sdk/system_map_bridge.py:nlp2dsl_sdk.system_map_bridge.task_context_to_system_map
+- signal: code2llm_cc
+  title: 'Reduce cyclomatic complexity: nlp2dsl_sdk.validation.capability_policy.validate_capability_policy
+    (CC=34)'
+  description: 'code2llm reports `nlp2dsl_sdk.validation.capability_policy.validate_capability_policy`
+    at `nlp2dsl_sdk/validation/capability_policy.py:72` with cyclomatic complexity
+    34 (limit 15).
+
+
+    Extract smaller functions, flatten conditionals, or split strategy branches. Re-run
+    code2llm after the change and keep tests green.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - complexity
+  - refactor
+  files:
+  - nlp2dsl_sdk/validation/capability_policy.py
+  dedupe_key: code2llm:cc:nlp2dsl_sdk/validation/capability_policy.py:nlp2dsl_sdk.validation.capability_policy.validate_capability_policy
 - signal: code2llm_cc
   title: 'Reduce cyclomatic complexity: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.fast_path_detection.run_domain_fast_path_after_exact
     (CC=69)'
@@ -173,7 +228,7 @@ tickets:
   dedupe_key: 'code2llm:smell:god_function:nlp2dsl_sdk/cli.py:205:God Function: main'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: _'
-  description: 'code2llm reports `Shotgun Surgery: _` in `nlp2dsl_sdk/doql/parse.py:399`.
+  description: 'code2llm reports `Shotgun Surgery: _` in `scripts/_dotenv.py:9`.
 
 
     Mutation of variable ''_'' spans 7 functions. Changing this logic requires work
@@ -188,15 +243,15 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/doql/parse.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/doql/parse.py:399:Shotgun
-    Surgery: _'
+  - scripts/_dotenv.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:scripts/_dotenv.py:9:Shotgun Surgery:
+    _'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: action'
-  description: 'code2llm reports `Shotgun Surgery: action` in `nlp2dsl_sdk/doql_registry.py:21`.
+  description: 'code2llm reports `Shotgun Surgery: action` in `nlp-service/app/routing/resolve.py:54`.
 
 
-    Mutation of variable ''action'' spans 33 functions. Changing this logic requires
+    Mutation of variable ''action'' spans 39 functions. Changing this logic requires
     work in many places.
 
 
@@ -208,12 +263,12 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/doql_registry.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/doql_registry.py:21:Shotgun
+  - nlp-service/app/routing/resolve.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/routing/resolve.py:54:Shotgun
     Surgery: action'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: action_name'
-  description: 'code2llm reports `Shotgun Surgery: action_name` in `nlp-service/app/routing/parser/rules.py:246`.
+  description: 'code2llm reports `Shotgun Surgery: action_name` in `nlp-service/app/governance/bootstrap.py:13`.
 
 
     Mutation of variable ''action_name'' spans 8 functions. Changing this logic requires
@@ -228,15 +283,15 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp-service/app/routing/parser/rules.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/routing/parser/rules.py:246:Shotgun
+  - nlp-service/app/governance/bootstrap.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/governance/bootstrap.py:13:Shotgun
     Surgery: action_name'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: actions'
-  description: 'code2llm reports `Shotgun Surgery: actions` in `examples/08-multi-object-benchmark/scenario.py:25`.
+  description: 'code2llm reports `Shotgun Surgery: actions` in `nlp2dsl_sdk/doql/parse.py:355`.
 
 
-    Mutation of variable ''actions'' spans 13 functions. Changing this logic requires
+    Mutation of variable ''actions'' spans 16 functions. Changing this logic requires
     work in many places.
 
 
@@ -248,12 +303,12 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - examples/08-multi-object-benchmark/scenario.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:examples/08-multi-object-benchmark/scenario.py:25:Shotgun
+  - nlp2dsl_sdk/doql/parse.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/doql/parse.py:355:Shotgun
     Surgery: actions'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: allowed'
-  description: 'code2llm reports `Shotgun Surgery: allowed` in `nlp-service/app/routing/parser/rules.py:246`.
+  description: 'code2llm reports `Shotgun Surgery: allowed` in `nlp-service/app/dsl/mapper.py:86`.
 
 
     Mutation of variable ''allowed'' spans 9 functions. Changing this logic requires
@@ -268,12 +323,12 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp-service/app/routing/parser/rules.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/routing/parser/rules.py:246:Shotgun
+  - nlp-service/app/dsl/mapper.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/dsl/mapper.py:86:Shotgun
     Surgery: allowed'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: amount'
-  description: 'code2llm reports `Shotgun Surgery: amount` in `nlp2dsl_sdk/validation/rules/step_config.py:83`.
+  description: 'code2llm reports `Shotgun Surgery: amount` in `nlp-service/app/conversation/doql_autofill.py:51`.
 
 
     Mutation of variable ''amount'' spans 5 functions. Changing this logic requires
@@ -288,35 +343,15 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/validation/rules/step_config.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/validation/rules/step_config.py:83:Shotgun
+  - nlp-service/app/conversation/doql_autofill.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/conversation/doql_autofill.py:51:Shotgun
     Surgery: amount'
 - signal: code2llm_smell_shotgun_surgery
-  title: 'Address code smell: Shotgun Surgery: applied'
-  description: 'code2llm reports `Shotgun Surgery: applied` in `scripts/_conversation_scenario.py:90`.
-
-
-    Mutation of variable ''applied'' spans 5 functions. Changing this logic requires
-    work in many places.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: high
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - shotgun-surgery
-  files:
-  - scripts/_conversation_scenario.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:scripts/_conversation_scenario.py:90:Shotgun
-    Surgery: applied'
-- signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: args'
-  description: 'code2llm reports `Shotgun Surgery: args` in `nlp2dsl_sdk/cli.py:205`.
+  description: 'code2llm reports `Shotgun Surgery: args` in `scripts/validate-publish-export.py:71`.
 
 
-    Mutation of variable ''args'' spans 6 functions. Changing this logic requires
+    Mutation of variable ''args'' spans 9 functions. Changing this logic requires
     work in many places.
 
 
@@ -328,15 +363,15 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/cli.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/cli.py:205:Shotgun Surgery:
-    args'
+  - scripts/validate-publish-export.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:scripts/validate-publish-export.py:71:Shotgun
+    Surgery: args'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: artifact_root'
   description: 'code2llm reports `Shotgun Surgery: artifact_root` in `nlp2dsl_sdk/system_map_generator.py:39`.
 
 
-    Mutation of variable ''artifact_root'' spans 6 functions. Changing this logic
+    Mutation of variable ''artifact_root'' spans 9 functions. Changing this logic
     requires work in many places.
 
 
@@ -353,7 +388,7 @@ tickets:
     Surgery: artifact_root'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: av'
-  description: 'code2llm reports `Shotgun Surgery: av` in `backend/app/attachment_validation.py:55`.
+  description: 'code2llm reports `Shotgun Surgery: av` in `examples/01-invoice/scenario.py:46`.
 
 
     Mutation of variable ''av'' spans 7 functions. Changing this logic requires work
@@ -368,15 +403,15 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - backend/app/attachment_validation.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:backend/app/attachment_validation.py:55:Shotgun
+  - examples/01-invoice/scenario.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:examples/01-invoice/scenario.py:46:Shotgun
     Surgery: av'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: base'
-  description: 'code2llm reports `Shotgun Surgery: base` in `nlp2dsl_sdk/artifact_layout.py:165`.
+  description: 'code2llm reports `Shotgun Surgery: base` in `nlp2dsl_sdk/artifact_layout.py:103`.
 
 
-    Mutation of variable ''base'' spans 11 functions. Changing this logic requires
+    Mutation of variable ''base'' spans 13 functions. Changing this logic requires
     work in many places.
 
 
@@ -389,14 +424,14 @@ tickets:
   - shotgun-surgery
   files:
   - nlp2dsl_sdk/artifact_layout.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/artifact_layout.py:165:Shotgun
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/artifact_layout.py:103:Shotgun
     Surgery: base'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: body'
-  description: 'code2llm reports `Shotgun Surgery: body` in `packages/nlp2cmd-propact/src/nlp2cmd_propact/adapter.py:40`.
+  description: 'code2llm reports `Shotgun Surgery: body` in `packages/nlp2cmd-propact/src/nlp2cmd_propact/adapter.py:77`.
 
 
-    Mutation of variable ''body'' spans 15 functions. Changing this logic requires
+    Mutation of variable ''body'' spans 16 functions. Changing this logic requires
     work in many places.
 
 
@@ -409,11 +444,11 @@ tickets:
   - shotgun-surgery
   files:
   - packages/nlp2cmd-propact/src/nlp2cmd_propact/adapter.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:packages/nlp2cmd-propact/src/nlp2cmd_propact/adapter.py:40:Shotgun
+  dedupe_key: 'code2llm:smell:shotgun_surgery:packages/nlp2cmd-propact/src/nlp2cmd_propact/adapter.py:77:Shotgun
     Surgery: body'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: candidates'
-  description: 'code2llm reports `Shotgun Surgery: candidates` in `nlp-service/app/validation/path_resolve.py:11`.
+  description: 'code2llm reports `Shotgun Surgery: candidates` in `backend/app/path_resolve.py:30`.
 
 
     Mutation of variable ''candidates'' spans 6 functions. Changing this logic requires
@@ -428,15 +463,15 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp-service/app/validation/path_resolve.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/validation/path_resolve.py:11:Shotgun
+  - backend/app/path_resolve.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:backend/app/path_resolve.py:30:Shotgun
     Surgery: candidates'
 - signal: code2llm_smell_shotgun_surgery
-  title: 'Address code smell: Shotgun Surgery: cfg'
-  description: 'code2llm reports `Shotgun Surgery: cfg` in `backend/app/attachment_validation.py:16`.
+  title: 'Address code smell: Shotgun Surgery: catalog'
+  description: 'code2llm reports `Shotgun Surgery: catalog` in `scripts/validate-publish-export.py:71`.
 
 
-    Mutation of variable ''cfg'' spans 10 functions. Changing this logic requires
+    Mutation of variable ''catalog'' spans 6 functions. Changing this logic requires
     work in many places.
 
 
@@ -448,15 +483,35 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - backend/app/attachment_validation.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:backend/app/attachment_validation.py:16:Shotgun
+  - scripts/validate-publish-export.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:scripts/validate-publish-export.py:71:Shotgun
+    Surgery: catalog'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: cfg'
+  description: 'code2llm reports `Shotgun Surgery: cfg` in `nlp-service/app/governance/policy.py:108`.
+
+
+    Mutation of variable ''cfg'' spans 12 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - nlp-service/app/governance/policy.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/governance/policy.py:108:Shotgun
     Surgery: cfg'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: client'
   description: 'code2llm reports `Shotgun Surgery: client` in `examples/11-notify-quality/scenario.py:19`.
 
 
-    Mutation of variable ''client'' spans 18 functions. Changing this logic requires
+    Mutation of variable ''client'' spans 22 functions. Changing this logic requires
     work in many places.
 
 
@@ -473,7 +528,7 @@ tickets:
     Surgery: client'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: cmd'
-  description: 'code2llm reports `Shotgun Surgery: cmd` in `nlp2dsl_sdk/reflection.py:128`.
+  description: 'code2llm reports `Shotgun Surgery: cmd` in `nlp2dsl_sdk/system_map_models.py:42`.
 
 
     Mutation of variable ''cmd'' spans 15 functions. Changing this logic requires
@@ -488,15 +543,15 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/reflection.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/reflection.py:128:Shotgun
+  - nlp2dsl_sdk/system_map_models.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/system_map_models.py:42:Shotgun
     Surgery: cmd'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: config'
-  description: 'code2llm reports `Shotgun Surgery: config` in `nlp-service/app/conversation/responses.py:141`.
+  description: 'code2llm reports `Shotgun Surgery: config` in `backend/app/idempotency.py:221`.
 
 
-    Mutation of variable ''config'' spans 27 functions. Changing this logic requires
+    Mutation of variable ''config'' spans 31 functions. Changing this logic requires
     work in many places.
 
 
@@ -508,15 +563,15 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp-service/app/conversation/responses.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/conversation/responses.py:141:Shotgun
+  - backend/app/idempotency.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:backend/app/idempotency.py:221:Shotgun
     Surgery: config'
 - signal: code2llm_smell_shotgun_surgery
-  title: 'Address code smell: Shotgun Surgery: ctx'
-  description: 'code2llm reports `Shotgun Surgery: ctx` in `nlp2dsl_sdk/doql/runtime.py:130`.
+  title: 'Address code smell: Shotgun Surgery: contract'
+  description: 'code2llm reports `Shotgun Surgery: contract` in `nlp2dsl_sdk/contracts/registry.py:203`.
 
 
-    Mutation of variable ''ctx'' spans 56 functions. Changing this logic requires
+    Mutation of variable ''contract'' spans 6 functions. Changing this logic requires
     work in many places.
 
 
@@ -528,12 +583,52 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/doql/runtime.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/doql/runtime.py:130:Shotgun
+  - nlp2dsl_sdk/contracts/registry.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/contracts/registry.py:203:Shotgun
+    Surgery: contract'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: contracts'
+  description: 'code2llm reports `Shotgun Surgery: contracts` in `scripts/validate-contract-drift.py:46`.
+
+
+    Mutation of variable ''contracts'' spans 6 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - scripts/validate-contract-drift.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:scripts/validate-contract-drift.py:46:Shotgun
+    Surgery: contracts'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: ctx'
+  description: 'code2llm reports `Shotgun Surgery: ctx` in `nlp2dsl_sdk/artifact_layout.py:103`.
+
+
+    Mutation of variable ''ctx'' spans 57 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - nlp2dsl_sdk/artifact_layout.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/artifact_layout.py:103:Shotgun
     Surgery: ctx'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: current'
-  description: 'code2llm reports `Shotgun Surgery: current` in `nlp-service/app/conversation/autonomous_loop.py:163`.
+  description: 'code2llm reports `Shotgun Surgery: current` in `nlp-service/app/conversation/autonomous_loop.py:79`.
 
 
     Mutation of variable ''current'' spans 7 functions. Changing this logic requires
@@ -549,7 +644,7 @@ tickets:
   - shotgun-surgery
   files:
   - nlp-service/app/conversation/autonomous_loop.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/conversation/autonomous_loop.py:163:Shotgun
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/conversation/autonomous_loop.py:79:Shotgun
     Surgery: current'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: cwd'
@@ -572,11 +667,11 @@ tickets:
   dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/validation/path_resolve.py:11:Shotgun
     Surgery: cwd'
 - signal: code2llm_smell_shotgun_surgery
-  title: 'Address code smell: Shotgun Surgery: data'
-  description: 'code2llm reports `Shotgun Surgery: data` in `nlp2dsl_sdk/doql_registry.py:33`.
+  title: 'Address code smell: Shotgun Surgery: description'
+  description: 'code2llm reports `Shotgun Surgery: description` in `nlp-service/app/conversation/responses.py:369`.
 
 
-    Mutation of variable ''data'' spans 21 functions. Changing this logic requires
+    Mutation of variable ''description'' spans 5 functions. Changing this logic requires
     work in many places.
 
 
@@ -588,52 +683,12 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/doql_registry.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/doql_registry.py:33:Shotgun
-    Surgery: data'
-- signal: code2llm_smell_shotgun_surgery
-  title: 'Address code smell: Shotgun Surgery: doc'
-  description: 'code2llm reports `Shotgun Surgery: doc` in `nlp2dsl_sdk/process_policy.py:70`.
-
-
-    Mutation of variable ''doc'' spans 5 functions. Changing this logic requires work
-    in many places.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: high
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - shotgun-surgery
-  files:
-  - nlp2dsl_sdk/process_policy.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/process_policy.py:70:Shotgun
-    Surgery: doc'
-- signal: code2llm_smell_shotgun_surgery
-  title: 'Address code smell: Shotgun Surgery: domain'
-  description: 'code2llm reports `Shotgun Surgery: domain` in `packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/pattern_loaders.py:123`.
-
-
-    Mutation of variable ''domain'' spans 6 functions. Changing this logic requires
-    work in many places.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: high
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - shotgun-surgery
-  files:
-  - packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/pattern_loaders.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/pattern_loaders.py:123:Shotgun
-    Surgery: domain'
+  - nlp-service/app/conversation/responses.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/conversation/responses.py:369:Shotgun
+    Surgery: description'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: doql'
-  description: 'code2llm reports `Shotgun Surgery: doql` in `nlp2dsl_sdk/cli.py:108`.
+  description: 'code2llm reports `Shotgun Surgery: doql` in `nlp-service/app/conversation/doql_autofill.py:51`.
 
 
     Mutation of variable ''doql'' spans 5 functions. Changing this logic requires
@@ -648,35 +703,15 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/cli.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/cli.py:108:Shotgun Surgery:
-    doql'
-- signal: code2llm_smell_shotgun_surgery
-  title: 'Address code smell: Shotgun Surgery: doql_path'
-  description: 'code2llm reports `Shotgun Surgery: doql_path` in `examples/01-invoice/scenario.py:22`.
-
-
-    Mutation of variable ''doql_path'' spans 8 functions. Changing this logic requires
-    work in many places.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: high
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - shotgun-surgery
-  files:
-  - examples/01-invoice/scenario.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:examples/01-invoice/scenario.py:22:Shotgun
-    Surgery: doql_path'
+  - nlp-service/app/conversation/doql_autofill.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/conversation/doql_autofill.py:51:Shotgun
+    Surgery: doql'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: dsl'
-  description: 'code2llm reports `Shotgun Surgery: dsl` in `nlp2dsl_sdk/preview.py:85`.
+  description: 'code2llm reports `Shotgun Surgery: dsl` in `nlp2dsl_sdk/preview.py:42`.
 
 
-    Mutation of variable ''dsl'' spans 16 functions. Changing this logic requires
+    Mutation of variable ''dsl'' spans 22 functions. Changing this logic requires
     work in many places.
 
 
@@ -689,11 +724,11 @@ tickets:
   - shotgun-surgery
   files:
   - nlp2dsl_sdk/preview.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/preview.py:85:Shotgun Surgery:
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/preview.py:42:Shotgun Surgery:
     dsl'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: endpoint'
-  description: 'code2llm reports `Shotgun Surgery: endpoint` in `nlp2dsl_sdk/conversation_testql.py:54`.
+  description: 'code2llm reports `Shotgun Surgery: endpoint` in `nlp2dsl_sdk/doql/parse.py:355`.
 
 
     Mutation of variable ''endpoint'' spans 6 functions. Changing this logic requires
@@ -708,16 +743,16 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/conversation_testql.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/conversation_testql.py:54:Shotgun
+  - nlp2dsl_sdk/doql/parse.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/doql/parse.py:355:Shotgun
     Surgery: endpoint'
 - signal: code2llm_smell_shotgun_surgery
-  title: 'Address code smell: Shotgun Surgery: env'
-  description: 'code2llm reports `Shotgun Surgery: env` in `nlp2dsl_sdk/artifact_layout.py:86`.
+  title: 'Address code smell: Shotgun Surgery: entities'
+  description: 'code2llm reports `Shotgun Surgery: entities` in `packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/fast_path_detection.py:62`.
 
 
-    Mutation of variable ''env'' spans 6 functions. Changing this logic requires work
-    in many places.
+    Mutation of variable ''entities'' spans 32 functions. Changing this logic requires
+    work in many places.
 
 
     Make the smallest refactor that removes the smell and run local tests.'
@@ -728,12 +763,32 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/artifact_layout.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/artifact_layout.py:86:Shotgun
-    Surgery: env'
+  - packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/fast_path_detection.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/fast_path_detection.py:62:Shotgun
+    Surgery: entities'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: entry'
+  description: 'code2llm reports `Shotgun Surgery: entry` in `scripts/run-example-docker-e2e.py:274`.
+
+
+    Mutation of variable ''entry'' spans 5 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - scripts/run-example-docker-e2e.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:scripts/run-example-docker-e2e.py:274:Shotgun
+    Surgery: entry'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: ex'
-  description: 'code2llm reports `Shotgun Surgery: ex` in `nlp-service/app/validation/path_policy.py:25`.
+  description: 'code2llm reports `Shotgun Surgery: ex` in `nlp-service/app/conversation/invoice_paths.py:44`.
 
 
     Mutation of variable ''ex'' spans 11 functions. Changing this logic requires work
@@ -748,15 +803,15 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp-service/app/validation/path_policy.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/validation/path_policy.py:25:Shotgun
+  - nlp-service/app/conversation/invoice_paths.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/conversation/invoice_paths.py:44:Shotgun
     Surgery: ex'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: example_dir'
-  description: 'code2llm reports `Shotgun Surgery: example_dir` in `scripts/run-example-docker-e2e.py:148`.
+  description: 'code2llm reports `Shotgun Surgery: example_dir` in `nlp2dsl_sdk/doql_registry.py:161`.
 
 
-    Mutation of variable ''example_dir'' spans 18 functions. Changing this logic requires
+    Mutation of variable ''example_dir'' spans 19 functions. Changing this logic requires
     work in many places.
 
 
@@ -768,15 +823,15 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - scripts/run-example-docker-e2e.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:scripts/run-example-docker-e2e.py:148:Shotgun
+  - nlp2dsl_sdk/doql_registry.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/doql_registry.py:161:Shotgun
     Surgery: example_dir'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: execution'
-  description: 'code2llm reports `Shotgun Surgery: execution` in `nlp2dsl_sdk/preview.py:85`.
+  description: 'code2llm reports `Shotgun Surgery: execution` in `examples/02-email/scenario.py:28`.
 
 
-    Mutation of variable ''execution'' spans 17 functions. Changing this logic requires
+    Mutation of variable ''execution'' spans 19 functions. Changing this logic requires
     work in many places.
 
 
@@ -788,12 +843,12 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/preview.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/preview.py:85:Shotgun Surgery:
-    execution'
+  - examples/02-email/scenario.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:examples/02-email/scenario.py:28:Shotgun
+    Surgery: execution'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: field'
-  description: 'code2llm reports `Shotgun Surgery: field` in `nlp-service/app/conversation/orchestrator.py:154`.
+  description: 'code2llm reports `Shotgun Surgery: field` in `nlp2dsl_sdk/stack_flow.py:60`.
 
 
     Mutation of variable ''field'' spans 18 functions. Changing this logic requires
@@ -808,12 +863,12 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp-service/app/conversation/orchestrator.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/conversation/orchestrator.py:154:Shotgun
+  - nlp2dsl_sdk/stack_flow.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/stack_flow.py:60:Shotgun
     Surgery: field'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: flow'
-  description: 'code2llm reports `Shotgun Surgery: flow` in `examples/05-conversation-flow/scenario.py:19`.
+  description: 'code2llm reports `Shotgun Surgery: flow` in `examples/13-autonomous-invoice-stack/scenario.py:18`.
 
 
     Mutation of variable ''flow'' spans 7 functions. Changing this logic requires
@@ -828,15 +883,15 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - examples/05-conversation-flow/scenario.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:examples/05-conversation-flow/scenario.py:19:Shotgun
+  - examples/13-autonomous-invoice-stack/scenario.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:examples/13-autonomous-invoice-stack/scenario.py:18:Shotgun
     Surgery: flow'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: icon'
-  description: 'code2llm reports `Shotgun Surgery: icon` in `nlp2dsl_sdk/preview.py:253`.
+  description: 'code2llm reports `Shotgun Surgery: icon` in `nlp2dsl_sdk/export/publish.py:185`.
 
 
-    Mutation of variable ''icon'' spans 5 functions. Changing this logic requires
+    Mutation of variable ''icon'' spans 7 functions. Changing this logic requires
     work in many places.
 
 
@@ -848,32 +903,12 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/preview.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/preview.py:253:Shotgun Surgery:
-    icon'
-- signal: code2llm_smell_shotgun_surgery
-  title: 'Address code smell: Shotgun Surgery: inline'
-  description: 'code2llm reports `Shotgun Surgery: inline` in `nlp2dsl_sdk/doql/runtime.py:19`.
-
-
-    Mutation of variable ''inline'' spans 7 functions. Changing this logic requires
-    work in many places.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: high
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - shotgun-surgery
-  files:
-  - nlp2dsl_sdk/doql/runtime.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/doql/runtime.py:19:Shotgun
-    Surgery: inline'
+  - nlp2dsl_sdk/export/publish.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/export/publish.py:185:Shotgun
+    Surgery: icon'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: intent'
-  description: 'code2llm reports `Shotgun Surgery: intent` in `packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/pattern_loaders.py:123`.
+  description: 'code2llm reports `Shotgun Surgery: intent` in `nlp-service/app/conversation/autonomous_loop.py:71`.
 
 
     Mutation of variable ''intent'' spans 21 functions. Changing this logic requires
@@ -888,12 +923,12 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/pattern_loaders.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/pattern_loaders.py:123:Shotgun
+  - nlp-service/app/conversation/autonomous_loop.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/conversation/autonomous_loop.py:71:Shotgun
     Surgery: intent'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: ir'
-  description: 'code2llm reports `Shotgun Surgery: ir` in `nlp2dsl_sdk/invoice_policy.py:14`.
+  description: 'code2llm reports `Shotgun Surgery: ir` in `nlp2dsl_sdk/doql_registry.py:161`.
 
 
     Mutation of variable ''ir'' spans 15 functions. Changing this logic requires work
@@ -908,15 +943,15 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/invoice_policy.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/invoice_policy.py:14:Shotgun
+  - nlp2dsl_sdk/doql_registry.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/doql_registry.py:161:Shotgun
     Surgery: ir'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: issues'
-  description: 'code2llm reports `Shotgun Surgery: issues` in `nlp2dsl_sdk/conversation_testql.py:54`.
+  description: 'code2llm reports `Shotgun Surgery: issues` in `nlp-service/app/validation/step_validator.py:88`.
 
 
-    Mutation of variable ''issues'' spans 24 functions. Changing this logic requires
+    Mutation of variable ''issues'' spans 30 functions. Changing this logic requires
     work in many places.
 
 
@@ -928,32 +963,12 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/conversation_testql.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/conversation_testql.py:54:Shotgun
+  - nlp-service/app/validation/step_validator.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/validation/step_validator.py:88:Shotgun
     Surgery: issues'
 - signal: code2llm_smell_shotgun_surgery
-  title: 'Address code smell: Shotgun Surgery: key'
-  description: 'code2llm reports `Shotgun Surgery: key` in `nlp2dsl_sdk/doql/parse.py:399`.
-
-
-    Mutation of variable ''key'' spans 20 functions. Changing this logic requires
-    work in many places.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: high
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - shotgun-surgery
-  files:
-  - nlp2dsl_sdk/doql/parse.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/doql/parse.py:399:Shotgun
-    Surgery: key'
-- signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: kv'
-  description: 'code2llm reports `Shotgun Surgery: kv` in `nlp2dsl_sdk/doql/parse.py:102`.
+  description: 'code2llm reports `Shotgun Surgery: kv` in `nlp2dsl_sdk/doql/parse.py:137`.
 
 
     Mutation of variable ''kv'' spans 6 functions. Changing this logic requires work
@@ -969,11 +984,11 @@ tickets:
   - shotgun-surgery
   files:
   - nlp2dsl_sdk/doql/parse.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/doql/parse.py:102:Shotgun
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/doql/parse.py:137:Shotgun
     Surgery: kv'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: lines'
-  description: 'code2llm reports `Shotgun Surgery: lines` in `nlp2dsl_sdk/system_map_render/blocks.py:114`.
+  description: 'code2llm reports `Shotgun Surgery: lines` in `nlp2dsl_sdk/system_map_render/blocks.py:129`.
 
 
     Mutation of variable ''lines'' spans 52 functions. Changing this logic requires
@@ -989,11 +1004,11 @@ tickets:
   - shotgun-surgery
   files:
   - nlp2dsl_sdk/system_map_render/blocks.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/system_map_render/blocks.py:114:Shotgun
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/system_map_render/blocks.py:129:Shotgun
     Surgery: lines'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: lowered'
-  description: 'code2llm reports `Shotgun Surgery: lowered` in `nlp-service/app/routing/orientation.py:231`.
+  description: 'code2llm reports `Shotgun Surgery: lowered` in `nlp-service/app/routing/orientation.py:158`.
 
 
     Mutation of variable ''lowered'' spans 6 functions. Changing this logic requires
@@ -1009,14 +1024,14 @@ tickets:
   - shotgun-surgery
   files:
   - nlp-service/app/routing/orientation.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/routing/orientation.py:231:Shotgun
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/routing/orientation.py:158:Shotgun
     Surgery: lowered'
 - signal: code2llm_smell_shotgun_surgery
-  title: 'Address code smell: Shotgun Surgery: match'
-  description: 'code2llm reports `Shotgun Surgery: match` in `nlp2dsl_sdk/doql/parse.py:77`.
+  title: 'Address code smell: Shotgun Surgery: merged'
+  description: 'code2llm reports `Shotgun Surgery: merged` in `nlp-service/app/governance/config.py:91`.
 
 
-    Mutation of variable ''match'' spans 6 functions. Changing this logic requires
+    Mutation of variable ''merged'' spans 5 functions. Changing this logic requires
     work in many places.
 
 
@@ -1028,12 +1043,12 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/doql/parse.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/doql/parse.py:77:Shotgun
-    Surgery: match'
+  - nlp-service/app/governance/config.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/governance/config.py:91:Shotgun
+    Surgery: merged'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: message'
-  description: 'code2llm reports `Shotgun Surgery: message` in `packages/nlp2cmd-propact/src/nlp2cmd_propact/adapter.py:61`.
+  description: 'code2llm reports `Shotgun Surgery: message` in `nlp2dsl_sdk/preview.py:187`.
 
 
     Mutation of variable ''message'' spans 5 functions. Changing this logic requires
@@ -1048,12 +1063,12 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - packages/nlp2cmd-propact/src/nlp2cmd_propact/adapter.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:packages/nlp2cmd-propact/src/nlp2cmd_propact/adapter.py:61:Shotgun
-    Surgery: message'
+  - nlp2dsl_sdk/preview.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/preview.py:187:Shotgun Surgery:
+    message'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: meta'
-  description: 'code2llm reports `Shotgun Surgery: meta` in `nlp-service/app/registry.py:448`.
+  description: 'code2llm reports `Shotgun Surgery: meta` in `nlp-service/app/execution/system.py:274`.
 
 
     Mutation of variable ''meta'' spans 15 functions. Changing this logic requires
@@ -1068,15 +1083,15 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp-service/app/registry.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/registry.py:448:Shotgun
+  - nlp-service/app/execution/system.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/execution/system.py:274:Shotgun
     Surgery: meta'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: missing'
-  description: 'code2llm reports `Shotgun Surgery: missing` in `nlp2dsl_sdk/workflow/lifecycle.py:97`.
+  description: 'code2llm reports `Shotgun Surgery: missing` in `backend/app/dsl_validation.py:38`.
 
 
-    Mutation of variable ''missing'' spans 17 functions. Changing this logic requires
+    Mutation of variable ''missing'' spans 21 functions. Changing this logic requires
     work in many places.
 
 
@@ -1088,32 +1103,12 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/workflow/lifecycle.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/workflow/lifecycle.py:97:Shotgun
+  - backend/app/dsl_validation.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:backend/app/dsl_validation.py:38:Shotgun
     Surgery: missing'
 - signal: code2llm_smell_shotgun_surgery
-  title: 'Address code smell: Shotgun Surgery: mode'
-  description: 'code2llm reports `Shotgun Surgery: mode` in `examples/01-invoice/scenario.py:46`.
-
-
-    Mutation of variable ''mode'' spans 10 functions. Changing this logic requires
-    work in many places.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: high
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - shotgun-surgery
-  files:
-  - examples/01-invoice/scenario.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:examples/01-invoice/scenario.py:46:Shotgun
-    Surgery: mode'
-- signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: mount'
-  description: 'code2llm reports `Shotgun Surgery: mount` in `nlp2dsl_sdk/doql/runtime.py:19`.
+  description: 'code2llm reports `Shotgun Surgery: mount` in `nlp-service/app/conversation/invoice_paths.py:60`.
 
 
     Mutation of variable ''mount'' spans 8 functions. Changing this logic requires
@@ -1128,12 +1123,12 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/doql/runtime.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/doql/runtime.py:19:Shotgun
+  - nlp-service/app/conversation/invoice_paths.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/conversation/invoice_paths.py:60:Shotgun
     Surgery: mount'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: msg'
-  description: 'code2llm reports `Shotgun Surgery: msg` in `nlp-service/app/conversation/responses.py:188`.
+  description: 'code2llm reports `Shotgun Surgery: msg` in `nlp2dsl_sdk/validation/rules/attachment.py:20`.
 
 
     Mutation of variable ''msg'' spans 11 functions. Changing this logic requires
@@ -1148,12 +1143,12 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp-service/app/conversation/responses.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/conversation/responses.py:188:Shotgun
+  - nlp2dsl_sdk/validation/rules/attachment.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/validation/rules/attachment.py:20:Shotgun
     Surgery: msg'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: name'
-  description: 'code2llm reports `Shotgun Surgery: name` in `nlp-service/app/execution/system.py:242`.
+  description: 'code2llm reports `Shotgun Surgery: name` in `packages/nlp2cmd-intent/src/nlp2cmd_intent/domain_mapping.py:35`.
 
 
     Mutation of variable ''name'' spans 17 functions. Changing this logic requires
@@ -1168,15 +1163,15 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp-service/app/execution/system.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/execution/system.py:242:Shotgun
+  - packages/nlp2cmd-intent/src/nlp2cmd_intent/domain_mapping.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:packages/nlp2cmd-intent/src/nlp2cmd_intent/domain_mapping.py:35:Shotgun
     Surgery: name'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: ok'
   description: 'code2llm reports `Shotgun Surgery: ok` in `examples/09-execution-smoke/scenario.py:19`.
 
 
-    Mutation of variable ''ok'' spans 5 functions. Changing this logic requires work
+    Mutation of variable ''ok'' spans 6 functions. Changing this logic requires work
     in many places.
 
 
@@ -1192,11 +1187,31 @@ tickets:
   dedupe_key: 'code2llm:smell:shotgun_surgery:examples/09-execution-smoke/scenario.py:19:Shotgun
     Surgery: ok'
 - signal: code2llm_smell_shotgun_surgery
-  title: 'Address code smell: Shotgun Surgery: out'
-  description: 'code2llm reports `Shotgun Surgery: out` in `nlp2dsl_sdk/doql/parse.py:399`.
+  title: 'Address code smell: Shotgun Surgery: os'
+  description: 'code2llm reports `Shotgun Surgery: os` in `scripts/_dotenv.py:9`.
 
 
-    Mutation of variable ''out'' spans 29 functions. Changing this logic requires
+    Mutation of variable ''os'' spans 7 functions. Changing this logic requires work
+    in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - scripts/_dotenv.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:scripts/_dotenv.py:9:Shotgun Surgery:
+    os'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: os.environ'
+  description: 'code2llm reports `Shotgun Surgery: os.environ` in `nlp2dsl_sdk/encoding.py:30`.
+
+
+    Mutation of variable ''os.environ'' spans 10 functions. Changing this logic requires
     work in many places.
 
 
@@ -1208,15 +1223,35 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/doql/parse.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/doql/parse.py:399:Shotgun
+  - nlp2dsl_sdk/encoding.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/encoding.py:30:Shotgun Surgery:
+    os.environ'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: out'
+  description: 'code2llm reports `Shotgun Surgery: out` in `nlp-service/app/conversation/invoice_paths.py:44`.
+
+
+    Mutation of variable ''out'' spans 32 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - nlp-service/app/conversation/invoice_paths.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/conversation/invoice_paths.py:44:Shotgun
     Surgery: out'
 - signal: code2llm_smell_shotgun_surgery
-  title: 'Address code smell: Shotgun Surgery: parser'
-  description: 'code2llm reports `Shotgun Surgery: parser` in `nlp2dsl_sdk/cli.py:205`.
+  title: 'Address code smell: Shotgun Surgery: parsed'
+  description: 'code2llm reports `Shotgun Surgery: parsed` in `nlp2dsl_sdk/system_map_generator.py:128`.
 
 
-    Mutation of variable ''parser'' spans 8 functions. Changing this logic requires
+    Mutation of variable ''parsed'' spans 6 functions. Changing this logic requires
     work in many places.
 
 
@@ -1228,12 +1263,32 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/cli.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/cli.py:205:Shotgun Surgery:
-    parser'
+  - nlp2dsl_sdk/system_map_generator.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/system_map_generator.py:128:Shotgun
+    Surgery: parsed'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: parser'
+  description: 'code2llm reports `Shotgun Surgery: parser` in `scripts/validate-publish-export.py:71`.
+
+
+    Mutation of variable ''parser'' spans 11 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - scripts/validate-publish-export.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:scripts/validate-publish-export.py:71:Shotgun
+    Surgery: parser'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: parts'
-  description: 'code2llm reports `Shotgun Surgery: parts` in `nlp-service/app/dsl/mapper.py:220`.
+  description: 'code2llm reports `Shotgun Surgery: parts` in `nlp2dsl_sdk/conversation_artifacts.py:13`.
 
 
     Mutation of variable ''parts'' spans 16 functions. Changing this logic requires
@@ -1248,12 +1303,32 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp-service/app/dsl/mapper.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/dsl/mapper.py:220:Shotgun
+  - nlp2dsl_sdk/conversation_artifacts.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/conversation_artifacts.py:13:Shotgun
     Surgery: parts'
 - signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: passed'
+  description: 'code2llm reports `Shotgun Surgery: passed` in `nlp2dsl_sdk/evaluation/metrics.py:180`.
+
+
+    Mutation of variable ''passed'' spans 5 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - nlp2dsl_sdk/evaluation/metrics.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/evaluation/metrics.py:180:Shotgun
+    Surgery: passed'
+- signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: path'
-  description: 'code2llm reports `Shotgun Surgery: path` in `nlp2dsl_sdk/artifacts.py:235`.
+  description: 'code2llm reports `Shotgun Surgery: path` in `nlp-service/app/conversation/autonomous_loop.py:93`.
 
 
     Mutation of variable ''path'' spans 59 functions. Changing this logic requires
@@ -1268,12 +1343,12 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/artifacts.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/artifacts.py:235:Shotgun
+  - nlp-service/app/conversation/autonomous_loop.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/conversation/autonomous_loop.py:93:Shotgun
     Surgery: path'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: paths'
-  description: 'code2llm reports `Shotgun Surgery: paths` in `nlp-service/app/governance/config.py:20`.
+  description: 'code2llm reports `Shotgun Surgery: paths` in `nlp2dsl_sdk/artifacts.py:194`.
 
 
     Mutation of variable ''paths'' spans 5 functions. Changing this logic requires
@@ -1288,15 +1363,15 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp-service/app/governance/config.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/governance/config.py:20:Shotgun
+  - nlp2dsl_sdk/artifacts.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/artifacts.py:194:Shotgun
     Surgery: paths'
 - signal: code2llm_smell_shotgun_surgery
-  title: 'Address code smell: Shotgun Surgery: plan'
-  description: 'code2llm reports `Shotgun Surgery: plan` in `backend/app/workflow_lifecycle.py:51`.
+  title: 'Address code smell: Shotgun Surgery: payload'
+  description: 'code2llm reports `Shotgun Surgery: payload` in `nlp2dsl_sdk/artifact_layout.py:103`.
 
 
-    Mutation of variable ''plan'' spans 9 functions. Changing this logic requires
+    Mutation of variable ''payload'' spans 55 functions. Changing this logic requires
     work in many places.
 
 
@@ -1308,12 +1383,32 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - backend/app/workflow_lifecycle.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:backend/app/workflow_lifecycle.py:51:Shotgun
+  - nlp2dsl_sdk/artifact_layout.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/artifact_layout.py:103:Shotgun
+    Surgery: payload'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: plan'
+  description: 'code2llm reports `Shotgun Surgery: plan` in `scripts/run-example-testql-results.py:235`.
+
+
+    Mutation of variable ''plan'' spans 10 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - scripts/run-example-testql-results.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:scripts/run-example-testql-results.py:235:Shotgun
     Surgery: plan'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: proc'
-  description: 'code2llm reports `Shotgun Surgery: proc` in `scripts/run-example-docker-e2e.py:91`.
+  description: 'code2llm reports `Shotgun Surgery: proc` in `nlp-service/app/conversation/runtime_gate.py:43`.
 
 
     Mutation of variable ''proc'' spans 15 functions. Changing this logic requires
@@ -1328,12 +1423,12 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - scripts/run-example-docker-e2e.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:scripts/run-example-docker-e2e.py:91:Shotgun
+  - nlp-service/app/conversation/runtime_gate.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/conversation/runtime_gate.py:43:Shotgun
     Surgery: proc'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: profile'
-  description: 'code2llm reports `Shotgun Surgery: profile` in `nlp2dsl_sdk/system_map_bridge.py:85`.
+  description: 'code2llm reports `Shotgun Surgery: profile` in `nlp2dsl_sdk/validation/profile_checks.py:85`.
 
 
     Mutation of variable ''profile'' spans 8 functions. Changing this logic requires
@@ -1348,12 +1443,12 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/system_map_bridge.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/system_map_bridge.py:85:Shotgun
+  - nlp2dsl_sdk/validation/profile_checks.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/validation/profile_checks.py:85:Shotgun
     Surgery: profile'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: queries'
-  description: 'code2llm reports `Shotgun Surgery: queries` in `scripts/run-example-testql-results.py:194`.
+  description: 'code2llm reports `Shotgun Surgery: queries` in `nlp2dsl_sdk/stack_flow.py:60`.
 
 
     Mutation of variable ''queries'' spans 6 functions. Changing this logic requires
@@ -1368,15 +1463,15 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - scripts/run-example-testql-results.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:scripts/run-example-testql-results.py:194:Shotgun
+  - nlp2dsl_sdk/stack_flow.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/stack_flow.py:60:Shotgun
     Surgery: queries'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: raw'
-  description: 'code2llm reports `Shotgun Surgery: raw` in `nlp2dsl_sdk/contracts/registry.py:133`.
+  description: 'code2llm reports `Shotgun Surgery: raw` in `nlp2dsl_sdk/doql_registry.py:63`.
 
 
-    Mutation of variable ''raw'' spans 31 functions. Changing this logic requires
+    Mutation of variable ''raw'' spans 36 functions. Changing this logic requires
     work in many places.
 
 
@@ -1388,8 +1483,8 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/contracts/registry.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/contracts/registry.py:133:Shotgun
+  - nlp2dsl_sdk/doql_registry.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/doql_registry.py:63:Shotgun
     Surgery: raw'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: reflection'
@@ -1413,10 +1508,10 @@ tickets:
     Surgery: reflection'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: rel'
-  description: 'code2llm reports `Shotgun Surgery: rel` in `nlp2dsl_sdk/doql/parse.py:425`.
+  description: 'code2llm reports `Shotgun Surgery: rel` in `nlp-service/app/conversation/invoice_paths.py:60`.
 
 
-    Mutation of variable ''rel'' spans 10 functions. Changing this logic requires
+    Mutation of variable ''rel'' spans 11 functions. Changing this logic requires
     work in many places.
 
 
@@ -1428,15 +1523,15 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/doql/parse.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/doql/parse.py:425:Shotgun
+  - nlp-service/app/conversation/invoice_paths.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/conversation/invoice_paths.py:60:Shotgun
     Surgery: rel'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: repo_root'
-  description: 'code2llm reports `Shotgun Surgery: repo_root` in `nlp2dsl_sdk/system_map_bridge.py:85`.
+  description: 'code2llm reports `Shotgun Surgery: repo_root` in `nlp2dsl_sdk/system_map_generator.py:39`.
 
 
-    Mutation of variable ''repo_root'' spans 7 functions. Changing this logic requires
+    Mutation of variable ''repo_root'' spans 8 functions. Changing this logic requires
     work in many places.
 
 
@@ -1448,15 +1543,15 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/system_map_bridge.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/system_map_bridge.py:85:Shotgun
+  - nlp2dsl_sdk/system_map_generator.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/system_map_generator.py:39:Shotgun
     Surgery: repo_root'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: report'
   description: 'code2llm reports `Shotgun Surgery: report` in `backend/app/workflow_lifecycle.py:51`.
 
 
-    Mutation of variable ''report'' spans 9 functions. Changing this logic requires
+    Mutation of variable ''report'' spans 12 functions. Changing this logic requires
     work in many places.
 
 
@@ -1472,12 +1567,12 @@ tickets:
   dedupe_key: 'code2llm:smell:shotgun_surgery:backend/app/workflow_lifecycle.py:51:Shotgun
     Surgery: report'
 - signal: code2llm_smell_shotgun_surgery
-  title: 'Address code smell: Shotgun Surgery: required'
-  description: 'code2llm reports `Shotgun Surgery: required` in `nlp-service/app/execution/system.py:242`.
+  title: 'Address code smell: Shotgun Surgery: req'
+  description: 'code2llm reports `Shotgun Surgery: req` in `nlp2dsl_sdk/doql/parse.py:355`.
 
 
-    Mutation of variable ''required'' spans 5 functions. Changing this logic requires
-    work in many places.
+    Mutation of variable ''req'' spans 8 functions. Changing this logic requires work
+    in many places.
 
 
     Make the smallest refactor that removes the smell and run local tests.'
@@ -1488,12 +1583,12 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp-service/app/execution/system.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/execution/system.py:242:Shotgun
-    Surgery: required'
+  - nlp2dsl_sdk/doql/parse.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/doql/parse.py:355:Shotgun
+    Surgery: req'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: resolved'
-  description: 'code2llm reports `Shotgun Surgery: resolved` in `nlp-service/app/execution/system.py:153`.
+  description: 'code2llm reports `Shotgun Surgery: resolved` in `nlp-service/app/conversation/autonomous_loop.py:93`.
 
 
     Mutation of variable ''resolved'' spans 21 functions. Changing this logic requires
@@ -1508,35 +1603,15 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp-service/app/execution/system.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/execution/system.py:153:Shotgun
+  - nlp-service/app/conversation/autonomous_loop.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/conversation/autonomous_loop.py:93:Shotgun
     Surgery: resolved'
-- signal: code2llm_smell_shotgun_surgery
-  title: 'Address code smell: Shotgun Surgery: result'
-  description: 'code2llm reports `Shotgun Surgery: result` in `nlp-service/app/conversation/responses.py:141`.
-
-
-    Mutation of variable ''result'' spans 47 functions. Changing this logic requires
-    work in many places.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: high
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - shotgun-surgery
-  files:
-  - nlp-service/app/conversation/responses.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/conversation/responses.py:141:Shotgun
-    Surgery: result'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: results'
   description: 'code2llm reports `Shotgun Surgery: results` in `examples/11-notify-quality/scenario.py:19`.
 
 
-    Mutation of variable ''results'' spans 13 functions. Changing this logic requires
+    Mutation of variable ''results'' spans 15 functions. Changing this logic requires
     work in many places.
 
 
@@ -1553,10 +1628,10 @@ tickets:
     Surgery: results'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: root'
-  description: 'code2llm reports `Shotgun Surgery: root` in `nlp2dsl_sdk/system_map_runtimes.py:62`.
+  description: 'code2llm reports `Shotgun Surgery: root` in `nlp2dsl_sdk/system_map_generator.py:39`.
 
 
-    Mutation of variable ''root'' spans 23 functions. Changing this logic requires
+    Mutation of variable ''root'' spans 25 functions. Changing this logic requires
     work in many places.
 
 
@@ -1568,12 +1643,12 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/system_map_runtimes.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/system_map_runtimes.py:62:Shotgun
+  - nlp2dsl_sdk/system_map_generator.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/system_map_generator.py:39:Shotgun
     Surgery: root'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: seen'
-  description: 'code2llm reports `Shotgun Surgery: seen` in `nlp2dsl_sdk/doql/parse.py:425`.
+  description: 'code2llm reports `Shotgun Surgery: seen` in `nlp2dsl_sdk/reflection.py:236`.
 
 
     Mutation of variable ''seen'' spans 9 functions. Changing this logic requires
@@ -1588,12 +1663,32 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/doql/parse.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/doql/parse.py:425:Shotgun
+  - nlp2dsl_sdk/reflection.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/reflection.py:236:Shotgun
     Surgery: seen'
 - signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: settings'
+  description: 'code2llm reports `Shotgun Surgery: settings` in `nlp-service/app/governance/config.py:116`.
+
+
+    Mutation of variable ''settings'' spans 6 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - nlp-service/app/governance/config.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/governance/config.py:116:Shotgun
+    Surgery: settings'
+- signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: spec'
-  description: 'code2llm reports `Shotgun Surgery: spec` in `nlp2dsl_sdk/doql/parse.py:233`.
+  description: 'code2llm reports `Shotgun Surgery: spec` in `scripts/_conversation_scenario.py:117`.
 
 
     Mutation of variable ''spec'' spans 7 functions. Changing this logic requires
@@ -1608,55 +1703,15 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/doql/parse.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/doql/parse.py:233:Shotgun
+  - scripts/_conversation_scenario.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:scripts/_conversation_scenario.py:117:Shotgun
     Surgery: spec'
 - signal: code2llm_smell_shotgun_surgery
-  title: 'Address code smell: Shotgun Surgery: state.entities'
-  description: 'code2llm reports `Shotgun Surgery: state.entities` in `nlp-service/app/conversation/autonomous_loop.py:163`.
+  title: 'Address code smell: Shotgun Surgery: state'
+  description: 'code2llm reports `Shotgun Surgery: state` in `nlp-service/app/conversation/orchestrator.py:154`.
 
 
-    Mutation of variable ''state.entities'' spans 6 functions. Changing this logic
-    requires work in many places.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: high
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - shotgun-surgery
-  files:
-  - nlp-service/app/conversation/autonomous_loop.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/conversation/autonomous_loop.py:163:Shotgun
-    Surgery: state.entities'
-- signal: code2llm_smell_shotgun_surgery
-  title: 'Address code smell: Shotgun Surgery: state.history'
-  description: 'code2llm reports `Shotgun Surgery: state.history` in `nlp-service/app/conversation/responses.py:141`.
-
-
-    Mutation of variable ''state.history'' spans 5 functions. Changing this logic
-    requires work in many places.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: high
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - shotgun-surgery
-  files:
-  - nlp-service/app/conversation/responses.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/conversation/responses.py:141:Shotgun
-    Surgery: state.history'
-- signal: code2llm_smell_shotgun_surgery
-  title: 'Address code smell: Shotgun Surgery: status'
-  description: 'code2llm reports `Shotgun Surgery: status` in `nlp2dsl_sdk/preview.py:104`.
-
-
-    Mutation of variable ''status'' spans 26 functions. Changing this logic requires
+    Mutation of variable ''state'' spans 11 functions. Changing this logic requires
     work in many places.
 
 
@@ -1668,9 +1723,29 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/preview.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/preview.py:104:Shotgun Surgery:
-    status'
+  - nlp-service/app/conversation/orchestrator.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp-service/app/conversation/orchestrator.py:154:Shotgun
+    Surgery: state'
+- signal: code2llm_smell_shotgun_surgery
+  title: 'Address code smell: Shotgun Surgery: status'
+  description: 'code2llm reports `Shotgun Surgery: status` in `examples/08-multi-object-benchmark/scenario.py:25`.
+
+
+    Mutation of variable ''status'' spans 31 functions. Changing this logic requires
+    work in many places.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: high
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - shotgun-surgery
+  files:
+  - examples/08-multi-object-benchmark/scenario.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:examples/08-multi-object-benchmark/scenario.py:25:Shotgun
+    Surgery: status'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: step'
   description: 'code2llm reports `Shotgun Surgery: step` in `examples/01-invoice/scenario.py:46`.
@@ -1733,10 +1808,10 @@ tickets:
     Surgery: step_result'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: steps'
-  description: 'code2llm reports `Shotgun Surgery: steps` in `nlp2dsl_sdk/validation/rules/dsl_contract.py:11`.
+  description: 'code2llm reports `Shotgun Surgery: steps` in `backend/app/idempotency.py:221`.
 
 
-    Mutation of variable ''steps'' spans 21 functions. Changing this logic requires
+    Mutation of variable ''steps'' spans 27 functions. Changing this logic requires
     work in many places.
 
 
@@ -1748,12 +1823,12 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/validation/rules/dsl_contract.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/validation/rules/dsl_contract.py:11:Shotgun
+  - backend/app/idempotency.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:backend/app/idempotency.py:221:Shotgun
     Surgery: steps'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: trace'
-  description: 'code2llm reports `Shotgun Surgery: trace` in `scripts/run-conversation-scenario.py:88`.
+  description: 'code2llm reports `Shotgun Surgery: trace` in `scripts/run-example-docker-e2e.py:123`.
 
 
     Mutation of variable ''trace'' spans 8 functions. Changing this logic requires
@@ -1768,8 +1843,8 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - scripts/run-conversation-scenario.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:scripts/run-conversation-scenario.py:88:Shotgun
+  - scripts/run-example-docker-e2e.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:scripts/run-example-docker-e2e.py:123:Shotgun
     Surgery: trace'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: trigger'
@@ -1793,7 +1868,7 @@ tickets:
     Surgery: trigger'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: value'
-  description: 'code2llm reports `Shotgun Surgery: value` in `nlp2dsl_sdk/doql/parse.py:399`.
+  description: 'code2llm reports `Shotgun Surgery: value` in `scripts/_dotenv.py:9`.
 
 
     Mutation of variable ''value'' spans 14 functions. Changing this logic requires
@@ -1808,12 +1883,12 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - nlp2dsl_sdk/doql/parse.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:nlp2dsl_sdk/doql/parse.py:399:Shotgun
-    Surgery: value'
+  - scripts/_dotenv.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:scripts/_dotenv.py:9:Shotgun Surgery:
+    value'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: workflow'
-  description: 'code2llm reports `Shotgun Surgery: workflow` in `backend/app/workflow_lifecycle.py:51`.
+  description: 'code2llm reports `Shotgun Surgery: workflow` in `backend/app/workflow_lifecycle.py:27`.
 
 
     Mutation of variable ''workflow'' spans 6 functions. Changing this logic requires
@@ -1829,14 +1904,14 @@ tickets:
   - shotgun-surgery
   files:
   - backend/app/workflow_lifecycle.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:backend/app/workflow_lifecycle.py:51:Shotgun
+  dedupe_key: 'code2llm:smell:shotgun_surgery:backend/app/workflow_lifecycle.py:27:Shotgun
     Surgery: workflow'
 - signal: code2llm_smell_shotgun_surgery
   title: 'Address code smell: Shotgun Surgery: writer'
-  description: 'code2llm reports `Shotgun Surgery: writer` in `examples/01-invoice/scenario.py:46`.
+  description: 'code2llm reports `Shotgun Surgery: writer` in `examples/13-autonomous-invoice-stack/scenario.py:18`.
 
 
-    Mutation of variable ''writer'' spans 10 functions. Changing this logic requires
+    Mutation of variable ''writer'' spans 11 functions. Changing this logic requires
     work in many places.
 
 
@@ -1848,8 +1923,8 @@ tickets:
   - code-smell
   - shotgun-surgery
   files:
-  - examples/01-invoice/scenario.py
-  dedupe_key: 'code2llm:smell:shotgun_surgery:examples/01-invoice/scenario.py:46:Shotgun
+  - examples/13-autonomous-invoice-stack/scenario.py
+  dedupe_key: 'code2llm:smell:shotgun_surgery:examples/13-autonomous-invoice-stack/scenario.py:18:Shotgun
     Surgery: writer'
 - signal: code2llm_cc
   title: 'Reduce cyclomatic complexity: backend.app.attachment_validation.ensure_attachment_validation
@@ -1871,6 +1946,24 @@ tickets:
   - backend/app/attachment_validation.py
   dedupe_key: code2llm:cc:backend/app/attachment_validation.py:backend.app.attachment_validation.ensure_attachment_validation
 - signal: code2llm_cc
+  title: 'Reduce cyclomatic complexity: backend.app.execution_policy.fetch_access_decisions
+    (CC=15)'
+  description: 'code2llm reports `backend.app.execution_policy.fetch_access_decisions`
+    at `backend/app/execution_policy.py:92` with cyclomatic complexity 15 (limit 15).
+
+
+    Extract smaller functions, flatten conditionals, or split strategy branches. Re-run
+    code2llm after the change and keep tests green.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - complexity
+  - refactor
+  files:
+  - backend/app/execution_policy.py
+  dedupe_key: code2llm:cc:backend/app/execution_policy.py:backend.app.execution_policy.fetch_access_decisions
+- signal: code2llm_cc
   title: 'Reduce cyclomatic complexity: examples.01-invoice.scenario.run (CC=20)'
   description: 'code2llm reports `examples.01-invoice.scenario.run` at `examples/01-invoice/scenario.py:46`
     with cyclomatic complexity 20 (limit 15).
@@ -1887,6 +1980,24 @@ tickets:
   files:
   - examples/01-invoice/scenario.py
   dedupe_key: code2llm:cc:examples/01-invoice/scenario.py:examples.01-invoice.scenario.run
+- signal: code2llm_cc
+  title: 'Reduce cyclomatic complexity: examples.04-scheduled-report.scenario.run
+    (CC=18)'
+  description: 'code2llm reports `examples.04-scheduled-report.scenario.run` at `examples/04-scheduled-report/scenario.py:24`
+    with cyclomatic complexity 18 (limit 15).
+
+
+    Extract smaller functions, flatten conditionals, or split strategy branches. Re-run
+    code2llm after the change and keep tests green.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - complexity
+  - refactor
+  files:
+  - examples/04-scheduled-report/scenario.py
+  dedupe_key: code2llm:cc:examples/04-scheduled-report/scenario.py:examples.04-scheduled-report.scenario.run
 - signal: code2llm_cc
   title: 'Reduce cyclomatic complexity: examples.08-multi-object-benchmark.scenario.run_benchmark
     (CC=16)'
@@ -2261,6 +2372,43 @@ tickets:
   - nlp2dsl_sdk/doql/parse.py
   dedupe_key: code2llm:cc:nlp2dsl_sdk/doql/parse.py:nlp2dsl_sdk.doql.parse.load_platform_map
 - signal: code2llm_cc
+  title: 'Reduce cyclomatic complexity: nlp2dsl_sdk.evaluation.metrics.classify_outcome
+    (CC=19)'
+  description: 'code2llm reports `nlp2dsl_sdk.evaluation.metrics.classify_outcome`
+    at `nlp2dsl_sdk/evaluation/metrics.py:101` with cyclomatic complexity 19 (limit
+    15).
+
+
+    Extract smaller functions, flatten conditionals, or split strategy branches. Re-run
+    code2llm after the change and keep tests green.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - complexity
+  - refactor
+  files:
+  - nlp2dsl_sdk/evaluation/metrics.py
+  dedupe_key: code2llm:cc:nlp2dsl_sdk/evaluation/metrics.py:nlp2dsl_sdk.evaluation.metrics.classify_outcome
+- signal: code2llm_cc
+  title: 'Reduce cyclomatic complexity: nlp2dsl_sdk.mullm.executor.execute_mullm_workflow
+    (CC=21)'
+  description: 'code2llm reports `nlp2dsl_sdk.mullm.executor.execute_mullm_workflow`
+    at `nlp2dsl_sdk/mullm/executor.py:39` with cyclomatic complexity 21 (limit 15).
+
+
+    Extract smaller functions, flatten conditionals, or split strategy branches. Re-run
+    code2llm after the change and keep tests green.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - complexity
+  - refactor
+  files:
+  - nlp2dsl_sdk/mullm/executor.py
+  dedupe_key: code2llm:cc:nlp2dsl_sdk/mullm/executor.py:nlp2dsl_sdk.mullm.executor.execute_mullm_workflow
+- signal: code2llm_cc
   title: 'Reduce cyclomatic complexity: nlp2dsl_sdk.system_map_runtimes.build_runtimes_for_example
     (CC=18)'
   description: 'code2llm reports `nlp2dsl_sdk.system_map_runtimes.build_runtimes_for_example`
@@ -2298,6 +2446,24 @@ tickets:
   files:
   - nlp2dsl_sdk/validation/rules/post_execute.py
   dedupe_key: code2llm:cc:nlp2dsl_sdk/validation/rules/post_execute.py:nlp2dsl_sdk.validation.rules.post_execute.validate_execution_outcome
+- signal: code2llm_cc
+  title: 'Reduce cyclomatic complexity: nlp2dsl_sdk.workflow.events.workflow_snapshot_from_events
+    (CC=19)'
+  description: 'code2llm reports `nlp2dsl_sdk.workflow.events.workflow_snapshot_from_events`
+    at `nlp2dsl_sdk/workflow/events.py:106` with cyclomatic complexity 19 (limit 15).
+
+
+    Extract smaller functions, flatten conditionals, or split strategy branches. Re-run
+    code2llm after the change and keep tests green.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - complexity
+  - refactor
+  files:
+  - nlp2dsl_sdk/workflow/events.py
+  dedupe_key: code2llm:cc:nlp2dsl_sdk/workflow/events.py:nlp2dsl_sdk.workflow.events.workflow_snapshot_from_events
 - signal: code2llm_cc
   title: 'Reduce cyclomatic complexity: scripts._conversation_scenario._check_routing_and_autofill
     (CC=16)'
@@ -2428,258 +2594,11 @@ tickets:
   - scripts/run-execution-scenario.py
   dedupe_key: code2llm:cc:scripts/run-execution-scenario.py:scripts.run-execution-scenario.run_scenario
 - signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: call_next, self, request'
-  description: 'code2llm reports `Data Clump: call_next, self, request` in `backend/app/logging_setup.py:68`.
+  title: 'Address code smell: Data Clump: app, header, self'
+  description: 'code2llm reports `Data Clump: app, header, self` in `backend/app/logging_setup.py:64`.
 
 
-    Arguments (call_next, self, request) are used together in multiple functions:
-    backend.app.logging_setup.RequestIDMiddleware.dispatch, nlp-service.app.logging_setup.RequestIDMiddleware.dispatch,
-    worker.logging_setup.RequestIDMiddleware.dispatch.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: normal
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - data-clump
-  files:
-  - backend/app/logging_setup.py
-  dedupe_key: 'code2llm:smell:data_clump:backend/app/logging_setup.py:68:Data Clump:
-    call_next, self, request'
-- signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: call_next, self, request'
-  description: 'code2llm reports `Data Clump: call_next, self, request` in `nlp-service/app/logging_setup.py:68`.
-
-
-    Arguments (call_next, self, request) are used together in multiple functions:
-    backend.app.logging_setup.RequestIDMiddleware.dispatch, nlp-service.app.logging_setup.RequestIDMiddleware.dispatch,
-    worker.logging_setup.RequestIDMiddleware.dispatch.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: normal
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - data-clump
-  files:
-  - nlp-service/app/logging_setup.py
-  dedupe_key: 'code2llm:smell:data_clump:nlp-service/app/logging_setup.py:68:Data
-    Clump: call_next, self, request'
-- signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: call_next, self, request'
-  description: 'code2llm reports `Data Clump: call_next, self, request` in `worker/logging_setup.py:68`.
-
-
-    Arguments (call_next, self, request) are used together in multiple functions:
-    backend.app.logging_setup.RequestIDMiddleware.dispatch, nlp-service.app.logging_setup.RequestIDMiddleware.dispatch,
-    worker.logging_setup.RequestIDMiddleware.dispatch.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: normal
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - data-clump
-  files:
-  - worker/logging_setup.py
-  dedupe_key: 'code2llm:smell:data_clump:worker/logging_setup.py:68:Data Clump: call_next,
-    self, request'
-- signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: data, self, message'
-  description: 'code2llm reports `Data Clump: data, self, message` in `nlp2dsl_sdk/client.py:736`.
-
-
-    Arguments (data, self, message) are used together in multiple functions: nlp2dsl_sdk.client.ConversationFlow._handle_in_progress_response,
-    nlp2dsl_sdk.client.ConversationFlow._handle_ready_response, nlp2dsl_sdk.client.ConversationFlow._handle_completed_response.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: normal
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - data-clump
-  files:
-  - nlp2dsl_sdk/client.py
-  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:736:Data Clump: data,
-    self, message'
-- signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: data, self, message'
-  description: 'code2llm reports `Data Clump: data, self, message` in `nlp2dsl_sdk/client.py:759`.
-
-
-    Arguments (data, self, message) are used together in multiple functions: nlp2dsl_sdk.client.ConversationFlow._handle_in_progress_response,
-    nlp2dsl_sdk.client.ConversationFlow._handle_ready_response, nlp2dsl_sdk.client.ConversationFlow._handle_completed_response.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: normal
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - data-clump
-  files:
-  - nlp2dsl_sdk/client.py
-  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:759:Data Clump: data,
-    self, message'
-- signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: data, self, message'
-  description: 'code2llm reports `Data Clump: data, self, message` in `nlp2dsl_sdk/client.py:773`.
-
-
-    Arguments (data, self, message) are used together in multiple functions: nlp2dsl_sdk.client.ConversationFlow._handle_in_progress_response,
-    nlp2dsl_sdk.client.ConversationFlow._handle_ready_response, nlp2dsl_sdk.client.ConversationFlow._handle_completed_response.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: normal
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - data-clump
-  files:
-  - nlp2dsl_sdk/client.py
-  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:773:Data Clump: data,
-    self, message'
-- signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: description, self, context, include_tests,
-    language'
-  description: 'code2llm reports `Data Clump: description, self, context, include_tests,
-    language` in `nlp2dsl_sdk/client.py:301`.
-
-
-    Arguments (description, self, context, include_tests, language) are used together
-    in multiple functions: nlp2dsl_sdk.client.NLP2DSLClient.generate_code, nlp-service.app.code_generator.CodeGenerator.generate_code.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: normal
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - data-clump
-  files:
-  - nlp2dsl_sdk/client.py
-  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:301:Data Clump: description,
-    self, context, include_tests, language'
-- signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: description, self, context, include_tests,
-    language'
-  description: 'code2llm reports `Data Clump: description, self, context, include_tests,
-    language` in `nlp-service/app/code_generator.py:161`.
-
-
-    Arguments (description, self, context, include_tests, language) are used together
-    in multiple functions: nlp2dsl_sdk.client.NLP2DSLClient.generate_code, nlp-service.app.code_generator.CodeGenerator.generate_code.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: normal
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - data-clump
-  files:
-  - nlp-service/app/code_generator.py
-  dedupe_key: 'code2llm:smell:data_clump:nlp-service/app/code_generator.py:161:Data
-    Clump: description, self, context, include_tests, language'
-- signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: domain, self, intent'
-  description: 'code2llm reports `Data Clump: domain, self, intent` in `packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_patterns.py:154`.
-
-
-    Arguments (domain, self, intent) are used together in multiple functions: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.get_intent_patterns,
-    packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.has_intent.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: normal
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - data-clump
-  files:
-  - packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_patterns.py
-  dedupe_key: 'code2llm:smell:data_clump:packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_patterns.py:154:Data
-    Clump: domain, self, intent'
-- signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: domain, self, intent'
-  description: 'code2llm reports `Data Clump: domain, self, intent` in `packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_patterns.py:160`.
-
-
-    Arguments (domain, self, intent) are used together in multiple functions: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.get_intent_patterns,
-    packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.has_intent.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: normal
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - data-clump
-  files:
-  - packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_patterns.py
-  dedupe_key: 'code2llm:smell:data_clump:packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_patterns.py:160:Data
-    Clump: domain, self, intent'
-- signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: examples, title, client'
-  description: 'code2llm reports `Data Clump: examples, title, client` in `nlp2dsl_sdk/preview.py:215`.
-
-
-    Arguments (examples, title, client) are used together in multiple functions: nlp2dsl_sdk.preview.preview_text_examples,
-    nlp2dsl_sdk.preview.execute_text_examples.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: normal
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - data-clump
-  files:
-  - nlp2dsl_sdk/preview.py
-  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/preview.py:215:Data Clump: examples,
-    title, client'
-- signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: examples, title, client'
-  description: 'code2llm reports `Data Clump: examples, title, client` in `nlp2dsl_sdk/preview.py:282`.
-
-
-    Arguments (examples, title, client) are used together in multiple functions: nlp2dsl_sdk.preview.preview_text_examples,
-    nlp2dsl_sdk.preview.execute_text_examples.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: normal
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - data-clump
-  files:
-  - nlp2dsl_sdk/preview.py
-  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/preview.py:282:Data Clump: examples,
-    title, client'
-- signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: header, app, self'
-  description: 'code2llm reports `Data Clump: header, app, self` in `backend/app/logging_setup.py:64`.
-
-
-    Arguments (header, app, self) are used together in multiple functions: backend.app.logging_setup.RequestIDMiddleware.__init__,
+    Arguments (app, header, self) are used together in multiple functions: backend.app.logging_setup.RequestIDMiddleware.__init__,
     nlp-service.app.logging_setup.RequestIDMiddleware.__init__, worker.logging_setup.RequestIDMiddleware.__init__.
 
 
@@ -2693,13 +2612,13 @@ tickets:
   files:
   - backend/app/logging_setup.py
   dedupe_key: 'code2llm:smell:data_clump:backend/app/logging_setup.py:64:Data Clump:
-    header, app, self'
+    app, header, self'
 - signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: header, app, self'
-  description: 'code2llm reports `Data Clump: header, app, self` in `nlp-service/app/logging_setup.py:64`.
+  title: 'Address code smell: Data Clump: app, header, self'
+  description: 'code2llm reports `Data Clump: app, header, self` in `nlp-service/app/logging_setup.py:64`.
 
 
-    Arguments (header, app, self) are used together in multiple functions: backend.app.logging_setup.RequestIDMiddleware.__init__,
+    Arguments (app, header, self) are used together in multiple functions: backend.app.logging_setup.RequestIDMiddleware.__init__,
     nlp-service.app.logging_setup.RequestIDMiddleware.__init__, worker.logging_setup.RequestIDMiddleware.__init__.
 
 
@@ -2713,13 +2632,13 @@ tickets:
   files:
   - nlp-service/app/logging_setup.py
   dedupe_key: 'code2llm:smell:data_clump:nlp-service/app/logging_setup.py:64:Data
-    Clump: header, app, self'
+    Clump: app, header, self'
 - signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: header, app, self'
-  description: 'code2llm reports `Data Clump: header, app, self` in `worker/logging_setup.py:64`.
+  title: 'Address code smell: Data Clump: app, header, self'
+  description: 'code2llm reports `Data Clump: app, header, self` in `worker/logging_setup.py:64`.
 
 
-    Arguments (header, app, self) are used together in multiple functions: backend.app.logging_setup.RequestIDMiddleware.__init__,
+    Arguments (app, header, self) are used together in multiple functions: backend.app.logging_setup.RequestIDMiddleware.__init__,
     nlp-service.app.logging_setup.RequestIDMiddleware.__init__, worker.logging_setup.RequestIDMiddleware.__init__.
 
 
@@ -2732,14 +2651,324 @@ tickets:
   - data-clump
   files:
   - worker/logging_setup.py
-  dedupe_key: 'code2llm:smell:data_clump:worker/logging_setup.py:64:Data Clump: header,
-    app, self'
+  dedupe_key: 'code2llm:smell:data_clump:worker/logging_setup.py:64:Data Clump: app,
+    header, self'
 - signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: ir, action, config'
-  description: 'code2llm reports `Data Clump: ir, action, config` in `nlp2dsl_sdk/system_map_models.py:42`.
+  title: 'Address code smell: Data Clump: client, examples, title'
+  description: 'code2llm reports `Data Clump: client, examples, title` in `nlp2dsl_sdk/preview.py:215`.
 
 
-    Arguments (ir, action, config) are used together in multiple functions: nlp2dsl_sdk.system_map_models.validate_config_against_map,
+    Arguments (client, examples, title) are used together in multiple functions: nlp2dsl_sdk.preview.preview_text_examples,
+    nlp2dsl_sdk.preview.execute_text_examples.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - nlp2dsl_sdk/preview.py
+  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/preview.py:215:Data Clump: client,
+    examples, title'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: client, examples, title'
+  description: 'code2llm reports `Data Clump: client, examples, title` in `nlp2dsl_sdk/preview.py:282`.
+
+
+    Arguments (client, examples, title) are used together in multiple functions: nlp2dsl_sdk.preview.preview_text_examples,
+    nlp2dsl_sdk.preview.execute_text_examples.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - nlp2dsl_sdk/preview.py
+  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/preview.py:282:Data Clump: client,
+    examples, title'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: context, description, self, language, include_tests'
+  description: 'code2llm reports `Data Clump: context, description, self, language,
+    include_tests` in `nlp-service/app/code_generator.py:161`.
+
+
+    Arguments (context, description, self, language, include_tests) are used together
+    in multiple functions: nlp-service.app.code_generator.CodeGenerator.generate_code,
+    nlp2dsl_sdk.client.NLP2DSLClient.generate_code.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - nlp-service/app/code_generator.py
+  dedupe_key: 'code2llm:smell:data_clump:nlp-service/app/code_generator.py:161:Data
+    Clump: context, description, self, language, include_tests'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: context, description, self, language, include_tests'
+  description: 'code2llm reports `Data Clump: context, description, self, language,
+    include_tests` in `nlp2dsl_sdk/client.py:390`.
+
+
+    Arguments (context, description, self, language, include_tests) are used together
+    in multiple functions: nlp-service.app.code_generator.CodeGenerator.generate_code,
+    nlp2dsl_sdk.client.NLP2DSLClient.generate_code.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - nlp2dsl_sdk/client.py
+  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:390:Data Clump: context,
+    description, self, language, include_tests'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: data, name, self, workflow_id, status'
+  description: 'code2llm reports `Data Clump: data, name, self, workflow_id, status`
+    in `backend/app/db/memory.py:20`.
+
+
+    Arguments (data, name, self, workflow_id, status) are used together in multiple
+    functions: backend.app.db.memory.MemoryWorkflowRepo.save_run, backend.app.db.WorkflowRepo.save_run,
+    backend.app.db.postgres.PostgresWorkflowRepo.save_run.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - backend/app/db/memory.py
+  dedupe_key: 'code2llm:smell:data_clump:backend/app/db/memory.py:20:Data Clump: data,
+    name, self, workflow_id, status'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: data, name, self, workflow_id, status'
+  description: 'code2llm reports `Data Clump: data, name, self, workflow_id, status`
+    in `backend/app/db/__init__.py:20`.
+
+
+    Arguments (data, name, self, workflow_id, status) are used together in multiple
+    functions: backend.app.db.memory.MemoryWorkflowRepo.save_run, backend.app.db.WorkflowRepo.save_run,
+    backend.app.db.postgres.PostgresWorkflowRepo.save_run.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - backend/app/db/__init__.py
+  dedupe_key: 'code2llm:smell:data_clump:backend/app/db/__init__.py:20:Data Clump:
+    data, name, self, workflow_id, status'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: data, name, self, workflow_id, status'
+  description: 'code2llm reports `Data Clump: data, name, self, workflow_id, status`
+    in `backend/app/db/postgres.py:108`.
+
+
+    Arguments (data, name, self, workflow_id, status) are used together in multiple
+    functions: backend.app.db.memory.MemoryWorkflowRepo.save_run, backend.app.db.WorkflowRepo.save_run,
+    backend.app.db.postgres.PostgresWorkflowRepo.save_run.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - backend/app/db/postgres.py
+  dedupe_key: 'code2llm:smell:data_clump:backend/app/db/postgres.py:108:Data Clump:
+    data, name, self, workflow_id, status'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: data, self, message'
+  description: 'code2llm reports `Data Clump: data, self, message` in `nlp2dsl_sdk/client.py:825`.
+
+
+    Arguments (data, self, message) are used together in multiple functions: nlp2dsl_sdk.client.ConversationFlow._handle_in_progress_response,
+    nlp2dsl_sdk.client.ConversationFlow._handle_ready_response, nlp2dsl_sdk.client.ConversationFlow._handle_completed_response.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - nlp2dsl_sdk/client.py
+  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:825:Data Clump: data,
+    self, message'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: data, self, message'
+  description: 'code2llm reports `Data Clump: data, self, message` in `nlp2dsl_sdk/client.py:848`.
+
+
+    Arguments (data, self, message) are used together in multiple functions: nlp2dsl_sdk.client.ConversationFlow._handle_in_progress_response,
+    nlp2dsl_sdk.client.ConversationFlow._handle_ready_response, nlp2dsl_sdk.client.ConversationFlow._handle_completed_response.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - nlp2dsl_sdk/client.py
+  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:848:Data Clump: data,
+    self, message'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: data, self, message'
+  description: 'code2llm reports `Data Clump: data, self, message` in `nlp2dsl_sdk/client.py:862`.
+
+
+    Arguments (data, self, message) are used together in multiple functions: nlp2dsl_sdk.client.ConversationFlow._handle_in_progress_response,
+    nlp2dsl_sdk.client.ConversationFlow._handle_ready_response, nlp2dsl_sdk.client.ConversationFlow._handle_completed_response.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - nlp2dsl_sdk/client.py
+  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:862:Data Clump: data,
+    self, message'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: domain, intent, self'
+  description: 'code2llm reports `Data Clump: domain, intent, self` in `packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_patterns.py:154`.
+
+
+    Arguments (domain, intent, self) are used together in multiple functions: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.get_intent_patterns,
+    packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.has_intent.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_patterns.py
+  dedupe_key: 'code2llm:smell:data_clump:packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_patterns.py:154:Data
+    Clump: domain, intent, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: domain, intent, self'
+  description: 'code2llm reports `Data Clump: domain, intent, self` in `packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_patterns.py:160`.
+
+
+    Arguments (domain, intent, self) are used together in multiple functions: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.get_intent_patterns,
+    packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.has_intent.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_patterns.py
+  dedupe_key: 'code2llm:smell:data_clump:packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_patterns.py:160:Data
+    Clump: domain, intent, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: fingerprint, key, self'
+  description: 'code2llm reports `Data Clump: fingerprint, key, self` in `backend/app/idempotency.py:37`.
+
+
+    Arguments (fingerprint, key, self) are used together in multiple functions: backend.app.idempotency.IdempotencyStore.start,
+    backend.app.idempotency.MemoryIdempotencyStore.start, backend.app.idempotency.PostgresIdempotencyStore.start.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - backend/app/idempotency.py
+  dedupe_key: 'code2llm:smell:data_clump:backend/app/idempotency.py:37:Data Clump:
+    fingerprint, key, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: fingerprint, key, self'
+  description: 'code2llm reports `Data Clump: fingerprint, key, self` in `backend/app/idempotency.py:58`.
+
+
+    Arguments (fingerprint, key, self) are used together in multiple functions: backend.app.idempotency.IdempotencyStore.start,
+    backend.app.idempotency.MemoryIdempotencyStore.start, backend.app.idempotency.PostgresIdempotencyStore.start.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - backend/app/idempotency.py
+  dedupe_key: 'code2llm:smell:data_clump:backend/app/idempotency.py:58:Data Clump:
+    fingerprint, key, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: fingerprint, key, self'
+  description: 'code2llm reports `Data Clump: fingerprint, key, self` in `backend/app/idempotency.py:153`.
+
+
+    Arguments (fingerprint, key, self) are used together in multiple functions: backend.app.idempotency.IdempotencyStore.start,
+    backend.app.idempotency.MemoryIdempotencyStore.start, backend.app.idempotency.PostgresIdempotencyStore.start.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - backend/app/idempotency.py
+  dedupe_key: 'code2llm:smell:data_clump:backend/app/idempotency.py:153:Data Clump:
+    fingerprint, key, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: ir, config, action'
+  description: 'code2llm reports `Data Clump: ir, config, action` in `nlp2dsl_sdk/system_map_models.py:42`.
+
+
+    Arguments (ir, config, action) are used together in multiple functions: nlp2dsl_sdk.system_map_models.validate_config_against_map,
     nlp2dsl_sdk.step_validation.validate_step_config_from_map, nlp2dsl_sdk.validation.pipeline.validate_step_config_from_map,
     nlp2dsl_sdk.validation.pipeline.validate_step_config_from_map_issues, nlp2dsl_sdk.validation.pipeline.validate_post_execute_from_map,
     nlp2dsl_sdk.validation.pipeline._context_from_map.
@@ -2755,13 +2984,13 @@ tickets:
   files:
   - nlp2dsl_sdk/system_map_models.py
   dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/system_map_models.py:42:Data
-    Clump: ir, action, config'
+    Clump: ir, config, action'
 - signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: ir, action, config'
-  description: 'code2llm reports `Data Clump: ir, action, config` in `nlp2dsl_sdk/step_validation.py:27`.
+  title: 'Address code smell: Data Clump: ir, config, action'
+  description: 'code2llm reports `Data Clump: ir, config, action` in `nlp2dsl_sdk/step_validation.py:27`.
 
 
-    Arguments (ir, action, config) are used together in multiple functions: nlp2dsl_sdk.system_map_models.validate_config_against_map,
+    Arguments (ir, config, action) are used together in multiple functions: nlp2dsl_sdk.system_map_models.validate_config_against_map,
     nlp2dsl_sdk.step_validation.validate_step_config_from_map, nlp2dsl_sdk.validation.pipeline.validate_step_config_from_map,
     nlp2dsl_sdk.validation.pipeline.validate_step_config_from_map_issues, nlp2dsl_sdk.validation.pipeline.validate_post_execute_from_map,
     nlp2dsl_sdk.validation.pipeline._context_from_map.
@@ -2777,13 +3006,13 @@ tickets:
   files:
   - nlp2dsl_sdk/step_validation.py
   dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/step_validation.py:27:Data Clump:
-    ir, action, config'
+    ir, config, action'
 - signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: ir, action, config'
-  description: 'code2llm reports `Data Clump: ir, action, config` in `nlp2dsl_sdk/validation/pipeline.py:42`.
+  title: 'Address code smell: Data Clump: ir, config, action'
+  description: 'code2llm reports `Data Clump: ir, config, action` in `nlp2dsl_sdk/validation/pipeline.py:42`.
 
 
-    Arguments (ir, action, config) are used together in multiple functions: nlp2dsl_sdk.system_map_models.validate_config_against_map,
+    Arguments (ir, config, action) are used together in multiple functions: nlp2dsl_sdk.system_map_models.validate_config_against_map,
     nlp2dsl_sdk.step_validation.validate_step_config_from_map, nlp2dsl_sdk.validation.pipeline.validate_step_config_from_map,
     nlp2dsl_sdk.validation.pipeline.validate_step_config_from_map_issues, nlp2dsl_sdk.validation.pipeline.validate_post_execute_from_map,
     nlp2dsl_sdk.validation.pipeline._context_from_map.
@@ -2799,13 +3028,13 @@ tickets:
   files:
   - nlp2dsl_sdk/validation/pipeline.py
   dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/validation/pipeline.py:42:Data
-    Clump: ir, action, config'
+    Clump: ir, config, action'
 - signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: ir, action, config'
-  description: 'code2llm reports `Data Clump: ir, action, config` in `nlp2dsl_sdk/validation/pipeline.py:56`.
+  title: 'Address code smell: Data Clump: ir, config, action'
+  description: 'code2llm reports `Data Clump: ir, config, action` in `nlp2dsl_sdk/validation/pipeline.py:56`.
 
 
-    Arguments (ir, action, config) are used together in multiple functions: nlp2dsl_sdk.system_map_models.validate_config_against_map,
+    Arguments (ir, config, action) are used together in multiple functions: nlp2dsl_sdk.system_map_models.validate_config_against_map,
     nlp2dsl_sdk.step_validation.validate_step_config_from_map, nlp2dsl_sdk.validation.pipeline.validate_step_config_from_map,
     nlp2dsl_sdk.validation.pipeline.validate_step_config_from_map_issues, nlp2dsl_sdk.validation.pipeline.validate_post_execute_from_map,
     nlp2dsl_sdk.validation.pipeline._context_from_map.
@@ -2821,13 +3050,13 @@ tickets:
   files:
   - nlp2dsl_sdk/validation/pipeline.py
   dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/validation/pipeline.py:56:Data
-    Clump: ir, action, config'
+    Clump: ir, config, action'
 - signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: ir, action, config'
-  description: 'code2llm reports `Data Clump: ir, action, config` in `nlp2dsl_sdk/validation/pipeline.py:128`.
+  title: 'Address code smell: Data Clump: ir, config, action'
+  description: 'code2llm reports `Data Clump: ir, config, action` in `nlp2dsl_sdk/validation/pipeline.py:128`.
 
 
-    Arguments (ir, action, config) are used together in multiple functions: nlp2dsl_sdk.system_map_models.validate_config_against_map,
+    Arguments (ir, config, action) are used together in multiple functions: nlp2dsl_sdk.system_map_models.validate_config_against_map,
     nlp2dsl_sdk.step_validation.validate_step_config_from_map, nlp2dsl_sdk.validation.pipeline.validate_step_config_from_map,
     nlp2dsl_sdk.validation.pipeline.validate_step_config_from_map_issues, nlp2dsl_sdk.validation.pipeline.validate_post_execute_from_map,
     nlp2dsl_sdk.validation.pipeline._context_from_map.
@@ -2843,13 +3072,13 @@ tickets:
   files:
   - nlp2dsl_sdk/validation/pipeline.py
   dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/validation/pipeline.py:128:Data
-    Clump: ir, action, config'
+    Clump: ir, config, action'
 - signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: ir, action, config'
-  description: 'code2llm reports `Data Clump: ir, action, config` in `nlp2dsl_sdk/validation/pipeline.py:261`.
+  title: 'Address code smell: Data Clump: ir, config, action'
+  description: 'code2llm reports `Data Clump: ir, config, action` in `nlp2dsl_sdk/validation/pipeline.py:261`.
 
 
-    Arguments (ir, action, config) are used together in multiple functions: nlp2dsl_sdk.system_map_models.validate_config_against_map,
+    Arguments (ir, config, action) are used together in multiple functions: nlp2dsl_sdk.system_map_models.validate_config_against_map,
     nlp2dsl_sdk.step_validation.validate_step_config_from_map, nlp2dsl_sdk.validation.pipeline.validate_step_config_from_map,
     nlp2dsl_sdk.validation.pipeline.validate_step_config_from_map_issues, nlp2dsl_sdk.validation.pipeline.validate_post_execute_from_map,
     nlp2dsl_sdk.validation.pipeline._context_from_map.
@@ -2865,10 +3094,10 @@ tickets:
   files:
   - nlp2dsl_sdk/validation/pipeline.py
   dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/validation/pipeline.py:261:Data
-    Clump: ir, action, config'
+    Clump: ir, config, action'
 - signal: code2llm_smell_data_clump
   title: 'Address code smell: Data Clump: limit, offset, self'
-  description: 'code2llm reports `Data Clump: limit, offset, self` in `backend/app/db/memory.py:32`.
+  description: 'code2llm reports `Data Clump: limit, offset, self` in `backend/app/db/memory.py:33`.
 
 
     Arguments (limit, offset, self) are used together in multiple functions: backend.app.db.memory.MemoryWorkflowRepo.list_runs,
@@ -2884,7 +3113,7 @@ tickets:
   - data-clump
   files:
   - backend/app/db/memory.py
-  dedupe_key: 'code2llm:smell:data_clump:backend/app/db/memory.py:32:Data Clump: limit,
+  dedupe_key: 'code2llm:smell:data_clump:backend/app/db/memory.py:33:Data Clump: limit,
     offset, self'
 - signal: code2llm_smell_data_clump
   title: 'Address code smell: Data Clump: limit, offset, self'
@@ -2908,7 +3137,7 @@ tickets:
     limit, offset, self'
 - signal: code2llm_smell_data_clump
   title: 'Address code smell: Data Clump: limit, offset, self'
-  description: 'code2llm reports `Data Clump: limit, offset, self` in `backend/app/db/postgres.py:140`.
+  description: 'code2llm reports `Data Clump: limit, offset, self` in `backend/app/db/postgres.py:155`.
 
 
     Arguments (limit, offset, self) are used together in multiple functions: backend.app.db.memory.MemoryWorkflowRepo.list_runs,
@@ -2924,16 +3153,56 @@ tickets:
   - data-clump
   files:
   - backend/app/db/postgres.py
-  dedupe_key: 'code2llm:smell:data_clump:backend/app/db/postgres.py:140:Data Clump:
+  dedupe_key: 'code2llm:smell:data_clump:backend/app/db/postgres.py:155:Data Clump:
     limit, offset, self'
 - signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: name, schedule, format_type, trigger, slack_channel,
-    self, email_to, report_type'
-  description: 'code2llm reports `Data Clump: name, schedule, format_type, trigger,
-    slack_channel, self, email_to, report_type` in `nlp2dsl_sdk/client.py:390`.
+  title: 'Address code smell: Data Clump: match, text_lower, self'
+  description: 'code2llm reports `Data Clump: match, text_lower, self` in `packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py:477`.
 
 
-    Arguments (name, schedule, format_type, trigger, slack_channel, self, email_to,
+    Arguments (match, text_lower, self) are used together in multiple functions: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._apply_domain_booster,
+    packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._anti_networking_browser_override.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py
+  dedupe_key: 'code2llm:smell:data_clump:packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py:477:Data
+    Clump: match, text_lower, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: match, text_lower, self'
+  description: 'code2llm reports `Data Clump: match, text_lower, self` in `packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py:485`.
+
+
+    Arguments (match, text_lower, self) are used together in multiple functions: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._apply_domain_booster,
+    packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._anti_networking_browser_override.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py
+  dedupe_key: 'code2llm:smell:data_clump:packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py:485:Data
+    Clump: match, text_lower, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: name, schedule, email_to, format_type, self,
+    slack_channel, trigger, report_type'
+  description: 'code2llm reports `Data Clump: name, schedule, email_to, format_type,
+    self, slack_channel, trigger, report_type` in `nlp2dsl_sdk/client.py:479`.
+
+
+    Arguments (name, schedule, email_to, format_type, self, slack_channel, trigger,
     report_type) are used together in multiple functions: nlp2dsl_sdk.client.NLP2DSLClient.generate_report_and_notify,
     nlp2dsl_sdk.client.NLP2DSLClient.create_scheduled_report.
 
@@ -2947,16 +3216,16 @@ tickets:
   - data-clump
   files:
   - nlp2dsl_sdk/client.py
-  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:390:Data Clump: name,
-    schedule, format_type, trigger, slack_channel, self, email_to, report_type'
+  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:479:Data Clump: name,
+    schedule, email_to, format_type, self, slack_channel, trigger, report_type'
 - signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: name, schedule, format_type, trigger, slack_channel,
-    self, email_to, report_type'
-  description: 'code2llm reports `Data Clump: name, schedule, format_type, trigger,
-    slack_channel, self, email_to, report_type` in `nlp2dsl_sdk/client.py:430`.
+  title: 'Address code smell: Data Clump: name, schedule, email_to, format_type, self,
+    slack_channel, trigger, report_type'
+  description: 'code2llm reports `Data Clump: name, schedule, email_to, format_type,
+    self, slack_channel, trigger, report_type` in `nlp2dsl_sdk/client.py:519`.
 
 
-    Arguments (name, schedule, format_type, trigger, slack_channel, self, email_to,
+    Arguments (name, schedule, email_to, format_type, self, slack_channel, trigger,
     report_type) are used together in multiple functions: nlp2dsl_sdk.client.NLP2DSLClient.generate_report_and_notify,
     nlp2dsl_sdk.client.NLP2DSLClient.create_scheduled_report.
 
@@ -2970,14 +3239,14 @@ tickets:
   - data-clump
   files:
   - nlp2dsl_sdk/client.py
-  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:430:Data Clump: name,
-    schedule, format_type, trigger, slack_channel, self, email_to, report_type'
+  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:519:Data Clump: name,
+    schedule, email_to, format_type, self, slack_channel, trigger, report_type'
 - signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: path, method, self'
-  description: 'code2llm reports `Data Clump: path, method, self` in `nlp2dsl_sdk/client.py:107`.
+  title: 'Address code smell: Data Clump: path, self, method'
+  description: 'code2llm reports `Data Clump: path, self, method` in `nlp2dsl_sdk/client.py:107`.
 
 
-    Arguments (path, method, self) are used together in multiple functions: nlp2dsl_sdk.client.NLP2DSLClient._backend,
+    Arguments (path, self, method) are used together in multiple functions: nlp2dsl_sdk.client.NLP2DSLClient._backend,
     nlp2dsl_sdk.client.NLP2DSLClient._nlp_service, nlp2dsl_sdk.client.NLP2DSLClient._worker.
 
 
@@ -2991,13 +3260,13 @@ tickets:
   files:
   - nlp2dsl_sdk/client.py
   dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:107:Data Clump: path,
-    method, self'
+    self, method'
 - signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: path, method, self'
-  description: 'code2llm reports `Data Clump: path, method, self` in `nlp2dsl_sdk/client.py:110`.
+  title: 'Address code smell: Data Clump: path, self, method'
+  description: 'code2llm reports `Data Clump: path, self, method` in `nlp2dsl_sdk/client.py:110`.
 
 
-    Arguments (path, method, self) are used together in multiple functions: nlp2dsl_sdk.client.NLP2DSLClient._backend,
+    Arguments (path, self, method) are used together in multiple functions: nlp2dsl_sdk.client.NLP2DSLClient._backend,
     nlp2dsl_sdk.client.NLP2DSLClient._nlp_service, nlp2dsl_sdk.client.NLP2DSLClient._worker.
 
 
@@ -3011,13 +3280,13 @@ tickets:
   files:
   - nlp2dsl_sdk/client.py
   dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:110:Data Clump: path,
-    method, self'
+    self, method'
 - signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: path, method, self'
-  description: 'code2llm reports `Data Clump: path, method, self` in `nlp2dsl_sdk/client.py:113`.
+  title: 'Address code smell: Data Clump: path, self, method'
+  description: 'code2llm reports `Data Clump: path, self, method` in `nlp2dsl_sdk/client.py:113`.
 
 
-    Arguments (path, method, self) are used together in multiple functions: nlp2dsl_sdk.client.NLP2DSLClient._backend,
+    Arguments (path, self, method) are used together in multiple functions: nlp2dsl_sdk.client.NLP2DSLClient._backend,
     nlp2dsl_sdk.client.NLP2DSLClient._nlp_service, nlp2dsl_sdk.client.NLP2DSLClient._worker.
 
 
@@ -3031,34 +3300,14 @@ tickets:
   files:
   - nlp2dsl_sdk/client.py
   dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:113:Data Clump: path,
-    method, self'
-- signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: path, value, self'
-  description: 'code2llm reports `Data Clump: path, value, self` in `nlp2dsl_sdk/client.py:197`.
-
-
-    Arguments (path, value, self) are used together in multiple functions: nlp2dsl_sdk.client.NLP2DSLClient.set_setting,
-    nlp-service.app.settings.SettingsManager.set.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: normal
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - data-clump
-  files:
-  - nlp2dsl_sdk/client.py
-  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:197:Data Clump: path,
-    value, self'
+    self, method'
 - signal: code2llm_smell_data_clump
   title: 'Address code smell: Data Clump: path, value, self'
   description: 'code2llm reports `Data Clump: path, value, self` in `nlp-service/app/settings.py:126`.
 
 
-    Arguments (path, value, self) are used together in multiple functions: nlp2dsl_sdk.client.NLP2DSLClient.set_setting,
-    nlp-service.app.settings.SettingsManager.set.
+    Arguments (path, value, self) are used together in multiple functions: nlp-service.app.settings.SettingsManager.set,
+    nlp2dsl_sdk.client.NLP2DSLClient.set_setting.
 
 
     Make the smallest refactor that removes the smell and run local tests.'
@@ -3073,11 +3322,31 @@ tickets:
   dedupe_key: 'code2llm:smell:data_clump:nlp-service/app/settings.py:126:Data Clump:
     path, value, self'
 - signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: rel, base_url, example_dir'
-  description: 'code2llm reports `Data Clump: rel, base_url, example_dir` in `scripts/run-example-docker-e2e.py:99`.
+  title: 'Address code smell: Data Clump: path, value, self'
+  description: 'code2llm reports `Data Clump: path, value, self` in `nlp2dsl_sdk/client.py:286`.
 
 
-    Arguments (rel, base_url, example_dir) are used together in multiple functions:
+    Arguments (path, value, self) are used together in multiple functions: nlp-service.app.settings.SettingsManager.set,
+    nlp2dsl_sdk.client.NLP2DSLClient.set_setting.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - nlp2dsl_sdk/client.py
+  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:286:Data Clump: path,
+    value, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: rel, example_dir, base_url'
+  description: 'code2llm reports `Data Clump: rel, example_dir, base_url` in `scripts/run-example-docker-e2e.py:99`.
+
+
+    Arguments (rel, example_dir, base_url) are used together in multiple functions:
     scripts.run-example-docker-e2e.run_execution, scripts.run-example-docker-e2e.run_conversation.
 
 
@@ -3091,13 +3360,13 @@ tickets:
   files:
   - scripts/run-example-docker-e2e.py
   dedupe_key: 'code2llm:smell:data_clump:scripts/run-example-docker-e2e.py:99:Data
-    Clump: rel, base_url, example_dir'
+    Clump: rel, example_dir, base_url'
 - signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: rel, base_url, example_dir'
-  description: 'code2llm reports `Data Clump: rel, base_url, example_dir` in `scripts/run-example-docker-e2e.py:123`.
+  title: 'Address code smell: Data Clump: rel, example_dir, base_url'
+  description: 'code2llm reports `Data Clump: rel, example_dir, base_url` in `scripts/run-example-docker-e2e.py:123`.
 
 
-    Arguments (rel, base_url, example_dir) are used together in multiple functions:
+    Arguments (rel, example_dir, base_url) are used together in multiple functions:
     scripts.run-example-docker-e2e.run_execution, scripts.run-example-docker-e2e.run_conversation.
 
 
@@ -3111,15 +3380,137 @@ tickets:
   files:
   - scripts/run-example-docker-e2e.py
   dedupe_key: 'code2llm:smell:data_clump:scripts/run-example-docker-e2e.py:123:Data
-    Clump: rel, base_url, example_dir'
+    Clump: rel, example_dir, base_url'
 - signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: second_score, top_category, second_category,
-    top_score'
-  description: 'code2llm reports `Data Clump: second_score, top_category, second_category,
-    top_score` in `nlp-service/app/routing/parser/rules.py:306`.
+  title: 'Address code smell: Data Clump: request, self, call_next'
+  description: 'code2llm reports `Data Clump: request, self, call_next` in `backend/app/logging_setup.py:68`.
 
 
-    Arguments (second_score, top_category, second_category, top_score) are used together
+    Arguments (request, self, call_next) are used together in multiple functions:
+    backend.app.logging_setup.RequestIDMiddleware.dispatch, nlp-service.app.logging_setup.RequestIDMiddleware.dispatch,
+    worker.logging_setup.RequestIDMiddleware.dispatch.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - backend/app/logging_setup.py
+  dedupe_key: 'code2llm:smell:data_clump:backend/app/logging_setup.py:68:Data Clump:
+    request, self, call_next'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: request, self, call_next'
+  description: 'code2llm reports `Data Clump: request, self, call_next` in `nlp-service/app/logging_setup.py:68`.
+
+
+    Arguments (request, self, call_next) are used together in multiple functions:
+    backend.app.logging_setup.RequestIDMiddleware.dispatch, nlp-service.app.logging_setup.RequestIDMiddleware.dispatch,
+    worker.logging_setup.RequestIDMiddleware.dispatch.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - nlp-service/app/logging_setup.py
+  dedupe_key: 'code2llm:smell:data_clump:nlp-service/app/logging_setup.py:68:Data
+    Clump: request, self, call_next'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: request, self, call_next'
+  description: 'code2llm reports `Data Clump: request, self, call_next` in `worker/logging_setup.py:68`.
+
+
+    Arguments (request, self, call_next) are used together in multiple functions:
+    backend.app.logging_setup.RequestIDMiddleware.dispatch, nlp-service.app.logging_setup.RequestIDMiddleware.dispatch,
+    worker.logging_setup.RequestIDMiddleware.dispatch.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - worker/logging_setup.py
+  dedupe_key: 'code2llm:smell:data_clump:worker/logging_setup.py:68:Data Clump: request,
+    self, call_next'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: response, key, self'
+  description: 'code2llm reports `Data Clump: response, key, self` in `backend/app/idempotency.py:44`.
+
+
+    Arguments (response, key, self) are used together in multiple functions: backend.app.idempotency.IdempotencyStore.finish,
+    backend.app.idempotency.MemoryIdempotencyStore.finish, backend.app.idempotency.PostgresIdempotencyStore.finish.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - backend/app/idempotency.py
+  dedupe_key: 'code2llm:smell:data_clump:backend/app/idempotency.py:44:Data Clump:
+    response, key, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: response, key, self'
+  description: 'code2llm reports `Data Clump: response, key, self` in `backend/app/idempotency.py:78`.
+
+
+    Arguments (response, key, self) are used together in multiple functions: backend.app.idempotency.IdempotencyStore.finish,
+    backend.app.idempotency.MemoryIdempotencyStore.finish, backend.app.idempotency.PostgresIdempotencyStore.finish.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - backend/app/idempotency.py
+  dedupe_key: 'code2llm:smell:data_clump:backend/app/idempotency.py:78:Data Clump:
+    response, key, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: response, key, self'
+  description: 'code2llm reports `Data Clump: response, key, self` in `backend/app/idempotency.py:190`.
+
+
+    Arguments (response, key, self) are used together in multiple functions: backend.app.idempotency.IdempotencyStore.finish,
+    backend.app.idempotency.MemoryIdempotencyStore.finish, backend.app.idempotency.PostgresIdempotencyStore.finish.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - backend/app/idempotency.py
+  dedupe_key: 'code2llm:smell:data_clump:backend/app/idempotency.py:190:Data Clump:
+    response, key, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: second_score, top_category, top_score, second_category'
+  description: 'code2llm reports `Data Clump: second_score, top_category, top_score,
+    second_category` in `nlp-service/app/routing/parser/rules.py:306`.
+
+
+    Arguments (second_score, top_category, top_score, second_category) are used together
     in multiple functions: nlp-service.app.routing.parser.rules._top_system_action_wins,
     nlp-service.app.routing.parser.rules._second_system_action_wins.
 
@@ -3134,15 +3525,14 @@ tickets:
   files:
   - nlp-service/app/routing/parser/rules.py
   dedupe_key: 'code2llm:smell:data_clump:nlp-service/app/routing/parser/rules.py:306:Data
-    Clump: second_score, top_category, second_category, top_score'
+    Clump: second_score, top_category, top_score, second_category'
 - signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: second_score, top_category, second_category,
-    top_score'
-  description: 'code2llm reports `Data Clump: second_score, top_category, second_category,
-    top_score` in `nlp-service/app/routing/parser/rules.py:317`.
+  title: 'Address code smell: Data Clump: second_score, top_category, top_score, second_category'
+  description: 'code2llm reports `Data Clump: second_score, top_category, top_score,
+    second_category` in `nlp-service/app/routing/parser/rules.py:317`.
 
 
-    Arguments (second_score, top_category, second_category, top_score) are used together
+    Arguments (second_score, top_category, top_score, second_category) are used together
     in multiple functions: nlp-service.app.routing.parser.rules._top_system_action_wins,
     nlp-service.app.routing.parser.rules._second_system_action_wins.
 
@@ -3157,7 +3547,7 @@ tickets:
   files:
   - nlp-service/app/routing/parser/rules.py
   dedupe_key: 'code2llm:smell:data_clump:nlp-service/app/routing/parser/rules.py:317:Data
-    Clump: second_score, top_category, second_category, top_score'
+    Clump: second_score, top_category, top_score, second_category'
 - signal: code2llm_smell_data_clump
   title: 'Address code smell: Data Clump: state, conversation_id, self'
   description: 'code2llm reports `Data Clump: state, conversation_id, self` in `nlp-service/app/store/memory.py:16`.
@@ -3222,14 +3612,179 @@ tickets:
   dedupe_key: 'code2llm:smell:data_clump:nlp-service/app/store/redis_store.py:45:Data
     Clump: state, conversation_id, self'
 - signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: status, name, self, workflow_id, data'
-  description: 'code2llm reports `Data Clump: status, name, self, workflow_id, data`
-    in `backend/app/db/memory.py:19`.
+  title: 'Address code smell: Data Clump: step, plan, self'
+  description: 'code2llm reports `Data Clump: step, plan, self` in `packages/nlp2cmd-propact/src/nlp2cmd_propact/executor.py:123`.
 
 
-    Arguments (status, name, self, workflow_id, data) are used together in multiple
-    functions: backend.app.db.memory.MemoryWorkflowRepo.save_run, backend.app.db.WorkflowRepo.save_run,
-    backend.app.db.postgres.PostgresWorkflowRepo.save_run.
+    Arguments (step, plan, self) are used together in multiple functions: packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor._run_propact_step,
+    packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor._run_nlp2cmd_step.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - packages/nlp2cmd-propact/src/nlp2cmd_propact/executor.py
+  dedupe_key: 'code2llm:smell:data_clump:packages/nlp2cmd-propact/src/nlp2cmd_propact/executor.py:123:Data
+    Clump: step, plan, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: step, plan, self'
+  description: 'code2llm reports `Data Clump: step, plan, self` in `packages/nlp2cmd-propact/src/nlp2cmd_propact/executor.py:127`.
+
+
+    Arguments (step, plan, self) are used together in multiple functions: packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor._run_propact_step,
+    packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor._run_nlp2cmd_step.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - packages/nlp2cmd-propact/src/nlp2cmd_propact/executor.py
+  dedupe_key: 'code2llm:smell:data_clump:packages/nlp2cmd-propact/src/nlp2cmd_propact/executor.py:127:Data
+    Clump: step, plan, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: text, audio_path, conversation_id, self'
+  description: 'code2llm reports `Data Clump: text, audio_path, conversation_id, self`
+    in `nlp2dsl_sdk/client.py:314`.
+
+
+    Arguments (text, audio_path, conversation_id, self) are used together in multiple
+    functions: nlp2dsl_sdk.client.NLP2DSLClient.chat_message, nlp2dsl_sdk.client.NLP2DSLClient.nlp_chat_message.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - nlp2dsl_sdk/client.py
+  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:314:Data Clump: text,
+    audio_path, conversation_id, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: text, audio_path, conversation_id, self'
+  description: 'code2llm reports `Data Clump: text, audio_path, conversation_id, self`
+    in `nlp2dsl_sdk/client.py:365`.
+
+
+    Arguments (text, audio_path, conversation_id, self) are used together in multiple
+    functions: nlp2dsl_sdk.client.NLP2DSLClient.chat_message, nlp2dsl_sdk.client.NLP2DSLClient.nlp_chat_message.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - nlp2dsl_sdk/client.py
+  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:365:Data Clump: text,
+    audio_path, conversation_id, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: text, audio_path, self'
+  description: 'code2llm reports `Data Clump: text, audio_path, self` in `nlp2dsl_sdk/client.py:292`.
+
+
+    Arguments (text, audio_path, self) are used together in multiple functions: nlp2dsl_sdk.client.NLP2DSLClient.chat_start,
+    nlp2dsl_sdk.client.NLP2DSLClient.nlp_chat_start, nlp2dsl_sdk.client.ConversationFlow.start,
+    nlp2dsl_sdk.client.ConversationFlow.send_message.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - nlp2dsl_sdk/client.py
+  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:292:Data Clump: text,
+    audio_path, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: text, audio_path, self'
+  description: 'code2llm reports `Data Clump: text, audio_path, self` in `nlp2dsl_sdk/client.py:352`.
+
+
+    Arguments (text, audio_path, self) are used together in multiple functions: nlp2dsl_sdk.client.NLP2DSLClient.chat_start,
+    nlp2dsl_sdk.client.NLP2DSLClient.nlp_chat_start, nlp2dsl_sdk.client.ConversationFlow.start,
+    nlp2dsl_sdk.client.ConversationFlow.send_message.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - nlp2dsl_sdk/client.py
+  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:352:Data Clump: text,
+    audio_path, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: text, audio_path, self'
+  description: 'code2llm reports `Data Clump: text, audio_path, self` in `nlp2dsl_sdk/client.py:623`.
+
+
+    Arguments (text, audio_path, self) are used together in multiple functions: nlp2dsl_sdk.client.NLP2DSLClient.chat_start,
+    nlp2dsl_sdk.client.NLP2DSLClient.nlp_chat_start, nlp2dsl_sdk.client.ConversationFlow.start,
+    nlp2dsl_sdk.client.ConversationFlow.send_message.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - nlp2dsl_sdk/client.py
+  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:623:Data Clump: text,
+    audio_path, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: text, audio_path, self'
+  description: 'code2llm reports `Data Clump: text, audio_path, self` in `nlp2dsl_sdk/client.py:645`.
+
+
+    Arguments (text, audio_path, self) are used together in multiple functions: nlp2dsl_sdk.client.NLP2DSLClient.chat_start,
+    nlp2dsl_sdk.client.NLP2DSLClient.nlp_chat_start, nlp2dsl_sdk.client.ConversationFlow.start,
+    nlp2dsl_sdk.client.ConversationFlow.send_message.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - data-clump
+  files:
+  - nlp2dsl_sdk/client.py
+  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:645:Data Clump: text,
+    audio_path, self'
+- signal: code2llm_smell_data_clump
+  title: 'Address code smell: Data Clump: workflow_id, event, self'
+  description: 'code2llm reports `Data Clump: workflow_id, event, self` in `backend/app/db/memory.py:40`.
+
+
+    Arguments (workflow_id, event, self) are used together in multiple functions:
+    backend.app.db.memory.MemoryWorkflowRepo.append_event, backend.app.db.WorkflowRepo.append_event,
+    backend.app.db.postgres.PostgresWorkflowRepo.append_event.
 
 
     Make the smallest refactor that removes the smell and run local tests.'
@@ -3241,17 +3796,16 @@ tickets:
   - data-clump
   files:
   - backend/app/db/memory.py
-  dedupe_key: 'code2llm:smell:data_clump:backend/app/db/memory.py:19:Data Clump: status,
-    name, self, workflow_id, data'
+  dedupe_key: 'code2llm:smell:data_clump:backend/app/db/memory.py:40:Data Clump: workflow_id,
+    event, self'
 - signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: status, name, self, workflow_id, data'
-  description: 'code2llm reports `Data Clump: status, name, self, workflow_id, data`
-    in `backend/app/db/__init__.py:20`.
+  title: 'Address code smell: Data Clump: workflow_id, event, self'
+  description: 'code2llm reports `Data Clump: workflow_id, event, self` in `backend/app/db/__init__.py:40`.
 
 
-    Arguments (status, name, self, workflow_id, data) are used together in multiple
-    functions: backend.app.db.memory.MemoryWorkflowRepo.save_run, backend.app.db.WorkflowRepo.save_run,
-    backend.app.db.postgres.PostgresWorkflowRepo.save_run.
+    Arguments (workflow_id, event, self) are used together in multiple functions:
+    backend.app.db.memory.MemoryWorkflowRepo.append_event, backend.app.db.WorkflowRepo.append_event,
+    backend.app.db.postgres.PostgresWorkflowRepo.append_event.
 
 
     Make the smallest refactor that removes the smell and run local tests.'
@@ -3263,17 +3817,16 @@ tickets:
   - data-clump
   files:
   - backend/app/db/__init__.py
-  dedupe_key: 'code2llm:smell:data_clump:backend/app/db/__init__.py:20:Data Clump:
-    status, name, self, workflow_id, data'
+  dedupe_key: 'code2llm:smell:data_clump:backend/app/db/__init__.py:40:Data Clump:
+    workflow_id, event, self'
 - signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: status, name, self, workflow_id, data'
-  description: 'code2llm reports `Data Clump: status, name, self, workflow_id, data`
-    in `backend/app/db/postgres.py:93`.
+  title: 'Address code smell: Data Clump: workflow_id, event, self'
+  description: 'code2llm reports `Data Clump: workflow_id, event, self` in `backend/app/db/postgres.py:185`.
 
 
-    Arguments (status, name, self, workflow_id, data) are used together in multiple
-    functions: backend.app.db.memory.MemoryWorkflowRepo.save_run, backend.app.db.WorkflowRepo.save_run,
-    backend.app.db.postgres.PostgresWorkflowRepo.save_run.
+    Arguments (workflow_id, event, self) are used together in multiple functions:
+    backend.app.db.memory.MemoryWorkflowRepo.append_event, backend.app.db.WorkflowRepo.append_event,
+    backend.app.db.postgres.PostgresWorkflowRepo.append_event.
 
 
     Make the smallest refactor that removes the smell and run local tests.'
@@ -3285,14 +3838,14 @@ tickets:
   - data-clump
   files:
   - backend/app/db/postgres.py
-  dedupe_key: 'code2llm:smell:data_clump:backend/app/db/postgres.py:93:Data Clump:
-    status, name, self, workflow_id, data'
+  dedupe_key: 'code2llm:smell:data_clump:backend/app/db/postgres.py:185:Data Clump:
+    workflow_id, event, self'
 - signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: status, workflow_id, self'
-  description: 'code2llm reports `Data Clump: status, workflow_id, self` in `backend/app/db/memory.py:25`.
+  title: 'Address code smell: Data Clump: workflow_id, self, status'
+  description: 'code2llm reports `Data Clump: workflow_id, self, status` in `backend/app/db/memory.py:26`.
 
 
-    Arguments (status, workflow_id, self) are used together in multiple functions:
+    Arguments (workflow_id, self, status) are used together in multiple functions:
     backend.app.db.memory.MemoryWorkflowRepo.update_run_status, backend.app.db.WorkflowRepo.update_run_status,
     backend.app.db.postgres.PostgresWorkflowRepo.update_run_status.
 
@@ -3306,14 +3859,14 @@ tickets:
   - data-clump
   files:
   - backend/app/db/memory.py
-  dedupe_key: 'code2llm:smell:data_clump:backend/app/db/memory.py:25:Data Clump: status,
-    workflow_id, self'
+  dedupe_key: 'code2llm:smell:data_clump:backend/app/db/memory.py:26:Data Clump: workflow_id,
+    self, status'
 - signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: status, workflow_id, self'
-  description: 'code2llm reports `Data Clump: status, workflow_id, self` in `backend/app/db/__init__.py:24`.
+  title: 'Address code smell: Data Clump: workflow_id, self, status'
+  description: 'code2llm reports `Data Clump: workflow_id, self, status` in `backend/app/db/__init__.py:24`.
 
 
-    Arguments (status, workflow_id, self) are used together in multiple functions:
+    Arguments (workflow_id, self, status) are used together in multiple functions:
     backend.app.db.memory.MemoryWorkflowRepo.update_run_status, backend.app.db.WorkflowRepo.update_run_status,
     backend.app.db.postgres.PostgresWorkflowRepo.update_run_status.
 
@@ -3328,13 +3881,13 @@ tickets:
   files:
   - backend/app/db/__init__.py
   dedupe_key: 'code2llm:smell:data_clump:backend/app/db/__init__.py:24:Data Clump:
-    status, workflow_id, self'
+    workflow_id, self, status'
 - signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: status, workflow_id, self'
-  description: 'code2llm reports `Data Clump: status, workflow_id, self` in `backend/app/db/postgres.py:121`.
+  title: 'Address code smell: Data Clump: workflow_id, self, status'
+  description: 'code2llm reports `Data Clump: workflow_id, self, status` in `backend/app/db/postgres.py:136`.
 
 
-    Arguments (status, workflow_id, self) are used together in multiple functions:
+    Arguments (workflow_id, self, status) are used together in multiple functions:
     backend.app.db.memory.MemoryWorkflowRepo.update_run_status, backend.app.db.WorkflowRepo.update_run_status,
     backend.app.db.postgres.PostgresWorkflowRepo.update_run_status.
 
@@ -3348,221 +3901,15 @@ tickets:
   - data-clump
   files:
   - backend/app/db/postgres.py
-  dedupe_key: 'code2llm:smell:data_clump:backend/app/db/postgres.py:121:Data Clump:
-    status, workflow_id, self'
-- signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: step, self, plan'
-  description: 'code2llm reports `Data Clump: step, self, plan` in `packages/nlp2cmd-propact/src/nlp2cmd_propact/executor.py:123`.
-
-
-    Arguments (step, self, plan) are used together in multiple functions: packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor._run_propact_step,
-    packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor._run_nlp2cmd_step.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: normal
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - data-clump
-  files:
-  - packages/nlp2cmd-propact/src/nlp2cmd_propact/executor.py
-  dedupe_key: 'code2llm:smell:data_clump:packages/nlp2cmd-propact/src/nlp2cmd_propact/executor.py:123:Data
-    Clump: step, self, plan'
-- signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: step, self, plan'
-  description: 'code2llm reports `Data Clump: step, self, plan` in `packages/nlp2cmd-propact/src/nlp2cmd_propact/executor.py:127`.
-
-
-    Arguments (step, self, plan) are used together in multiple functions: packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor._run_propact_step,
-    packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor._run_nlp2cmd_step.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: normal
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - data-clump
-  files:
-  - packages/nlp2cmd-propact/src/nlp2cmd_propact/executor.py
-  dedupe_key: 'code2llm:smell:data_clump:packages/nlp2cmd-propact/src/nlp2cmd_propact/executor.py:127:Data
-    Clump: step, self, plan'
-- signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: text, audio_path, conversation_id, self'
-  description: 'code2llm reports `Data Clump: text, audio_path, conversation_id, self`
-    in `nlp2dsl_sdk/client.py:225`.
-
-
-    Arguments (text, audio_path, conversation_id, self) are used together in multiple
-    functions: nlp2dsl_sdk.client.NLP2DSLClient.chat_message, nlp2dsl_sdk.client.NLP2DSLClient.nlp_chat_message.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: normal
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - data-clump
-  files:
-  - nlp2dsl_sdk/client.py
-  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:225:Data Clump: text,
-    audio_path, conversation_id, self'
-- signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: text, audio_path, conversation_id, self'
-  description: 'code2llm reports `Data Clump: text, audio_path, conversation_id, self`
-    in `nlp2dsl_sdk/client.py:276`.
-
-
-    Arguments (text, audio_path, conversation_id, self) are used together in multiple
-    functions: nlp2dsl_sdk.client.NLP2DSLClient.chat_message, nlp2dsl_sdk.client.NLP2DSLClient.nlp_chat_message.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: normal
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - data-clump
-  files:
-  - nlp2dsl_sdk/client.py
-  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:276:Data Clump: text,
-    audio_path, conversation_id, self'
-- signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: text, audio_path, self'
-  description: 'code2llm reports `Data Clump: text, audio_path, self` in `nlp2dsl_sdk/client.py:203`.
-
-
-    Arguments (text, audio_path, self) are used together in multiple functions: nlp2dsl_sdk.client.NLP2DSLClient.chat_start,
-    nlp2dsl_sdk.client.NLP2DSLClient.nlp_chat_start, nlp2dsl_sdk.client.ConversationFlow.start,
-    nlp2dsl_sdk.client.ConversationFlow.send_message.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: normal
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - data-clump
-  files:
-  - nlp2dsl_sdk/client.py
-  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:203:Data Clump: text,
-    audio_path, self'
-- signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: text, audio_path, self'
-  description: 'code2llm reports `Data Clump: text, audio_path, self` in `nlp2dsl_sdk/client.py:263`.
-
-
-    Arguments (text, audio_path, self) are used together in multiple functions: nlp2dsl_sdk.client.NLP2DSLClient.chat_start,
-    nlp2dsl_sdk.client.NLP2DSLClient.nlp_chat_start, nlp2dsl_sdk.client.ConversationFlow.start,
-    nlp2dsl_sdk.client.ConversationFlow.send_message.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: normal
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - data-clump
-  files:
-  - nlp2dsl_sdk/client.py
-  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:263:Data Clump: text,
-    audio_path, self'
-- signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: text, audio_path, self'
-  description: 'code2llm reports `Data Clump: text, audio_path, self` in `nlp2dsl_sdk/client.py:534`.
-
-
-    Arguments (text, audio_path, self) are used together in multiple functions: nlp2dsl_sdk.client.NLP2DSLClient.chat_start,
-    nlp2dsl_sdk.client.NLP2DSLClient.nlp_chat_start, nlp2dsl_sdk.client.ConversationFlow.start,
-    nlp2dsl_sdk.client.ConversationFlow.send_message.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: normal
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - data-clump
-  files:
-  - nlp2dsl_sdk/client.py
-  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:534:Data Clump: text,
-    audio_path, self'
-- signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: text, audio_path, self'
-  description: 'code2llm reports `Data Clump: text, audio_path, self` in `nlp2dsl_sdk/client.py:556`.
-
-
-    Arguments (text, audio_path, self) are used together in multiple functions: nlp2dsl_sdk.client.NLP2DSLClient.chat_start,
-    nlp2dsl_sdk.client.NLP2DSLClient.nlp_chat_start, nlp2dsl_sdk.client.ConversationFlow.start,
-    nlp2dsl_sdk.client.ConversationFlow.send_message.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: normal
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - data-clump
-  files:
-  - nlp2dsl_sdk/client.py
-  dedupe_key: 'code2llm:smell:data_clump:nlp2dsl_sdk/client.py:556:Data Clump: text,
-    audio_path, self'
-- signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: text_lower, match, self'
-  description: 'code2llm reports `Data Clump: text_lower, match, self` in `packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py:477`.
-
-
-    Arguments (text_lower, match, self) are used together in multiple functions: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._apply_domain_booster,
-    packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._anti_networking_browser_override.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: normal
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - data-clump
-  files:
-  - packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py
-  dedupe_key: 'code2llm:smell:data_clump:packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py:477:Data
-    Clump: text_lower, match, self'
-- signal: code2llm_smell_data_clump
-  title: 'Address code smell: Data Clump: text_lower, match, self'
-  description: 'code2llm reports `Data Clump: text_lower, match, self` in `packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py:485`.
-
-
-    Arguments (text_lower, match, self) are used together in multiple functions: packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._apply_domain_booster,
-    packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector._anti_networking_browser_override.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: normal
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - data-clump
-  files:
-  - packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py
-  dedupe_key: 'code2llm:smell:data_clump:packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py:485:Data
-    Clump: text_lower, match, self'
+  dedupe_key: 'code2llm:smell:data_clump:backend/app/db/postgres.py:136:Data Clump:
+    workflow_id, self, status'
 - signal: code2llm_smell_feature_envy
   title: 'Address code smell: Feature Envy: _append_collection_blocks'
   description: 'code2llm reports `Feature Envy: _append_collection_blocks` in `nlp2dsl_sdk/doql/parse.py:233`.
 
 
     Function ''_append_collection_blocks'' mutates multiple variables in other modules:
-    ctx.validations, ctx.artifacts, ctx.access, ctx.commands, ctx.resources, ctx.runtimes.
+    ctx.runtimes, ctx.commands, ctx.resources, ctx.artifacts, ctx.validations, ctx.access.
 
 
     Make the smallest refactor that removes the smell and run local tests.'
@@ -3582,7 +3929,7 @@ tickets:
 
 
     Function ''process_example'' mutates multiple variables in other modules: report.actions,
-    report.checks, report.findings.
+    report.findings, report.checks.
 
 
     Make the smallest refactor that removes the smell and run local tests.'
@@ -3904,10 +4251,10 @@ tickets:
     Function: _exec_registry_edit'
 - signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: _execute_ready_dsl'
-  description: 'code2llm reports `God Function: _execute_ready_dsl` in `backend/app/routers/chat.py:195`.
+  description: 'code2llm reports `God Function: _execute_ready_dsl` in `backend/app/routers/chat.py:178`.
 
 
-    Function ''_execute_ready_dsl'' is oversized: CC=5, fan-out=16, mutations=0.
+    Function ''_execute_ready_dsl'' is oversized: CC=14, fan-out=23, mutations=0.
 
 
     Make the smallest refactor that removes the smell and run local tests.'
@@ -3919,11 +4266,11 @@ tickets:
   - god-function
   files:
   - backend/app/routers/chat.py
-  dedupe_key: 'code2llm:smell:god_function:backend/app/routers/chat.py:195:God Function:
+  dedupe_key: 'code2llm:smell:god_function:backend/app/routers/chat.py:178:God Function:
     _execute_ready_dsl'
 - signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: _execute_workflow'
-  description: 'code2llm reports `God Function: _execute_workflow` in `backend/app/engine.py:82`.
+  description: 'code2llm reports `God Function: _execute_workflow` in `backend/app/engine.py:89`.
 
 
     Function ''_execute_workflow'' is oversized: CC=13, fan-out=21, mutations=0.
@@ -3938,7 +4285,7 @@ tickets:
   - god-function
   files:
   - backend/app/engine.py
-  dedupe_key: 'code2llm:smell:god_function:backend/app/engine.py:82:God Function:
+  dedupe_key: 'code2llm:smell:god_function:backend/app/engine.py:89:God Function:
     _execute_workflow'
 - signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: _execution_contract'
@@ -4058,7 +4405,7 @@ tickets:
     Function: _get_spacy_model'
 - signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: _handle_completed_response'
-  description: 'code2llm reports `God Function: _handle_completed_response` in `nlp2dsl_sdk/client.py:773`.
+  description: 'code2llm reports `God Function: _handle_completed_response` in `nlp2dsl_sdk/client.py:862`.
 
 
     Function ''_handle_completed_response'' is oversized: CC=14, fan-out=8, mutations=0.
@@ -4073,7 +4420,7 @@ tickets:
   - god-function
   files:
   - nlp2dsl_sdk/client.py
-  dedupe_key: 'code2llm:smell:god_function:nlp2dsl_sdk/client.py:773:God Function:
+  dedupe_key: 'code2llm:smell:god_function:nlp2dsl_sdk/client.py:862:God Function:
     _handle_completed_response'
 - signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: _intent_from_orientation'
@@ -4267,7 +4614,7 @@ tickets:
     Function: _patch_doql_file'
 - signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: _persist_reflection'
-  description: 'code2llm reports `God Function: _persist_reflection` in `nlp2dsl_sdk/client.py:634`.
+  description: 'code2llm reports `God Function: _persist_reflection` in `nlp2dsl_sdk/client.py:723`.
 
 
     Function ''_persist_reflection'' is oversized: CC=11, fan-out=13, mutations=0.
@@ -4282,7 +4629,7 @@ tickets:
   - god-function
   files:
   - nlp2dsl_sdk/client.py
-  dedupe_key: 'code2llm:smell:god_function:nlp2dsl_sdk/client.py:634:God Function:
+  dedupe_key: 'code2llm:smell:god_function:nlp2dsl_sdk/client.py:723:God Function:
     _persist_reflection'
 - signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: _print_success_run_outcome'
@@ -4305,7 +4652,7 @@ tickets:
     _print_success_run_outcome'
 - signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: _proxy_chat_payload'
-  description: 'code2llm reports `God Function: _proxy_chat_payload` in `backend/app/routers/chat.py:41`.
+  description: 'code2llm reports `God Function: _proxy_chat_payload` in `backend/app/routers/chat.py:44`.
 
 
     Function ''_proxy_chat_payload'' is oversized: CC=9, fan-out=12, mutations=0.
@@ -4320,11 +4667,11 @@ tickets:
   - god-function
   files:
   - backend/app/routers/chat.py
-  dedupe_key: 'code2llm:smell:god_function:backend/app/routers/chat.py:41:God Function:
+  dedupe_key: 'code2llm:smell:god_function:backend/app/routers/chat.py:44:God Function:
     _proxy_chat_payload'
 - signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: _refresh_doql_registry'
-  description: 'code2llm reports `God Function: _refresh_doql_registry` in `nlp2dsl_sdk/client.py:685`.
+  description: 'code2llm reports `God Function: _refresh_doql_registry` in `nlp2dsl_sdk/client.py:774`.
 
 
     Function ''_refresh_doql_registry'' is oversized: CC=13, fan-out=12, mutations=0.
@@ -4339,7 +4686,7 @@ tickets:
   - god-function
   files:
   - nlp2dsl_sdk/client.py
-  dedupe_key: 'code2llm:smell:god_function:nlp2dsl_sdk/client.py:685:God Function:
+  dedupe_key: 'code2llm:smell:god_function:nlp2dsl_sdk/client.py:774:God Function:
     _refresh_doql_registry'
 - signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: _request'
@@ -4569,6 +4916,25 @@ tickets:
   dedupe_key: 'code2llm:smell:god_function:scripts/run-example-testql-results.py:350:God
     Function: _write_toon_report'
 - signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: append_event'
+  description: 'code2llm reports `God Function: append_event` in `backend/app/db/postgres.py:185`.
+
+
+    Function ''append_event'' is oversized: CC=4, fan-out=12, mutations=0.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - backend/app/db/postgres.py
+  dedupe_key: 'code2llm:smell:god_function:backend/app/db/postgres.py:185:God Function:
+    append_event'
+- signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: apply_invoice_context'
   description: 'code2llm reports `God Function: apply_invoice_context` in `nlp2dsl_sdk/invoice_policy.py:41`.
 
@@ -4665,10 +5031,10 @@ tickets:
     autofill_entities'
 - signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: bootstrap'
-  description: 'code2llm reports `God Function: bootstrap` in `examples/bootstrap.py:9`.
+  description: 'code2llm reports `God Function: bootstrap` in `examples/bootstrap.py:20`.
 
 
-    Function ''bootstrap'' is oversized: CC=11, fan-out=8, mutations=13.
+    Function ''bootstrap'' is oversized: CC=11, fan-out=9, mutations=15.
 
 
     Make the smallest refactor that removes the smell and run local tests.'
@@ -4680,7 +5046,8 @@ tickets:
   - god-function
   files:
   - examples/bootstrap.py
-  dedupe_key: 'code2llm:smell:god_function:examples/bootstrap.py:9:God Function: bootstrap'
+  dedupe_key: 'code2llm:smell:god_function:examples/bootstrap.py:20:God Function:
+    bootstrap'
 - signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: build_and_check_dsl'
   description: 'code2llm reports `God Function: build_and_check_dsl` in `nlp-service/app/conversation/responses.py:222`.
@@ -5289,6 +5656,63 @@ tickets:
   dedupe_key: 'code2llm:smell:god_function:scripts/run-conversation-scenario.py:88:God
     Function: main'
 - signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: main'
+  description: 'code2llm reports `God Function: main` in `scripts/validate-contract-drift.py:67`.
+
+
+    Function ''main'' is oversized: CC=6, fan-out=11, mutations=6.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - scripts/validate-contract-drift.py
+  dedupe_key: 'code2llm:smell:god_function:scripts/validate-contract-drift.py:67:God
+    Function: main'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: main'
+  description: 'code2llm reports `God Function: main` in `scripts/validate-publish-export.py:71`.
+
+
+    Function ''main'' is oversized: CC=9, fan-out=11, mutations=10.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - scripts/validate-publish-export.py
+  dedupe_key: 'code2llm:smell:god_function:scripts/validate-publish-export.py:71:God
+    Function: main'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: main'
+  description: 'code2llm reports `God Function: main` in `scripts/validate-contract-draft.py:33`.
+
+
+    Function ''main'' is oversized: CC=9, fan-out=9, mutations=12.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - scripts/validate-contract-draft.py
+  dedupe_key: 'code2llm:smell:god_function:scripts/validate-contract-draft.py:33:God
+    Function: main'
+- signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: map_to_dsl'
   description: 'code2llm reports `God Function: map_to_dsl` in `nlp-service/app/dsl/mapper.py:29`.
 
@@ -5384,6 +5808,27 @@ tickets:
   dedupe_key: 'code2llm:smell:god_function:nlp2dsl_sdk/doql_registry.py:117:God Function:
     merge_registry_observations'
 - signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: normalize_workflow_for_fingerprint'
+  description: 'code2llm reports `God Function: normalize_workflow_for_fingerprint`
+    in `backend/app/idempotency.py:221`.
+
+
+    Function ''normalize_workflow_for_fingerprint'' is oversized: CC=14, fan-out=8,
+    mutations=6.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - backend/app/idempotency.py
+  dedupe_key: 'code2llm:smell:god_function:backend/app/idempotency.py:221:God Function:
+    normalize_workflow_for_fingerprint'
+- signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: parse_fast_path_settings'
   description: 'code2llm reports `God Function: parse_fast_path_settings` in `packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/pattern_loaders.py:93`.
 
@@ -5478,6 +5923,25 @@ tickets:
   - nlp2dsl_sdk/workflow/lifecycle.py
   dedupe_key: 'code2llm:smell:god_function:nlp2dsl_sdk/workflow/lifecycle.py:142:God
     Function: plan_result_from_dialog'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: policy_blocked_response'
+  description: 'code2llm reports `God Function: policy_blocked_response` in `backend/app/execution_policy.py:151`.
+
+
+    Function ''policy_blocked_response'' is oversized: CC=2, fan-out=5, mutations=8.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - backend/app/execution_policy.py
+  dedupe_key: 'code2llm:smell:god_function:backend/app/execution_policy.py:151:God
+    Function: policy_blocked_response'
 - signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: preflight_turn'
   description: 'code2llm reports `God Function: preflight_turn` in `nlp-service/app/conversation/process_agent.py:30`.
@@ -5920,25 +6384,6 @@ tickets:
     Function: run'
 - signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: run'
-  description: 'code2llm reports `God Function: run` in `examples/04-scheduled-report/scenario.py:24`.
-
-
-    Function ''run'' is oversized: CC=11, fan-out=12, mutations=5.
-
-
-    Make the smallest refactor that removes the smell and run local tests.'
-  priority: normal
-  labels:
-  - llm-ready
-  - code2llm
-  - code-smell
-  - god-function
-  files:
-  - examples/04-scheduled-report/scenario.py
-  dedupe_key: 'code2llm:smell:god_function:examples/04-scheduled-report/scenario.py:24:God
-    Function: run'
-- signal: code2llm_smell_god_function
-  title: 'Address code smell: God Function: run'
   description: 'code2llm reports `God Function: run` in `examples/12-ir-show/scenario.py:45`.
 
 
@@ -5993,6 +6438,101 @@ tickets:
   files:
   - examples/08-multi-object-benchmark/scenario.py
   dedupe_key: 'code2llm:smell:god_function:examples/08-multi-object-benchmark/scenario.py:105:God
+    Function: run'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: run'
+  description: 'code2llm reports `God Function: run` in `examples/14-markpact-export/scenario.py:49`.
+
+
+    Function ''run'' is oversized: CC=4, fan-out=16, mutations=8.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - examples/14-markpact-export/scenario.py
+  dedupe_key: 'code2llm:smell:god_function:examples/14-markpact-export/scenario.py:49:God
+    Function: run'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: run'
+  description: 'code2llm reports `God Function: run` in `examples/03-report-and-notify/scenario.py:28`.
+
+
+    Function ''run'' is oversized: CC=9, fan-out=18, mutations=7.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - examples/03-report-and-notify/scenario.py
+  dedupe_key: 'code2llm:smell:god_function:examples/03-report-and-notify/scenario.py:28:God
+    Function: run'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: run'
+  description: 'code2llm reports `God Function: run` in `examples/16-golden-eval/scenario.py:36`.
+
+
+    Function ''run'' is oversized: CC=7, fan-out=16, mutations=10.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - examples/16-golden-eval/scenario.py
+  dedupe_key: 'code2llm:smell:god_function:examples/16-golden-eval/scenario.py:36:God
+    Function: run'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: run'
+  description: 'code2llm reports `God Function: run` in `examples/15-idempotency-replay/scenario.py:13`.
+
+
+    Function ''run'' is oversized: CC=6, fan-out=11, mutations=6.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - examples/15-idempotency-replay/scenario.py
+  dedupe_key: 'code2llm:smell:god_function:examples/15-idempotency-replay/scenario.py:13:God
+    Function: run'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: run'
+  description: 'code2llm reports `God Function: run` in `examples/17-execution-policy/scenario.py:67`.
+
+
+    Function ''run'' is oversized: CC=11, fan-out=11, mutations=12.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - examples/17-execution-policy/scenario.py
+  dedupe_key: 'code2llm:smell:god_function:examples/17-execution-policy/scenario.py:67:God
     Function: run'
 - signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: run_action_catalog_demo'
@@ -6089,6 +6629,25 @@ tickets:
   dedupe_key: 'code2llm:smell:god_function:scripts/run-example-docker-e2e.py:99:God
     Function: run_execution'
 - signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: run_idempotent_workflow'
+  description: 'code2llm reports `God Function: run_idempotent_workflow` in `backend/app/workflow_execute.py:53`.
+
+
+    Function ''run_idempotent_workflow'' is oversized: CC=10, fan-out=13, mutations=0.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - backend/app/workflow_execute.py
+  dedupe_key: 'code2llm:smell:god_function:backend/app/workflow_execute.py:53:God
+    Function: run_idempotent_workflow'
+- signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: run_phases'
   description: 'code2llm reports `God Function: run_phases` in `nlp2dsl_sdk/stack_flow.py:123`.
 
@@ -6109,7 +6668,7 @@ tickets:
     run_phases'
 - signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: save_run'
-  description: 'code2llm reports `God Function: save_run` in `backend/app/db/postgres.py:93`.
+  description: 'code2llm reports `God Function: save_run` in `backend/app/db/postgres.py:108`.
 
 
     Function ''save_run'' is oversized: CC=1, fan-out=11, mutations=0.
@@ -6124,7 +6683,7 @@ tickets:
   - god-function
   files:
   - backend/app/db/postgres.py
-  dedupe_key: 'code2llm:smell:god_function:backend/app/db/postgres.py:93:God Function:
+  dedupe_key: 'code2llm:smell:god_function:backend/app/db/postgres.py:108:God Function:
     save_run'
 - signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: setup_logging'
@@ -6184,8 +6743,27 @@ tickets:
   dedupe_key: 'code2llm:smell:god_function:worker/logging_setup.py:79:God Function:
     setup_logging'
 - signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: simulate_workflow_payload'
+  description: 'code2llm reports `God Function: simulate_workflow_payload` in `nlp2dsl_sdk/workflow/simulate.py:49`.
+
+
+    Function ''simulate_workflow_payload'' is oversized: CC=8, fan-out=10, mutations=7.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - nlp2dsl_sdk/workflow/simulate.py
+  dedupe_key: 'code2llm:smell:god_function:nlp2dsl_sdk/workflow/simulate.py:49:God
+    Function: simulate_workflow_payload'
+- signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: start'
-  description: 'code2llm reports `God Function: start` in `nlp2dsl_sdk/client.py:534`.
+  description: 'code2llm reports `God Function: start` in `nlp2dsl_sdk/client.py:623`.
 
 
     Function ''start'' is oversized: CC=2, fan-out=11, mutations=0.
@@ -6200,7 +6778,26 @@ tickets:
   - god-function
   files:
   - nlp2dsl_sdk/client.py
-  dedupe_key: 'code2llm:smell:god_function:nlp2dsl_sdk/client.py:534:God Function:
+  dedupe_key: 'code2llm:smell:god_function:nlp2dsl_sdk/client.py:623:God Function:
+    start'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: start'
+  description: 'code2llm reports `God Function: start` in `backend/app/idempotency.py:153`.
+
+
+    Function ''start'' is oversized: CC=6, fan-out=14, mutations=0.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - backend/app/idempotency.py
+  dedupe_key: 'code2llm:smell:god_function:backend/app/idempotency.py:153:God Function:
     start'
 - signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: start_conversation'
@@ -6223,7 +6820,7 @@ tickets:
     Function: start_conversation'
 - signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: stream_workflow'
-  description: 'code2llm reports `God Function: stream_workflow` in `backend/app/routers/workflow.py:117`.
+  description: 'code2llm reports `God Function: stream_workflow` in `backend/app/routers/workflow.py:138`.
 
 
     Function ''stream_workflow'' is oversized: CC=2, fan-out=14, mutations=0.
@@ -6238,7 +6835,7 @@ tickets:
   - god-function
   files:
   - backend/app/routers/workflow.py
-  dedupe_key: 'code2llm:smell:god_function:backend/app/routers/workflow.py:117:God
+  dedupe_key: 'code2llm:smell:god_function:backend/app/routers/workflow.py:138:God
     Function: stream_workflow'
 - signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: testql_runworkflow'
@@ -6279,6 +6876,25 @@ tickets:
   dedupe_key: 'code2llm:smell:god_function:nlp2dsl_sdk/validation/rules/attachment.py:20:God
     Function: validate_attachment_path'
 - signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: validate_catalog_field_drift'
+  description: 'code2llm reports `God Function: validate_catalog_field_drift` in `nlp2dsl_sdk/validation/contract_drift.py:91`.
+
+
+    Function ''validate_catalog_field_drift'' is oversized: CC=5, fan-out=5, mutations=11.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - nlp2dsl_sdk/validation/contract_drift.py
+  dedupe_key: 'code2llm:smell:god_function:nlp2dsl_sdk/validation/contract_drift.py:91:God
+    Function: validate_catalog_field_drift'
+- signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: validate_conversation_scenario'
   description: 'code2llm reports `God Function: validate_conversation_scenario` in
     `nlp2dsl_sdk/conversation_testql.py:122`.
@@ -6298,6 +6914,25 @@ tickets:
   - nlp2dsl_sdk/conversation_testql.py
   dedupe_key: 'code2llm:smell:god_function:nlp2dsl_sdk/conversation_testql.py:122:God
     Function: validate_conversation_scenario'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: validate_draft'
+  description: 'code2llm reports `God Function: validate_draft` in `nlp2dsl_sdk/contracts/draft.py:84`.
+
+
+    Function ''validate_draft'' is oversized: CC=8, fan-out=9, mutations=7.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - nlp2dsl_sdk/contracts/draft.py
+  dedupe_key: 'code2llm:smell:god_function:nlp2dsl_sdk/contracts/draft.py:84:God Function:
+    validate_draft'
 - signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: validate_post_execute_workflow_from_map_issues'
   description: 'code2llm reports `God Function: validate_post_execute_workflow_from_map_issues`
@@ -6319,6 +6954,26 @@ tickets:
   - nlp2dsl_sdk/validation/pipeline.py
   dedupe_key: 'code2llm:smell:god_function:nlp2dsl_sdk/validation/pipeline.py:164:God
     Function: validate_post_execute_workflow_from_map_issues'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: validate_publish_layer_result'
+  description: 'code2llm reports `God Function: validate_publish_layer_result` in
+    `nlp2dsl_sdk/export/publish.py:116`.
+
+
+    Function ''validate_publish_layer_result'' is oversized: CC=13, fan-out=9, mutations=19.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - nlp2dsl_sdk/export/publish.py
+  dedupe_key: 'code2llm:smell:god_function:nlp2dsl_sdk/export/publish.py:116:God Function:
+    validate_publish_layer_result'
 - signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: validate_step'
   description: 'code2llm reports `God Function: validate_step` in `nlp2dsl_sdk/validation/rules/step_config.py:13`.
@@ -6358,6 +7013,25 @@ tickets:
   dedupe_key: 'code2llm:smell:god_function:nlp-service/app/routers/ws.py:20:God Function:
     websocket_chat'
 - signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: workflow_catalog_drift'
+  description: 'code2llm reports `God Function: workflow_catalog_drift` in `backend/app/routers/workflow.py:188`.
+
+
+    Function ''workflow_catalog_drift'' is oversized: CC=5, fan-out=16, mutations=0.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - backend/app/routers/workflow.py
+  dedupe_key: 'code2llm:smell:god_function:backend/app/routers/workflow.py:188:God
+    Function: workflow_catalog_drift'
+- signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: workflow_dsl_to_markpact_readme'
   description: 'code2llm reports `God Function: workflow_dsl_to_markpact_readme` in
     `nlp2dsl_sdk/export/markpact.py:86`.
@@ -6380,10 +7054,10 @@ tickets:
     workflow_dsl_to_markpact_readme'
 - signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: workflow_execute'
-  description: 'code2llm reports `God Function: workflow_execute` in `backend/app/routers/workflow.py:260`.
+  description: 'code2llm reports `God Function: workflow_execute` in `backend/app/routers/workflow.py:415`.
 
 
-    Function ''workflow_execute'' is oversized: CC=12, fan-out=16, mutations=0.
+    Function ''workflow_execute'' is oversized: CC=8, fan-out=14, mutations=0.
 
 
     Make the smallest refactor that removes the smell and run local tests.'
@@ -6395,14 +7069,14 @@ tickets:
   - god-function
   files:
   - backend/app/routers/workflow.py
-  dedupe_key: 'code2llm:smell:god_function:backend/app/routers/workflow.py:260:God
+  dedupe_key: 'code2llm:smell:god_function:backend/app/routers/workflow.py:415:God
     Function: workflow_execute'
 - signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: workflow_from_text'
-  description: 'code2llm reports `God Function: workflow_from_text` in `backend/app/routers/workflow.py:167`.
+  description: 'code2llm reports `God Function: workflow_from_text` in `backend/app/routers/workflow.py:232`.
 
 
-    Function ''workflow_from_text'' is oversized: CC=8, fan-out=16, mutations=0.
+    Function ''workflow_from_text'' is oversized: CC=14, fan-out=22, mutations=0.
 
 
     Make the smallest refactor that removes the smell and run local tests.'
@@ -6414,7 +7088,7 @@ tickets:
   - god-function
   files:
   - backend/app/routers/workflow.py
-  dedupe_key: 'code2llm:smell:god_function:backend/app/routers/workflow.py:167:God
+  dedupe_key: 'code2llm:smell:god_function:backend/app/routers/workflow.py:232:God
     Function: workflow_from_text'
 - signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: workflow_http_error_result'
@@ -6437,7 +7111,7 @@ tickets:
     workflow_http_error_result'
 - signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: workflow_plan'
-  description: 'code2llm reports `God Function: workflow_plan` in `backend/app/routers/workflow.py:214`.
+  description: 'code2llm reports `God Function: workflow_plan` in `backend/app/routers/workflow.py:303`.
 
 
     Function ''workflow_plan'' is oversized: CC=4, fan-out=12, mutations=0.
@@ -6452,8 +7126,27 @@ tickets:
   - god-function
   files:
   - backend/app/routers/workflow.py
-  dedupe_key: 'code2llm:smell:god_function:backend/app/routers/workflow.py:214:God
+  dedupe_key: 'code2llm:smell:god_function:backend/app/routers/workflow.py:303:God
     Function: workflow_plan'
+- signal: code2llm_smell_god_function
+  title: 'Address code smell: God Function: workflow_simulate'
+  description: 'code2llm reports `God Function: workflow_simulate` in `backend/app/routers/workflow.py:361`.
+
+
+    Function ''workflow_simulate'' is oversized: CC=9, fan-out=17, mutations=0.
+
+
+    Make the smallest refactor that removes the smell and run local tests.'
+  priority: normal
+  labels:
+  - llm-ready
+  - code2llm
+  - code-smell
+  - god-function
+  files:
+  - backend/app/routers/workflow.py
+  dedupe_key: 'code2llm:smell:god_function:backend/app/routers/workflow.py:361:God
+    Function: workflow_simulate'
 - signal: code2llm_smell_god_function
   title: 'Address code smell: God Function: write_conversation_artifacts'
   description: 'code2llm reports `God Function: write_conversation_artifacts` in `nlp2dsl_sdk/conversation_artifacts.py:108`.
@@ -6536,7 +7229,7 @@ tickets:
   description: 'code2llm reports `God Module: nlp2dsl_sdk.client` in `nlp2dsl_sdk/client.py:1`.
 
 
-    Module ''nlp2dsl_sdk.client'' is too large (60 functions, 2 classes). Consider
+    Module ''nlp2dsl_sdk.client'' is too large (63 functions, 2 classes). Consider
     splitting into sub-modules.
 
 

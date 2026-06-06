@@ -1,76 +1,47 @@
 flowchart LR
-%% generated in 0.09s
+%% generated in 0.15s
     subgraph backend__app
-        backend__app__attachment_validation___attachment_from_dsl["_attachment_from_dsl"]
-        backend__app__action_catalog__quality_fields_for_action["quality_fields_for_action"]
-        backend__app__routers__testql_compat___maybe_execute_on_message["_maybe_execute_on_message"]
-        backend__app__routers__chat___maybe_auto_execute["_maybe_auto_execute"]
-        backend__app__engine___execute_workflow["_execute_workflow"]
-        backend__app__routers__chat___proxy_chat_payload["_proxy_chat_payload"]
-        backend__app__routers__settings__reset_settings["reset_settings"]
-        backend__app__routers__chat___doql_context_path["_doql_context_path"]
-        backend__app__path_resolve___examples_portable_candidates["_examples_portable_candidates"]
-        backend__app__attachment_validation___top_level_attachment_validation["_top_level_attachment_validati"]
-        backend__app__logging_setup__get_request_id["get_request_id"]
-        backend__app__routers__chat___execution_observation_from_dsl["_execution_observation_from_ds"]
-        backend__app__path_resolve__resolve_attachment_path["resolve_attachment_path"]
-        backend__app__routers__testql_compat__testql_chatmessage["testql_chatmessage"]
-        backend__app__routers__testql_compat__testql_runworkflow["testql_runworkflow"]
-        backend__app__routers__chat___execute_keyword_in_text["_execute_keyword_in_text"]
-        backend__app__dsl_validation__format_dsl_validation_message["format_dsl_validation_message"]
-        backend__app__routers__chat___uses_mullm_backend["_uses_mullm_backend"]
-        backend__app__dsl_validation__validate_dsl_for_execution["validate_dsl_for_execution"]
-        backend__app__routers__chat___mark_auto_execute_message["_mark_auto_execute_message"]
-        backend__app__routers__testql_compat__testql_workflow_from_text["testql_workflow_from_text"]
-        backend__app__routers__chat___workflow_request_from_dsl["_workflow_request_from_dsl"]
-        backend__app__engine___track_background_task["_track_background_task"]
-        backend__app__routers__chat___is_explicit_execute_request["_is_explicit_execute_request"]
-        backend__app__routers__testql_compat___resolve_text["_resolve_text"]
-        backend__app__routers__testql_compat___resolve_conv_id["_resolve_conv_id"]
-        backend__app__attachment_validation__build_attachment_validation["build_attachment_validation"]
-        backend__app__routers__chat___dsl_steps["_dsl_steps"]
-        backend__app__dsl_validation__missing_fields_from_issues["missing_fields_from_issues"]
-        backend__app__engine__start_workflow["start_workflow"]
-        backend__app__routers__settings__set_setting["set_setting"]
-        backend__app__attachment_validation___execution_attachment_validation["_execution_attachment_validati"]
-        backend__app__action_catalog__nlp_actions_to_action_info["nlp_actions_to_action_info"]
-        backend__app__routers__chat___merge_attachment_validation["_merge_attachment_validation"]
-        backend__app__routers__settings__get_settings_section["get_settings_section"]
-        backend__app__routers__testql_compat___alias_response["_alias_response"]
         backend__app__step_validator___validation_context["_validation_context"]
-        backend__app__routers__chat___is_auto_execute_requested["_is_auto_execute_requested"]
-        backend__app__routers__chat___execute_ready_dsl["_execute_ready_dsl"]
-        backend__app__step_validator__validate_step_config_issues["validate_step_config_issues"]
-        backend__app__routers__chat__chat_message["chat_message"]
-        backend__app__action_catalog__required_fields_for_action["required_fields_for_action"]
-        backend__app__engine___persist_workflow_snapshot["_persist_workflow_snapshot"]
-        backend__app__routers__chat___execution_requested["_execution_requested"]
-        backend__app__routers__settings__action_schema["action_schema"]
-        backend__app__attachment_validation__validation_from_chat_result["validation_from_chat_result"]
         backend__app__attachment_validation__ensure_attachment_validation["ensure_attachment_validation"]
-        backend__app__routers__chat___prepare_mullm_execution["_prepare_mullm_execution"]
-        backend__app__routers__settings__actions_schema["actions_schema"]
-        backend__app__dsl_validation__dsl_validation_response["dsl_validation_response"]
-        backend__app__routers__chat__chat_start["chat_start"]
-        backend__app__engine___workflow_steps_payload["_workflow_steps_payload"]
-        backend__app__step_validator__validate_step_config["validate_step_config"]
-        backend__app__workflow_events__WorkflowEventHub__publish["publish"]
-        backend__app__routers__chat__chat_get_state["chat_get_state"]
-        backend__app__action_catalog___default_nlp_service_url["_default_nlp_service_url"]
-        backend__app__workflow_events__WorkflowEvent__to_dict["to_dict"]
+        backend__app__attachment_validation___top_level_attachment_validation["_top_level_attachment_validati"]
         backend__app__routers__testql_compat__testql_chatstart["testql_chatstart"]
-        backend__app__workflow_events__WorkflowEventHub__subscriber_count["subscriber_count"]
-        backend__app__routers__settings__get_settings["get_settings"]
-        backend__app__engine___publish_workflow_event["_publish_workflow_event"]
-        backend__app__engine__run_workflow["run_workflow"]
-        backend__app__action_catalog__known_action_names_from_catalog["known_action_names_from_catalo"]
-        backend__app__routers__chat___mullm_steps["_mullm_steps"]
-        backend__app__routers__chat___observe_registry_execution["_observe_registry_execution"]
-        backend__app__action_catalog__load_action_field_catalog["load_action_field_catalog"]
+        backend__app__step_validator__validate_step_config["validate_step_config"]
+        backend__app__workflow_lifecycle__attach_validation_to_plan["attach_validation_to_plan"]
+        backend__app__attachment_validation___attachment_from_dsl["_attachment_from_dsl"]
+        backend__app__routers__testql_compat___resolve_text["_resolve_text"]
+        backend__app__routers__testql_compat___maybe_execute_on_message["_maybe_execute_on_message"]
+        backend__app__routers__testql_compat__testql_chatmessage["testql_chatmessage"]
+        backend__app__dsl_validation__validate_dsl_for_execution["validate_dsl_for_execution"]
+        backend__app__workflow_lifecycle__validation_report_for_workflow["validation_report_for_workflow"]
+        backend__app__dsl_validation__format_dsl_validation_message["format_dsl_validation_message"]
+        backend__app__routers__settings__action_schema["action_schema"]
+        backend__app__workflow_events__WorkflowEventHub__publish["publish"]
+        backend__app__routers__testql_compat__testql_workflow_from_text["testql_workflow_from_text"]
+        backend__app__routers__settings__reset_settings["reset_settings"]
+        backend__app__dsl_validation__dsl_validation_response["dsl_validation_response"]
+        backend__app__attachment_validation__build_attachment_validation["build_attachment_validation"]
         backend__app__routers__system__system_execute["system_execute"]
-        backend__app__action_catalog__fetch_action_catalog["fetch_action_catalog"]
+        backend__app__workflow_events__WorkflowEventHub__subscriber_count["subscriber_count"]
         backend__app__dsl_validation__validation_issue_payloads["validation_issue_payloads"]
+        backend__app__path_resolve__resolve_attachment_path["resolve_attachment_path"]
+        backend__app__dsl_validation__missing_fields_from_issues["missing_fields_from_issues"]
         backend__app__routers__settings__update_settings_section["update_settings_section"]
+        backend__app__step_validator__validate_step_config_issues["validate_step_config_issues"]
+        backend__app__routers__settings__actions_schema["actions_schema"]
+        backend__app__logging_setup__get_request_id["get_request_id"]
+        backend__app__workflow_events__WorkflowEvent__to_dict["to_dict"]
+        backend__app__routers__testql_compat__testql_runworkflow["testql_runworkflow"]
+        backend__app__routers__workflow__workflow_from_text["workflow_from_text"]
+        backend__app__engine__run_workflow["run_workflow"]
+        backend__app__path_resolve___examples_portable_candidates["_examples_portable_candidates"]
+        backend__app__routers__settings__get_settings["get_settings"]
+        backend__app__attachment_validation___execution_attachment_validation["_execution_attachment_validati"]
+        backend__app__routers__settings__set_setting["set_setting"]
+        backend__app__routers__testql_compat___resolve_conv_id["_resolve_conv_id"]
+        backend__app__workflow_lifecycle__workflow_validation_payload["workflow_validation_payload"]
+        backend__app__routers__testql_compat___alias_response["_alias_response"]
+        backend__app__routers__settings__get_settings_section["get_settings_section"]
+        backend__app__attachment_validation__validation_from_chat_result["validation_from_chat_result"]
     end
     subgraph nlp_service__app
         nlp_service__app__settings__SettingsManager__set["set"]
@@ -79,280 +50,260 @@ flowchart LR
         nlp2dsl_sdk____main____main["main"]
     end
     subgraph nlp2dsl_sdk__artifact_layout
+        nlp2dsl_sdk__artifact_layout__write_turn_snapshot["write_turn_snapshot"]
+        nlp2dsl_sdk__artifact_layout__run_dir["run_dir"]
+        nlp2dsl_sdk__artifact_layout__write_registry["write_registry"]
+        nlp2dsl_sdk__artifact_layout__current_run_id["current_run_id"]
+        nlp2dsl_sdk__artifact_layout__write_last_run_report["write_last_run_report"]
+        nlp2dsl_sdk__artifact_layout__write_reflection_snapshot["write_reflection_snapshot"]
         nlp2dsl_sdk__artifact_layout__resolve_registry_path["resolve_registry_path"]
         nlp2dsl_sdk__artifact_layout__artifact_root["artifact_root"]
-        nlp2dsl_sdk__artifact_layout__write_last_run_report["write_last_run_report"]
-        nlp2dsl_sdk__artifact_layout__write_registry["write_registry"]
-        nlp2dsl_sdk__artifact_layout__run_dir["run_dir"]
-        nlp2dsl_sdk__artifact_layout__current_run_id["current_run_id"]
-        nlp2dsl_sdk__artifact_layout__write_turn_snapshot["write_turn_snapshot"]
         nlp2dsl_sdk__artifact_layout__ensure_layout["ensure_layout"]
-        nlp2dsl_sdk__artifact_layout__write_reflection_snapshot["write_reflection_snapshot"]
     end
     subgraph nlp2dsl_sdk__artifacts
-        nlp2dsl_sdk__artifacts__write_manifest["write_manifest"]
-        nlp2dsl_sdk__artifacts__ExampleArtifactWriter__finalize["finalize"]
-        nlp2dsl_sdk__artifacts__example_artifact_root["example_artifact_root"]
-        nlp2dsl_sdk__artifacts__build_process_trace["build_process_trace"]
-        nlp2dsl_sdk__artifacts___extract_actions["_extract_actions"]
-        nlp2dsl_sdk__artifacts__write_testql_commands["write_testql_commands"]
         nlp2dsl_sdk__artifacts___mask_secret["_mask_secret"]
+        nlp2dsl_sdk__artifacts__collect_environment["collect_environment"]
+        nlp2dsl_sdk__artifacts__ExampleArtifactWriter____init__["__init__"]
         nlp2dsl_sdk__artifacts__write_query_artifacts["write_query_artifacts"]
         nlp2dsl_sdk__artifacts__write_environment_doql["write_environment_doql"]
-        nlp2dsl_sdk__artifacts__ExampleArtifactWriter____init__["__init__"]
+        nlp2dsl_sdk__artifacts___extract_actions["_extract_actions"]
+        nlp2dsl_sdk__artifacts__ExampleArtifactWriter__finalize["finalize"]
+        nlp2dsl_sdk__artifacts__write_testql_commands["write_testql_commands"]
+        nlp2dsl_sdk__artifacts__build_process_trace["build_process_trace"]
         nlp2dsl_sdk__artifacts__ExampleArtifactWriter__record["record"]
-        nlp2dsl_sdk__artifacts__collect_environment["collect_environment"]
+        nlp2dsl_sdk__artifacts__get_example_writer["get_example_writer"]
+        nlp2dsl_sdk__artifacts__example_artifact_root["example_artifact_root"]
         nlp2dsl_sdk__artifacts___slugify["_slugify"]
+        nlp2dsl_sdk__artifacts__write_manifest["write_manifest"]
     end
     subgraph nlp2dsl_sdk__attachment_validation
-        nlp2dsl_sdk__attachment_validation__format_attachment_validation["format_attachment_validation"]
-        nlp2dsl_sdk__attachment_validation__build_attachment_validation["build_attachment_validation"]
+        nlp2dsl_sdk__attachment_validation__enrich_chat_response["enrich_chat_response"]
         nlp2dsl_sdk__attachment_validation___prefer_local_validation["_prefer_local_validation"]
         nlp2dsl_sdk__attachment_validation___attachment_from_dsl["_attachment_from_dsl"]
         nlp2dsl_sdk__attachment_validation___apply_attachment_to_execution["_apply_attachment_to_execution"]
-        nlp2dsl_sdk__attachment_validation__enrich_chat_response["enrich_chat_response"]
+        nlp2dsl_sdk__attachment_validation__build_attachment_validation["build_attachment_validation"]
     end
     subgraph nlp2dsl_sdk__autonomous_flow
         nlp2dsl_sdk__autonomous_flow__AutonomousFlow___start_with_extra["_start_with_extra"]
     end
     subgraph nlp2dsl_sdk__cli
-        nlp2dsl_sdk__cli___run_with_doql["_run_with_doql"]
-        nlp2dsl_sdk__cli__show["show"]
-        nlp2dsl_sdk__cli___client["_client"]
         nlp2dsl_sdk__cli___display["_display"]
-        nlp2dsl_sdk__cli___actions["_actions"]
-        nlp2dsl_sdk__cli___detect_example_dir["_detect_example_dir"]
-        nlp2dsl_sdk__cli___demo["_demo"]
-        nlp2dsl_sdk__cli___chat_start["_chat_start"]
         nlp2dsl_sdk__cli___health["_health"]
-        nlp2dsl_sdk__cli___run["_run"]
-        nlp2dsl_sdk__cli__main["main"]
         nlp2dsl_sdk__cli___analyze["_analyze"]
-    end
-    subgraph nlp2dsl_sdk__client
-        nlp2dsl_sdk__client__ConversationFlow___reflect_executed_turn["_reflect_executed_turn"]
-        nlp2dsl_sdk__client__ConversationFlow___refresh_doql_registry["_refresh_doql_registry"]
-        nlp2dsl_sdk__client__workflow_step["workflow_step"]
-        nlp2dsl_sdk__client__NLP2DSLClient__send_invoice_and_notify["send_invoice_and_notify"]
-        nlp2dsl_sdk__client__NLP2DSLClient__notify_slack["notify_slack"]
-        nlp2dsl_sdk__client__ConversationFlow___handle_completed_response["_handle_completed_response"]
-        nlp2dsl_sdk__client__NLP2DSLClient__generate_report_and_notify["generate_report_and_notify"]
-        nlp2dsl_sdk__client__ConversationFlow___persist_reflection["_persist_reflection"]
-        nlp2dsl_sdk__client__ConversationFlow__save_artifacts["save_artifacts"]
-        nlp2dsl_sdk__client__ConversationFlow__start["start"]
-        nlp2dsl_sdk__client__ConversationFlow___record_turn["_record_turn"]
-        nlp2dsl_sdk__client__NLP2DSLClient__crm_update["crm_update"]
-        nlp2dsl_sdk__client__ConversationFlow___print_attachment_validation["_print_attachment_validation"]
-        nlp2dsl_sdk__client__NLP2DSLClient__chat_message["chat_message"]
-        nlp2dsl_sdk__client__NLP2DSLClient__workflow_from_text["workflow_from_text"]
-        nlp2dsl_sdk__client__NLP2DSLClient__send_invoice["send_invoice"]
-        nlp2dsl_sdk__client__NLP2DSLClient__chat_start["chat_start"]
-        nlp2dsl_sdk__client__NLP2DSLClient__send_email["send_email"]
-        nlp2dsl_sdk__client__NLP2DSLClient__generate_report["generate_report"]
+        nlp2dsl_sdk__cli___demo["_demo"]
+        nlp2dsl_sdk__cli___actions["_actions"]
+        nlp2dsl_sdk__cli___run["_run"]
+        nlp2dsl_sdk__cli___run_with_doql["_run_with_doql"]
+        nlp2dsl_sdk__cli___client["_client"]
+        nlp2dsl_sdk__cli___chat_start["_chat_start"]
+        nlp2dsl_sdk__cli___detect_example_dir["_detect_example_dir"]
+        nlp2dsl_sdk__cli__show["show"]
+        nlp2dsl_sdk__cli__main["main"]
     end
     subgraph nlp2dsl_sdk__compose_generator
+        nlp2dsl_sdk__compose_generator___default_schedules["_default_schedules"]
+        nlp2dsl_sdk__compose_generator___default_generated_services["_default_generated_services"]
+        nlp2dsl_sdk__compose_generator__generate_stack_compose["generate_stack_compose"]
+        nlp2dsl_sdk__compose_generator__enrich_ir_for_stack["enrich_ir_for_stack"]
+        nlp2dsl_sdk__compose_generator___stack_compose_dict["_stack_compose_dict"]
         nlp2dsl_sdk__compose_generator___wait_for_backend_shell["_wait_for_backend_shell"]
         nlp2dsl_sdk__compose_generator___default_deploy["_default_deploy"]
-        nlp2dsl_sdk__compose_generator___default_generated_services["_default_generated_services"]
-        nlp2dsl_sdk__compose_generator___default_schedules["_default_schedules"]
-        nlp2dsl_sdk__compose_generator___stack_compose_dict["_stack_compose_dict"]
-        nlp2dsl_sdk__compose_generator__generate_stack_compose["generate_stack_compose"]
-        nlp2dsl_sdk__compose_generator___run_script_content["_run_script_content"]
-        nlp2dsl_sdk__compose_generator__enrich_ir_for_stack["enrich_ir_for_stack"]
-        nlp2dsl_sdk__compose_generator___run_process_docker_script["_run_process_docker_script"]
         nlp2dsl_sdk__compose_generator___run_process_host_script["_run_process_host_script"]
+        nlp2dsl_sdk__compose_generator___run_script_content["_run_script_content"]
+        nlp2dsl_sdk__compose_generator___run_process_docker_script["_run_process_docker_script"]
     end
     subgraph nlp2dsl_sdk__contracts
-        nlp2dsl_sdk__contracts__registry__action_contracts_from_registry["action_contracts_from_registry"]
         nlp2dsl_sdk__contracts__registry__required_fields_for_action["required_fields_for_action"]
-        nlp2dsl_sdk__contracts__registry___compatibility_contract["_compatibility_contract"]
-        nlp2dsl_sdk__contracts__registry__contract_from_registry_entry["contract_from_registry_entry"]
         nlp2dsl_sdk__contracts__registry__quality_fields_for_action["quality_fields_for_action"]
-        nlp2dsl_sdk__contracts__registry__known_action_names["known_action_names"]
-        nlp2dsl_sdk__contracts__registry__action_info_config_schema["action_info_config_schema"]
-        nlp2dsl_sdk__contracts__registry___string_list["_string_list"]
         nlp2dsl_sdk__contracts__registry__action_contracts_from_catalog["action_contracts_from_catalog"]
-        nlp2dsl_sdk__contracts__registry___optional_defaults["_optional_defaults"]
-        nlp2dsl_sdk__contracts__registry__contract_from_catalog_entry["contract_from_catalog_entry"]
     end
     subgraph nlp2dsl_sdk__conversation_artifacts
-        nlp2dsl_sdk__conversation_artifacts___format_validations["_format_validations"]
         nlp2dsl_sdk__conversation_artifacts___routing_summary["_routing_summary"]
-        nlp2dsl_sdk__conversation_artifacts__write_conversation_artifacts["write_conversation_artifacts"]
+        nlp2dsl_sdk__conversation_artifacts___format_validations["_format_validations"]
+        nlp2dsl_sdk__conversation_artifacts__format_transcript["format_transcript"]
         nlp2dsl_sdk__conversation_artifacts___format_transcript_header["_format_transcript_header"]
         nlp2dsl_sdk__conversation_artifacts___format_turn["_format_turn"]
-        nlp2dsl_sdk__conversation_artifacts__format_transcript["format_transcript"]
     end
     subgraph nlp2dsl_sdk__conversation_testql
+        nlp2dsl_sdk__conversation_testql__dry_run_conversation_scenario["dry_run_conversation_scenario"]
+        nlp2dsl_sdk__conversation_testql___validation_result["_validation_result"]
         nlp2dsl_sdk__conversation_testql___parse_plan["_parse_plan"]
         nlp2dsl_sdk__conversation_testql___endpoints_from_text["_endpoints_from_text"]
-        nlp2dsl_sdk__conversation_testql___is_nlp_kind["_is_nlp_kind"]
-        nlp2dsl_sdk__conversation_testql___missing_type_header["_missing_type_header"]
-        nlp2dsl_sdk__conversation_testql___validation_result["_validation_result"]
         nlp2dsl_sdk__conversation_testql__validate_conversation_scenario["validate_conversation_scenario"]
-        nlp2dsl_sdk__conversation_testql___endpoints_from_steps["_endpoints_from_steps"]
-        nlp2dsl_sdk__conversation_testql__validate_conversation_scenario_text["validate_conversation_scenario"]
-        nlp2dsl_sdk__conversation_testql__dry_run_conversation_scenario["dry_run_conversation_scenario"]
+        nlp2dsl_sdk__conversation_testql___missing_type_header["_missing_type_header"]
         nlp2dsl_sdk__conversation_testql___structural_issues["_structural_issues"]
+        nlp2dsl_sdk__conversation_testql___endpoints_from_steps["_endpoints_from_steps"]
+        nlp2dsl_sdk__conversation_testql___is_nlp_kind["_is_nlp_kind"]
+        nlp2dsl_sdk__conversation_testql__validate_conversation_scenario_text["validate_conversation_scenario"]
     end
     subgraph nlp2dsl_sdk__demos
-        nlp2dsl_sdk__demos__run_action_catalog_demo["run_action_catalog_demo"]
-        nlp2dsl_sdk__demos__list_available_demos["list_available_demos"]
-        nlp2dsl_sdk__demos__run_automation_gallery_demo["run_automation_gallery_demo"]
-        nlp2dsl_sdk__demos___run_conversation_code_example["_run_conversation_code_example"]
-        nlp2dsl_sdk__demos__run_crm_update_demo["run_crm_update_demo"]
-        nlp2dsl_sdk__demos___run_direct_code_generation["_run_direct_code_generation"]
-        nlp2dsl_sdk__demos__run_code_generation_demo["run_code_generation_demo"]
-        nlp2dsl_sdk__demos___run_workflow_code_examples["_run_workflow_code_examples"]
         nlp2dsl_sdk__demos___get_supported_languages["_get_supported_languages"]
+        nlp2dsl_sdk__demos__run_crm_update_demo["run_crm_update_demo"]
+        nlp2dsl_sdk__demos__run_action_catalog_demo["run_action_catalog_demo"]
+        nlp2dsl_sdk__demos___run_direct_code_generation["_run_direct_code_generation"]
+        nlp2dsl_sdk__demos___run_conversation_code_example["_run_conversation_code_example"]
+        nlp2dsl_sdk__demos__run_code_generation_demo["run_code_generation_demo"]
+        nlp2dsl_sdk__demos__run_automation_gallery_demo["run_automation_gallery_demo"]
         nlp2dsl_sdk__demos___print_code_generation_preview["_print_code_generation_preview"]
+        nlp2dsl_sdk__demos__list_available_demos["list_available_demos"]
+        nlp2dsl_sdk__demos___run_workflow_code_examples["_run_workflow_code_examples"]
     end
     subgraph nlp2dsl_sdk__doql
-        nlp2dsl_sdk__doql__context_blocks__render_context_resources["render_context_resources"]
-        nlp2dsl_sdk__doql__runtime___value_from_artifacts["_value_from_artifacts"]
-        nlp2dsl_sdk__doql__runtime___value_from_data["_value_from_data"]
-        nlp2dsl_sdk__doql__context_blocks__render_context_capabilities["render_context_capabilities"]
-        nlp2dsl_sdk__doql__runtime___canonical_field["_canonical_field"]
-        nlp2dsl_sdk__doql__parse___parse_value["_parse_value"]
+        nlp2dsl_sdk__doql__parse__collect_task_context["collect_task_context"]
+        nlp2dsl_sdk__doql__render__render_doql_context["render_doql_context"]
+        nlp2dsl_sdk__doql__parse__enrich_task_context_from_client["enrich_task_context_from_clien"]
+        nlp2dsl_sdk__doql__runtime__load_doql_inline_from_env["load_doql_inline_from_env"]
         nlp2dsl_sdk__doql__runtime__resolve_doql_context_path["resolve_doql_context_path"]
         nlp2dsl_sdk__doql__parse__load_doql_context["load_doql_context"]
-        nlp2dsl_sdk__doql__runtime___needs_field["_needs_field"]
-        nlp2dsl_sdk__doql__context_blocks__render_context_access["render_context_access"]
-        nlp2dsl_sdk__doql__context_blocks__render_context_data["render_context_data"]
-        nlp2dsl_sdk__doql__render__render_doql_context["render_doql_context"]
-        nlp2dsl_sdk__doql__runtime___inline_data_key["_inline_data_key"]
-        nlp2dsl_sdk__doql__context_blocks__render_context_paths["render_context_paths"]
-        nlp2dsl_sdk__doql__context_blocks__render_context_environment["render_context_environment"]
-        nlp2dsl_sdk__doql__runtime__autofill_entities["autofill_entities"]
-        nlp2dsl_sdk__doql__runtime__merge_inline_context["merge_inline_context"]
-        nlp2dsl_sdk__doql__context_blocks__render_context_conversation["render_context_conversation"]
-        nlp2dsl_sdk__doql__parse___parse_command_body["_parse_command_body"]
-        nlp2dsl_sdk__doql__runtime___autofill_value["_autofill_value"]
-        nlp2dsl_sdk__doql__render__write_doql_context["write_doql_context"]
-        nlp2dsl_sdk__doql__runtime___apply_conversation_flag["_apply_conversation_flag"]
-        nlp2dsl_sdk__doql__context_blocks__render_context_workflow_history["render_context_workflow_histor"]
-        nlp2dsl_sdk__doql__context_blocks__render_context_process_access["render_context_process_access"]
-        nlp2dsl_sdk__doql__runtime__context_inline_payload["context_inline_payload"]
-        nlp2dsl_sdk__doql__parse___split_csv["_split_csv"]
-        nlp2dsl_sdk__doql__runtime___split_missing_ref["_split_missing_ref"]
-        nlp2dsl_sdk__doql__parse__collect_task_context["collect_task_context"]
-        nlp2dsl_sdk__doql__runtime___candidate_data_keys["_candidate_data_keys"]
-        nlp2dsl_sdk__doql__runtime__load_doql_inline_from_env["load_doql_inline_from_env"]
-        nlp2dsl_sdk__doql__parse__enrich_task_context_from_client["enrich_task_context_from_clien"]
-        nlp2dsl_sdk__doql__parse___parse_resource_body["_parse_resource_body"]
-        nlp2dsl_sdk__doql__parse___parse_block_body["_parse_block_body"]
-        nlp2dsl_sdk__doql__runtime___add_short_inline_alias["_add_short_inline_alias"]
     end
     subgraph nlp2dsl_sdk__doql_registry
         nlp2dsl_sdk__doql_registry__merge_registry_observations["merge_registry_observations"]
-        nlp2dsl_sdk__doql_registry__refresh_doql_registry_from_state["refresh_doql_registry_from_sta"]
         nlp2dsl_sdk__doql_registry___merge_execution_step["_merge_execution_step"]
-        nlp2dsl_sdk__doql_registry___merge_generate_invoice_output["_merge_generate_invoice_output"]
-        nlp2dsl_sdk__doql_registry___merge_send_invoice_output["_merge_send_invoice_output"]
-        nlp2dsl_sdk__doql_registry__merge_execution_observation["merge_execution_observation"]
         nlp2dsl_sdk__doql_registry___execution_steps["_execution_steps"]
-        nlp2dsl_sdk__doql_registry___merge_workflow_id["_merge_workflow_id"]
         nlp2dsl_sdk__doql_registry__refresh_doql_registry["refresh_doql_registry"]
-        nlp2dsl_sdk__doql_registry___merge_execution_header["_merge_execution_header"]
+        nlp2dsl_sdk__doql_registry___merge_generate_invoice_output["_merge_generate_invoice_output"]
         nlp2dsl_sdk__doql_registry___step_output["_step_output"]
+        nlp2dsl_sdk__doql_registry___merge_send_invoice_output["_merge_send_invoice_output"]
+        nlp2dsl_sdk__doql_registry___merge_workflow_id["_merge_workflow_id"]
+        nlp2dsl_sdk__doql_registry__merge_execution_observation["merge_execution_observation"]
+        nlp2dsl_sdk__doql_registry___merge_execution_header["_merge_execution_header"]
+        nlp2dsl_sdk__doql_registry__refresh_doql_registry_from_state["refresh_doql_registry_from_sta"]
     end
     subgraph nlp2dsl_sdk__encoding
         nlp2dsl_sdk__encoding___auto_configure_once["_auto_configure_once"]
+        nlp2dsl_sdk__encoding___set_utf8_locale["_set_utf8_locale"]
+        nlp2dsl_sdk__encoding___reconfigure_stdio["_reconfigure_stdio"]
         nlp2dsl_sdk__encoding___apply_utf8_locale_env["_apply_utf8_locale_env"]
         nlp2dsl_sdk__encoding___explicit_utf8_locale["_explicit_utf8_locale"]
-        nlp2dsl_sdk__encoding___reconfigure_stdio["_reconfigure_stdio"]
         nlp2dsl_sdk__encoding__utf8_auto_enabled["utf8_auto_enabled"]
         nlp2dsl_sdk__encoding__configure_utf8["configure_utf8"]
-        nlp2dsl_sdk__encoding___set_utf8_locale["_set_utf8_locale"]
     end
     subgraph nlp2dsl_sdk__example_bootstrap
         nlp2dsl_sdk__example_bootstrap__ensure_doql_registry["ensure_doql_registry"]
     end
+    subgraph nlp2dsl_sdk__export
+        nlp2dsl_sdk__export__markpact___contracts_section["_contracts_section"]
+        nlp2dsl_sdk__export__markpact__export_markpact_bundle["export_markpact_bundle"]
+        nlp2dsl_sdk__export__markpact__composite_workflow_spec["composite_workflow_spec"]
+        nlp2dsl_sdk__export__markpact__workflow_dsl_to_markpact_readme["workflow_dsl_to_markpact_readm"]
+        nlp2dsl_sdk__export__markpact__contract_to_yaml_string["contract_to_yaml_string"]
+        nlp2dsl_sdk__export__markpact__contract_to_yaml_dict["contract_to_yaml_dict"]
+        nlp2dsl_sdk__export__markpact___yaml_file_block["_yaml_file_block"]
+    end
     subgraph nlp2dsl_sdk__invoice_pdf
-        nlp2dsl_sdk__invoice_pdf__build_invoice_pdf_bytes["build_invoice_pdf_bytes"]
         nlp2dsl_sdk__invoice_pdf__write_invoice_pdf["write_invoice_pdf"]
+        nlp2dsl_sdk__invoice_pdf__build_invoice_pdf_bytes["build_invoice_pdf_bytes"]
     end
     subgraph nlp2dsl_sdk__invoice_policy
-        nlp2dsl_sdk__invoice_policy__apply_invoice_context["apply_invoice_context"]
-        nlp2dsl_sdk__invoice_policy__is_invoice_example["is_invoice_example"]
         nlp2dsl_sdk__invoice_policy__apply_invoice_policies["apply_invoice_policies"]
+        nlp2dsl_sdk__invoice_policy__is_invoice_example["is_invoice_example"]
+        nlp2dsl_sdk__invoice_policy__apply_invoice_context["apply_invoice_context"]
     end
     subgraph nlp2dsl_sdk__path_resolve
-        nlp2dsl_sdk__path_resolve__resolve_attachment_path["resolve_attachment_path"]
         nlp2dsl_sdk__path_resolve___examples_portable_candidates["_examples_portable_candidates"]
+        nlp2dsl_sdk__path_resolve__resolve_attachment_path["resolve_attachment_path"]
     end
     subgraph nlp2dsl_sdk__preview
-        nlp2dsl_sdk__preview__execute_from_text["execute_from_text"]
-        nlp2dsl_sdk__preview__ensure_services["ensure_services"]
-        nlp2dsl_sdk__preview__preview_text_examples["preview_text_examples"]
+        nlp2dsl_sdk__preview__print_run_context_hints["print_run_context_hints"]
+        nlp2dsl_sdk__preview__finalize_example_artifacts["finalize_example_artifacts"]
         nlp2dsl_sdk__preview__print_run_outcome["print_run_outcome"]
+        nlp2dsl_sdk__preview___print_workflow_dsl_summary["_print_workflow_dsl_summary"]
+        nlp2dsl_sdk__preview__print_execution_result["print_execution_result"]
+        nlp2dsl_sdk__preview__preview_text_examples["preview_text_examples"]
+        nlp2dsl_sdk__preview__execution_payload["execution_payload"]
+        nlp2dsl_sdk__preview__execute_from_text["execute_from_text"]
+        nlp2dsl_sdk__preview__workflow_http_error_result["workflow_http_error_result"]
+        nlp2dsl_sdk__preview__print_json["print_json"]
+        nlp2dsl_sdk__preview__execute_text_examples["execute_text_examples"]
+        nlp2dsl_sdk__preview__print_workflow_preview["print_workflow_preview"]
+        nlp2dsl_sdk__preview___print_incomplete_workflow_preview["_print_incomplete_workflow_pre"]
+        nlp2dsl_sdk__preview___print_incomplete_run_outcome["_print_incomplete_run_outcome"]
+        nlp2dsl_sdk__preview___print_success_run_outcome["_print_success_run_outcome"]
+        nlp2dsl_sdk__preview__ensure_services["ensure_services"]
+        nlp2dsl_sdk__preview___print_workflow_execution_summary["_print_workflow_execution_summ"]
     end
     subgraph nlp2dsl_sdk__process_policy
-        nlp2dsl_sdk__process_policy__load_platform_process_defaults["load_platform_process_defaults"]
-        nlp2dsl_sdk__process_policy___deep_merge_process["_deep_merge_process"]
-        nlp2dsl_sdk__process_policy___apply_nlp_policy["_apply_nlp_policy"]
-        nlp2dsl_sdk__process_policy__process_scope_denied["process_scope_denied"]
-        nlp2dsl_sdk__process_policy___apply_llm_policy["_apply_llm_policy"]
         nlp2dsl_sdk__process_policy___as_list["_as_list"]
-        nlp2dsl_sdk__process_policy___intract_flags["_intract_flags"]
-        nlp2dsl_sdk__process_policy__apply_process_policies["apply_process_policies"]
-        nlp2dsl_sdk__process_policy__merge_process_config["merge_process_config"]
-        nlp2dsl_sdk__process_policy___merge_paths["_merge_paths"]
         nlp2dsl_sdk__process_policy___merge_access["_merge_access"]
-        nlp2dsl_sdk__process_policy___load_nlp2dsl_payload["_load_nlp2dsl_payload"]
-        nlp2dsl_sdk__process_policy___process_policy_from_parts["_process_policy_from_parts"]
+        nlp2dsl_sdk__process_policy___intract_flags["_intract_flags"]
+        nlp2dsl_sdk__process_policy__process_scope_denied["process_scope_denied"]
         nlp2dsl_sdk__process_policy___apply_autonomous_policy["_apply_autonomous_policy"]
-        nlp2dsl_sdk__process_policy__process_policy_from_profile_block["process_policy_from_profile_bl"]
+        nlp2dsl_sdk__process_policy__merge_process_config["merge_process_config"]
+        nlp2dsl_sdk__process_policy___deep_merge_process["_deep_merge_process"]
+        nlp2dsl_sdk__process_policy__apply_process_policies["apply_process_policies"]
+        nlp2dsl_sdk__process_policy___merge_paths["_merge_paths"]
+        nlp2dsl_sdk__process_policy___load_nlp2dsl_payload["_load_nlp2dsl_payload"]
         nlp2dsl_sdk__process_policy___merge_conversation_from_profile["_merge_conversation_from_profi"]
+        nlp2dsl_sdk__process_policy___process_policy_from_parts["_process_policy_from_parts"]
+        nlp2dsl_sdk__process_policy__load_platform_process_defaults["load_platform_process_defaults"]
+        nlp2dsl_sdk__process_policy__process_policy_from_profile_block["process_policy_from_profile_bl"]
+        nlp2dsl_sdk__process_policy___apply_llm_policy["_apply_llm_policy"]
+        nlp2dsl_sdk__process_policy___apply_nlp_policy["_apply_nlp_policy"]
     end
     subgraph nlp2dsl_sdk__reflection
+        nlp2dsl_sdk__reflection___context_queries_from_issues["_context_queries_from_issues"]
+        nlp2dsl_sdk__reflection___intent_from_response["_intent_from_response"]
+        nlp2dsl_sdk__reflection___parse_validation_issue["_parse_validation_issue"]
+        nlp2dsl_sdk__reflection___resolutions_available["_resolutions_available"]
+        nlp2dsl_sdk__reflection__build_target_plan["build_target_plan"]
+        nlp2dsl_sdk__reflection__reflect_from_chat_turn["reflect_from_chat_turn"]
+        nlp2dsl_sdk__reflection___entities_from_response["_entities_from_response"]
+        nlp2dsl_sdk__reflection___data_lookup["_data_lookup"]
+        nlp2dsl_sdk__reflection___is_empty_value["_is_empty_value"]
         nlp2dsl_sdk__reflection__reflect_from_doql_path["reflect_from_doql_path"]
-        nlp2dsl_sdk__reflection__format_reflection_summary["format_reflection_summary"]
+        nlp2dsl_sdk__reflection__reflect["reflect"]
+        nlp2dsl_sdk__reflection___config_from_command["_config_from_command"]
+        nlp2dsl_sdk__reflection___missing_field_issue["_missing_field_issue"]
+        nlp2dsl_sdk__reflection___apply_invoice_attachment_hint["_apply_invoice_attachment_hint"]
+        nlp2dsl_sdk__reflection___missing_vs_target["_missing_vs_target"]
     end
     subgraph nlp2dsl_sdk__stack_flow
-        nlp2dsl_sdk__stack_flow__AutonomousStackFlow__bootstrap_registry["bootstrap_registry"]
         nlp2dsl_sdk__stack_flow__AutonomousStackFlow___emit_compose["_emit_compose"]
+        nlp2dsl_sdk__stack_flow__AutonomousStackFlow__bootstrap_registry["bootstrap_registry"]
+    end
+    subgraph nlp2dsl_sdk__step_validation
+        nlp2dsl_sdk__step_validation__validate_step_config_from_map["validate_step_config_from_map"]
     end
     subgraph nlp2dsl_sdk__system_map_bridge
-        nlp2dsl_sdk__system_map_bridge___command_to_ir["_command_to_ir"]
         nlp2dsl_sdk__system_map_bridge__task_context_to_system_map["task_context_to_system_map"]
         nlp2dsl_sdk__system_map_bridge__doql_file_to_system_map["doql_file_to_system_map"]
+        nlp2dsl_sdk__system_map_bridge___command_to_ir["_command_to_ir"]
     end
     subgraph nlp2dsl_sdk__system_map_generator
-        nlp2dsl_sdk__system_map_generator___bootstrap_system_map["_bootstrap_system_map"]
-        nlp2dsl_sdk__system_map_generator__build_introspection_payload["build_introspection_payload"]
-        nlp2dsl_sdk__system_map_generator___parse_llm_json["_parse_llm_json"]
         nlp2dsl_sdk__system_map_generator__generate_system_map["generate_system_map"]
+        nlp2dsl_sdk__system_map_generator___bootstrap_system_map["_bootstrap_system_map"]
+        nlp2dsl_sdk__system_map_generator___parse_llm_json["_parse_llm_json"]
+        nlp2dsl_sdk__system_map_generator__build_introspection_payload["build_introspection_payload"]
     end
     subgraph nlp2dsl_sdk__system_map_models
-        nlp2dsl_sdk__system_map_models__validate_config_against_map["validate_config_against_map"]
-        nlp2dsl_sdk__system_map_models__build_command_registry["build_command_registry"]
-        nlp2dsl_sdk__system_map_models__command_input_model["command_input_model"]
         nlp2dsl_sdk__system_map_models___annotation_for_field["_annotation_for_field"]
+        nlp2dsl_sdk__system_map_models__validate_config_against_map["validate_config_against_map"]
+        nlp2dsl_sdk__system_map_models__command_input_model["command_input_model"]
+        nlp2dsl_sdk__system_map_models__build_command_registry["build_command_registry"]
     end
     subgraph nlp2dsl_sdk__system_map_render
-        nlp2dsl_sdk__system_map_render__blocks__render_conversation_block["render_conversation_block"]
-        nlp2dsl_sdk__system_map_render__helpers__bool_lit["bool_lit"]
-        nlp2dsl_sdk__system_map_render__blocks__render_paths_block["render_paths_block"]
-        nlp2dsl_sdk__system_map_render__helpers__join_csv["join_csv"]
+        nlp2dsl_sdk__system_map_render__blocks__render_process_block["render_process_block"]
         nlp2dsl_sdk__system_map_render__helpers__esc_str_full["esc_str_full"]
+        nlp2dsl_sdk__system_map_render__render__render_system_map_doql["render_system_map_doql"]
+        nlp2dsl_sdk__system_map_render__helpers__esc_str["esc_str"]
+        nlp2dsl_sdk__system_map_render__helpers__process_field_line["process_field_line"]
         nlp2dsl_sdk__system_map_render__blocks__render_workflow_history_block["render_workflow_history_block"]
+        nlp2dsl_sdk__system_map_render__blocks__render_conversation_block["render_conversation_block"]
+        nlp2dsl_sdk__system_map_render__blocks__render_data_block["render_data_block"]
+        nlp2dsl_sdk__system_map_render__blocks__render_resources_block["render_resources_block"]
+        nlp2dsl_sdk__system_map_render__blocks__render_schedules_block["render_schedules_block"]
+        nlp2dsl_sdk__system_map_render__blocks__render_capabilities_block["render_capabilities_block"]
+        nlp2dsl_sdk__system_map_render__helpers__join_csv["join_csv"]
         nlp2dsl_sdk__system_map_render__blocks__render_validations_block["render_validations_block"]
         nlp2dsl_sdk__system_map_render__blocks__render_environment_block["render_environment_block"]
-        nlp2dsl_sdk__system_map_render__blocks__render_generated_services_block["render_generated_services_bloc"]
-        nlp2dsl_sdk__system_map_render__blocks__render_process_access_block["render_process_access_block"]
-        nlp2dsl_sdk__system_map_render__blocks__render_capabilities_block["render_capabilities_block"]
-        nlp2dsl_sdk__system_map_render__helpers__history_value_line["history_value_line"]
         nlp2dsl_sdk__system_map_render__blocks__render_deploy_block["render_deploy_block"]
         nlp2dsl_sdk__system_map_render__blocks__render_access_block["render_access_block"]
-        nlp2dsl_sdk__system_map_render__helpers__process_field_line["process_field_line"]
-        nlp2dsl_sdk__system_map_render__helpers__esc_str["esc_str"]
-        nlp2dsl_sdk__system_map_render__blocks__render_schedules_block["render_schedules_block"]
-        nlp2dsl_sdk__system_map_render__blocks__render_resources_block["render_resources_block"]
-        nlp2dsl_sdk__system_map_render__render__render_system_map_doql["render_system_map_doql"]
+        nlp2dsl_sdk__system_map_render__blocks__render_process_access_block["render_process_access_block"]
+        nlp2dsl_sdk__system_map_render__blocks__render_generated_services_block["render_generated_services_bloc"]
+        nlp2dsl_sdk__system_map_render__blocks__render_paths_block["render_paths_block"]
+        nlp2dsl_sdk__system_map_render__helpers__bool_lit["bool_lit"]
         nlp2dsl_sdk__system_map_render__helpers__data_value_line["data_value_line"]
-        nlp2dsl_sdk__system_map_render__blocks__render_process_block["render_process_block"]
-        nlp2dsl_sdk__system_map_render__blocks__render_data_block["render_data_block"]
+        nlp2dsl_sdk__system_map_render__helpers__history_value_line["history_value_line"]
     end
     subgraph nlp2dsl_sdk__system_map_runtimes
         nlp2dsl_sdk__system_map_runtimes__build_runtimes_for_example["build_runtimes_for_example"]
@@ -361,143 +312,199 @@ flowchart LR
         nlp2dsl_sdk__system_map_runtimes__load_example_profile["load_example_profile"]
     end
     subgraph nlp2dsl_sdk__validation
-        nlp2dsl_sdk__validation__pipeline__validate_post_health_issues["validate_post_health_issues"]
-        nlp2dsl_sdk__validation__resolutions___is_attachment_issue["_is_attachment_issue"]
-        nlp2dsl_sdk__validation__rules__dsl_contract___validate_step["_validate_step"]
-        nlp2dsl_sdk__validation__resolutions___has_invalid_attachment["_has_invalid_attachment"]
-        nlp2dsl_sdk__validation__resolutions___is_autofill_issue["_is_autofill_issue"]
-        nlp2dsl_sdk__validation__rules__dsl_contract___type_name["_type_name"]
-        nlp2dsl_sdk__validation__rules__post_execute__validate_execution_outcome["validate_execution_outcome"]
         nlp2dsl_sdk__validation__rules__attachment__validate_attachment_path["validate_attachment_path"]
-        nlp2dsl_sdk__validation__profile_checks__apply_profile_validations["apply_profile_validations"]
-        nlp2dsl_sdk__validation__messages___attachment_kind["_attachment_kind"]
-        nlp2dsl_sdk__validation__messages___attachment_code["_attachment_code"]
-        nlp2dsl_sdk__validation__resolutions___append_attachment_plans["_append_attachment_plans"]
-        nlp2dsl_sdk__validation__pipeline__validate_post_execute_issues["validate_post_execute_issues"]
-        nlp2dsl_sdk__validation__rules__runtime_health___runtime_field["_runtime_field"]
-        nlp2dsl_sdk__validation__rules__runtime_health__probe_health_endpoint["probe_health_endpoint"]
-        nlp2dsl_sdk__validation__messages___attachment_issue["_attachment_issue"]
-        nlp2dsl_sdk__validation__messages___invalid_field_issue["_invalid_field_issue"]
-        nlp2dsl_sdk__validation__messages__legacy_message_to_issue["legacy_message_to_issue"]
-        nlp2dsl_sdk__validation__resolutions__plan_resolutions["plan_resolutions"]
-        nlp2dsl_sdk__validation__issue__issues_to_messages["issues_to_messages"]
-        nlp2dsl_sdk__validation__pipeline__validate_step_config_from_map["validate_step_config_from_map"]
-        nlp2dsl_sdk__validation__messages___field_format_issue["_field_format_issue"]
-        nlp2dsl_sdk__validation__rules__dsl_contract__validate_dsl_contract["validate_dsl_contract"]
-        nlp2dsl_sdk__validation__messages___missing_required_issue["_missing_required_issue"]
-        nlp2dsl_sdk__validation__pipeline__validate_post_health_for_intent["validate_post_health_for_inten"]
-        nlp2dsl_sdk__validation__pipeline__validate_workflow_from_map_issues["validate_workflow_from_map_iss"]
-        nlp2dsl_sdk__validation__pipeline__validate_step_issues["validate_step_issues"]
-        nlp2dsl_sdk__validation__helpers__is_empty["is_empty"]
-        nlp2dsl_sdk__validation__messages___unknown_action_issue["_unknown_action_issue"]
-        nlp2dsl_sdk__validation__pipeline__validate_workflow_from_map["validate_workflow_from_map"]
-        nlp2dsl_sdk__validation__messages___other_issue["_other_issue"]
-        nlp2dsl_sdk__validation__messages___field_after_colon["_field_after_colon"]
-        nlp2dsl_sdk__validation__rules__dsl_contract___issue["_issue"]
         nlp2dsl_sdk__validation__resolutions___append_autofill_plans["_append_autofill_plans"]
-        nlp2dsl_sdk__validation__pipeline__validate_dsl_contract_messages["validate_dsl_contract_messages"]
-        nlp2dsl_sdk__validation__rules__step_config__validate_workflow_steps["validate_workflow_steps"]
-        nlp2dsl_sdk__validation__rules__runtime_health__validate_runtime_health_for_intent["validate_runtime_health_for_in"]
-        nlp2dsl_sdk__validation__pipeline___context_from_map["_context_from_map"]
-        nlp2dsl_sdk__validation__rules__attachment__attachment_issues_for_config["attachment_issues_for_config"]
-        nlp2dsl_sdk__validation__resolutions___append_plan["_append_plan"]
-        nlp2dsl_sdk__validation__messages___quality_missing_issue["_quality_missing_issue"]
-        nlp2dsl_sdk__validation__rules__runtime_health__runtime_id_for_intent["runtime_id_for_intent"]
-        nlp2dsl_sdk__validation__pipeline__validate_step_config_from_map_issues["validate_step_config_from_map_"]
-        nlp2dsl_sdk__validation__resolutions___attachment_issues["_attachment_issues"]
-        nlp2dsl_sdk__validation__pipeline__validate_post_health_from_map["validate_post_health_from_map"]
-        nlp2dsl_sdk__validation__rules__dsl_contract___validate_optional_text_field["_validate_optional_text_field"]
-        nlp2dsl_sdk__validation__rules__step_config___format_issues["_format_issues"]
-        nlp2dsl_sdk__validation__pipeline__validate_step_messages["validate_step_messages"]
-        nlp2dsl_sdk__validation__pipeline__validate_dsl_contract_issues["validate_dsl_contract_issues"]
-        nlp2dsl_sdk__validation__rules__step_config__validate_step["validate_step"]
-        nlp2dsl_sdk__validation__rules__attachment___resolve_path["_resolve_path"]
-        nlp2dsl_sdk__validation__pipeline__validate_post_execute_execution["validate_post_execute_executio"]
-        nlp2dsl_sdk__validation__rules__runtime_health__validate_runtime_health["validate_runtime_health"]
-        nlp2dsl_sdk__validation__messages___attachment_resolution["_attachment_resolution"]
-        nlp2dsl_sdk__validation__pipeline__validate_post_execute_from_map["validate_post_execute_from_map"]
-        nlp2dsl_sdk__validation__helpers__parse_amount["parse_amount"]
         nlp2dsl_sdk__validation__helpers__pdf_amount_mismatch["pdf_amount_mismatch"]
-        nlp2dsl_sdk__validation__helpers__pdf_structure_issues["pdf_structure_issues"]
-        nlp2dsl_sdk__validation__pipeline__validate_post_execute_workflow_from_map_issues["validate_post_execute_workflow"]
+        nlp2dsl_sdk__validation__messages___missing_required_issue["_missing_required_issue"]
+        nlp2dsl_sdk__validation__rules__runtime_health__validate_runtime_health_for_intent["validate_runtime_health_for_in"]
+        nlp2dsl_sdk__validation__rules__step_config___format_issues["_format_issues"]
+        nlp2dsl_sdk__validation__resolutions__plan_resolutions["plan_resolutions"]
         nlp2dsl_sdk__validation__resolutions___should_generate_attachment["_should_generate_attachment"]
-        nlp2dsl_sdk__validation__rules__dsl_contract___is_non_empty_string["_is_non_empty_string"]
+        nlp2dsl_sdk__validation__profile_checks__parse_profile_validation["parse_profile_validation"]
+        nlp2dsl_sdk__validation__messages___other_issue["_other_issue"]
+        nlp2dsl_sdk__validation__rules__step_config__validate_workflow_steps["validate_workflow_steps"]
+        nlp2dsl_sdk__validation__rules__attachment___resolve_path["_resolve_path"]
+        nlp2dsl_sdk__validation__profile_checks__apply_profile_validations["apply_profile_validations"]
+        nlp2dsl_sdk__validation__rules__dsl_contract___issue["_issue"]
+        nlp2dsl_sdk__validation__rules__dsl_contract___validate_optional_text_field["_validate_optional_text_field"]
+        nlp2dsl_sdk__validation__messages___attachment_resolution["_attachment_resolution"]
+        nlp2dsl_sdk__validation__pipeline__validate_step_messages["validate_step_messages"]
+        nlp2dsl_sdk__validation__profile_checks__check_profile_validation["check_profile_validation"]
+        nlp2dsl_sdk__validation__pipeline__validate_post_execute_issues["validate_post_execute_issues"]
+        nlp2dsl_sdk__validation__profile_checks__validate_profile_expectations["validate_profile_expectations"]
+        nlp2dsl_sdk__validation__pipeline__validate_post_execute_workflow_from_map_issues["validate_post_execute_workflow"]
+        nlp2dsl_sdk__validation__resolutions___has_invalid_attachment["_has_invalid_attachment"]
+        nlp2dsl_sdk__validation__messages___attachment_code["_attachment_code"]
+        nlp2dsl_sdk__validation__helpers__parse_amount["parse_amount"]
+        nlp2dsl_sdk__validation__profile_checks__execution_completed["execution_completed"]
+        nlp2dsl_sdk__validation__profile_checks___validation_id["_validation_id"]
+        nlp2dsl_sdk__validation__messages___field_format_issue["_field_format_issue"]
+        nlp2dsl_sdk__validation__profile_checks__run_validations_from_raw["run_validations_from_raw"]
+        nlp2dsl_sdk__validation__messages___field_after_colon["_field_after_colon"]
+        nlp2dsl_sdk__validation__profile_checks__run_profile_validation_checks["run_profile_validation_checks"]
+        nlp2dsl_sdk__validation__resolutions___append_plan["_append_plan"]
+        nlp2dsl_sdk__validation__profile_checks__load_profile_validations["load_profile_validations"]
+        nlp2dsl_sdk__validation__pipeline__validate_step_config_from_map["validate_step_config_from_map"]
+        nlp2dsl_sdk__validation__rules__dsl_contract__validate_dsl_contract["validate_dsl_contract"]
+        nlp2dsl_sdk__validation__pipeline__validate_post_health_for_intent["validate_post_health_for_inten"]
+        nlp2dsl_sdk__validation__issue__issues_to_messages["issues_to_messages"]
+        nlp2dsl_sdk__validation__messages___quality_missing_issue["_quality_missing_issue"]
+        nlp2dsl_sdk__validation__messages___attachment_kind["_attachment_kind"]
+        nlp2dsl_sdk__validation__helpers__is_empty["is_empty"]
+        nlp2dsl_sdk__validation__rules__runtime_health__validate_runtime_health["validate_runtime_health"]
+        nlp2dsl_sdk__validation__resolutions___attachment_issues["_attachment_issues"]
+        nlp2dsl_sdk__validation__profile_checks__parse_profile_validations["parse_profile_validations"]
+        nlp2dsl_sdk__validation__rules__runtime_health__probe_health_endpoint["probe_health_endpoint"]
+        nlp2dsl_sdk__validation__rules__step_config__validate_step["validate_step"]
+        nlp2dsl_sdk__validation__profile_checks__conversation_executed["conversation_executed"]
+        nlp2dsl_sdk__validation__profile_checks___failed["_failed"]
+        nlp2dsl_sdk__validation__profile_checks___pass_summary["_pass_summary"]
+        nlp2dsl_sdk__validation__pipeline__validate_dsl_contract_issues["validate_dsl_contract_issues"]
+        nlp2dsl_sdk__validation__pipeline__validate_post_health_issues["validate_post_health_issues"]
+        nlp2dsl_sdk__validation__pipeline__validate_step_config_from_map_issues["validate_step_config_from_map_"]
+        nlp2dsl_sdk__validation__pipeline__validate_workflow_from_map_issues["validate_workflow_from_map_iss"]
+        nlp2dsl_sdk__validation__pipeline__validate_post_execute_execution["validate_post_execute_executio"]
+        nlp2dsl_sdk__validation__rules__post_execute__validate_execution_outcome["validate_execution_outcome"]
+        nlp2dsl_sdk__validation__rules__attachment__attachment_issues_for_config["attachment_issues_for_config"]
+        nlp2dsl_sdk__validation__pipeline___context_from_map["_context_from_map"]
+        nlp2dsl_sdk__validation__resolutions___append_attachment_plans["_append_attachment_plans"]
+        nlp2dsl_sdk__validation__pipeline__validate_workflow_from_map["validate_workflow_from_map"]
+        nlp2dsl_sdk__validation__messages___unknown_action_issue["_unknown_action_issue"]
+        nlp2dsl_sdk__validation__profile_checks___parse_profile_validation_by_code["_parse_profile_validation_by_c"]
+        nlp2dsl_sdk__validation__profile_checks__dsl_actions_from_response["dsl_actions_from_response"]
+        nlp2dsl_sdk__validation__profile_checks___parse_profile_validation_by_type["_parse_profile_validation_by_t"]
+        nlp2dsl_sdk__validation__messages___attachment_issue["_attachment_issue"]
+        nlp2dsl_sdk__validation__rules__runtime_health___runtime_field["_runtime_field"]
+        nlp2dsl_sdk__validation__profile_checks___resolve_artifact_path["_resolve_artifact_path"]
+        nlp2dsl_sdk__validation__rules__runtime_health__runtime_id_for_intent["runtime_id_for_intent"]
+        nlp2dsl_sdk__validation__messages__legacy_message_to_issue["legacy_message_to_issue"]
+        nlp2dsl_sdk__validation__helpers__pdf_structure_issues["pdf_structure_issues"]
+        nlp2dsl_sdk__validation__resolutions___is_autofill_issue["_is_autofill_issue"]
+        nlp2dsl_sdk__validation__messages___invalid_field_issue["_invalid_field_issue"]
+        nlp2dsl_sdk__validation__pipeline__validate_step_issues["validate_step_issues"]
+        nlp2dsl_sdk__validation__pipeline__validate_post_execute_from_map["validate_post_execute_from_map"]
+        nlp2dsl_sdk__validation__resolutions___is_attachment_issue["_is_attachment_issue"]
+        nlp2dsl_sdk__validation__profile_checks___parse_profile_validation_shorthand["_parse_profile_validation_shor"]
+        nlp2dsl_sdk__validation__pipeline__validate_dsl_contract_messages["validate_dsl_contract_messages"]
+        nlp2dsl_sdk__validation__pipeline__validate_post_health_from_map["validate_post_health_from_map"]
     end
     subgraph nlp2dsl_sdk__workflow
-        nlp2dsl_sdk__workflow__lifecycle__parse_result_from_nlp["parse_result_from_nlp"]
-        nlp2dsl_sdk__workflow__lifecycle___float_or_default["_float_or_default"]
-        nlp2dsl_sdk__workflow__lifecycle__plan_result_from_dialog["plan_result_from_dialog"]
-        nlp2dsl_sdk__workflow__lifecycle___missing_fields_from_payloads["_missing_fields_from_payloads"]
         nlp2dsl_sdk__workflow__lifecycle___string_list["_string_list"]
-        nlp2dsl_sdk__workflow__lifecycle___get["_get"]
-        nlp2dsl_sdk__workflow__lifecycle___issue_to_payload["_issue_to_payload"]
-        nlp2dsl_sdk__workflow__lifecycle___to_dict["_to_dict"]
-        nlp2dsl_sdk__workflow__lifecycle__execution_request_from_workflow["execution_request_from_workflo"]
-        nlp2dsl_sdk__workflow__lifecycle__validation_report_from_issues["validation_report_from_issues"]
-        nlp2dsl_sdk__workflow__lifecycle___compact_dict["_compact_dict"]
         nlp2dsl_sdk__workflow__lifecycle__clarification_from_dialog["clarification_from_dialog"]
+        nlp2dsl_sdk__workflow__lifecycle___to_dict["_to_dict"]
+        nlp2dsl_sdk__workflow__lifecycle__plan_result_from_dialog["plan_result_from_dialog"]
+        nlp2dsl_sdk__workflow__lifecycle___compact_dict["_compact_dict"]
+        nlp2dsl_sdk__workflow__lifecycle__execution_request_from_workflow["execution_request_from_workflo"]
+        nlp2dsl_sdk__workflow__lifecycle___float_or_default["_float_or_default"]
+        nlp2dsl_sdk__workflow__lifecycle___issue_to_payload["_issue_to_payload"]
+        nlp2dsl_sdk__workflow__lifecycle__parse_result_from_nlp["parse_result_from_nlp"]
+        nlp2dsl_sdk__workflow__lifecycle___missing_fields_from_payloads["_missing_fields_from_payloads"]
+        nlp2dsl_sdk__workflow__lifecycle___get["_get"]
+        nlp2dsl_sdk__workflow__lifecycle__validation_report_from_issues["validation_report_from_issues"]
     end
     subgraph packages__nlp2cmd_intent
-        packages__nlp2cmd_intent__src__nlp2cmd_intent__facade__default_intent_detector["default_intent_detector"]
-        packages__nlp2cmd_intent__src__nlp2cmd_intent__clarification__ensure_intent_clear["ensure_intent_clear"]
-        packages__nlp2cmd_intent__src__nlp2cmd_intent__nlp2cmd_convert__detection_to_intent_ir["detection_to_intent_ir"]
-        packages__nlp2cmd_intent__src__nlp2cmd_intent__facade__KeywordIntentAdapter__detect["detect"]
-        packages__nlp2cmd_intent__src__nlp2cmd_intent__input__analyze_query["analyze_query"]
-        packages__nlp2cmd_intent__src__nlp2cmd_intent__facade__IntentPipeline____init__["__init__"]
-        packages__nlp2cmd_intent__src__nlp2cmd_intent__data_files___nlp2cmd_data_dir["_nlp2cmd_data_dir"]
-        packages__nlp2cmd_intent__src__nlp2cmd_intent__clarification__clarification_enforced["clarification_enforced"]
-        packages__nlp2cmd_intent__src__nlp2cmd_intent__data_files__find_data_files["find_data_files"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector__KeywordIntentDetector___tokenize_text["_tokenize_text"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__pattern_loaders__parse_priority_intents["parse_priority_intents"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__pattern_loaders__merge_patterns_payload["merge_patterns_payload"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector__KeywordIntentDetector__detect_all["detect_all"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_patterns__KeywordPatterns___load_patterns_from_json["_load_patterns_from_json"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector__KeywordIntentDetector___fuzzy_detection["_fuzzy_detection"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_patterns__KeywordPatterns____init__["__init__"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_patterns___dedupe_case_insensitive["_dedupe_case_insensitive"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector__KeywordIntentDetector___calculate_keyword_confidence["_calculate_keyword_confidence"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__fast_path_detection__run_domain_fast_path_after_exact["run_domain_fast_path_after_exa"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector__KeywordIntentDetector___anti_networking_browser_override["_anti_networking_browser_overr"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector___get_polish_support["_get_polish_support"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__pattern_loaders__clean_string_list["clean_string_list"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_patterns__KeywordPatterns___apply_detector_config["_apply_detector_config"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector__KeywordIntentDetector__detect["detect"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__pattern_loaders__parse_explicit_overrides["parse_explicit_overrides"]
         packages__nlp2cmd_intent__src__nlp2cmd_intent__data_files___package_data_dir["_package_data_dir"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector___get_semantic_matcher["_get_semantic_matcher"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__facade__default_intent_detector["default_intent_detector"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_patterns__KeywordPatterns___load_detector_config_from_json["_load_detector_config_from_jso"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__pattern_loaders__parse_fast_path_settings["parse_fast_path_settings"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector___super_fast_browser_override["_super_fast_browser_override"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__clarification__ensure_intent_clear["ensure_intent_clear"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__clarification__clarification_enforced["clarification_enforced"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__pattern_loaders__parse_domain_boosters["parse_domain_boosters"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector__KeywordIntentDetector___semantic_detection["_semantic_detection"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector__KeywordIntentDetector___fast_path_detection["_fast_path_detection"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__data_files___nlp2cmd_data_dir["_nlp2cmd_data_dir"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__input__analyze_query["analyze_query"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_patterns___find_data_files["_find_data_files"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__nlp2cmd_convert__detection_to_intent_ir["detection_to_intent_ir"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector___normalize_url["_normalize_url"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_patterns__KeywordPatterns__add_pattern["add_pattern"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__data_files__find_data_files["find_data_files"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector___get_fuzzy_schema_matcher["_get_fuzzy_schema_matcher"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector___get_ml_classifier["_get_ml_classifier"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__facade__KeywordIntentAdapter__detect["detect"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector___get_query_normalizer["_get_query_normalizer"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector__KeywordIntentDetector__detect_intent_ir["detect_intent_ir"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__fast_path_detection__fast_path_detect["fast_path_detect"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__facade__IntentPipeline____init__["__init__"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__fast_path_detection__match_explicit_overrides["match_explicit_overrides"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__fast_path_detection__match_exact_commands["match_exact_commands"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_patterns__KeywordPatterns___load_fast_path_overrides_from_json["_load_fast_path_overrides_from"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector__KeywordIntentDetector___prepare_detect_text["_prepare_detect_text"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_patterns__KeywordPatterns___pattern_files["_pattern_files"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector___get_spacy_model["_get_spacy_model"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__pattern_loaders__read_json_object["read_json_object"]
+        packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector__KeywordIntentDetector___ml_detection["_ml_detection"]
     end
     subgraph packages__nlp2cmd_planner
-        packages__nlp2cmd_planner__src__nlp2cmd_planner__strategies__rule_shell___parse_file_search["_parse_file_search"]
-        packages__nlp2cmd_planner__src__nlp2cmd_planner__workflow_backend__workflow_backend_url["workflow_backend_url"]
-        packages__nlp2cmd_planner__src__nlp2cmd_planner__workflow_backend__fetch_workflow_from_text["fetch_workflow_from_text"]
-        packages__nlp2cmd_planner__src__nlp2cmd_planner__strategies__rule_shell__RuleShellPlanStrategy__plan["plan"]
-        packages__nlp2cmd_planner__src__nlp2cmd_planner__workflow_backend__workflow_backend_enabled["workflow_backend_enabled"]
         packages__nlp2cmd_planner__src__nlp2cmd_planner__workflow_backend__workflow_run_path["workflow_run_path"]
-        packages__nlp2cmd_planner__src__nlp2cmd_planner__strategies__rest_workflow__RestWorkflowPlanStrategy__supports["supports"]
+        packages__nlp2cmd_planner__src__nlp2cmd_planner__strategies__rule_shell__RuleShellPlanStrategy__plan["plan"]
+        packages__nlp2cmd_planner__src__nlp2cmd_planner__workflow_backend__workflow_backend_url["workflow_backend_url"]
+        packages__nlp2cmd_planner__src__nlp2cmd_planner__strategies__rule_shell___parse_file_search["_parse_file_search"]
+        packages__nlp2cmd_planner__src__nlp2cmd_planner__workflow_backend__fetch_workflow_from_text["fetch_workflow_from_text"]
         packages__nlp2cmd_planner__src__nlp2cmd_planner__strategies__rest_workflow__RestWorkflowPlanStrategy__plan["plan"]
+        packages__nlp2cmd_planner__src__nlp2cmd_planner__workflow_backend__workflow_backend_enabled["workflow_backend_enabled"]
+        packages__nlp2cmd_planner__src__nlp2cmd_planner__strategies__rest_workflow__RestWorkflowPlanStrategy__supports["supports"]
     end
     subgraph packages__nlp2cmd_propact
-        packages__nlp2cmd_propact__src__nlp2cmd_propact__executor__HybridPlanExecutor___run_nlp2cmd_step["_run_nlp2cmd_step"]
-        packages__nlp2cmd_propact__src__nlp2cmd_propact__runner___requires_propact["_requires_propact"]
-        packages__nlp2cmd_propact__src__nlp2cmd_propact__adapter___rest_block["_rest_block"]
-        packages__nlp2cmd_propact__src__nlp2cmd_propact__executor__execution_route["execution_route"]
-        packages__nlp2cmd_propact__src__nlp2cmd_propact__adapter___delegate_block["_delegate_block"]
         packages__nlp2cmd_propact__src__nlp2cmd_propact__adapter___format_json_body["_format_json_body"]
-        packages__nlp2cmd_propact__src__nlp2cmd_propact__executor__HybridPlanExecutor__run["run"]
-        packages__nlp2cmd_propact__src__nlp2cmd_propact__adapter___ws_block["_ws_block"]
+        packages__nlp2cmd_propact__src__nlp2cmd_propact__adapter__plan_to_propact_markdown["plan_to_propact_markdown"]
+        packages__nlp2cmd_propact__src__nlp2cmd_propact__adapter___rest_block["_rest_block"]
         packages__nlp2cmd_propact__src__nlp2cmd_propact__runner___is_shell_only["_is_shell_only"]
-        packages__nlp2cmd_propact__src__nlp2cmd_propact__adapter__step_to_propact_block["step_to_propact_block"]
-        packages__nlp2cmd_propact__src__nlp2cmd_propact__runner___shell_command["_shell_command"]
-        packages__nlp2cmd_propact__src__nlp2cmd_propact__runner___run_shell_steps["_run_shell_steps"]
+        packages__nlp2cmd_propact__src__nlp2cmd_propact__adapter___ws_block["_ws_block"]
         packages__nlp2cmd_propact__src__nlp2cmd_propact__adapter___shell_block["_shell_block"]
         packages__nlp2cmd_propact__src__nlp2cmd_propact__adapter___mcp_block["_mcp_block"]
-        packages__nlp2cmd_propact__src__nlp2cmd_propact__runner___propact_available["_propact_available"]
-        packages__nlp2cmd_propact__src__nlp2cmd_propact__runner___resolve_propact_bin["_resolve_propact_bin"]
+        packages__nlp2cmd_propact__src__nlp2cmd_propact__runner___shell_command["_shell_command"]
+        packages__nlp2cmd_propact__src__nlp2cmd_propact__executor__HybridPlanExecutor__run["run"]
         packages__nlp2cmd_propact__src__nlp2cmd_propact__executor___single_step_plan["_single_step_plan"]
-        packages__nlp2cmd_propact__src__nlp2cmd_propact__runner__PropactRunner__run["run"]
-        packages__nlp2cmd_propact__src__nlp2cmd_propact__adapter__plan_to_propact_markdown["plan_to_propact_markdown"]
-        packages__nlp2cmd_propact__src__nlp2cmd_propact__runner__PropactRunner__render["render"]
+        packages__nlp2cmd_propact__src__nlp2cmd_propact__runner___propact_available["_propact_available"]
         packages__nlp2cmd_propact__src__nlp2cmd_propact__executor__HybridPlanExecutor___run_propact_step["_run_propact_step"]
+        packages__nlp2cmd_propact__src__nlp2cmd_propact__runner___resolve_propact_bin["_resolve_propact_bin"]
+        packages__nlp2cmd_propact__src__nlp2cmd_propact__executor__HybridPlanExecutor___run_nlp2cmd_step["_run_nlp2cmd_step"]
+        packages__nlp2cmd_propact__src__nlp2cmd_propact__runner___requires_propact["_requires_propact"]
+        packages__nlp2cmd_propact__src__nlp2cmd_propact__runner__PropactRunner__run["run"]
+        packages__nlp2cmd_propact__src__nlp2cmd_propact__adapter__step_to_propact_block["step_to_propact_block"]
+        packages__nlp2cmd_propact__src__nlp2cmd_propact__adapter___delegate_block["_delegate_block"]
+        packages__nlp2cmd_propact__src__nlp2cmd_propact__runner___run_shell_steps["_run_shell_steps"]
+        packages__nlp2cmd_propact__src__nlp2cmd_propact__runner__PropactRunner__render["render"]
+        packages__nlp2cmd_propact__src__nlp2cmd_propact__executor__execution_route["execution_route"]
     end
     subgraph packages__nlp2dsl_show
         packages__nlp2dsl_show__src__nlp2dsl_show__cli__main["main"]
     end
     subgraph tauri_wrapper__scripts
-        tauri_wrapper__scripts__serve_dist__sendFile["sendFile"]
-        tauri_wrapper__scripts__dev__shutdown["shutdown"]
-        tauri_wrapper__scripts__serve_dist__fileContents["fileContents"]
-        tauri_wrapper__scripts__serve_dist__handleRequest["handleRequest"]
         tauri_wrapper__scripts__serve_dist__resolveRequestPath["resolveRequestPath"]
+        tauri_wrapper__scripts__serve_dist__fileContents["fileContents"]
+        tauri_wrapper__scripts__serve_dist__sendFile["sendFile"]
+        tauri_wrapper__scripts__serve_dist__contentType["contentType"]
         tauri_wrapper__scripts__serve_dist__server["server"]
         tauri_wrapper__scripts__dev__main["main"]
-        tauri_wrapper__scripts__serve_dist__startServer["startServer"]
-        tauri_wrapper__scripts__serve_dist__contentType["contentType"]
-        tauri_wrapper__scripts__serve_dist__stat["stat"]
         tauri_wrapper__scripts__dev__exitCode["exitCode"]
+        tauri_wrapper__scripts__serve_dist__handleRequest["handleRequest"]
+        tauri_wrapper__scripts__serve_dist__startServer["startServer"]
+        tauri_wrapper__scripts__serve_dist__stat["stat"]
+        tauri_wrapper__scripts__dev__shutdown["shutdown"]
         tauri_wrapper__scripts__serve_dist__isInsideRoot["isInsideRoot"]
+    end
+    subgraph worker__action_catalog
+        worker__action_catalog__known_action_names_from_catalog["known_action_names_from_catalo"]
     end
     tauri_wrapper__scripts__dev__main --> tauri_wrapper__scripts__dev__shutdown
     tauri_wrapper__scripts__dev__exitCode --> tauri_wrapper__scripts__dev__main
@@ -510,25 +517,13 @@ flowchart LR
     tauri_wrapper__scripts__serve_dist__handleRequest --> tauri_wrapper__scripts__serve_dist__sendFile
     tauri_wrapper__scripts__serve_dist__startServer --> tauri_wrapper__scripts__serve_dist__handleRequest
     tauri_wrapper__scripts__serve_dist__server --> tauri_wrapper__scripts__serve_dist__handleRequest
-    backend__app__engine___persist_workflow_snapshot --> backend__app__engine___workflow_steps_payload
-    backend__app__engine___execute_workflow --> backend__app__engine___publish_workflow_event
-    backend__app__engine___execute_workflow --> backend__app__logging_setup__get_request_id
-    backend__app__engine___execute_workflow --> backend__app__engine___persist_workflow_snapshot
-    backend__app__engine__run_workflow --> backend__app__engine___execute_workflow
-    backend__app__engine__start_workflow --> backend__app__engine___track_background_task
-    backend__app__engine__start_workflow --> backend__app__engine___persist_workflow_snapshot
-    backend__app__engine__start_workflow --> backend__app__engine___execute_workflow
-    backend__app__action_catalog__nlp_actions_to_action_info --> nlp2dsl_sdk__contracts__registry__action_contracts_from_catalog
-    backend__app__action_catalog__nlp_actions_to_action_info --> nlp2dsl_sdk__contracts__registry__action_info_config_schema
-    backend__app__action_catalog__fetch_action_catalog --> backend__app__action_catalog__nlp_actions_to_action_info
-    backend__app__action_catalog__load_action_field_catalog --> backend__app__action_catalog___default_nlp_service_url
-    backend__app__action_catalog__required_fields_for_action --> backend__app__action_catalog__load_action_field_catalog
-    backend__app__action_catalog__quality_fields_for_action --> backend__app__action_catalog__load_action_field_catalog
-    backend__app__action_catalog__known_action_names_from_catalog --> nlp2dsl_sdk__contracts__registry__known_action_names
-    backend__app__action_catalog__known_action_names_from_catalog --> backend__app__action_catalog__load_action_field_catalog
-    backend__app__step_validator___validation_context --> backend__app__action_catalog__required_fields_for_action
-    backend__app__step_validator___validation_context --> backend__app__action_catalog__quality_fields_for_action
-    backend__app__step_validator___validation_context --> backend__app__action_catalog__known_action_names_from_catalog
+    backend__app__workflow_lifecycle__validation_report_for_workflow --> nlp2dsl_sdk__workflow__lifecycle__validation_report_from_issues
+    backend__app__workflow_lifecycle__validation_report_for_workflow --> backend__app__dsl_validation__validate_dsl_for_execution
+    backend__app__workflow_lifecycle__workflow_validation_payload --> backend__app__workflow_lifecycle__validation_report_for_workflow
+    backend__app__workflow_lifecycle__attach_validation_to_plan --> backend__app__workflow_lifecycle__validation_report_for_workflow
+    backend__app__step_validator___validation_context --> nlp2dsl_sdk__contracts__registry__required_fields_for_action
+    backend__app__step_validator___validation_context --> nlp2dsl_sdk__contracts__registry__quality_fields_for_action
+    backend__app__step_validator___validation_context --> worker__action_catalog__known_action_names_from_catalog
     backend__app__step_validator__validate_step_config_issues --> nlp2dsl_sdk__validation__rules__step_config__validate_step
     backend__app__step_validator__validate_step_config_issues --> backend__app__step_validator___validation_context
     backend__app__step_validator__validate_step_config --> nlp2dsl_sdk__validation__issue__issues_to_messages
@@ -560,31 +555,7 @@ flowchart LR
     backend__app__routers__testql_compat__testql_runworkflow --> backend__app__routers__testql_compat___resolve_conv_id
     backend__app__routers__testql_compat__testql_runworkflow --> backend__app__routers__testql_compat___alias_response
     backend__app__routers__testql_compat__testql_runworkflow --> backend__app__engine__run_workflow
-    backend__app__routers__testql_compat__testql_workflow_from_text --> nlp2dsl_sdk__client__NLP2DSLClient__workflow_from_text
-    backend__app__routers__chat___maybe_auto_execute --> backend__app__routers__chat___execute_ready_dsl
-    backend__app__routers__chat___maybe_auto_execute --> backend__app__routers__chat___execution_requested
-    backend__app__routers__chat___execution_requested --> backend__app__routers__chat___is_explicit_execute_request
-    backend__app__routers__chat___execution_requested --> backend__app__routers__chat___is_auto_execute_requested
-    backend__app__routers__chat___is_explicit_execute_request --> backend__app__routers__chat___execute_keyword_in_text
-    backend__app__routers__chat___uses_mullm_backend --> backend__app__routers__chat___mullm_steps
-    backend__app__routers__chat___prepare_mullm_execution --> backend__app__routers__chat___mullm_steps
-    backend__app__routers__chat___mark_auto_execute_message --> backend__app__routers__chat___is_explicit_execute_request
-    backend__app__routers__chat___mark_auto_execute_message --> backend__app__routers__chat___is_auto_execute_requested
-    backend__app__routers__chat___execution_observation_from_dsl --> backend__app__routers__chat___dsl_steps
-    backend__app__routers__chat___observe_registry_execution --> backend__app__routers__chat___doql_context_path
-    backend__app__routers__chat___observe_registry_execution --> backend__app__routers__chat___execution_observation_from_dsl
-    backend__app__routers__chat___execute_ready_dsl --> backend__app__dsl_validation__validate_dsl_for_execution
-    backend__app__routers__chat___execute_ready_dsl --> backend__app__routers__chat___dsl_steps
-    backend__app__routers__chat___execute_ready_dsl --> backend__app__routers__chat___uses_mullm_backend
-    backend__app__routers__chat___execute_ready_dsl --> backend__app__routers__chat___workflow_request_from_dsl
-    backend__app__routers__chat___execute_ready_dsl --> backend__app__routers__chat___merge_attachment_validation
-    backend__app__routers__chat___execute_ready_dsl --> backend__app__attachment_validation__ensure_attachment_validation
-    backend__app__routers__chat___execute_ready_dsl --> backend__app__routers__chat___mark_auto_execute_message
-    backend__app__routers__chat__chat_start --> backend__app__routers__chat___proxy_chat_payload
-    backend__app__routers__chat__chat_start --> backend__app__routers__chat___maybe_auto_execute
-    backend__app__routers__chat__chat_message --> backend__app__routers__chat___proxy_chat_payload
-    backend__app__routers__chat__chat_message --> backend__app__routers__chat___maybe_auto_execute
-    backend__app__routers__chat__chat_get_state --> backend__app__logging_setup__get_request_id
+    backend__app__routers__testql_compat__testql_workflow_from_text --> backend__app__routers__workflow__workflow_from_text
     backend__app__routers__settings__actions_schema --> backend__app__logging_setup__get_request_id
     backend__app__routers__settings__action_schema --> backend__app__logging_setup__get_request_id
     backend__app__routers__settings__get_settings --> backend__app__logging_setup__get_request_id
@@ -599,6 +570,41 @@ flowchart LR
     packages__nlp2cmd_intent__src__nlp2cmd_intent__data_files__find_data_files --> nlp_service__app__settings__SettingsManager__set
     packages__nlp2cmd_intent__src__nlp2cmd_intent__data_files__find_data_files --> packages__nlp2cmd_intent__src__nlp2cmd_intent__data_files___package_data_dir
     packages__nlp2cmd_intent__src__nlp2cmd_intent__data_files__find_data_files --> packages__nlp2cmd_intent__src__nlp2cmd_intent__data_files___nlp2cmd_data_dir
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_patterns___dedupe_case_insensitive --> nlp_service__app__settings__SettingsManager__set
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_patterns__KeywordPatterns____init__ --> nlp_service__app__settings__SettingsManager__set
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_patterns__KeywordPatterns___pattern_files --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_patterns___find_data_files
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_patterns__KeywordPatterns___load_patterns_from_json --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__pattern_loaders__read_json_object
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_patterns__KeywordPatterns___load_patterns_from_json --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__pattern_loaders__merge_patterns_payload
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_patterns__KeywordPatterns___apply_detector_config --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__pattern_loaders__parse_fast_path_settings
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_patterns__KeywordPatterns___apply_detector_config --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__pattern_loaders__parse_domain_boosters
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_patterns__KeywordPatterns___apply_detector_config --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__pattern_loaders__parse_priority_intents
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_patterns__KeywordPatterns___load_detector_config_from_json --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_patterns___find_data_files
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_patterns__KeywordPatterns___load_detector_config_from_json --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__pattern_loaders__read_json_object
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_patterns__KeywordPatterns___load_fast_path_overrides_from_json --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_patterns___find_data_files
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_patterns__KeywordPatterns___load_fast_path_overrides_from_json --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__pattern_loaders__read_json_object
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_patterns__KeywordPatterns___load_fast_path_overrides_from_json --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__pattern_loaders__parse_explicit_overrides
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_patterns__KeywordPatterns__add_pattern --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__pattern_loaders__clean_string_list
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_patterns__KeywordPatterns__add_pattern --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_patterns___dedupe_case_insensitive
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector___super_fast_browser_override --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector___normalize_url
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector__KeywordIntentDetector___prepare_detect_text --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector___get_query_normalizer
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector__KeywordIntentDetector__detect --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector___super_fast_browser_override
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector__KeywordIntentDetector__detect_intent_ir --> packages__nlp2cmd_intent__src__nlp2cmd_intent__nlp2cmd_convert__detection_to_intent_ir
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector__KeywordIntentDetector__detect_all --> nlp_service__app__settings__SettingsManager__set
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector__KeywordIntentDetector___fast_path_detection --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__fast_path_detection__fast_path_detect
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector__KeywordIntentDetector___fuzzy_detection --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector___get_fuzzy_schema_matcher
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector__KeywordIntentDetector___ml_detection --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector___get_ml_classifier
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector__KeywordIntentDetector___semantic_detection --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector___get_semantic_matcher
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector__KeywordIntentDetector___anti_networking_browser_override --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector___normalize_url
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector__KeywordIntentDetector___calculate_keyword_confidence --> nlp_service__app__settings__SettingsManager__set
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector__KeywordIntentDetector___tokenize_text --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector___get_spacy_model
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector__KeywordIntentDetector___tokenize_text --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__keyword_detector___get_polish_support
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__pattern_loaders__merge_patterns_payload --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__pattern_loaders__clean_string_list
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__pattern_loaders__parse_domain_boosters --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__pattern_loaders__clean_string_list
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__pattern_loaders__parse_priority_intents --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__pattern_loaders__clean_string_list
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__pattern_loaders__parse_fast_path_settings --> nlp_service__app__settings__SettingsManager__set
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__fast_path_detection__fast_path_detect --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__fast_path_detection__run_domain_fast_path_after_exact
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__fast_path_detection__fast_path_detect --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__fast_path_detection__match_explicit_overrides
+    packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__fast_path_detection__fast_path_detect --> packages__nlp2cmd_intent__src__nlp2cmd_intent__keywords__fast_path_detection__match_exact_commands
     packages__nlp2cmd_planner__src__nlp2cmd_planner__workflow_backend__fetch_workflow_from_text --> packages__nlp2cmd_planner__src__nlp2cmd_planner__workflow_backend__workflow_backend_url
     packages__nlp2cmd_planner__src__nlp2cmd_planner__strategies__rule_shell__RuleShellPlanStrategy__plan --> packages__nlp2cmd_planner__src__nlp2cmd_planner__strategies__rule_shell___parse_file_search
     packages__nlp2cmd_planner__src__nlp2cmd_planner__strategies__rest_workflow__RestWorkflowPlanStrategy__supports --> packages__nlp2cmd_planner__src__nlp2cmd_planner__workflow_backend__workflow_backend_enabled
@@ -701,31 +707,6 @@ flowchart LR
     nlp2dsl_sdk__doql_registry__refresh_doql_registry --> nlp2dsl_sdk__system_map_bridge__task_context_to_system_map
     nlp2dsl_sdk__doql_registry__refresh_doql_registry --> nlp2dsl_sdk__system_map_render__render__render_system_map_doql
     nlp2dsl_sdk__doql_registry__refresh_doql_registry_from_state --> nlp2dsl_sdk__doql_registry__refresh_doql_registry
-    nlp2dsl_sdk__client__NLP2DSLClient__chat_start --> nlp2dsl_sdk__doql__runtime__load_doql_inline_from_env
-    nlp2dsl_sdk__client__NLP2DSLClient__chat_start --> nlp2dsl_sdk__doql__runtime__resolve_doql_context_path
-    nlp2dsl_sdk__client__NLP2DSLClient__chat_message --> nlp2dsl_sdk__doql__runtime__resolve_doql_context_path
-    nlp2dsl_sdk__client__NLP2DSLClient__chat_message --> nlp2dsl_sdk__doql__runtime__load_doql_inline_from_env
-    nlp2dsl_sdk__client__NLP2DSLClient__send_invoice --> nlp2dsl_sdk__client__workflow_step
-    nlp2dsl_sdk__client__NLP2DSLClient__send_email --> nlp2dsl_sdk__client__workflow_step
-    nlp2dsl_sdk__client__NLP2DSLClient__generate_report --> nlp2dsl_sdk__client__workflow_step
-    nlp2dsl_sdk__client__NLP2DSLClient__generate_report_and_notify --> nlp2dsl_sdk__client__workflow_step
-    nlp2dsl_sdk__client__NLP2DSLClient__notify_slack --> nlp2dsl_sdk__client__workflow_step
-    nlp2dsl_sdk__client__NLP2DSLClient__crm_update --> nlp2dsl_sdk__client__workflow_step
-    nlp2dsl_sdk__client__NLP2DSLClient__send_invoice_and_notify --> nlp2dsl_sdk__client__workflow_step
-    nlp2dsl_sdk__client__ConversationFlow__start --> nlp2dsl_sdk__preview__ensure_services
-    nlp2dsl_sdk__client__ConversationFlow__start --> nlp2dsl_sdk__artifact_layout__ensure_layout
-    nlp2dsl_sdk__client__ConversationFlow__start --> nlp2dsl_sdk__artifact_layout__current_run_id
-    nlp2dsl_sdk__client__ConversationFlow___record_turn --> nlp2dsl_sdk__attachment_validation__enrich_chat_response
-    nlp2dsl_sdk__client__ConversationFlow__save_artifacts --> nlp2dsl_sdk__conversation_artifacts__write_conversation_artifacts
-    nlp2dsl_sdk__client__ConversationFlow___persist_reflection --> nlp2dsl_sdk__artifact_layout__write_reflection_snapshot
-    nlp2dsl_sdk__client__ConversationFlow___refresh_doql_registry --> nlp2dsl_sdk__doql__runtime__resolve_doql_context_path
-    nlp2dsl_sdk__client__ConversationFlow___refresh_doql_registry --> nlp2dsl_sdk__doql_registry__refresh_doql_registry
-    nlp2dsl_sdk__client__ConversationFlow___handle_completed_response --> nlp2dsl_sdk__attachment_validation__format_attachment_validation
-    nlp2dsl_sdk__client__ConversationFlow___print_attachment_validation --> nlp2dsl_sdk__attachment_validation__format_attachment_validation
-    nlp2dsl_sdk__client__ConversationFlow___reflect_executed_turn --> nlp2dsl_sdk__doql__runtime__resolve_doql_context_path
-    nlp2dsl_sdk__client__ConversationFlow___reflect_executed_turn --> nlp2dsl_sdk__reflection__reflect_from_doql_path
-    nlp2dsl_sdk__client__ConversationFlow___reflect_executed_turn --> nlp2dsl_sdk__artifact_layout__write_reflection_snapshot
-    nlp2dsl_sdk__client__ConversationFlow___reflect_executed_turn --> nlp2dsl_sdk__reflection__format_reflection_summary
     nlp2dsl_sdk__conversation_artifacts___format_turn --> nlp2dsl_sdk__conversation_artifacts___routing_summary
     nlp2dsl_sdk__conversation_artifacts__format_transcript --> nlp2dsl_sdk__conversation_artifacts___format_transcript_header
     nlp2dsl_sdk__conversation_artifacts__format_transcript --> nlp2dsl_sdk__conversation_artifacts___format_validations
@@ -750,6 +731,26 @@ flowchart LR
     nlp2dsl_sdk__system_map_bridge___command_to_ir --> nlp2dsl_sdk__system_map_runtimes__resolve_command_runtime
     nlp2dsl_sdk__system_map_bridge__doql_file_to_system_map --> nlp2dsl_sdk__doql__parse__load_doql_context
     nlp2dsl_sdk__system_map_bridge__doql_file_to_system_map --> nlp2dsl_sdk__system_map_bridge__task_context_to_system_map
+    nlp2dsl_sdk__reflection___config_from_command --> nlp2dsl_sdk__reflection___data_lookup
+    nlp2dsl_sdk__reflection___apply_invoice_attachment_hint --> nlp2dsl_sdk__reflection___data_lookup
+    nlp2dsl_sdk__reflection__build_target_plan --> nlp2dsl_sdk__reflection___apply_invoice_attachment_hint
+    nlp2dsl_sdk__reflection__build_target_plan --> nlp2dsl_sdk__reflection___config_from_command
+    nlp2dsl_sdk__reflection___parse_validation_issue --> nlp2dsl_sdk__validation__messages__legacy_message_to_issue
+    nlp2dsl_sdk__reflection___missing_field_issue --> nlp2dsl_sdk__reflection___data_lookup
+    nlp2dsl_sdk__reflection___missing_vs_target --> nlp2dsl_sdk__reflection___is_empty_value
+    nlp2dsl_sdk__reflection___missing_vs_target --> nlp2dsl_sdk__reflection___missing_field_issue
+    nlp2dsl_sdk__reflection___context_queries_from_issues --> nlp_service__app__settings__SettingsManager__set
+    nlp2dsl_sdk__reflection__reflect --> nlp2dsl_sdk__reflection___context_queries_from_issues
+    nlp2dsl_sdk__reflection__reflect --> nlp2dsl_sdk__reflection___parse_validation_issue
+    nlp2dsl_sdk__reflection__reflect --> nlp2dsl_sdk__reflection___resolutions_available
+    nlp2dsl_sdk__reflection__reflect --> nlp2dsl_sdk__reflection___missing_vs_target
+    nlp2dsl_sdk__reflection__reflect_from_chat_turn --> nlp2dsl_sdk__reflection___intent_from_response
+    nlp2dsl_sdk__reflection__reflect_from_chat_turn --> nlp2dsl_sdk__reflection___entities_from_response
+    nlp2dsl_sdk__reflection__reflect_from_chat_turn --> nlp2dsl_sdk__reflection__build_target_plan
+    nlp2dsl_sdk__reflection__reflect_from_chat_turn --> nlp2dsl_sdk__reflection__reflect
+    nlp2dsl_sdk__reflection__reflect_from_chat_turn --> nlp2dsl_sdk__step_validation__validate_step_config_from_map
+    nlp2dsl_sdk__reflection__reflect_from_doql_path --> nlp2dsl_sdk__system_map_bridge__doql_file_to_system_map
+    nlp2dsl_sdk__reflection__reflect_from_doql_path --> nlp2dsl_sdk__reflection__reflect_from_chat_turn
     nlp2dsl_sdk__stack_flow__AutonomousStackFlow__bootstrap_registry --> nlp2dsl_sdk__example_bootstrap__ensure_doql_registry
     nlp2dsl_sdk__stack_flow__AutonomousStackFlow__bootstrap_registry --> nlp2dsl_sdk__system_map_generator__generate_system_map
     nlp2dsl_sdk__stack_flow__AutonomousStackFlow__bootstrap_registry --> nlp2dsl_sdk__system_map_runtimes__load_example_profile
@@ -794,6 +795,30 @@ flowchart LR
     nlp2dsl_sdk__autonomous_flow__AutonomousFlow___start_with_extra --> nlp2dsl_sdk__doql__runtime__resolve_doql_context_path
     nlp2dsl_sdk__autonomous_flow__AutonomousFlow___start_with_extra --> nlp2dsl_sdk__artifact_layout__ensure_layout
     nlp2dsl_sdk__autonomous_flow__AutonomousFlow___start_with_extra --> nlp2dsl_sdk__artifact_layout__current_run_id
+    nlp2dsl_sdk__preview___print_incomplete_run_outcome --> nlp2dsl_sdk__preview__print_run_context_hints
+    nlp2dsl_sdk__preview___print_success_run_outcome --> nlp2dsl_sdk__preview__print_run_context_hints
+    nlp2dsl_sdk__preview___print_success_run_outcome --> nlp2dsl_sdk__preview__execution_payload
+    nlp2dsl_sdk__preview__print_run_outcome --> nlp2dsl_sdk__preview___print_success_run_outcome
+    nlp2dsl_sdk__preview__print_run_outcome --> nlp2dsl_sdk__preview___print_incomplete_run_outcome
+    nlp2dsl_sdk__preview__print_run_outcome --> nlp2dsl_sdk__preview__print_run_context_hints
+    nlp2dsl_sdk__preview___print_workflow_dsl_summary --> nlp2dsl_sdk__preview__print_json
+    nlp2dsl_sdk__preview___print_workflow_execution_summary --> nlp2dsl_sdk__preview__execution_payload
+    nlp2dsl_sdk__preview___print_workflow_execution_summary --> nlp2dsl_sdk__preview__print_json
+    nlp2dsl_sdk__preview___print_workflow_execution_summary --> nlp2dsl_sdk__preview__print_run_context_hints
+    nlp2dsl_sdk__preview___print_incomplete_workflow_preview --> nlp2dsl_sdk__preview__print_json
+    nlp2dsl_sdk__preview__print_workflow_preview --> nlp2dsl_sdk__preview___print_workflow_dsl_summary
+    nlp2dsl_sdk__preview__print_workflow_preview --> nlp2dsl_sdk__preview___print_incomplete_workflow_preview
+    nlp2dsl_sdk__preview__print_workflow_preview --> nlp2dsl_sdk__preview___print_workflow_execution_summary
+    nlp2dsl_sdk__preview__print_execution_result --> nlp2dsl_sdk__preview__print_json
+    nlp2dsl_sdk__preview__preview_text_examples --> nlp2dsl_sdk__artifacts__get_example_writer
+    nlp2dsl_sdk__preview__preview_text_examples --> nlp2dsl_sdk__preview__print_workflow_preview
+    nlp2dsl_sdk__preview__preview_text_examples --> nlp2dsl_sdk__preview__workflow_http_error_result
+    nlp2dsl_sdk__preview__execute_from_text --> nlp2dsl_sdk__preview__print_workflow_preview
+    nlp2dsl_sdk__preview__execute_from_text --> nlp2dsl_sdk__preview__workflow_http_error_result
+    nlp2dsl_sdk__preview__execute_text_examples --> nlp2dsl_sdk__artifacts__get_example_writer
+    nlp2dsl_sdk__preview__execute_text_examples --> nlp2dsl_sdk__preview__print_workflow_preview
+    nlp2dsl_sdk__preview__execute_text_examples --> nlp2dsl_sdk__preview__workflow_http_error_result
+    nlp2dsl_sdk__preview__finalize_example_artifacts --> nlp2dsl_sdk__artifacts__get_example_writer
     nlp2dsl_sdk__process_policy__load_platform_process_defaults --> nlp2dsl_sdk__process_policy___load_nlp2dsl_payload
     nlp2dsl_sdk__process_policy___merge_access --> nlp2dsl_sdk__process_policy___as_list
     nlp2dsl_sdk__process_policy___merge_paths --> nlp2dsl_sdk__process_policy___as_list
@@ -819,6 +844,12 @@ flowchart LR
     nlp2dsl_sdk__artifact_layout__write_turn_snapshot --> nlp2dsl_sdk__artifact_layout__run_dir
     nlp2dsl_sdk__artifact_layout__write_reflection_snapshot --> nlp2dsl_sdk__artifact_layout__run_dir
     nlp2dsl_sdk__artifact_layout__write_last_run_report --> nlp2dsl_sdk__artifact_layout__ensure_layout
+    nlp2dsl_sdk__export__markpact__contract_to_yaml_string --> nlp2dsl_sdk__export__markpact__contract_to_yaml_dict
+    nlp2dsl_sdk__export__markpact___contracts_section --> nlp2dsl_sdk__export__markpact___yaml_file_block
+    nlp2dsl_sdk__export__markpact___contracts_section --> nlp2dsl_sdk__export__markpact__contract_to_yaml_string
+    nlp2dsl_sdk__export__markpact__workflow_dsl_to_markpact_readme --> nlp2dsl_sdk__export__markpact__composite_workflow_spec
+    nlp2dsl_sdk__export__markpact__export_markpact_bundle --> nlp2dsl_sdk__contracts__registry__action_contracts_from_catalog
+    nlp2dsl_sdk__export__markpact__export_markpact_bundle --> nlp2dsl_sdk__export__markpact__composite_workflow_spec
     nlp2dsl_sdk__workflow__lifecycle__parse_result_from_nlp --> nlp2dsl_sdk__workflow__lifecycle___to_dict
     nlp2dsl_sdk__workflow__lifecycle__parse_result_from_nlp --> nlp2dsl_sdk__workflow__lifecycle___get
     nlp2dsl_sdk__workflow__lifecycle__parse_result_from_nlp --> nlp2dsl_sdk__workflow__lifecycle___float_or_default
@@ -854,6 +885,25 @@ flowchart LR
     nlp2dsl_sdk__system_map_render__helpers__data_value_line --> nlp2dsl_sdk__system_map_render__helpers__esc_str_full
     nlp2dsl_sdk__system_map_render__helpers__data_value_line --> nlp2dsl_sdk__system_map_render__helpers__bool_lit
     nlp2dsl_sdk__system_map_render__helpers__process_field_line --> nlp2dsl_sdk__system_map_render__helpers__bool_lit
+    nlp2dsl_sdk__validation__profile_checks__parse_profile_validation --> nlp2dsl_sdk__validation__profile_checks___parse_profile_validation_shorthand
+    nlp2dsl_sdk__validation__profile_checks__parse_profile_validation --> nlp2dsl_sdk__validation__profile_checks___parse_profile_validation_by_code
+    nlp2dsl_sdk__validation__profile_checks__parse_profile_validation --> nlp2dsl_sdk__validation__profile_checks___parse_profile_validation_by_type
+    nlp2dsl_sdk__validation__profile_checks__parse_profile_validations --> nlp2dsl_sdk__validation__profile_checks__parse_profile_validation
+    nlp2dsl_sdk__validation__profile_checks__load_profile_validations --> nlp2dsl_sdk__validation__profile_checks__parse_profile_validations
+    nlp2dsl_sdk__validation__profile_checks__load_profile_validations --> nlp2dsl_sdk__system_map_runtimes__load_example_profile
+    nlp2dsl_sdk__validation__profile_checks__apply_profile_validations --> nlp2dsl_sdk__validation__profile_checks__parse_profile_validations
+    nlp2dsl_sdk__validation__profile_checks__conversation_executed --> nlp2dsl_sdk__validation__profile_checks__execution_completed
+    nlp2dsl_sdk__validation__profile_checks__check_profile_validation --> nlp2dsl_sdk__validation__profile_checks___failed
+    nlp2dsl_sdk__validation__profile_checks__check_profile_validation --> nlp2dsl_sdk__validation__profile_checks___resolve_artifact_path
+    nlp2dsl_sdk__validation__profile_checks__check_profile_validation --> nlp2dsl_sdk__validation__profile_checks__dsl_actions_from_response
+    nlp2dsl_sdk__validation__profile_checks__check_profile_validation --> nlp2dsl_sdk__validation__profile_checks__execution_completed
+    nlp2dsl_sdk__validation__profile_checks__check_profile_validation --> nlp2dsl_sdk__validation__profile_checks__conversation_executed
+    nlp2dsl_sdk__validation__profile_checks__run_profile_validation_checks --> nlp2dsl_sdk__validation__profile_checks__check_profile_validation
+    nlp2dsl_sdk__validation__profile_checks__run_profile_validation_checks --> nlp2dsl_sdk__validation__profile_checks___validation_id
+    nlp2dsl_sdk__validation__profile_checks__run_profile_validation_checks --> nlp2dsl_sdk__validation__profile_checks___pass_summary
+    nlp2dsl_sdk__validation__profile_checks__validate_profile_expectations --> nlp2dsl_sdk__validation__profile_checks__check_profile_validation
+    nlp2dsl_sdk__validation__profile_checks__run_validations_from_raw --> nlp2dsl_sdk__validation__profile_checks__parse_profile_validations
+    nlp2dsl_sdk__validation__profile_checks__run_validations_from_raw --> nlp2dsl_sdk__validation__profile_checks__run_profile_validation_checks
     nlp2dsl_sdk__validation__resolutions__plan_resolutions --> nlp_service__app__settings__SettingsManager__set
     nlp2dsl_sdk__validation__resolutions__plan_resolutions --> nlp2dsl_sdk__validation__resolutions___append_attachment_plans
     nlp2dsl_sdk__validation__resolutions__plan_resolutions --> nlp2dsl_sdk__validation__resolutions___append_autofill_plans
@@ -914,45 +964,3 @@ flowchart LR
     nlp2dsl_sdk__validation__rules__runtime_health__validate_runtime_health_for_intent --> nlp2dsl_sdk__validation__rules__runtime_health__runtime_id_for_intent
     nlp2dsl_sdk__validation__rules__dsl_contract__validate_dsl_contract --> nlp2dsl_sdk__validation__rules__dsl_contract___validate_optional_text_field
     nlp2dsl_sdk__validation__rules__dsl_contract__validate_dsl_contract --> nlp2dsl_sdk__validation__rules__dsl_contract___issue
-    nlp2dsl_sdk__validation__rules__dsl_contract___validate_step --> nlp2dsl_sdk__validation__rules__dsl_contract___is_non_empty_string
-    nlp2dsl_sdk__validation__rules__dsl_contract___validate_step --> nlp2dsl_sdk__validation__rules__dsl_contract___issue
-    nlp2dsl_sdk__validation__rules__dsl_contract___validate_optional_text_field --> nlp2dsl_sdk__validation__rules__dsl_contract___is_non_empty_string
-    nlp2dsl_sdk__validation__rules__dsl_contract___validate_optional_text_field --> nlp2dsl_sdk__validation__rules__dsl_contract___issue
-    nlp2dsl_sdk__validation__rules__dsl_contract___validate_optional_text_field --> nlp2dsl_sdk__validation__rules__dsl_contract___type_name
-    nlp2dsl_sdk__contracts__registry___compatibility_contract --> nlp2dsl_sdk__contracts__registry___string_list
-    nlp2dsl_sdk__contracts__registry__contract_from_registry_entry --> nlp2dsl_sdk__contracts__registry___string_list
-    nlp2dsl_sdk__contracts__registry__contract_from_registry_entry --> nlp2dsl_sdk__contracts__registry___optional_defaults
-    nlp2dsl_sdk__contracts__registry__contract_from_catalog_entry --> nlp2dsl_sdk__contracts__registry__contract_from_registry_entry
-    nlp2dsl_sdk__contracts__registry__action_contracts_from_registry --> nlp2dsl_sdk__contracts__registry__contract_from_registry_entry
-    nlp2dsl_sdk__contracts__registry__action_contracts_from_catalog --> nlp2dsl_sdk__contracts__registry__contract_from_catalog_entry
-    nlp2dsl_sdk__contracts__registry__required_fields_for_action --> nlp2dsl_sdk__contracts__registry__action_contracts_from_catalog
-    nlp2dsl_sdk__contracts__registry__quality_fields_for_action --> nlp2dsl_sdk__contracts__registry__action_contracts_from_catalog
-    nlp2dsl_sdk__doql__runtime__resolve_doql_context_path --> nlp2dsl_sdk__artifact_layout__resolve_registry_path
-    nlp2dsl_sdk__doql__runtime__load_doql_inline_from_env --> nlp2dsl_sdk__doql__runtime__resolve_doql_context_path
-    nlp2dsl_sdk__doql__runtime__load_doql_inline_from_env --> nlp2dsl_sdk__doql__runtime__context_inline_payload
-    nlp2dsl_sdk__doql__runtime__load_doql_inline_from_env --> nlp2dsl_sdk__doql__parse__load_doql_context
-    nlp2dsl_sdk__doql__runtime__merge_inline_context --> nlp2dsl_sdk__doql__runtime___inline_data_key
-    nlp2dsl_sdk__doql__runtime__merge_inline_context --> nlp2dsl_sdk__doql__runtime___add_short_inline_alias
-    nlp2dsl_sdk__doql__runtime__merge_inline_context --> nlp2dsl_sdk__doql__runtime___apply_conversation_flag
-    nlp2dsl_sdk__doql__runtime__autofill_entities --> nlp2dsl_sdk__doql__runtime___split_missing_ref
-    nlp2dsl_sdk__doql__runtime__autofill_entities --> nlp2dsl_sdk__doql__runtime___autofill_value
-    nlp2dsl_sdk__doql__runtime__autofill_entities --> nlp2dsl_sdk__doql__runtime___needs_field
-    nlp2dsl_sdk__doql__runtime___split_missing_ref --> nlp2dsl_sdk__doql__runtime___canonical_field
-    nlp2dsl_sdk__doql__runtime___autofill_value --> nlp2dsl_sdk__doql__runtime___value_from_data
-    nlp2dsl_sdk__doql__runtime___autofill_value --> nlp2dsl_sdk__doql__runtime___value_from_artifacts
-    nlp2dsl_sdk__doql__runtime___autofill_value --> nlp2dsl_sdk__doql__runtime___candidate_data_keys
-    nlp2dsl_sdk__doql__render__write_doql_context --> nlp2dsl_sdk__doql__render__render_doql_context
-    nlp2dsl_sdk__doql__context_blocks__render_context_environment --> nlp2dsl_sdk__system_map_render__helpers__esc_str
-    nlp2dsl_sdk__doql__context_blocks__render_context_data --> nlp2dsl_sdk__system_map_render__helpers__data_value_line
-    nlp2dsl_sdk__doql__context_blocks__render_context_resources --> nlp2dsl_sdk__system_map_render__helpers__esc_str
-    nlp2dsl_sdk__doql__context_blocks__render_context_resources --> nlp2dsl_sdk__system_map_render__helpers__join_csv
-    nlp2dsl_sdk__doql__context_blocks__render_context_access --> nlp2dsl_sdk__system_map_render__helpers__join_csv
-    nlp2dsl_sdk__doql__context_blocks__render_context_capabilities --> nlp2dsl_sdk__system_map_render__helpers__join_csv
-    nlp2dsl_sdk__doql__context_blocks__render_context_workflow_history --> nlp2dsl_sdk__system_map_render__helpers__join_csv
-    nlp2dsl_sdk__doql__context_blocks__render_context_process_access --> nlp2dsl_sdk__system_map_render__helpers__join_csv
-    nlp2dsl_sdk__doql__context_blocks__render_context_paths --> nlp2dsl_sdk__system_map_render__helpers__join_csv
-    nlp2dsl_sdk__doql__context_blocks__render_context_conversation --> nlp2dsl_sdk__system_map_render__helpers__bool_lit
-    nlp2dsl_sdk__doql__parse___parse_block_body --> nlp2dsl_sdk__doql__parse___parse_value
-    nlp2dsl_sdk__doql__parse___parse_command_body --> nlp2dsl_sdk__doql__parse___parse_block_body
-    nlp2dsl_sdk__doql__parse___parse_command_body --> nlp2dsl_sdk__doql__parse___split_csv
-    nlp2dsl_sdk__doql__parse___parse_resource_body --> nlp2dsl_sdk__doql__parse___parse_block_body

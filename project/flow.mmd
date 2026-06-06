@@ -1,5 +1,5 @@
 flowchart TD
-%% generated in 0.09s
+%% generated in 0.15s
 
     %% Entry points (blue)
     classDef entry fill:#4dabf7,stroke:#1971c2,color:#fff
@@ -20,7 +20,7 @@ flowchart TD
         nlp2dsl_sdk__cli__main["main"]
         nlp2dsl_sdk__client__workflow_step["workflow_step"]
         nlp2dsl_sdk__client__NLP2DSLClient__from_env["from_env"]
-        ...["+56 more"]
+        ...["+59 more"]
     end
 
     subgraph Core
@@ -39,12 +39,12 @@ flowchart TD
         backend__app__main__health["health"]
         backend__app__path_resolve___examples_portable_candidates("_examples_portable_candidates CC=8")
         backend__app__path_resolve__resolve_attachment_path("resolve_attachment_path CC=13")
-        ...["+337 more"]
+        ...["+374 more"]
     end
 
     subgraph Exporters
-        nlp2dsl_sdk__export__pactown__export_pactown_bundle["export_pactown_bundle"]
-        nlp2dsl_sdk__export__markpact__export_markpact_bundle["export_markpact_bundle"]
+        nlp2dsl_sdk__export__publish__PublishValidationResult__to_dict["to_dict"]
+        nlp2dsl_sdk__export__publish__catalog_from_nlp_client["catalog_from_nlp_client"]
     end
 
     class tauri_wrapper__src_tauri__build__main,tauri_wrapper__src_tauri__src__main__main,backend__app__logging_setup__JSONFormatter__format,backend__app__logging_setup__RequestIDMiddleware__dispatch,backend__app__logging_setup__setup_logging,backend__app__workflow_events__WorkflowEventHub__subscribe,backend__app__workflow_events__WorkflowEventHub__unsubscribe,backend__app__workflow_events__WorkflowEventHub__publish,backend__app__workflow_events__WorkflowEventHub__subscriber_count,backend__app__main__health entry
