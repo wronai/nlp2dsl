@@ -605,6 +605,38 @@ class TestWorkflowExecute:
         run_workflow.assert_not_awaited()
 
     @pytest.mark.asyncio
+    async def test_clear_idempotency_store_endpoint(self, client: AsyncClient) -> None:
+        await idempotency_store.clear()
+        mock_result = MagicMock()
+        mock_result.model_dump.return_value = {
+            "workflow_id": "wf-clear",
+            "name": "auto_send_invoice",
+            "status": "completed",
+            "steps": [],
+        }
+        with patch("app.workflow_execute.run_workflow", AsyncMock(return_value=mock_result)):
+            await client.post(
+                "/workflow/execute",
+                json={"workflow": self._valid_workflow(), "idempotency_key": "idem-clear"},
+            )
+        replay = await client.post(
+            "/workflow/execute",
+            json={"workflow": self._valid_workflow(), "idempotency_key": "idem-clear"},
+        )
+        assert replay.json().get("idempotent_replay") is True
+
+        cleared = await client.post("/workflow/idempotency/clear")
+        assert cleared.status_code == 200
+        assert cleared.json()["status"] == "cleared"
+
+        fresh = await client.post(
+            "/workflow/execute",
+            json={"workflow": self._valid_workflow(), "idempotency_key": "idem-clear"},
+        )
+        assert fresh.status_code == 200
+        assert fresh.json().get("idempotent_replay") is not True
+
+    @pytest.mark.asyncio
     async def test_execute_runs_valid_workflow(self, client: AsyncClient) -> None:
         await idempotency_store.clear()
         mock_result = MagicMock()

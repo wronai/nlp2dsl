@@ -15,7 +15,6 @@ from __future__ import annotations
 import json
 import os
 import re
-import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping, Sequence
@@ -334,15 +333,14 @@ class ExampleArtifactWriter:
         example_id: str | None = None,
         title: str = "",
     ):
+        from .artifact_layout import clean_artifact_root
+
         self.example_dir = Path(example_dir).resolve()
         self.example_id = example_id or self.example_dir.name
         self.title = title or self.example_id
         self.artifact_root = example_artifact_root(self.example_dir)
+        clean_artifact_root(self.example_dir)
         self.artifact_root.mkdir(parents=True, exist_ok=True)
-        for sub in ("pipeline", "process"):
-            path = self.artifact_root / sub
-            if path.exists():
-                shutil.rmtree(path)
         self._queries_meta: list[dict[str, Any]] = []
         self._query_texts: list[str] = []
 

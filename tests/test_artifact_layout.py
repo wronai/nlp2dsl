@@ -5,12 +5,35 @@ from __future__ import annotations
 from pathlib import Path
 
 from nlp2dsl_sdk.artifact_layout import (
+    clean_artifact_root,
     ensure_layout,
     resolve_registry_path,
     write_registry,
     write_turn_snapshot,
 )
 from nlp2dsl_sdk.doql_registry import refresh_doql_registry
+
+
+def test_clean_artifact_root_preserves_fixtures_and_scenarios(tmp_path: Path) -> None:
+    ex = tmp_path / "05-conversation-flow"
+    root = ex / ".nlp2dsl"
+    (root / "fixtures").mkdir(parents=True)
+    (root / "fixtures" / "mock-llm-replies.yaml").write_text("replies: []\n", encoding="utf-8")
+    (root / "conversation.scenario.yaml").write_text("turns: []\n", encoding="utf-8")
+    (root / "pipeline").mkdir()
+    (root / "pipeline" / "old.json").write_text("{}", encoding="utf-8")
+    (root / "result.json").write_text("{}", encoding="utf-8")
+    (root / "generated").mkdir()
+    (root / "generated" / "invoices").mkdir()
+    (root / "generated" / "invoices" / "INV-old.pdf").write_bytes(b"pdf")
+
+    removed = clean_artifact_root(ex)
+
+    assert {path.name for path in removed} == {"generated", "pipeline", "result.json"}
+    assert (root / "fixtures" / "mock-llm-replies.yaml").is_file()
+    assert (root / "conversation.scenario.yaml").is_file()
+    assert not (root / "pipeline").exists()
+    assert not (root / "generated").exists()
 
 
 def test_write_registry_creates_layout(tmp_path: Path) -> None:

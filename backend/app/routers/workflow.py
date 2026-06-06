@@ -16,6 +16,7 @@ from starlette.responses import StreamingResponse
 from app.engine import NLP_SERVICE_URL, _repo, run_workflow, start_workflow
 from app.action_catalog import fetch_action_catalog
 from app.dsl_validation import dsl_validation_response, validate_dsl_for_execution
+from app.idempotency import idempotency_store
 from app.workflow_execute import resolve_idempotency_key, run_idempotent_workflow
 from app.logging_setup import get_request_id
 from app.workflow_events import TERMINAL_EVENT_TYPES, workflow_event_hub
@@ -479,3 +480,10 @@ async def workflow_execute(body: dict[str, Any]) -> dict[str, Any]:
         "idempotency_key": execution.get("idempotency_key"),
         "idempotent_replay": execution.get("idempotent_replay", False),
     }
+
+
+@router.post("/idempotency/clear")
+async def clear_idempotency_store() -> dict[str, str]:
+    """Dev/CI helper — drop cached idempotency records before example runs."""
+    await idempotency_store.clear()
+    return {"status": "cleared"}

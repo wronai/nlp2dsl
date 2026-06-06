@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nlp2dsl"
-version = "0.0.36"
+version = "0.0.37"
 description = "Reusable Python SDK for the NLP2DSL platform"
 readme = "README.md"
 requires-python = ">=3.10"

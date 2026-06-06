@@ -289,6 +289,10 @@ class NLP2DSLClient:
     def reset_settings(self, body: Optional[Mapping[str, Any]] = None) -> dict[str, Any]:
         return self._backend("post", "/workflow/settings/reset", json=dict(body or {})).json()
 
+    def clear_idempotency(self) -> dict[str, Any]:
+        """Clear backend idempotency cache (dev/CI — fresh example runs)."""
+        return self._backend("post", "/workflow/idempotency/clear").json()
+
     def chat_start(self, text: str, audio_path: Optional[str] = None) -> dict[str, Any]:
         from .doql_context import load_doql_inline_from_env, resolve_doql_context_path
 

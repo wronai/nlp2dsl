@@ -12,9 +12,24 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
+import stat
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Mapping
+
+# Static inputs checked into or hand-maintained under examples/*/.nlp2dsl/
+_PRESERVED_ROOT_FILES = frozenset(
+    {
+        "conversation.scenario.yaml",
+        "conversation.llm.scenario.yaml",
+        "conversation.attachment.scenario.yaml",
+        "conversation.testql.toon.yaml",
+        "execution.scenario.yaml",
+        "execution.llm.scenario.yaml",
+    }
+)
+_PRESERVED_DIRS = frozenset({"fixtures"})
 
 REGISTRY_REL = Path("registry") / "environment.doql.less"
 LEGACY_REGISTRY_REL = Path("environment.doql.less")
@@ -25,6 +40,87 @@ LAST_RUN_RESULT = Path("report") / "last-run.result.json"
 
 def artifact_root(example_dir: Path | str) -> Path:
     return Path(example_dir).resolve() / ".nlp2dsl"
+
+
+def _chmod_writable(path: os.PathLike[str] | str) -> None:
+    try:
+        os.chmod(path, stat.S_IWUSR | stat.S_IREAD | stat.S_IEXEC)
+    except OSError:
+        pass
+
+
+def _force_remove_path(path: Path) -> bool:
+    """Remove a file or tree; chmod root-owned Docker artifacts when possible."""
+
+    if not path.exists():
+        return True
+
+    if path.is_dir():
+        for root, dirs, files in os.walk(path, topdown=False):
+            for name in list(files) + list(dirs):
+                _chmod_writable(Path(root) / name)
+            _chmod_writable(root)
+
+    def _onexc(func, target, exc):
+        if isinstance(exc, PermissionError):
+            _chmod_writable(target)
+            try:
+                func(target)
+            except OSError:
+                return
+            return
+        raise exc
+
+    try:
+        if path.is_dir():
+            shutil.rmtree(path, onexc=_onexc)
+        else:
+            path.unlink()
+    except OSError:
+        return False
+    return not path.exists()
+
+
+def clean_artifact_root(
+    example_dir: Path | str,
+    *,
+    preserve_sources: bool = True,
+) -> list[Path]:
+    """Remove generated artifacts under ``examples/*/.nlp2dsl`` before a fresh run.
+
+    Preserves hand-maintained scenario/fixture files (``fixtures/``, ``*.scenario.yaml``).
+    """
+    root = artifact_root(example_dir)
+    if not root.is_dir():
+        return []
+
+    removed: list[Path] = []
+    for child in sorted(root.iterdir(), key=lambda path: (not path.is_dir(), path.name)):
+        if preserve_sources:
+            if child.is_dir() and child.name in _PRESERVED_DIRS:
+                continue
+            if child.is_file() and child.name in _PRESERVED_ROOT_FILES:
+                continue
+        if _force_remove_path(child):
+            removed.append(child)
+    return removed
+
+
+def clean_all_example_artifacts(
+    examples_dir: Path | str,
+    *,
+    preserve_sources: bool = True,
+) -> dict[str, list[str]]:
+    """Clean ``.nlp2dsl/`` for every ``examples/*/`` directory."""
+    base = Path(examples_dir).resolve()
+    cleaned: dict[str, list[str]] = {}
+    for example_dir in sorted(base.iterdir()):
+        if not example_dir.is_dir():
+            continue
+        removed = clean_artifact_root(example_dir, preserve_sources=preserve_sources)
+        if removed:
+            cleaned[example_dir.name] = [path.name for path in removed]
+    return cleaned
 
 
 def example_fixtures_dir(example_dir: Path | str) -> Path:

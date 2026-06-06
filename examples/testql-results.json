@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-06T13:12:07.053224+00:00",
+  "generated_at": "2026-06-06T13:39:31.242554+00:00",
   "examples": 14,
   "passed": 14,
   "failed": 0,
@@ -9,11 +9,11 @@
       "run_id": "examples/01-invoice",
       "example_id": "01-invoice",
       "status": "passed",
-      "generated_at": "2026-06-06T13:12:07.053242+00:00",
+      "generated_at": "2026-06-06T13:39:31.242570+00:00",
       "checks_total": 8,
-      "checks_passed": 7,
+      "checks_passed": 6,
       "checks_failed": 0,
-      "checks_skipped": 1,
+      "checks_skipped": 2,
       "checks": [
         {
           "id": "check.testql.commands_dry_run",
@@ -68,11 +68,9 @@
         },
         {
           "id": "check.conversation.transcript",
-          "status": "passed",
-          "summary": "2 turns in transcript",
-          "details": {
-            "path": "conversation.transcript.md"
-          }
+          "status": "skipped",
+          "summary": "no conversation.transcript.md",
+          "details": {}
         }
       ],
       "findings": [],
@@ -82,7 +80,7 @@
       "run_id": "examples/02-email",
       "example_id": "02-email",
       "status": "passed",
-      "generated_at": "2026-06-06T13:12:07.053252+00:00",
+      "generated_at": "2026-06-06T13:39:31.242582+00:00",
       "checks_total": 8,
       "checks_passed": 6,
       "checks_failed": 0,
@@ -153,7 +151,7 @@
       "run_id": "examples/03-report-and-notify",
       "example_id": "03-report-and-notify",
       "status": "passed",
-      "generated_at": "2026-06-06T13:12:07.053260+00:00",
+      "generated_at": "2026-06-06T13:39:31.242589+00:00",
       "checks_total": 8,
       "checks_passed": 6,
       "checks_failed": 0,
@@ -224,7 +222,7 @@
       "run_id": "examples/04-scheduled-report",
       "example_id": "04-scheduled-report",
       "status": "passed",
-      "generated_at": "2026-06-06T13:12:07.053267+00:00",
+      "generated_at": "2026-06-06T13:39:31.242598+00:00",
       "checks_total": 5,
       "checks_passed": 2,
       "checks_failed": 0,
@@ -268,128 +266,17 @@
       "run_id": "examples/05-conversation-flow",
       "example_id": "05-conversation-flow",
       "status": "passed",
-      "generated_at": "2026-06-06T13:12:07.053271+00:00",
-      "checks_total": 20,
-      "checks_passed": 19,
+      "generated_at": "2026-06-06T13:39:31.242604+00:00",
+      "checks_total": 4,
+      "checks_passed": 2,
       "checks_failed": 0,
-      "checks_skipped": 1,
+      "checks_skipped": 2,
       "checks": [
         {
           "id": "check.testql.commands_dry_run",
-          "status": "passed",
-          "summary": "commands.testql.toon.yaml parses and dry-runs",
-          "details": {}
-        },
-        {
-          "id": "check.testql.ir_parse",
           "status": "skipped",
-          "summary": "testql adapter not installed",
+          "summary": "no commands.testql.toon.yaml",
           "details": {}
-        },
-        {
-          "id": "check.artifact.pipeline.1",
-          "status": "passed",
-          "summary": "pipeline present: wyślij-fakturę-na-500-pln-do-testfirmapl",
-          "details": {}
-        },
-        {
-          "id": "check.artifact.process.1",
-          "status": "passed",
-          "summary": "process present: wyślij-fakturę-na-500-pln-do-testfirmapl",
-          "details": {}
-        },
-        {
-          "id": "check.artifact.pipeline.2",
-          "status": "passed",
-          "summary": "pipeline present: powiadom-devops-backup-gotowy",
-          "details": {}
-        },
-        {
-          "id": "check.artifact.process.2",
-          "status": "passed",
-          "summary": "process present: powiadom-devops-backup-gotowy",
-          "details": {}
-        },
-        {
-          "id": "check.artifact.pipeline.3",
-          "status": "passed",
-          "summary": "pipeline present: znajdź-pliki-py-w-src",
-          "details": {}
-        },
-        {
-          "id": "check.artifact.process.3",
-          "status": "passed",
-          "summary": "process present: znajdź-pliki-py-w-src",
-          "details": {}
-        },
-        {
-          "id": "check.artifact.pipeline.4",
-          "status": "passed",
-          "summary": "pipeline present: uruchom-testy-jednostkowe",
-          "details": {}
-        },
-        {
-          "id": "check.artifact.process.4",
-          "status": "passed",
-          "summary": "process present: uruchom-testy-jednostkowe",
-          "details": {}
-        },
-        {
-          "id": "check.artifact.pipeline.5",
-          "status": "passed",
-          "summary": "pipeline present: pokaż-status-systemu",
-          "details": {}
-        },
-        {
-          "id": "check.artifact.process.5",
-          "status": "passed",
-          "summary": "process present: pokaż-status-systemu",
-          "details": {}
-        },
-        {
-          "id": "check.nlp2dsl.query.Wyślij-fakturę-na-500-PLN-do-testfirma.",
-          "status": "passed",
-          "summary": "offline artifact ok (status=complete): Wyślij fakturę na 500 PLN do test@firma.pl",
-          "details": {
-            "source": "pipeline/wyślij-fakturę-na-500-pln-do-testfirmapl.json",
-            "mode": "auto"
-          }
-        },
-        {
-          "id": "check.nlp2dsl.query.Powiadom-#devops:-backup-gotowy",
-          "status": "passed",
-          "summary": "offline artifact ok (status=complete): Powiadom #devops: backup gotowy",
-          "details": {
-            "source": "pipeline/powiadom-devops-backup-gotowy.json",
-            "mode": "auto"
-          }
-        },
-        {
-          "id": "check.nlp2dsl.query.znajdź-pliki-*.py-w-src",
-          "status": "passed",
-          "summary": "offline artifact ok (status=ir): znajdź pliki *.py w src",
-          "details": {
-            "source": "pipeline/znajdź-pliki-py-w-src.json",
-            "mode": "show"
-          }
-        },
-        {
-          "id": "check.nlp2dsl.query.uruchom-testy-jednostkowe",
-          "status": "passed",
-          "summary": "offline artifact ok (status=ir): uruchom testy jednostkowe",
-          "details": {
-            "source": "pipeline/uruchom-testy-jednostkowe.json",
-            "mode": "show"
-          }
-        },
-        {
-          "id": "check.nlp2dsl.query.pokaż-status-systemu",
-          "status": "passed",
-          "summary": "offline artifact ok (status=ir): pokaż status systemu",
-          "details": {
-            "source": "pipeline/pokaż-status-systemu.json",
-            "mode": "show"
-          }
         },
         {
           "id": "check.conversation.generated",
@@ -399,16 +286,9 @@
         },
         {
           "id": "check.conversation.dry_run",
-          "status": "passed",
-          "summary": "structural dry-run: text scan, endpoints=chatstart,chatmessage,chatmessage",
-          "details": {
-            "step_kinds": [],
-            "endpoints": [
-              "chatstart",
-              "chatmessage",
-              "chatmessage"
-            ]
-          }
+          "status": "skipped",
+          "summary": "no queries in manifest",
+          "details": {}
         },
         {
           "id": "check.conversation.transcript",
@@ -426,65 +306,17 @@
       "run_id": "examples/06-interactive-chat",
       "example_id": "06-interactive-chat",
       "status": "passed",
-      "generated_at": "2026-06-06T13:12:07.053277+00:00",
-      "checks_total": 11,
-      "checks_passed": 10,
+      "generated_at": "2026-06-06T13:39:31.242610+00:00",
+      "checks_total": 4,
+      "checks_passed": 2,
       "checks_failed": 0,
-      "checks_skipped": 1,
+      "checks_skipped": 2,
       "checks": [
         {
           "id": "check.testql.commands_dry_run",
-          "status": "passed",
-          "summary": "commands.testql.toon.yaml parses and dry-runs",
-          "details": {}
-        },
-        {
-          "id": "check.testql.ir_parse",
           "status": "skipped",
-          "summary": "testql adapter not installed",
+          "summary": "no commands.testql.toon.yaml",
           "details": {}
-        },
-        {
-          "id": "check.artifact.pipeline.1",
-          "status": "passed",
-          "summary": "pipeline present: wyślij-fakturę-na-500-pln-do-testfirmapl",
-          "details": {}
-        },
-        {
-          "id": "check.artifact.process.1",
-          "status": "passed",
-          "summary": "process present: wyślij-fakturę-na-500-pln-do-testfirmapl",
-          "details": {}
-        },
-        {
-          "id": "check.artifact.pipeline.2",
-          "status": "passed",
-          "summary": "pipeline present: powiadom-devops-backup-gotowy",
-          "details": {}
-        },
-        {
-          "id": "check.artifact.process.2",
-          "status": "passed",
-          "summary": "process present: powiadom-devops-backup-gotowy",
-          "details": {}
-        },
-        {
-          "id": "check.nlp2dsl.query.Wyślij-fakturę-na-500-PLN-do-testfirma.",
-          "status": "passed",
-          "summary": "offline artifact ok (status=complete): Wyślij fakturę na 500 PLN do test@firma.pl",
-          "details": {
-            "source": "pipeline/wyślij-fakturę-na-500-pln-do-testfirmapl.json",
-            "mode": "auto"
-          }
-        },
-        {
-          "id": "check.nlp2dsl.query.Powiadom-#devops:-backup-gotowy",
-          "status": "passed",
-          "summary": "offline artifact ok (status=complete): Powiadom #devops: backup gotowy",
-          "details": {
-            "source": "pipeline/powiadom-devops-backup-gotowy.json",
-            "mode": "auto"
-          }
         },
         {
           "id": "check.conversation.generated",
@@ -494,16 +326,9 @@
         },
         {
           "id": "check.conversation.dry_run",
-          "status": "passed",
-          "summary": "structural dry-run: text scan, endpoints=chatstart,chatmessage,chatmessage",
-          "details": {
-            "step_kinds": [],
-            "endpoints": [
-              "chatstart",
-              "chatmessage",
-              "chatmessage"
-            ]
-          }
+          "status": "skipped",
+          "summary": "no queries in manifest",
+          "details": {}
         },
         {
           "id": "check.conversation.transcript",
@@ -521,7 +346,7 @@
       "run_id": "examples/07-email-conversation",
       "example_id": "07-email-conversation",
       "status": "passed",
-      "generated_at": "2026-06-06T13:12:07.053283+00:00",
+      "generated_at": "2026-06-06T13:39:31.242615+00:00",
       "checks_total": 8,
       "checks_passed": 7,
       "checks_failed": 0,
@@ -595,7 +420,7 @@
       "run_id": "examples/08-multi-object-benchmark",
       "example_id": "08-multi-object-benchmark",
       "status": "passed",
-      "generated_at": "2026-06-06T13:12:07.053287+00:00",
+      "generated_at": "2026-06-06T13:39:31.242622+00:00",
       "checks_total": 125,
       "checks_passed": 123,
       "checks_failed": 0,
@@ -1485,65 +1310,17 @@
       "run_id": "examples/09-execution-smoke",
       "example_id": "09-execution-smoke",
       "status": "passed",
-      "generated_at": "2026-06-06T13:12:07.053306+00:00",
-      "checks_total": 11,
-      "checks_passed": 9,
+      "generated_at": "2026-06-06T13:39:31.242651+00:00",
+      "checks_total": 4,
+      "checks_passed": 1,
       "checks_failed": 0,
-      "checks_skipped": 2,
+      "checks_skipped": 3,
       "checks": [
         {
           "id": "check.testql.commands_dry_run",
-          "status": "passed",
-          "summary": "commands.testql.toon.yaml parses and dry-runs",
-          "details": {}
-        },
-        {
-          "id": "check.testql.ir_parse",
           "status": "skipped",
-          "summary": "testql adapter not installed",
+          "summary": "no commands.testql.toon.yaml",
           "details": {}
-        },
-        {
-          "id": "check.artifact.pipeline.1",
-          "status": "passed",
-          "summary": "pipeline present: wyślij-fakturę-na-500-pln-do-testfirmapl",
-          "details": {}
-        },
-        {
-          "id": "check.artifact.process.1",
-          "status": "passed",
-          "summary": "process present: wyślij-fakturę-na-500-pln-do-testfirmapl",
-          "details": {}
-        },
-        {
-          "id": "check.artifact.pipeline.2",
-          "status": "passed",
-          "summary": "pipeline present: powiadom-devops-backup-gotowy",
-          "details": {}
-        },
-        {
-          "id": "check.artifact.process.2",
-          "status": "passed",
-          "summary": "process present: powiadom-devops-backup-gotowy",
-          "details": {}
-        },
-        {
-          "id": "check.nlp2dsl.query.Wyślij-fakturę-na-500-PLN-do-testfirma.",
-          "status": "passed",
-          "summary": "offline artifact ok (status=complete): Wyślij fakturę na 500 PLN do test@firma.pl",
-          "details": {
-            "source": "pipeline/wyślij-fakturę-na-500-pln-do-testfirmapl.json",
-            "mode": "auto"
-          }
-        },
-        {
-          "id": "check.nlp2dsl.query.Powiadom-#devops:-backup-gotowy",
-          "status": "passed",
-          "summary": "offline artifact ok (status=complete): Powiadom #devops: backup gotowy",
-          "details": {
-            "source": "pipeline/powiadom-devops-backup-gotowy.json",
-            "mode": "auto"
-          }
         },
         {
           "id": "check.conversation.generated",
@@ -1553,15 +1330,9 @@
         },
         {
           "id": "check.conversation.dry_run",
-          "status": "passed",
-          "summary": "structural dry-run: text scan, endpoints=chatstart,chatmessage",
-          "details": {
-            "step_kinds": [],
-            "endpoints": [
-              "chatstart",
-              "chatmessage"
-            ]
-          }
+          "status": "skipped",
+          "summary": "no queries in manifest",
+          "details": {}
         },
         {
           "id": "check.conversation.transcript",
@@ -1577,65 +1348,17 @@
       "run_id": "examples/10-llm-benchmark",
       "example_id": "10-llm-benchmark",
       "status": "passed",
-      "generated_at": "2026-06-06T13:12:07.053311+00:00",
-      "checks_total": 11,
-      "checks_passed": 9,
+      "generated_at": "2026-06-06T13:39:31.242656+00:00",
+      "checks_total": 4,
+      "checks_passed": 1,
       "checks_failed": 0,
-      "checks_skipped": 2,
+      "checks_skipped": 3,
       "checks": [
         {
           "id": "check.testql.commands_dry_run",
-          "status": "passed",
-          "summary": "commands.testql.toon.yaml parses and dry-runs",
-          "details": {}
-        },
-        {
-          "id": "check.testql.ir_parse",
           "status": "skipped",
-          "summary": "testql adapter not installed",
+          "summary": "no commands.testql.toon.yaml",
           "details": {}
-        },
-        {
-          "id": "check.artifact.pipeline.1",
-          "status": "passed",
-          "summary": "pipeline present: wyślij-fakturę-na-500-pln-do-testfirmapl",
-          "details": {}
-        },
-        {
-          "id": "check.artifact.process.1",
-          "status": "passed",
-          "summary": "process present: wyślij-fakturę-na-500-pln-do-testfirmapl",
-          "details": {}
-        },
-        {
-          "id": "check.artifact.pipeline.2",
-          "status": "passed",
-          "summary": "pipeline present: powiadom-devops-backup-gotowy",
-          "details": {}
-        },
-        {
-          "id": "check.artifact.process.2",
-          "status": "passed",
-          "summary": "process present: powiadom-devops-backup-gotowy",
-          "details": {}
-        },
-        {
-          "id": "check.nlp2dsl.query.Wyślij-fakturę-na-500-PLN-do-testfirma.",
-          "status": "passed",
-          "summary": "offline artifact ok (status=complete): Wyślij fakturę na 500 PLN do test@firma.pl",
-          "details": {
-            "source": "pipeline/wyślij-fakturę-na-500-pln-do-testfirmapl.json",
-            "mode": "auto"
-          }
-        },
-        {
-          "id": "check.nlp2dsl.query.Powiadom-#devops:-backup-gotowy",
-          "status": "passed",
-          "summary": "offline artifact ok (status=complete): Powiadom #devops: backup gotowy",
-          "details": {
-            "source": "pipeline/powiadom-devops-backup-gotowy.json",
-            "mode": "auto"
-          }
         },
         {
           "id": "check.conversation.generated",
@@ -1645,15 +1368,9 @@
         },
         {
           "id": "check.conversation.dry_run",
-          "status": "passed",
-          "summary": "structural dry-run: text scan, endpoints=chatstart,chatmessage",
-          "details": {
-            "step_kinds": [],
-            "endpoints": [
-              "chatstart",
-              "chatmessage"
-            ]
-          }
+          "status": "skipped",
+          "summary": "no queries in manifest",
+          "details": {}
         },
         {
           "id": "check.conversation.transcript",
@@ -1669,7 +1386,7 @@
       "run_id": "examples/11-notify-quality",
       "example_id": "11-notify-quality",
       "status": "passed",
-      "generated_at": "2026-06-06T13:12:07.053315+00:00",
+      "generated_at": "2026-06-06T13:39:31.242659+00:00",
       "checks_total": 17,
       "checks_passed": 15,
       "checks_failed": 0,
@@ -1803,7 +1520,7 @@
       "run_id": "examples/12-ir-show",
       "example_id": "12-ir-show",
       "status": "passed",
-      "generated_at": "2026-06-06T13:12:07.053321+00:00",
+      "generated_at": "2026-06-06T13:39:31.242665+00:00",
       "checks_total": 20,
       "checks_passed": 18,
       "checks_failed": 0,
@@ -1958,11 +1675,11 @@
       "run_id": "examples/13-autonomous-invoice-stack",
       "example_id": "13-autonomous-invoice-stack",
       "status": "passed",
-      "generated_at": "2026-06-06T13:12:07.053327+00:00",
+      "generated_at": "2026-06-06T13:39:31.242671+00:00",
       "checks_total": 8,
-      "checks_passed": 7,
+      "checks_passed": 6,
       "checks_failed": 0,
-      "checks_skipped": 1,
+      "checks_skipped": 2,
       "checks": [
         {
           "id": "check.testql.commands_dry_run",
@@ -2017,11 +1734,9 @@
         },
         {
           "id": "check.conversation.transcript",
-          "status": "passed",
-          "summary": "2 turns in transcript",
-          "details": {
-            "path": "conversation.transcript.md"
-          }
+          "status": "skipped",
+          "summary": "no conversation.transcript.md",
+          "details": {}
         }
       ],
       "findings": [],
@@ -2031,7 +1746,7 @@
       "run_id": "examples/14-markpact-export",
       "example_id": "14-markpact-export",
       "status": "passed",
-      "generated_at": "2026-06-06T13:12:07.053331+00:00",
+      "generated_at": "2026-06-06T13:39:31.242675+00:00",
       "checks_total": 8,
       "checks_passed": 6,
       "checks_failed": 0,

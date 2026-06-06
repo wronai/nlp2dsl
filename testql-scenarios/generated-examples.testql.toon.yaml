@@ -71,58 +71,6 @@ ASSERT_EXIT_CODE 0
 SHELL "nlp2dsl run \"(no queries recorded)\" --json" 30000
 ASSERT_EXIT_CODE 0
 
-# --- 05-conversation-flow ---
-# PIPELINE: NLP → DSL → CMD → process
-
-CONFIG[3]{key, value}:
-  cli_command, python3 main.py
-  timeout_ms, 120000
-  example_dir, examples/05-conversation-flow
-
-# Run full example scenario
-SHELL "cd examples/05-conversation-flow && python3 main.py" 120000
-ASSERT_EXIT_CODE 0
-
-# Query 1: Wyślij fakturę na 500 PLN do test@firma.pl
-SHELL "nlp2dsl run \"Wyślij fakturę na 500 PLN do test@firma.pl\" --json" 30000
-ASSERT_EXIT_CODE 0
-
-# Query 2: Powiadom #devops: backup gotowy
-SHELL "nlp2dsl run \"Powiadom #devops: backup gotowy\" --json" 30000
-ASSERT_EXIT_CODE 0
-
-# Query 3: znajdź pliki *.py w src
-SHELL "nlp2dsl run \"znajdź pliki *.py w src\" --json" 30000
-ASSERT_EXIT_CODE 0
-
-# Query 4: uruchom testy jednostkowe
-SHELL "nlp2dsl run \"uruchom testy jednostkowe\" --json" 30000
-ASSERT_EXIT_CODE 0
-
-# Query 5: pokaż status systemu
-SHELL "nlp2dsl run \"pokaż status systemu\" --json" 30000
-ASSERT_EXIT_CODE 0
-
-# --- 06-interactive-chat ---
-# PIPELINE: NLP → DSL → CMD → process
-
-CONFIG[3]{key, value}:
-  cli_command, python3 main.py
-  timeout_ms, 120000
-  example_dir, examples/06-interactive-chat
-
-# Run full example scenario
-SHELL "cd examples/06-interactive-chat && python3 main.py" 120000
-ASSERT_EXIT_CODE 0
-
-# Query 1: Wyślij fakturę na 500 PLN do test@firma.pl
-SHELL "nlp2dsl run \"Wyślij fakturę na 500 PLN do test@firma.pl\" --json" 30000
-ASSERT_EXIT_CODE 0
-
-# Query 2: Powiadom #devops: backup gotowy
-SHELL "nlp2dsl run \"Powiadom #devops: backup gotowy\" --json" 30000
-ASSERT_EXIT_CODE 0
-
 # --- 07-email-conversation ---
 # PIPELINE: NLP → DSL → CMD → process
 
@@ -309,46 +257,6 @@ ASSERT_EXIT_CODE 0
 
 # Query 40: Pełny flow: faktura 12000 PLN do enterprise@corp.com, email 
 SHELL "nlp2dsl run \"Pełny flow: faktura 12000 PLN do enterprise@corp.com, email do ksiegowosc@firma.pl i Slack #finance\" --json" 30000
-ASSERT_EXIT_CODE 0
-
-# --- 09-execution-smoke ---
-# PIPELINE: NLP → DSL → CMD → process
-
-CONFIG[3]{key, value}:
-  cli_command, python3 main.py
-  timeout_ms, 120000
-  example_dir, examples/09-execution-smoke
-
-# Run full example scenario
-SHELL "cd examples/09-execution-smoke && python3 main.py" 120000
-ASSERT_EXIT_CODE 0
-
-# Query 1: Wyślij fakturę na 500 PLN do test@firma.pl
-SHELL "nlp2dsl run \"Wyślij fakturę na 500 PLN do test@firma.pl\" --json" 30000
-ASSERT_EXIT_CODE 0
-
-# Query 2: Powiadom #devops: backup gotowy
-SHELL "nlp2dsl run \"Powiadom #devops: backup gotowy\" --json" 30000
-ASSERT_EXIT_CODE 0
-
-# --- 10-llm-benchmark ---
-# PIPELINE: NLP → DSL → CMD → process
-
-CONFIG[3]{key, value}:
-  cli_command, python3 main.py
-  timeout_ms, 120000
-  example_dir, examples/10-llm-benchmark
-
-# Run full example scenario
-SHELL "cd examples/10-llm-benchmark && python3 main.py" 120000
-ASSERT_EXIT_CODE 0
-
-# Query 1: Wyślij fakturę na 500 PLN do test@firma.pl
-SHELL "nlp2dsl run \"Wyślij fakturę na 500 PLN do test@firma.pl\" --json" 30000
-ASSERT_EXIT_CODE 0
-
-# Query 2: Powiadom #devops: backup gotowy
-SHELL "nlp2dsl run \"Powiadom #devops: backup gotowy\" --json" 30000
 ASSERT_EXIT_CODE 0
 
 # --- 11-notify-quality ---
