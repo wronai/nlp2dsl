@@ -55,6 +55,7 @@ ACTIONS_REGISTRY: dict[str, dict] = {
         "aliases": [
             "email", "e-mail",
             "wyślij email", "wyślij maila", "send email", "napisz maila",
+            "wyślij do", "wyslij do", "send to",
             "wiadomość", "napisz do", "napisz wiadomość", "wyślij wiadomość",
             "maila", "maila do",
             "przypomnij", "przypomnienie", "remind",

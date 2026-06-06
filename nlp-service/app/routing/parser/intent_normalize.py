@@ -15,6 +15,11 @@ _INVOICE_SEND_PATTERNS = (
     r"\binvoice\s+to\b",
 )
 
+_REPORT_DELIVERY_EMAIL_PATTERNS = (
+    r"(?:raport|report|zestawienie|sprawozdanie).*?\bdo\s+\S+@\S+",
+    r"(?:wyślij|wyslij|prześlij|przeslij|send)\s+do\s+\S+@\S+",
+)
+
 _INVOICE_GENERATE_ONLY_PATTERNS = (
     r"\bwygeneruj\s+faktur",
     r"\bwygeneruj\s+plik\s+faktur",
@@ -42,6 +47,16 @@ def normalize_parsed_intent(result: NLPResult) -> NLPResult:
             update={"intent": NLPIntent(intent="send_invoice", confidence=max(0.6, result.intent.confidence))}
         )
 
+    if intent == "generate_report" and _looks_like_report_email_delivery(text, result):
+        return result.model_copy(
+            update={
+                "intent": NLPIntent(
+                    intent="report_and_email",
+                    confidence=max(0.75, result.intent.confidence),
+                )
+            }
+        )
+
     return result
 
 
@@ -54,6 +69,12 @@ def _coerce_invoice_send(result: NLPResult, text: str) -> str:
     if recipient and _has_amount_signal(text, result):
         return "send_invoice"
     return "generate_invoice"
+
+
+def _looks_like_report_email_delivery(text: str, result: NLPResult) -> bool:
+    if not (result.entities.to or result.entities.email_to):
+        return False
+    return _matches_any(text, _REPORT_DELIVERY_EMAIL_PATTERNS)
 
 
 def _looks_like_invoice_send(text: str, result: NLPResult) -> bool:

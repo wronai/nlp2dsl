@@ -26,11 +26,12 @@ def run(client: Optional[NLP2DSLClient] = None) -> dict[str, Any]:
     print("\n2️⃣  Ten sam przypadek przez conversation loop:")
     flow = ConversationFlow(client)
     flow.start(EMAIL_PROMPT)
-    flow.send_message(
+    follow_up = flow.send_message(
         "Treść wiadomości: W załączeniu podsumowanie tygodnia. "
         "Wszystkie zadania zamknięte na czas."
     )
-    flow.send_message("uruchom")
+    if follow_up.get("status") == "ready":
+        flow.send_message("uruchom")
 
     write_conversation_artifacts(
         Path(__file__).resolve().parent / ".nlp2dsl",

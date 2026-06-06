@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
+from ..system_map_ir import ProfileValidationIR
+
 
 @dataclass
 class DoqlArtifact:
@@ -96,6 +98,7 @@ class DoqlTaskContext:
     strict_pdf: bool = False
     runtimes: list[DoqlRuntime] = field(default_factory=list)
     process: DoqlProcessPolicy = field(default_factory=DoqlProcessPolicy)
+    validations: list[ProfileValidationIR] = field(default_factory=list)
 
     def entity_values(self, action: str) -> dict[str, Any]:
         prefix = f"{action}."

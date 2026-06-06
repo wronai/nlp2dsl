@@ -21,6 +21,7 @@ from .runtime import (
     autofill_entities,
     context_inline_payload,
     load_doql_inline_from_env,
+    merge_inline_context,
     resolve_doql_context_path,
 )
 
@@ -39,6 +40,7 @@ __all__ = [
     "load_doql_context",
     "load_doql_inline_from_env",
     "load_platform_map",
+    "merge_inline_context",
     "parse_fixture_metadata",
     "render_doql_context",
     "resolve_doql_context_path",

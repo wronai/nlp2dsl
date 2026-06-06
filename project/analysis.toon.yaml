@@ -1,6 +1,6 @@
-# code2llm | 287f 39021L | python:213,json:19,shell:12,yaml:10,toml:10,txt:6,yml:3,rust:2,javascript:2,ini:1 | 2026-06-06
+# code2llm | 298f 42963L | python:220,json:23,shell:12,yaml:10,toml:10,txt:6,yml:3,rust:2,javascript:2,ini:1 | 2026-06-06
 # generated in 0.06s
-# CC̅=4.7 | critical:50/998 | dups:0 | cycles:0
+# CC̅=4.5 | critical:44/1098 | dups:0 | cycles:0
 
 HEALTH[20]:
   🟡 CC    _load_patterns_from_json CC=19 (limit:15)
@@ -10,7 +10,6 @@ HEALTH[20]:
   🟡 CC    _keyword_detection CC=15 (limit:15)
   🟡 CC    build_process_trace CC=17 (limit:15)
   🟡 CC    build_runtimes_for_example CC=18 (limit:15)
-  🟡 CC    merge_execution_observation CC=17 (limit:15)
   🟡 CC    format_transcript CC=25 (limit:15)
   🟡 CC    task_context_to_system_map CC=24 (limit:15)
   🟡 CC    build_target_plan CC=20 (limit:15)
@@ -18,16 +17,17 @@ HEALTH[20]:
   🟡 CC    validate_conversation_scenario CC=21 (limit:15)
   🟡 CC    print_run_outcome CC=21 (limit:15)
   🟡 CC    print_workflow_preview CC=18 (limit:15)
-  🟡 CC    process_policy_from_profile_block CC=23 (limit:15)
-  🟡 CC    render_system_map_doql CC=70 (limit:15)
-  🟡 CC    plan_resolutions CC=17 (limit:15)
-  🟡 CC    autofill_entities CC=15 (limit:15)
-  🟡 CC    render_doql_context CC=62 (limit:15)
+  🟡 CC    load_platform_map CC=18 (limit:15)
+  🟡 CC    enrich_task_context_from_client CC=19 (limit:15)
+  🟡 CC    collect_task_context CC=19 (limit:15)
+  🟡 CC    run CC=20 (limit:15)
+  🟡 CC    run CC=20 (limit:15)
+  🟡 CC    run_benchmark CC=16 (limit:15)
 
 REFACTOR[1]:
   1. split 20 high-CC methods  (CC>15)
 
-PIPELINES[379]:
+PIPELINES[381]:
   [1] Src [main]: main
       PURITY: 100% pure
   [2] Src [main]: main
@@ -130,11 +130,11 @@ PIPELINES[379]:
       PURITY: 100% pure
 
 LAYERS:
-  scripts/                        CC̄=8.5    ←in:0  →out:9  !! split
+  scripts/                        CC̄=8.6    ←in:0  →out:16  !! split
   │ !! run-example-testql-results   524L  2C   14m  CC=23     ←0
-  │ !! run-example-docker-e2e     320L  0C   12m  CC=28     ←0
-  │ !! run-conversation-scenario   260L  0C    8m  CC=36     ←0
-  │ !! run-execution-scenario     184L  0C    8m  CC=18     ←0
+  │ !! run-example-docker-e2e     358L  0C   12m  CC=40     ←0
+  │ !! run-conversation-scenario   251L  0C    8m  CC=36     ←0
+  │ !! run-execution-scenario     183L  0C    8m  CC=18     ←0
   │ aggregate-example-testql    49L  0C    1m  CC=7      ←0
   │ publish-all.sh              44L  0C    1m  CC=0.0    ←0
   │ setup-dev.sh                43L  0C    0m  CC=0.0    ←0
@@ -147,8 +147,12 @@ LAYERS:
   │ !! benchmark_1780673613.json   636L  0C    0m  CC=0.0    ←0
   │ !! benchmark_1780734808.json   636L  0C    0m  CC=0.0    ←0
   │ !! benchmark_1780694039.json   636L  0C    0m  CC=0.0    ←0
-  │ !! benchmark_1780672619.json   636L  0C    0m  CC=0.0    ←0
   │ !! benchmark_1780737026.json   636L  0C    0m  CC=0.0    ←0
+  │ !! benchmark_1780672619.json   636L  0C    0m  CC=0.0    ←0
+  │ !! benchmark_1780739390.json   636L  0C    0m  CC=0.0    ←0
+  │ !! benchmark_1780738187.json   636L  0C    0m  CC=0.0    ←0
+  │ !! benchmark_1780739013.json   636L  0C    0m  CC=0.0    ←0
+  │ !! benchmark_1780738565.json   636L  0C    0m  CC=0.0    ←0
   │ benchmark_1780669461.json   322L  0C    0m  CC=0.0    ←0
   │ benchmark_1780669469.json   322L  0C    0m  CC=0.0    ←0
   │ benchmark_1780668482.json   321L  0C    0m  CC=0.0    ←0
@@ -198,55 +202,6 @@ LAYERS:
   │ invoice-request.txt          4L  0C    0m  CC=0.0    ←0
   │ requirements.txt             1L  0C    0m  CC=0.0    ←0
   │
-  nlp2dsl_sdk/                    CC̄=5.2    ←in:60  →out:33  !! split
-  │ !! client                     893L  2C   60m  CC=14     ←0
-  │ !! compose_generator          512L  1C   16m  CC=13     ←1
-  │ !! parse                      466L  0C   24m  CC=19     ←10
-  │ !! artifacts                  432L  1C   17m  CC=17     ←10
-  │ demos                      355L  1C   11m  CC=6      ←3
-  │ !! reflection                 346L  4C   12m  CC=20     ←3
-  │ !! preview                    336L  0C   13m  CC=21     ←17
-  │ !! process_policy             290L  0C   13m  CC=23     ←4
-  │ cli                        269L  0C   13m  CC=13     ←0
-  │ system_map_ir              264L  16C    4m  CC=7      ←0
-  │ !! system_map_render          244L  0C    1m  CC=70     ←4
-  │ stack_flow                 231L  3C    6m  CC=10     ←0
-  │ !! system_map_bridge          223L  0C    5m  CC=24     ←5
-  │ system_map_generator       202L  0C    5m  CC=11     ←3
-  │ !! render                     196L  0C    2m  CC=62     ←2
-  │ !! doql_registry              189L  0C    5m  CC=17     ←4
-  │ !! system_map_runtimes        174L  0C    4m  CC=18     ←5
-  │ artifact_layout            170L  0C   10m  CC=9      ←9
-  │ messages                   169L  0C   14m  CC=6      ←1
-  │ dsl_contract               166L  0C    6m  CC=7      ←2
-  │ step_config                162L  0C    3m  CC=13     ←6
-  │ !! resolutions                155L  2C    3m  CC=17     ←1
-  │ runtime_health             136L  0C    5m  CC=10     ←3
-  │ models                     131L  7C    4m  CC=6      ←0
-  │ attachment_validation      130L  0C    6m  CC=11     ←3
-  │ pipeline                   126L  0C    9m  CC=9      ←0
-  │ attachment                 115L  0C    3m  CC=11     ←3
-  │ !! conversation_artifacts     113L  0C    3m  CC=25     ←5
-  │ autonomous_flow            105L  1C    5m  CC=8      ←0
-  │ !! runtime                    105L  0C    4m  CC=15     ←11
-  │ !! conversation_testql        103L  1C    4m  CC=21     ←1
-  │ encoding                    92L  0C    8m  CC=4      ←5
-  │ invoice_pdf                 75L  0C    3m  CC=3      ←2
-  │ issue                       61L  2C    3m  CC=8      ←5
-  │ path_resolve                56L  0C    2m  CC=9      ←0
-  │ __init__                    54L  0C    1m  CC=3      ←0
-  │ example_bootstrap           53L  0C    1m  CC=6      ←2
-  │ invoice_policy              52L  0C    3m  CC=5      ←3
-  │ doql_context                50L  0C    0m  CC=0.0    ←0
-  │ system_map_models           48L  0C    4m  CC=11     ←0
-  │ context                     48L  1C    1m  CC=3      ←0
-  │ __init__                    46L  0C    1m  CC=2      ←0
-  │ __init__                    46L  0C    0m  CC=0.0    ←0
-  │ __main__                    45L  0C    1m  CC=5      ←0
-  │ step_validation             43L  0C    2m  CC=1      ←1
-  │ example_loader              39L  0C    1m  CC=7      ←0
-  │ helpers                     36L  0C    4m  CC=3      ←4
-  │
   packages/                       CC̄=4.7    ←in:0  →out:0
   │ !! patterns.json             2016L  0C    0m  CC=0.0    ←0
   │ !! keyword_detector          1209L  2C   22m  CC=73     ←0
@@ -288,38 +243,93 @@ LAYERS:
   │ __init__                    12L  0C    0m  CC=0.0    ←0
   │ __init__                     3L  0C    0m  CC=0.0    ←0
   │
-  nlp-service/                    CC̄=4.5    ←in:0  →out:0
-  │ !! main                       645L  0C   26m  CC=14     ←1
-  │ !! rules                      564L  0C   31m  CC=21     ←2
-  │ registry                   421L  0C    5m  CC=5      ←5
+  nlp2dsl_sdk/                    CC̄=4.5    ←in:60  →out:39  !! split
+  │ !! client                     893L  2C   60m  CC=14     ←0
+  │ !! compose_generator          512L  1C   16m  CC=13     ←1
+  │ !! parse                      466L  0C   24m  CC=19     ←10
+  │ !! artifacts                  432L  1C   17m  CC=17     ←10
+  │ demos                      355L  1C   11m  CC=6      ←3
+  │ !! reflection                 346L  4C   12m  CC=20     ←3
+  │ process_policy             337L  0C   20m  CC=12     ←4
+  │ !! preview                    336L  0C   13m  CC=21     ←17
+  │ blocks                     300L  0C   18m  CC=9      ←1
+  │ !! profile_checks             295L  1C   16m  CC=20     ←4
+  │ system_map_ir              274L  17C    4m  CC=7      ←0
+  │ cli                        269L  0C   13m  CC=13     ←0
+  │ !! context_blocks             234L  0C   14m  CC=18     ←1
+  │ stack_flow                 231L  3C    6m  CC=10     ←0
+  │ doql_registry              230L  0C   12m  CC=11     ←4
+  │ !! system_map_bridge          223L  0C    5m  CC=24     ←5
+  │ resolutions                218L  2C   12m  CC=12     ←1
+  │ runtime                    206L  0C   15m  CC=14     ←11
+  │ system_map_generator       202L  0C    5m  CC=11     ←3
+  │ !! system_map_runtimes        174L  0C    4m  CC=18     ←6
+  │ artifact_layout            170L  0C   10m  CC=9      ←9
+  │ messages                   169L  0C   14m  CC=6      ←1
+  │ dsl_contract               166L  0C    6m  CC=7      ←2
+  │ step_config                162L  0C    3m  CC=13     ←6
+  │ runtime_health             136L  0C    5m  CC=10     ←3
+  │ models                     131L  7C    4m  CC=6      ←0
+  │ attachment_validation      130L  0C    6m  CC=11     ←2
+  │ pipeline                   126L  0C    9m  CC=9      ←0
+  │ attachment                 115L  0C    3m  CC=11     ←3
+  │ !! conversation_artifacts     113L  0C    3m  CC=25     ←5
+  │ autonomous_flow            105L  1C    5m  CC=8      ←0
+  │ !! conversation_testql        103L  1C    4m  CC=21     ←1
+  │ encoding                    93L  0C    8m  CC=4      ←5
+  │ invoice_pdf                 75L  0C    3m  CC=3      ←2
+  │ __init__                    69L  0C    1m  CC=2      ←0
+  │ issue                       61L  2C    3m  CC=8      ←5
+  │ path_resolve                56L  0C    2m  CC=9      ←0
+  │ __init__                    54L  0C    1m  CC=3      ←0
+  │ example_bootstrap           53L  0C    1m  CC=6      ←2
+  │ invoice_policy              52L  0C    3m  CC=5      ←3
+  │ doql_context                52L  0C    0m  CC=0.0    ←0
+  │ render                      49L  0C    2m  CC=1      ←2
+  │ system_map_models           48L  0C    4m  CC=11     ←0
+  │ context                     48L  1C    1m  CC=3      ←0
+  │ render                      48L  0C    1m  CC=1      ←4
+  │ __init__                    48L  0C    0m  CC=0.0    ←0
+  │ __main__                    45L  0C    1m  CC=5      ←0
+  │ helpers                     45L  0C    7m  CC=4      ←2
+  │ step_validation             43L  0C    2m  CC=1      ←1
+  │ example_loader              39L  0C    1m  CC=7      ←0
+  │ helpers                     36L  0C    4m  CC=3      ←4
+  │ __init__                     5L  0C    0m  CC=0.0    ←0
+  │
+  nlp-service/                    CC̄=4.4    ←in:0  →out:0
+  │ !! main                       648L  0C   26m  CC=14     ←0
+  │ !! rules                      586L  0C   31m  CC=24     ←3
+  │ registry                   455L  0C    5m  CC=6      ←5
   │ !! orientation                379L  1C   11m  CC=16     ←2
-  │ !! responses                  368L  0C   19m  CC=25     ←3
+  │ !! responses                  370L  0C   19m  CC=26     ←3
+  │ system                     343L  0C   13m  CC=12     ←1
+  │ !! orchestrator               333L  0C   15m  CC=17     ←1
+  │ !! autonomous_loop            324L  1C   12m  CC=21     ←1
   │ policy                     302L  2C   14m  CC=5      ←2
-  │ !! autonomous_loop            299L  1C   12m  CC=21     ←1
   │ code_generator             279L  1C    8m  CC=14     ←0
-  │ !! orchestrator               265L  0C   12m  CC=16     ←1
   │ settings                   251L  6C   11m  CC=6      ←20
-  │ !! mapper                     244L  0C    7m  CC=23     ←1
-  │ !! resolve                    196L  0C    6m  CC=18     ←1
+  │ !! mapper                     246L  0C    7m  CC=23     ←1
+  │ !! resolve                    200L  0C    6m  CC=18     ←1
   │ !! doql_registry              176L  0C    7m  CC=16     ←3
   │ config                     165L  1C   13m  CC=8      ←4
   │ schemas                    150L  12C    0m  CC=0.0    ←0
   │ enrich                     149L  0C    4m  CC=14     ←1
   │ audio_parser               148L  1C    8m  CC=9      ←1
-  │ !! doql_context               147L  0C    3m  CC=20     ←1
+  │ system_map                 147L  0C   15m  CC=6      ←18
   │ llm                        145L  0C    3m  CC=10     ←3
   │ native                     143L  0C   13m  CC=6      ←1
-  │ reflection                 137L  0C    9m  CC=10     ←1
+  │ reflection                 137L  0C    9m  CC=10     ←2
   │ !! doql_autofill              135L  0C    4m  CC=20     ←7
   │ process_agent              116L  0C    3m  CC=9      ←1
-  │ system_map                 110L  0C   12m  CC=6      ←11
   │ step_validator             109L  1C    9m  CC=9      ←1
   │ logging_setup              100L  2C    6m  CC=3      ←0
-  │ forms                       91L  0C    1m  CC=5      ←2
+  │ intent_normalize            93L  0C    6m  CC=8      ←1
   │ runtime_gate                89L  0C    3m  CC=12     ←1
+  │ prompt_catalog              89L  0C    1m  CC=9      ←0
+  │ forms                       89L  0C    2m  CC=7      ←2
   │ path_resolve                87L  0C    2m  CC=14     ←0
   │ path_policy                 83L  0C    5m  CC=6      ←2
-  │ prompt_catalog              82L  0C    1m  CC=8      ←0
   │ bootstrap                   78L  0C    3m  CC=14     ←0
   │ invoice_pdf                 73L  0C    3m  CC=3      ←0
   │ !! attachment_validation       72L  0C    1m  CC=16     ←0
@@ -330,12 +340,13 @@ LAYERS:
   │ redis_store                 58L  1C    7m  CC=3      ←0
   │ observability               57L  0C    3m  CC=7      ←2
   │ intent                      55L  1C    2m  CC=3      ←0
-  │ resolve_mode                53L  0C    1m  CC=11     ←2
+  │ resolve_mode                54L  0C    1m  CC=11     ←2
   │ pyproject.toml              53L  0C    0m  CC=0.0    ←0
+  │ doql_context                52L  0C    1m  CC=8      ←0
   │ delegate                    48L  0C    5m  CC=5      ←1
   │ factory                     46L  0C    1m  CC=4      ←2
   │ merge                       36L  0C    1m  CC=13     ←1
-  │ system_executor             35L  0C   13m  CC=12     ←1
+  │ system_executor             35L  0C    0m  CC=0.0    ←0
   │ pipeline                    31L  0C    1m  CC=6      ←4
   │ __init__                    30L  1C    4m  CC=1      ←0
   │ manifest.json               30L  0C    0m  CC=0.0    ←0
@@ -345,7 +356,7 @@ LAYERS:
   │ memory                      23L  1C    5m  CC=1      ←0
   │ __init__                    21L  0C    1m  CC=2      ←0
   │ orchestrator                21L  0C    0m  CC=0.0    ←0
-  │ facade                      20L  0C    1m  CC=3      ←0
+  │ facade                      20L  0C    1m  CC=3      ←1
   │ __init__                    17L  0C    0m  CC=0.0    ←0
   │ Dockerfile                  15L  0C    0m  CC=0.0    ←0
   │ parser_enrich               15L  0C    0m  CC=0.0    ←0
@@ -375,7 +386,7 @@ LAYERS:
   │ workflow                   203L  0C   10m  CC=9      ←1
   │ postgres                   172L  3C   11m  CC=4      ←0
   │ testql_compat              153L  3C    8m  CC=8      ←0
-  │ attachment_validation      109L  0C    6m  CC=11     ←1
+  │ attachment_validation      109L  0C    6m  CC=11     ←2
   │ logging_setup              100L  2C    6m  CC=3      ←5
   │ workflow_events             91L  2C    6m  CC=3      ←0
   │ settings                    81L  0C    7m  CC=2      ←0
@@ -441,31 +452,33 @@ LAYERS:
      backend/app/__init__.py                   0L
 
 COUPLING:
-                                                     nlp2dsl_sdk                 nlp-service.app                nlp2dsl_sdk.doql          nlp2dsl_sdk.validation                     backend.app                         scripts         packages.nlp2cmd-intent             examples.01-invoice    examples.04-scheduled-report                          worker               examples.02-email   examples.03-report-and-notify             examples.12-ir-show                        examples  examples.07-email-conversation
-                     nlp2dsl_sdk                              ──                               6                              20                               4                               2                              ←5                               1                              ←6                              ←5                              ←1                              ←4                              ←4                              ←4                              ←3                              ←3  hub
-                 nlp-service.app                               8                              ──                              13                              10                               8                              ←2                              ←5                                                                                                                                                                                                                                                                  hub
-                nlp2dsl_sdk.doql                               2                               1                              ──                               1                                                              ←2                                                                                                                                                                                                                                                                                                  hub
-          nlp2dsl_sdk.validation                              ←4                               2                              ←1                              ──                               1                                                                                                                                                              ←3                                                                                                                                                                  hub
-                     backend.app                              ←2                               3                                                               3                              ──                                                                                                                                                              ←1                                                                                                                                                                  hub
-                         scripts                               5                               2                               2                                                                                              ──                                                                                                                                                                                                                                                                                                  !! fan-out
-         packages.nlp2cmd-intent                              ←1                               5                                                                                                                                                              ──                                                                                                                                                                                                                                                                
-             examples.01-invoice                               6                                                                                                                                                                                                                              ──                                                                                                                                                                                                                                
-    examples.04-scheduled-report                               5                                                                                                                                                                                                                                                              ──                                                                                                                                                                                                
-                          worker                               1                                                                                               3                               1                                                                                                                                                              ──                                                                                                                                                                
-               examples.02-email                               4                                                                                                                                                                                                                                                                                                                              ──                                                                                                                                
-   examples.03-report-and-notify                               4                                                                                                                                                                                                                                                                                                                                                              ──                                                                                                
-             examples.12-ir-show                               4                                                                                                                                                                                                                                                                                                                                                                                              ──                                                                
-                        examples                               3                                                                                                                                                                                                                                                                                                                                                                                                                              ──                                
-  examples.07-email-conversation                               3                                                                                                                                                                                                                                                                                                                                                                                                                                                              ──
+                                                   nlp2dsl_sdk                nlp-service.app               nlp2dsl_sdk.doql         nlp2dsl_sdk.validation  nlp2dsl_sdk.system_map_render                    backend.app                        scripts        packages.nlp2cmd-intent            examples.01-invoice   examples.04-scheduled-report                         worker              examples.02-email  examples.03-report-and-notify            examples.12-ir-show                       examples
+                    nlp2dsl_sdk                             ──                              6                             20                              5                              5                              2                             ←5                              1                             ←6                             ←5                             ←1                             ←4                             ←4                             ←4                             ←3  hub
+                nlp-service.app                              7                             ──                             15                             11                                                             9                             ←2                             ←5                                                                                                                                                                                                                           hub
+               nlp2dsl_sdk.doql                              2                              1                             ──                              1                             18                                                            ←2                                                                                                                                                                                                                                                          hub
+         nlp2dsl_sdk.validation                              1                              2                             ←1                             ──                                                             1                             ←7                                                                                                                          ←3                                                                                                                              hub
+  nlp2dsl_sdk.system_map_render                             ←5                                                           ←18                                                            ──                                                                                                                                                                                                                                                                                                                        hub
+                    backend.app                             ←2                              3                                                             3                                                            ──                                                                                                                                                         ←1                                                                                                                              hub
+                        scripts                              5                              2                              2                              7                                                                                           ──                                                                                                                                                                                                                                                          !! fan-out
+        packages.nlp2cmd-intent                             ←1                              5                                                                                                                                                                                        ──                                                                                                                                                                                                                         
+            examples.01-invoice                              6                                                                                                                                                                                                                                                      ──                                                                                                                                                                                          
+   examples.04-scheduled-report                              5                                                                                                                                                                                                                                                                                     ──                                                                                                                                                           
+                         worker                              1                                                                                            3                                                             1                                                                                                                                                         ──                                                                                                                            
+              examples.02-email                              4                                                                                                                                                                                                                                                                                                                                                   ──                                                                                             
+  examples.03-report-and-notify                              4                                                                                                                                                                                                                                                                                                                                                                                  ──                                                              
+            examples.12-ir-show                              4                                                                                                                                                                                                                                                                                                                                                                                                                 ──                               
+                       examples                              3                                                                                                                                                                                                                                                                                                                                                                                                                                                ──
   CYCLES: none
-  HUB: nlp2dsl_sdk.validation/ (fan-in=21)
-  HUB: nlp-service.app/ (fan-in=20)
+  HUB: nlp2dsl_sdk.doql/ (fan-in=37)
+  HUB: backend.app/ (fan-in=13)
   HUB: nlp2dsl_sdk/ (fan-in=60)
-  HUB: backend.app/ (fan-in=12)
-  HUB: nlp2dsl_sdk.doql/ (fan-in=35)
-  SMELL: scripts/ fan-out=9 → split needed
-  SMELL: nlp-service.app/ fan-out=40 → split needed
-  SMELL: nlp2dsl_sdk/ fan-out=33 → split needed
+  HUB: nlp-service.app/ (fan-in=20)
+  HUB: nlp2dsl_sdk.system_map_render/ (fan-in=23)
+  HUB: nlp2dsl_sdk.validation/ (fan-in=30)
+  SMELL: nlp2dsl_sdk.doql/ fan-out=22 → split needed
+  SMELL: nlp2dsl_sdk/ fan-out=39 → split needed
+  SMELL: nlp-service.app/ fan-out=43 → split needed
+  SMELL: scripts/ fan-out=16 → split needed
 
 EXTERNAL:
   validation: run `vallm batch .` → validation.toon

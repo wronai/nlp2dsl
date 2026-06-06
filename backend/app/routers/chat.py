@@ -5,6 +5,7 @@ Proxy do nlp-service z opcjonalnym auto-execute przy "uruchom".
 """
 
 import logging
+import re
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
@@ -82,7 +83,15 @@ def _execution_requested(result: dict[str, Any], body: dict[str, Any]) -> bool:
 
 def _is_explicit_execute_request(body: dict[str, Any]) -> bool:
     text_lower = str(body.get("text", "")).lower()
-    return any(keyword in text_lower for keyword in _EXECUTE_KEYWORDS)
+    return any(_execute_keyword_in_text(text_lower, keyword) for keyword in _EXECUTE_KEYWORDS)
+
+
+def _execute_keyword_in_text(text_lower: str, keyword: str) -> bool:
+    if " " in keyword:
+        return keyword in text_lower
+    if len(keyword) <= 4:
+        return bool(re.search(rf"(?<!\w){re.escape(keyword)}(?!\w)", text_lower))
+    return keyword in text_lower
 
 
 def _is_auto_execute_requested(result: dict[str, Any], body: dict[str, Any]) -> bool:

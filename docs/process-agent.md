@@ -112,9 +112,9 @@ Odświeżanie w locie: `refresh_doql_registry()` / `refresh_registry_for_state()
 |-----------|------|
 | Pełny wielokrokowy plan | ExecutionPlanIR |
 | LLM clarification | prompt przed `incomplete` |
-| Health check runtimes | introspection online (`post_health` w pipeline) |
-| Modułowy validation pipeline | `nlp2dsl_sdk/validation/` — zob. [`validation.md`](validation.md) |
-| Usunięcie registry jako źródła pól | gdy DOQL zawsze obecny |
+| Health check runtimes | ✅ `post_health` w pipeline SDK (`runtime_gate`) |
+| Modułowy validation pipeline | ✅ `nlp2dsl_sdk/validation/` — zob. [`validation.md`](validation.md) |
+| Usunięcie registry jako źródła pól | 🟡 backend/worker używają `/nlp/actions`; nlp-service nadal fallback |
 
 ### Dziś (conversation orchestrator)
 
@@ -154,7 +154,7 @@ Z [`examples/01-invoice/README.md`](../examples/01-invoice/README.md) i [`valida
 
 1. **Preflight** — mapa + stan świata (runtimes, artifacts, data, runtime_gate)
 2. **Kontrakt planu (dsl_ready + pre_execute)** — `step_validator`: required, format, PDF strict, path scope
-3. **Post-exec** — `attachment_validation` po workerze; planowane: health runtimes + pełny pipeline SDK
+3. **Post-exec** — `attachment_validation` + `validate_post_execute_execution` (SDK pipeline)
 
 ProcessAgent + `autonomous_loop` operują w fazach 1–2; przy błędzie załącznika regenerują PDF zanim zapytają użytkownika.
 

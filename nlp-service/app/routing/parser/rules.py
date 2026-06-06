@@ -97,6 +97,15 @@ TELEGRAM_CHAT_PATTERN = re.compile(
 TELEGRAM_CHAT_ID_PATTERN = re.compile(r"(-?\d{6,})")
 TEAMS_CHANNEL_PATTERN = re.compile(r"(?:teams|microsoft teams|na teams|do teamsu)\s+([#\w-]+)", re.IGNORECASE)
 
+SEND_TO_EMAIL_PATTERN = re.compile(
+    r"(?:wyślij|wyslij|prześlij|przeslij|send)\s+do\s+\S+@\S+",
+    re.IGNORECASE,
+)
+REPORT_DELIVERY_EMAIL_PATTERN = re.compile(
+    r"(?:raport|report|zestawienie|sprawozdanie).*?\bdo\s+\S+@\S+",
+    re.IGNORECASE,
+)
+
 # ── System patterns ───────────────────────────────────────────
 
 FILE_PATH_PATTERN = re.compile(
@@ -217,6 +226,12 @@ def _apply_context_filters(text_lower: str, scores: dict[str, int]) -> dict[str,
             k in text_lower for k in ("napisz", "stwórz", "generuj kod", "program", "kod")
         ):
             filtered["generate_code"] = max(filtered.get("generate_code", 0), 10)
+
+    if SEND_TO_EMAIL_PATTERN.search(text_lower):
+        filtered["send_email"] = max(filtered.get("send_email", 0), 9)
+
+    if filtered.get("generate_report") and REPORT_DELIVERY_EMAIL_PATTERN.search(text_lower):
+        filtered["send_email"] = max(filtered.get("send_email", 0), 8)
 
     for business in ("generate_report", "send_invoice", "send_email", "crm_update"):
         biz_score = filtered.get(business, 0)

@@ -1,4 +1,4 @@
-# code2llm/evolution | 897 func | 143f | 2026-06-06
+# code2llm/evolution | 997 func | 148f | 2026-06-06
 # generated in 0.00s
 
 NEXT[10] (ranked by impact):
@@ -10,37 +10,37 @@ NEXT[10] (ranked by impact):
       WHY: CC=73 exceeds 15
       EFFORT: ~1h  IMPACT: 2117
 
-  [3] !! SPLIT-FUNC      render_system_map_doql  CC=70  fan=15
-      WHY: CC=70 exceeds 15
-      EFFORT: ~1h  IMPACT: 1050
+  [3] !! SPLIT-FUNC      build_and_check_dsl  CC=26  fan=23
+      WHY: CC=26 exceeds 15
+      EFFORT: ~1h  IMPACT: 598
 
-  [4] !! SPLIT-FUNC      render_doql_context  CC=62  fan=11
-      WHY: CC=62 exceeds 15
-      EFFORT: ~1h  IMPACT: 682
-
-  [5] !! SPLIT-FUNC      KeywordPatterns._load_detector_config_from_json  CC=33  fan=18
+  [4] !! SPLIT-FUNC      KeywordPatterns._load_detector_config_from_json  CC=33  fan=18
       WHY: CC=33 exceeds 15
       EFFORT: ~1h  IMPACT: 594
 
-  [6] !! SPLIT-FUNC      build_and_check_dsl  CC=25  fan=23
-      WHY: CC=25 exceeds 15
-      EFFORT: ~1h  IMPACT: 575
-
-  [7] !  SPLIT-FUNC      collect_task_context  CC=19  fan=26
+  [5] !  SPLIT-FUNC      collect_task_context  CC=19  fan=26
       WHY: CC=19 exceeds 15
       EFFORT: ~1h  IMPACT: 494
 
-  [8] !  SPLIT-FUNC      autonomous_resolve_turn  CC=21  fan=23
+  [6] !  SPLIT-FUNC      autonomous_resolve_turn  CC=21  fan=23
       WHY: CC=21 exceeds 15
       EFFORT: ~1h  IMPACT: 483
 
-  [9] !  SPLIT-FUNC      task_context_to_system_map  CC=24  fan=20
+  [7] !  SPLIT-FUNC      task_context_to_system_map  CC=24  fan=20
       WHY: CC=24 exceeds 15
       EFFORT: ~1h  IMPACT: 480
 
-  [10] !! SPLIT-FUNC      format_transcript  CC=25  fan=17
+  [8] !! SPLIT-FUNC      format_transcript  CC=25  fan=17
       WHY: CC=25 exceeds 15
       EFFORT: ~1h  IMPACT: 425
+
+  [9] !  SPLIT-FUNC      validate_conversation_scenario  CC=21  fan=20
+      WHY: CC=21 exceeds 15
+      EFFORT: ~1h  IMPACT: 420
+
+  [10] !  SPLIT-FUNC      sync_autofill_from_doql  CC=20  fan=20
+      WHY: CC=20 exceeds 15
+      EFFORT: ~1h  IMPACT: 400
 
 
 RISKS[3]:
@@ -49,10 +49,10 @@ RISKS[3]:
   ⚠ Splitting packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py may break 22 import paths
 
 METRICS-TARGET:
-  CC̄:          4.5 → ≤3.1
+  CC̄:          4.3 → ≤3.0
   max-CC:      73 → ≤20
   god-modules: 8 → 0
-  high-CC(≥15): 38 → ≤19
+  high-CC(≥15): 32 → ≤16
   hub-types:   0 → ≤0
 
 PATTERNS (language parser shared logic):
@@ -80,4 +80,4 @@ PATTERNS (language parser shared logic):
     - Standardized FunctionInfo/ClassInfo models
 
 HISTORY:
-  prev CC̄=4.6 → now CC̄=4.5
+  prev CC̄=4.5 → now CC̄=4.3

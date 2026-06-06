@@ -128,6 +128,42 @@ class TestContinueConversation:
         assert resp2.dsl.steps[0].config.get("body")
 
     @pytest.mark.asyncio
+    async def test_continue_conversation_slot_fill_skips_resolve_intent(self, monkeypatch) -> None:
+        """Known missing field follow-up is rules-only and must not call LLM routing."""
+        import app.conversation.orchestrator as conv_orch_mod
+
+        state = ConversationState(
+            id="slot-fill",
+            intent="send_email",
+            status="in_progress",
+            entities={"to": "team@firma.pl", "subject": "Status projektu"},
+            missing=["send_email.body"],
+            history=[
+                {
+                    "role": "user",
+                    "text": "Wyślij email do team@firma.pl z tematem Status projektu",
+                },
+                {"role": "assistant", "text": "Podaj: treść wiadomości (body)"},
+            ],
+        )
+        await conv_orch_mod._conversation_store().save(state.id, state.model_dump())
+
+        async def fail_resolve_intent(_text: str):
+            raise AssertionError("slot-fill follow-up should not resolve intent")
+
+        monkeypatch.setattr(conv_orch_mod, "resolve_intent", fail_resolve_intent)
+
+        resp = await continue_conversation(
+            state.id,
+            "Treść: Projekt idzie zgodnie z planem.",
+        )
+
+        assert resp.status == "ready"
+        assert resp.routing and resp.routing["source"] == "slot_fill"
+        assert resp.dsl is not None
+        assert resp.dsl.steps[0].config["body"] == "Projekt idzie zgodnie z planem."
+
+    @pytest.mark.asyncio
     async def test_execute_keyword_idempotent_after_executed(self) -> None:
         """Second 'uruchom' after execution must not return ready (duplicate run guard)."""
         from app.conversation.orchestrator import mark_conversation_executed

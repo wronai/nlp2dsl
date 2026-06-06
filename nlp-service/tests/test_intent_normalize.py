@@ -34,3 +34,13 @@ def test_unknown_amount_email_to_send_invoice() -> None:
     )
     normalized = normalize_parsed_intent(result)
     assert normalized.intent.intent == "send_invoice"
+
+
+def test_coerce_report_delivery_to_report_and_email() -> None:
+    result = NLPResult(
+        intent=NLPIntent(intent="generate_report", confidence=0.85),
+        entities=NLPEntities(report_type="finance", format="pdf", to="cfo@firma.pl"),
+        raw_text="Pierwszego każdego miesiąca raport finansów PDF do cfo@firma.pl",
+    )
+    normalized = normalize_parsed_intent(result)
+    assert normalized.intent.intent == "report_and_email"

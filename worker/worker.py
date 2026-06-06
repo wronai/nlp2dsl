@@ -21,9 +21,11 @@ from fastapi import FastAPI, HTTPException
 import httpx
 
 try:
-    from .attachment_validation import resolve_worker_attachment_path, validate_invoice_attachment
+    from .path_resolve import resolve_worker_attachment_path
+    from .attachment_validation import validate_invoice_attachment
 except ImportError:
-    from attachment_validation import resolve_worker_attachment_path, validate_invoice_attachment
+    from path_resolve import resolve_worker_attachment_path
+    from attachment_validation import validate_invoice_attachment
 
 try:
     from .logging_setup import RequestIDMiddleware, setup_logging
@@ -268,4 +270,17 @@ async def execute_step(step: dict) -> dict[str, Any]:
 
 @app.get("/health")
 async def health() -> dict[str, Any]:
-    return {"status": "ok", "service": "worker", "actions": list(ACTION_HANDLERS.keys())}
+    catalog = sorted(ACTION_HANDLERS.keys())
+    return {"status": "ok", "service": "worker", "actions": catalog}
+
+
+@app.on_event("startup")
+async def _validate_action_registry_on_startup() -> None:
+    from registry import fetch_nlp_action_names, validate_handlers_against_catalog
+
+    catalog = fetch_nlp_action_names()
+    if not catalog:
+        log.debug("Skipping worker/catalog validation — nlp-service unavailable")
+        return
+    for message in validate_handlers_against_catalog(ACTION_HANDLERS.keys(), catalog):
+        log.warning("Action registry drift: %s", message)

@@ -8,6 +8,7 @@ from typing import Any, Literal
 from app.path_resolve import resolve_attachment_path
 from app.step_validator import validate_step_config_issues
 from nlp2dsl_sdk.validation.issue import Phase
+from nlp2dsl_sdk.validation.pipeline import validate_post_execute_execution
 
 AttachmentStatus = Literal["ok", "missing", "invalid", "denied", "skipped"]
 
@@ -90,6 +91,19 @@ def ensure_attachment_validation(result: dict[str, Any]) -> None:
     # Drop stale ready-phase validation — re-validate after worker execute.
     if result.get("status") == "executed":
         result.pop("attachment_validation", None)
+
+    execution = result.get("execution") or {}
+    if isinstance(execution, dict) and execution.get("steps"):
+        outcome_issues = validate_post_execute_execution(
+            execution,
+            dsl=result.get("dsl") if isinstance(result.get("dsl"), dict) else None,
+            path_resolver=resolve_attachment_path,
+        )
+        if outcome_issues:
+            result.setdefault("validation_issues", [])
+            result["validation_issues"].extend(
+                i.to_dict() for i in outcome_issues
+            )
 
     av = validation_from_chat_result(result)
     if not av:

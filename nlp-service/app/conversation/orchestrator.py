@@ -22,7 +22,7 @@ from app.conversation.responses import (
 )
 from app.request_context import set_example_dir
 from app.routing import IntentDecision, resolve_intent
-from app.schemas import ConversationResponse, ConversationState
+from app.schemas import ConversationResponse, ConversationState, NLPIntent, NLPResult
 from app.store import ConversationStore
 from app.store.factory import get_conversation_store
 
@@ -180,6 +180,70 @@ def _attach_reflection(resp: ConversationResponse, state: ConversationState, pha
     return resp
 
 
+def _slot_fill_decision(state: ConversationState) -> IntentDecision:
+    intent = state.intent or "unknown"
+    return IntentDecision(
+        action=intent,
+        intent=intent,
+        confidence=1.0,
+        source="slot_fill",
+        reason_codes=["conversation_slot_fill"],
+    )
+
+
+def _has_extracted_entities(result: NLPResult) -> bool:
+    return bool(result.entities.model_dump(exclude_none=True))
+
+
+async def _try_slot_fill_followup(
+    state: ConversationState,
+    text: str,
+) -> ConversationResponse | None:
+    """Fill known missing slots with rules-only parsing before falling back to LLM routing."""
+    if not (state.intent and state.intent != "unknown" and state.status == "in_progress" and state.missing):
+        return None
+
+    from app.routing.parser.rules import parse_rules
+
+    nlp = parse_rules(text)
+    if not _has_extracted_entities(nlp):
+        return None
+
+    nlp = nlp.model_copy(
+        update={"intent": NLPIntent(intent=state.intent, confidence=1.0)}
+    )
+    merge_into_state(state, nlp)
+    decision = _slot_fill_decision(state)
+
+    auto = await autonomous_resolve_turn(state)
+    if auto.response:
+        await observe_turn(state, phase="dsl_ready")
+        phase = "dsl_ready" if auto.response.status == "ready" else "validation_failed"
+        return _attach_reflection(
+            _attach_autofill(_attach_routing(auto.response, decision), state),
+            state,
+            phase,
+        )
+
+    dsl_response = await build_and_check_dsl(state)
+    if dsl_response:
+        await observe_turn(state, phase="dsl_ready")
+        phase = "dsl_ready" if dsl_response.status == "ready" else "validation_failed"
+        return _attach_reflection(
+            _attach_autofill(_attach_routing(dsl_response, decision), state),
+            state,
+            phase,
+        )
+
+    incomplete = await build_incomplete_response(state)
+    await observe_turn(state, phase="incomplete")
+    return _attach_reflection(
+        _attach_autofill(_attach_routing(incomplete, decision), state),
+        state,
+        "incomplete",
+    )
+
+
 async def _process_message(state: ConversationState, text: str) -> ConversationResponse:
     execute_response = await check_execute_keyword(state, text)
     if execute_response:
@@ -187,6 +251,10 @@ async def _process_message(state: ConversationState, text: str) -> ConversationR
 
     ctx = load_context_for_state(state)
     set_doql_context(ctx)
+
+    slot_response = await _try_slot_fill_followup(state, text)
+    if slot_response:
+        return slot_response
 
     decision, nlp = await resolve_intent(text)
     log.info(

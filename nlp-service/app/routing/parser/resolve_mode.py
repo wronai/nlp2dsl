@@ -6,13 +6,24 @@ import logging
 import os
 
 from app.routing.parser.intent_normalize import normalize_parsed_intent
-from app.routing.parser.llm import _detect_provider, parse_llm
 from app.routing.parser.rules import parse_rules
 from app.schemas import NLPResult
 
 log = logging.getLogger("nlp.parser")
 
 _FALLBACK_THRESHOLD = float(os.getenv("LLM_FALLBACK_THRESHOLD", "0.5"))
+
+
+def _detect_provider() -> str:
+    from app.routing.parser.llm import _detect_provider as detect
+
+    return detect()
+
+
+async def _parse_llm(text: str):
+    from app.routing.parser.llm import parse_llm
+
+    return await parse_llm(text)
 
 
 async def parse_with_mode(
@@ -30,7 +41,7 @@ async def parse_with_mode(
     if mode == "llm":
         if _detect_provider() == "none":
             return normalize_parsed_intent(parse_rules(text))
-        llm_result = normalize_parsed_intent(await parse_llm(text))
+        llm_result = normalize_parsed_intent(await _parse_llm(text))
         if llm_result.intent.intent != "unknown":
             return llm_result
         rules_result = normalize_parsed_intent(parse_rules(text))
@@ -46,7 +57,7 @@ async def parse_with_mode(
     if _detect_provider() == "none":
         return rules_result
     try:
-        llm_result = normalize_parsed_intent(await parse_llm(text))
+        llm_result = normalize_parsed_intent(await _parse_llm(text))
         if llm_result.intent.confidence > rules_result.intent.confidence:
             return llm_result
     except Exception:

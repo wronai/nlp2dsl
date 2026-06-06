@@ -17,7 +17,7 @@ SUMD - Structured Unified Markdown Descriptor for AI-aware project refactorizati
 ## Metadata
 
 - **name**: `nlp2dsl`
-- **version**: `0.0.25`
+- **version**: `0.0.28`
 - **python_requires**: `>=3.10`
 - **license**: Apache-2.0
 - **ai_model**: `openrouter/qwen/qwen3-coder-next`
@@ -37,7 +37,7 @@ SUMD (description) → DOQL/source (code) → taskfile (automation) → testql (
 
 app {
   name: nlp2dsl;
-  version: 0.0.25;
+  version: 0.0.28;
 }
 
 dependencies {
@@ -343,32 +343,28 @@ pytest-asyncio>=0.24
 
 ## Call Graph
 
-*451 nodes · 500 edges · 107 modules · CC̄=4.7*
+*431 nodes · 500 edges · 97 modules · CC̄=4.5*
 
 ### Hubs (by degree)
 
 | Function | CC | in | out | total |
 |----------|----|----|-----|-------|
-| `render_system_map_doql` *(in nlp2dsl_sdk.system_map_render)* | 70 ⚠ | 5 | 164 | **169** |
-| `render_doql_context` *(in nlp2dsl_sdk.doql.render)* | 62 ⚠ | 2 | 129 | **131** |
 | `generate_stack_compose` *(in nlp2dsl_sdk.compose_generator)* | 13 ⚠ | 1 | 79 | **80** |
 | `format_transcript` *(in nlp2dsl_sdk.conversation_artifacts)* | 25 ⚠ | 1 | 57 | **58** |
 | `_execute_workflow` *(in backend.app.engine)* | 13 ⚠ | 2 | 50 | **52** |
 | `_load_detector_config_from_json` *(in packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns)* | 33 ⚠ | 0 | 48 | **48** |
 | `print_workflow_preview` *(in nlp2dsl_sdk.preview)* | 18 ⚠ | 8 | 38 | **46** |
-| `process_policy_from_profile_block` *(in nlp2dsl_sdk.process_policy)* | 23 ⚠ | 1 | 45 | **46** |
+| `render_system_map_doql` *(in nlp2dsl_sdk.system_map_render.render)* | 1 | 5 | 37 | **42** |
+| `print_run_outcome` *(in nlp2dsl_sdk.preview)* | 21 ⚠ | 1 | 40 | **41** |
+| `set` *(in nlp-service.app.settings.SettingsManager)* | 4 | 27 | 11 | **38** |
 
 ```toon markpact:analysis path=project/calls.toon.yaml
 # code2llm call graph | /home/tom/github/wronai/nlp2dsl
-# generated in 0.22s
-# nodes: 451 | edges: 500 | modules: 107
-# CC̄=4.7
+# generated in 0.21s
+# nodes: 431 | edges: 500 | modules: 97
+# CC̄=4.5
 
 HUBS[20]:
-  nlp2dsl_sdk.system_map_render.render_system_map_doql
-    CC=70  in:5  out:164  total:169
-  nlp2dsl_sdk.doql.render.render_doql_context
-    CC=62  in:2  out:129  total:131
   nlp2dsl_sdk.compose_generator.generate_stack_compose
     CC=13  in:1  out:79  total:80
   nlp2dsl_sdk.conversation_artifacts.format_transcript
@@ -379,18 +375,18 @@ HUBS[20]:
     CC=33  in:0  out:48  total:48
   nlp2dsl_sdk.preview.print_workflow_preview
     CC=18  in:8  out:38  total:46
-  nlp2dsl_sdk.process_policy.process_policy_from_profile_block
-    CC=23  in:1  out:45  total:46
+  nlp2dsl_sdk.system_map_render.render.render_system_map_doql
+    CC=1  in:5  out:37  total:42
   nlp2dsl_sdk.preview.print_run_outcome
     CC=21  in:1  out:40  total:41
   nlp-service.app.settings.SettingsManager.set
     CC=4  in:27  out:11  total:38
   nlp2dsl_sdk.system_map_runtimes.build_runtimes_for_example
     CC=18  in:1  out:35  total:36
-  nlp2dsl_sdk.conversation_testql.validate_conversation_scenario
-    CC=21  in:1  out:34  total:35
   nlp2dsl_sdk.doql.parse.collect_task_context
     CC=19  in:3  out:32  total:35
+  nlp2dsl_sdk.conversation_testql.validate_conversation_scenario
+    CC=21  in:1  out:34  total:35
   backend.app.path_resolve.resolve_attachment_path
     CC=13  in:9  out:26  total:35
   examples.01-invoice.scenario.run
@@ -399,16 +395,25 @@ HUBS[20]:
     CC=18  in:1  out:32  total:33
   nlp2dsl_sdk.system_map_bridge.task_context_to_system_map
     CC=24  in:3  out:29  total:32
+  nlp2dsl_sdk.doql.render.render_doql_context
+    CC=1  in:2  out:29  total:31
   nlp2dsl_sdk.doql.parse.enrich_task_context_from_client
     CC=19  in:1  out:29  total:30
-  nlp2dsl_sdk.artifacts.build_process_trace
-    CC=17  in:1  out:29  total:30
   backend.app.routers.workflow.workflow_from_text
     CC=9  in:1  out:29  total:30
+  nlp2dsl_sdk.artifacts.build_process_trace
+    CC=17  in:1  out:29  total:30
+  nlp2dsl_sdk.cli._display
+    CC=13  in:1  out:27  total:28
 
 MODULES:
-  backend.app.attachment_validation  [1 funcs]
+  backend.app.attachment_validation  [6 funcs]
+    _attachment_from_dsl  CC=8  out:10
+    _execution_attachment_validation  CC=7  out:6
+    _top_level_attachment_validation  CC=2  out:2
+    build_attachment_validation  CC=11  out:11
     ensure_attachment_validation  CC=10  out:10
+    validation_from_chat_result  CC=5  out:5
   backend.app.dsl_validation  [5 funcs]
     dsl_validation_response  CC=1  out:3
     format_dsl_validation_message  CC=2  out:4
@@ -513,23 +518,17 @@ MODULES:
     bootstrap  CC=11  out:16
   examples.code_generation_examples  [1 funcs]
     main  CC=1  out:1
-  nlp-service.app.audio_parser  [4 funcs]
+  nlp-service.app.audio_parser  [3 funcs]
     send_audio  CC=2  out:2
-    is_stt_available  CC=2  out:0
     stt_audio  CC=9  out:14
     stt_file  CC=2  out:4
   nlp-service.app.conversation.attachment_gate  [1 funcs]
     workflow_needs_attachment  CC=8  out:4
-  nlp-service.app.conversation.autonomous_loop  [6 funcs]
-    _attachment_valid_ok  CC=7  out:7
-    _example_dir  CC=3  out:5
-    _maybe_delete_generated_attachment  CC=5  out:5
-    _resolve_artifact_file  CC=7  out:13
-    _step_config_for_validation  CC=4  out:2
-    _try_fixture_attachment  CC=16  out:20
-  nlp-service.app.conversation.doql_autofill  [2 funcs]
+  nlp-service.app.conversation.doql_autofill  [4 funcs]
+    _nested_generate_invoice  CC=5  out:16
     _resolve_attachment_path  CC=1  out:2
     load_context_for_state  CC=8  out:5
+    sync_autofill_from_doql  CC=20  out:22
   nlp-service.app.conversation.doql_registry  [7 funcs]
     _entities_to_data  CC=5  out:4
     _format_value  CC=4  out:5
@@ -538,69 +537,53 @@ MODULES:
     _try_sdk_refresh  CC=4  out:7
     refresh_registry_for_state  CC=16  out:21
     reload_context_after_refresh  CC=1  out:2
+  nlp-service.app.conversation.invoice_paths  [4 funcs]
+    example_root_from_doql  CC=9  out:9
+    invoice_output_dir  CC=2  out:5
+    resolve_example_root  CC=4  out:4
+    store_attachment_path  CC=5  out:11
   nlp-service.app.conversation.invoice_policy  [2 funcs]
     invoice_attachment_policy_active  CC=9  out:2
     is_invoice_example  CC=2  out:1
-  nlp-service.app.conversation.merge  [1 funcs]
-    merge_into_state  CC=13  out:4
-  nlp-service.app.conversation.orchestrator  [3 funcs]
-    continue_conversation  CC=4  out:13
-    get_conversation  CC=2  out:3
-    start_conversation  CC=4  out:12
-  nlp-service.app.conversation.runtime_gate  [2 funcs]
+  nlp-service.app.conversation.process_agent  [3 funcs]
+    observe_turn  CC=2  out:2
+    preflight_turn  CC=9  out:21
+    reflect_turn  CC=4  out:6
+  nlp-service.app.conversation.reflection  [9 funcs]
+    _current_config  CC=3  out:2
+    _empty  CC=3  out:2
+    _intent_from_state  CC=4  out:0
+    _policies  CC=2  out:1
+    _pseudo_response  CC=2  out:1
+    _resolve_doql_path  CC=4  out:3
+    _target_config  CC=10  out:8
+    _validation_issues  CC=3  out:5
+    reflection_from_state  CC=8  out:17
+  nlp-service.app.conversation.runtime_gate  [3 funcs]
+    intract_clarification_blocked  CC=5  out:1
     process_scope_blocked  CC=12  out:7
     runtime_unavailable_message  CC=7  out:2
-  nlp-service.app.conversation.system_map  [3 funcs]
+  nlp-service.app.conversation.system_map  [4 funcs]
+    command_meta  CC=5  out:16
     get_doql_context  CC=1  out:1
     runtime_id_for_action  CC=2  out:2
     set_doql_context  CC=1  out:1
-  nlp-service.app.dsl.forms  [1 funcs]
-    get_action_form  CC=5  out:12
   nlp-service.app.dsl.pipeline  [1 funcs]
     map_to_dsl_with_enrichment  CC=6  out:4
   nlp-service.app.execution.delegate  [3 funcs]
     execution_backend_for_intent  CC=5  out:4
     execution_backend_for_runtime  CC=4  out:0
     is_delegated_to_mullm  CC=2  out:1
-  nlp-service.app.governance.config  [2 funcs]
-    get_access_config  CC=1  out:1
-    reload_access_config  CC=1  out:1
-  nlp-service.app.governance.policy  [1 funcs]
-    authorize_action  CC=5  out:8
-  nlp-service.app.main  [16 funcs]
-    _parse_context_json  CC=5  out:3
-    _run_parser  CC=3  out:3
-    access_check  CC=3  out:6
-    access_config  CC=3  out:12
-    access_reload  CC=2  out:2
-    action_schema  CC=2  out:3
-    actions_schema  CC=3  out:3
-    chat_message  CC=6  out:15
-    chat_start  CC=7  out:15
-    chat_state  CC=2  out:4
-  nlp-service.app.registry  [1 funcs]
-    get_trigger  CC=3  out:2
+  nlp-service.app.governance.config  [4 funcs]
+    _build_access_config  CC=7  out:18
+    _load_merged_config  CC=4  out:7
+    _search_paths  CC=6  out:17
+    load_access_config  CC=3  out:2
   nlp-service.app.request_context  [1 funcs]
     get_example_dir  CC=2  out:3
-  nlp-service.app.routing.observability  [1 funcs]
-    routing_metrics_snapshot  CC=1  out:1
-  nlp-service.app.routing.orientation  [1 funcs]
-    orient_query  CC=16  out:27
-  nlp-service.app.routing.parser.llm  [1 funcs]
-    _detect_provider  CC=10  out:8
-  nlp-service.app.routing.parser.resolve_mode  [1 funcs]
-    parse_with_mode  CC=11  out:12
   nlp-service.app.settings  [2 funcs]
     set  CC=4  out:11
     _coerce_type  CC=5  out:6
-  nlp-service.app.store.factory  [1 funcs]
-    get_conversation_store  CC=4  out:7
-  nlp-service.app.system_executor  [5 funcs]
-    _exec_file_read  CC=9  out:18
-    _exec_file_write  CC=4  out:12
-    _is_read_only  CC=2  out:5
-    _validate_file_path  CC=5  out:9
-    execute_system_action  CC=3  out:5
   nlp2dsl_sdk.__main__  [1 funcs]
     main  CC=5  out:10
   nlp2dsl_sdk.artifact_layout  [9 funcs]
@@ -685,6 +668,8 @@ MODULES:
     run_automation_gallery_demo  CC=4  out:6
     run_code_generation_demo  CC=6  out:14
     run_crm_update_demo  CC=3  out:5
+  nlp2dsl_sdk.doql.models  [1 funcs]
+    runtime_for  CC=6  out:3
   nlp2dsl_sdk.doql.parse  [23 funcs]
     _append_collection_blocks  CC=10  out:15
     _apply_capabilities_block  CC=5  out:7
@@ -696,25 +681,18 @@ MODULES:
     _apply_process_block  CC=9  out:12
     _command_transport  CC=3  out:2
     _parse_access_body  CC=1  out:12
-  nlp2dsl_sdk.doql.render  [2 funcs]
-    render_doql_context  CC=62  out:129
-    write_doql_context  CC=1  out:4
-  nlp2dsl_sdk.doql.runtime  [3 funcs]
-    context_inline_payload  CC=14  out:18
+  nlp2dsl_sdk.doql.render  [1 funcs]
+    render_doql_context  CC=1  out:29
+  nlp2dsl_sdk.doql.runtime  [4 funcs]
+    autofill_entities  CC=8  out:6
     load_doql_inline_from_env  CC=2  out:3
+    merge_inline_context  CC=8  out:9
     resolve_doql_context_path  CC=1  out:1
-  nlp2dsl_sdk.doql_registry  [3 funcs]
+  nlp2dsl_sdk.doql_registry  [2 funcs]
     merge_registry_observations  CC=11  out:10
     refresh_doql_registry  CC=10  out:17
-    refresh_doql_registry_from_state  CC=1  out:1
-  nlp2dsl_sdk.encoding  [7 funcs]
-    _apply_utf8_locale_env  CC=2  out:3
-    _auto_configure_once  CC=2  out:1
-    _explicit_utf8_locale  CC=4  out:2
-    _reconfigure_stdio  CC=4  out:2
-    _set_utf8_locale  CC=3  out:1
+  nlp2dsl_sdk.encoding  [1 funcs]
     configure_utf8  CC=3  out:4
-    utf8_auto_enabled  CC=1  out:3
   nlp2dsl_sdk.example_bootstrap  [1 funcs]
     ensure_doql_registry  CC=6  out:16
   nlp2dsl_sdk.invoice_pdf  [2 funcs]
@@ -738,17 +716,8 @@ MODULES:
     print_json  CC=1  out:2
     print_run_context_hints  CC=13  out:20
     print_run_outcome  CC=21  out:40
-  nlp2dsl_sdk.process_policy  [11 funcs]
-    _as_list  CC=8  out:9
-    _deep_merge_process  CC=5  out:7
-    _load_nlp2dsl_payload  CC=12  out:12
-    _merge_access  CC=5  out:10
-    _merge_conversation_from_profile  CC=5  out:4
-    _merge_paths  CC=4  out:8
-    apply_process_policies  CC=7  out:9
-    load_platform_process_defaults  CC=4  out:7
-    merge_process_config  CC=4  out:5
-    process_policy_from_profile_block  CC=23  out:45
+  nlp2dsl_sdk.process_policy  [1 funcs]
+    apply_process_policies  CC=8  out:11
   nlp2dsl_sdk.reflection  [12 funcs]
     _context_queries_from_issues  CC=9  out:4
     _data_lookup  CC=3  out:0
@@ -779,8 +748,8 @@ MODULES:
     build_command_registry  CC=2  out:1
     command_input_model  CC=4  out:5
     validate_config_against_map  CC=2  out:5
-  nlp2dsl_sdk.system_map_render  [1 funcs]
-    render_system_map_doql  CC=70  out:164
+  nlp2dsl_sdk.system_map_render.render  [1 funcs]
+    render_system_map_doql  CC=1  out:37
   nlp2dsl_sdk.system_map_runtimes  [4 funcs]
     _repo_root_from_example  CC=2  out:0
     build_runtimes_for_example  CC=18  out:35
@@ -793,8 +762,17 @@ MODULES:
     pdf_structure_issues  CC=3  out:1
   nlp2dsl_sdk.validation.issue  [1 funcs]
     issues_to_messages  CC=2  out:1
-  nlp2dsl_sdk.validation.messages  [1 funcs]
-    legacy_message_to_issue  CC=3  out:2
+  nlp2dsl_sdk.validation.messages  [12 funcs]
+    _attachment_code  CC=4  out:0
+    _attachment_issue  CC=3  out:4
+    _attachment_kind  CC=5  out:0
+    _attachment_resolution  CC=6  out:0
+    _field_after_colon  CC=1  out:2
+    _field_format_issue  CC=4  out:6
+    _invalid_field_issue  CC=1  out:1
+    _missing_required_issue  CC=2  out:3
+    _other_issue  CC=1  out:1
+    _quality_missing_issue  CC=2  out:3
   nlp2dsl_sdk.validation.pipeline  [9 funcs]
     _context_from_map  CC=3  out:5
     validate_dsl_contract_issues  CC=1  out:1
@@ -805,9 +783,6 @@ MODULES:
     validate_step_messages  CC=1  out:2
     validate_workflow_from_map  CC=2  out:2
     validate_workflow_from_map_issues  CC=9  out:17
-  nlp2dsl_sdk.validation.resolutions  [2 funcs]
-    _append_plan  CC=2  out:2
-    plan_resolutions  CC=17  out:15
   nlp2dsl_sdk.validation.rules.attachment  [3 funcs]
     _resolve_path  CC=2  out:2
     attachment_issues_for_config  CC=3  out:6
@@ -939,6 +914,13 @@ EDGES:
   backend.app.step_validator.validate_step_config_issues → backend.app.step_validator._validation_context
   backend.app.step_validator.validate_step_config → nlp2dsl_sdk.validation.issue.issues_to_messages
   backend.app.step_validator.validate_step_config → backend.app.step_validator.validate_step_config_issues
+  backend.app.attachment_validation.build_attachment_validation → backend.app.path_resolve.resolve_attachment_path
+  backend.app.attachment_validation.build_attachment_validation → backend.app.step_validator.validate_step_config_issues
+  backend.app.attachment_validation._attachment_from_dsl → backend.app.attachment_validation.build_attachment_validation
+  backend.app.attachment_validation.validation_from_chat_result → backend.app.attachment_validation._top_level_attachment_validation
+  backend.app.attachment_validation.validation_from_chat_result → backend.app.attachment_validation._execution_attachment_validation
+  backend.app.attachment_validation.validation_from_chat_result → backend.app.attachment_validation._attachment_from_dsl
+  backend.app.attachment_validation.ensure_attachment_validation → backend.app.attachment_validation.validation_from_chat_result
   backend.app.workflow_events.WorkflowEventHub.publish → nlp-service.app.settings.SettingsManager.set
   backend.app.workflow_events.WorkflowEventHub.subscriber_count → nlp-service.app.settings.SettingsManager.set
   backend.app.dsl_validation.validate_dsl_for_execution → nlp2dsl_sdk.validation.rules.dsl_contract.validate_dsl_contract
@@ -959,13 +941,6 @@ EDGES:
   backend.app.routers.testql_compat.testql_runworkflow → backend.app.routers.testql_compat._alias_response
   backend.app.routers.testql_compat.testql_runworkflow → backend.app.engine.run_workflow
   backend.app.routers.testql_compat.testql_workflow_from_text → backend.app.routers.workflow.workflow_from_text
-  backend.app.routers.chat._maybe_auto_execute → backend.app.routers.chat._execute_ready_dsl
-  backend.app.routers.chat._maybe_auto_execute → backend.app.routers.chat._execution_requested
-  backend.app.routers.chat._execution_requested → backend.app.routers.chat._is_explicit_execute_request
-  backend.app.routers.chat._execution_requested → backend.app.routers.chat._is_auto_execute_requested
-  backend.app.routers.chat._uses_mullm_backend → backend.app.routers.chat._mullm_steps
-  backend.app.routers.chat._prepare_mullm_execution → backend.app.routers.chat._mullm_steps
-  backend.app.routers.chat._mark_auto_execute_message → backend.app.routers.chat._is_explicit_execute_request
 ```
 
 ## Test Contracts
@@ -997,15 +972,11 @@ EDGES:
 
 ```toon markpact:analysis path=project/calls.toon.yaml
 # code2llm call graph | /home/tom/github/wronai/nlp2dsl
-# generated in 0.22s
-# nodes: 451 | edges: 500 | modules: 107
-# CC̄=4.7
+# generated in 0.21s
+# nodes: 431 | edges: 500 | modules: 97
+# CC̄=4.5
 
 HUBS[20]:
-  nlp2dsl_sdk.system_map_render.render_system_map_doql
-    CC=70  in:5  out:164  total:169
-  nlp2dsl_sdk.doql.render.render_doql_context
-    CC=62  in:2  out:129  total:131
   nlp2dsl_sdk.compose_generator.generate_stack_compose
     CC=13  in:1  out:79  total:80
   nlp2dsl_sdk.conversation_artifacts.format_transcript
@@ -1016,18 +987,18 @@ HUBS[20]:
     CC=33  in:0  out:48  total:48
   nlp2dsl_sdk.preview.print_workflow_preview
     CC=18  in:8  out:38  total:46
-  nlp2dsl_sdk.process_policy.process_policy_from_profile_block
-    CC=23  in:1  out:45  total:46
+  nlp2dsl_sdk.system_map_render.render.render_system_map_doql
+    CC=1  in:5  out:37  total:42
   nlp2dsl_sdk.preview.print_run_outcome
     CC=21  in:1  out:40  total:41
   nlp-service.app.settings.SettingsManager.set
     CC=4  in:27  out:11  total:38
   nlp2dsl_sdk.system_map_runtimes.build_runtimes_for_example
     CC=18  in:1  out:35  total:36
-  nlp2dsl_sdk.conversation_testql.validate_conversation_scenario
-    CC=21  in:1  out:34  total:35
   nlp2dsl_sdk.doql.parse.collect_task_context
     CC=19  in:3  out:32  total:35
+  nlp2dsl_sdk.conversation_testql.validate_conversation_scenario
+    CC=21  in:1  out:34  total:35
   backend.app.path_resolve.resolve_attachment_path
     CC=13  in:9  out:26  total:35
   examples.01-invoice.scenario.run
@@ -1036,16 +1007,25 @@ HUBS[20]:
     CC=18  in:1  out:32  total:33
   nlp2dsl_sdk.system_map_bridge.task_context_to_system_map
     CC=24  in:3  out:29  total:32
+  nlp2dsl_sdk.doql.render.render_doql_context
+    CC=1  in:2  out:29  total:31
   nlp2dsl_sdk.doql.parse.enrich_task_context_from_client
     CC=19  in:1  out:29  total:30
-  nlp2dsl_sdk.artifacts.build_process_trace
-    CC=17  in:1  out:29  total:30
   backend.app.routers.workflow.workflow_from_text
     CC=9  in:1  out:29  total:30
+  nlp2dsl_sdk.artifacts.build_process_trace
+    CC=17  in:1  out:29  total:30
+  nlp2dsl_sdk.cli._display
+    CC=13  in:1  out:27  total:28
 
 MODULES:
-  backend.app.attachment_validation  [1 funcs]
+  backend.app.attachment_validation  [6 funcs]
+    _attachment_from_dsl  CC=8  out:10
+    _execution_attachment_validation  CC=7  out:6
+    _top_level_attachment_validation  CC=2  out:2
+    build_attachment_validation  CC=11  out:11
     ensure_attachment_validation  CC=10  out:10
+    validation_from_chat_result  CC=5  out:5
   backend.app.dsl_validation  [5 funcs]
     dsl_validation_response  CC=1  out:3
     format_dsl_validation_message  CC=2  out:4
@@ -1150,23 +1130,17 @@ MODULES:
     bootstrap  CC=11  out:16
   examples.code_generation_examples  [1 funcs]
     main  CC=1  out:1
-  nlp-service.app.audio_parser  [4 funcs]
+  nlp-service.app.audio_parser  [3 funcs]
     send_audio  CC=2  out:2
-    is_stt_available  CC=2  out:0
     stt_audio  CC=9  out:14
     stt_file  CC=2  out:4
   nlp-service.app.conversation.attachment_gate  [1 funcs]
     workflow_needs_attachment  CC=8  out:4
-  nlp-service.app.conversation.autonomous_loop  [6 funcs]
-    _attachment_valid_ok  CC=7  out:7
-    _example_dir  CC=3  out:5
-    _maybe_delete_generated_attachment  CC=5  out:5
-    _resolve_artifact_file  CC=7  out:13
-    _step_config_for_validation  CC=4  out:2
-    _try_fixture_attachment  CC=16  out:20
-  nlp-service.app.conversation.doql_autofill  [2 funcs]
+  nlp-service.app.conversation.doql_autofill  [4 funcs]
+    _nested_generate_invoice  CC=5  out:16
     _resolve_attachment_path  CC=1  out:2
     load_context_for_state  CC=8  out:5
+    sync_autofill_from_doql  CC=20  out:22
   nlp-service.app.conversation.doql_registry  [7 funcs]
     _entities_to_data  CC=5  out:4
     _format_value  CC=4  out:5
@@ -1175,69 +1149,53 @@ MODULES:
     _try_sdk_refresh  CC=4  out:7
     refresh_registry_for_state  CC=16  out:21
     reload_context_after_refresh  CC=1  out:2
+  nlp-service.app.conversation.invoice_paths  [4 funcs]
+    example_root_from_doql  CC=9  out:9
+    invoice_output_dir  CC=2  out:5
+    resolve_example_root  CC=4  out:4
+    store_attachment_path  CC=5  out:11
   nlp-service.app.conversation.invoice_policy  [2 funcs]
     invoice_attachment_policy_active  CC=9  out:2
     is_invoice_example  CC=2  out:1
-  nlp-service.app.conversation.merge  [1 funcs]
-    merge_into_state  CC=13  out:4
-  nlp-service.app.conversation.orchestrator  [3 funcs]
-    continue_conversation  CC=4  out:13
-    get_conversation  CC=2  out:3
-    start_conversation  CC=4  out:12
-  nlp-service.app.conversation.runtime_gate  [2 funcs]
+  nlp-service.app.conversation.process_agent  [3 funcs]
+    observe_turn  CC=2  out:2
+    preflight_turn  CC=9  out:21
+    reflect_turn  CC=4  out:6
+  nlp-service.app.conversation.reflection  [9 funcs]
+    _current_config  CC=3  out:2
+    _empty  CC=3  out:2
+    _intent_from_state  CC=4  out:0
+    _policies  CC=2  out:1
+    _pseudo_response  CC=2  out:1
+    _resolve_doql_path  CC=4  out:3
+    _target_config  CC=10  out:8
+    _validation_issues  CC=3  out:5
+    reflection_from_state  CC=8  out:17
+  nlp-service.app.conversation.runtime_gate  [3 funcs]
+    intract_clarification_blocked  CC=5  out:1
     process_scope_blocked  CC=12  out:7
     runtime_unavailable_message  CC=7  out:2
-  nlp-service.app.conversation.system_map  [3 funcs]
+  nlp-service.app.conversation.system_map  [4 funcs]
+    command_meta  CC=5  out:16
     get_doql_context  CC=1  out:1
     runtime_id_for_action  CC=2  out:2
     set_doql_context  CC=1  out:1
-  nlp-service.app.dsl.forms  [1 funcs]
-    get_action_form  CC=5  out:12
   nlp-service.app.dsl.pipeline  [1 funcs]
     map_to_dsl_with_enrichment  CC=6  out:4
   nlp-service.app.execution.delegate  [3 funcs]
     execution_backend_for_intent  CC=5  out:4
     execution_backend_for_runtime  CC=4  out:0
     is_delegated_to_mullm  CC=2  out:1
-  nlp-service.app.governance.config  [2 funcs]
-    get_access_config  CC=1  out:1
-    reload_access_config  CC=1  out:1
-  nlp-service.app.governance.policy  [1 funcs]
-    authorize_action  CC=5  out:8
-  nlp-service.app.main  [16 funcs]
-    _parse_context_json  CC=5  out:3
-    _run_parser  CC=3  out:3
-    access_check  CC=3  out:6
-    access_config  CC=3  out:12
-    access_reload  CC=2  out:2
-    action_schema  CC=2  out:3
-    actions_schema  CC=3  out:3
-    chat_message  CC=6  out:15
-    chat_start  CC=7  out:15
-    chat_state  CC=2  out:4
-  nlp-service.app.registry  [1 funcs]
-    get_trigger  CC=3  out:2
+  nlp-service.app.governance.config  [4 funcs]
+    _build_access_config  CC=7  out:18
+    _load_merged_config  CC=4  out:7
+    _search_paths  CC=6  out:17
+    load_access_config  CC=3  out:2
   nlp-service.app.request_context  [1 funcs]
     get_example_dir  CC=2  out:3
-  nlp-service.app.routing.observability  [1 funcs]
-    routing_metrics_snapshot  CC=1  out:1
-  nlp-service.app.routing.orientation  [1 funcs]
-    orient_query  CC=16  out:27
-  nlp-service.app.routing.parser.llm  [1 funcs]
-    _detect_provider  CC=10  out:8
-  nlp-service.app.routing.parser.resolve_mode  [1 funcs]
-    parse_with_mode  CC=11  out:12
   nlp-service.app.settings  [2 funcs]
     set  CC=4  out:11
     _coerce_type  CC=5  out:6
-  nlp-service.app.store.factory  [1 funcs]
-    get_conversation_store  CC=4  out:7
-  nlp-service.app.system_executor  [5 funcs]
-    _exec_file_read  CC=9  out:18
-    _exec_file_write  CC=4  out:12
-    _is_read_only  CC=2  out:5
-    _validate_file_path  CC=5  out:9
-    execute_system_action  CC=3  out:5
   nlp2dsl_sdk.__main__  [1 funcs]
     main  CC=5  out:10
   nlp2dsl_sdk.artifact_layout  [9 funcs]
@@ -1322,6 +1280,8 @@ MODULES:
     run_automation_gallery_demo  CC=4  out:6
     run_code_generation_demo  CC=6  out:14
     run_crm_update_demo  CC=3  out:5
+  nlp2dsl_sdk.doql.models  [1 funcs]
+    runtime_for  CC=6  out:3
   nlp2dsl_sdk.doql.parse  [23 funcs]
     _append_collection_blocks  CC=10  out:15
     _apply_capabilities_block  CC=5  out:7
@@ -1333,25 +1293,18 @@ MODULES:
     _apply_process_block  CC=9  out:12
     _command_transport  CC=3  out:2
     _parse_access_body  CC=1  out:12
-  nlp2dsl_sdk.doql.render  [2 funcs]
-    render_doql_context  CC=62  out:129
-    write_doql_context  CC=1  out:4
-  nlp2dsl_sdk.doql.runtime  [3 funcs]
-    context_inline_payload  CC=14  out:18
+  nlp2dsl_sdk.doql.render  [1 funcs]
+    render_doql_context  CC=1  out:29
+  nlp2dsl_sdk.doql.runtime  [4 funcs]
+    autofill_entities  CC=8  out:6
     load_doql_inline_from_env  CC=2  out:3
+    merge_inline_context  CC=8  out:9
     resolve_doql_context_path  CC=1  out:1
-  nlp2dsl_sdk.doql_registry  [3 funcs]
+  nlp2dsl_sdk.doql_registry  [2 funcs]
     merge_registry_observations  CC=11  out:10
     refresh_doql_registry  CC=10  out:17
-    refresh_doql_registry_from_state  CC=1  out:1
-  nlp2dsl_sdk.encoding  [7 funcs]
-    _apply_utf8_locale_env  CC=2  out:3
-    _auto_configure_once  CC=2  out:1
-    _explicit_utf8_locale  CC=4  out:2
-    _reconfigure_stdio  CC=4  out:2
-    _set_utf8_locale  CC=3  out:1
+  nlp2dsl_sdk.encoding  [1 funcs]
     configure_utf8  CC=3  out:4
-    utf8_auto_enabled  CC=1  out:3
   nlp2dsl_sdk.example_bootstrap  [1 funcs]
     ensure_doql_registry  CC=6  out:16
   nlp2dsl_sdk.invoice_pdf  [2 funcs]
@@ -1375,17 +1328,8 @@ MODULES:
     print_json  CC=1  out:2
     print_run_context_hints  CC=13  out:20
     print_run_outcome  CC=21  out:40
-  nlp2dsl_sdk.process_policy  [11 funcs]
-    _as_list  CC=8  out:9
-    _deep_merge_process  CC=5  out:7
-    _load_nlp2dsl_payload  CC=12  out:12
-    _merge_access  CC=5  out:10
-    _merge_conversation_from_profile  CC=5  out:4
-    _merge_paths  CC=4  out:8
-    apply_process_policies  CC=7  out:9
-    load_platform_process_defaults  CC=4  out:7
-    merge_process_config  CC=4  out:5
-    process_policy_from_profile_block  CC=23  out:45
+  nlp2dsl_sdk.process_policy  [1 funcs]
+    apply_process_policies  CC=8  out:11
   nlp2dsl_sdk.reflection  [12 funcs]
     _context_queries_from_issues  CC=9  out:4
     _data_lookup  CC=3  out:0
@@ -1416,8 +1360,8 @@ MODULES:
     build_command_registry  CC=2  out:1
     command_input_model  CC=4  out:5
     validate_config_against_map  CC=2  out:5
-  nlp2dsl_sdk.system_map_render  [1 funcs]
-    render_system_map_doql  CC=70  out:164
+  nlp2dsl_sdk.system_map_render.render  [1 funcs]
+    render_system_map_doql  CC=1  out:37
   nlp2dsl_sdk.system_map_runtimes  [4 funcs]
     _repo_root_from_example  CC=2  out:0
     build_runtimes_for_example  CC=18  out:35
@@ -1430,8 +1374,17 @@ MODULES:
     pdf_structure_issues  CC=3  out:1
   nlp2dsl_sdk.validation.issue  [1 funcs]
     issues_to_messages  CC=2  out:1
-  nlp2dsl_sdk.validation.messages  [1 funcs]
-    legacy_message_to_issue  CC=3  out:2
+  nlp2dsl_sdk.validation.messages  [12 funcs]
+    _attachment_code  CC=4  out:0
+    _attachment_issue  CC=3  out:4
+    _attachment_kind  CC=5  out:0
+    _attachment_resolution  CC=6  out:0
+    _field_after_colon  CC=1  out:2
+    _field_format_issue  CC=4  out:6
+    _invalid_field_issue  CC=1  out:1
+    _missing_required_issue  CC=2  out:3
+    _other_issue  CC=1  out:1
+    _quality_missing_issue  CC=2  out:3
   nlp2dsl_sdk.validation.pipeline  [9 funcs]
     _context_from_map  CC=3  out:5
     validate_dsl_contract_issues  CC=1  out:1
@@ -1442,9 +1395,6 @@ MODULES:
     validate_step_messages  CC=1  out:2
     validate_workflow_from_map  CC=2  out:2
     validate_workflow_from_map_issues  CC=9  out:17
-  nlp2dsl_sdk.validation.resolutions  [2 funcs]
-    _append_plan  CC=2  out:2
-    plan_resolutions  CC=17  out:15
   nlp2dsl_sdk.validation.rules.attachment  [3 funcs]
     _resolve_path  CC=2  out:2
     attachment_issues_for_config  CC=3  out:6
@@ -1576,6 +1526,13 @@ EDGES:
   backend.app.step_validator.validate_step_config_issues → backend.app.step_validator._validation_context
   backend.app.step_validator.validate_step_config → nlp2dsl_sdk.validation.issue.issues_to_messages
   backend.app.step_validator.validate_step_config → backend.app.step_validator.validate_step_config_issues
+  backend.app.attachment_validation.build_attachment_validation → backend.app.path_resolve.resolve_attachment_path
+  backend.app.attachment_validation.build_attachment_validation → backend.app.step_validator.validate_step_config_issues
+  backend.app.attachment_validation._attachment_from_dsl → backend.app.attachment_validation.build_attachment_validation
+  backend.app.attachment_validation.validation_from_chat_result → backend.app.attachment_validation._top_level_attachment_validation
+  backend.app.attachment_validation.validation_from_chat_result → backend.app.attachment_validation._execution_attachment_validation
+  backend.app.attachment_validation.validation_from_chat_result → backend.app.attachment_validation._attachment_from_dsl
+  backend.app.attachment_validation.ensure_attachment_validation → backend.app.attachment_validation.validation_from_chat_result
   backend.app.workflow_events.WorkflowEventHub.publish → nlp-service.app.settings.SettingsManager.set
   backend.app.workflow_events.WorkflowEventHub.subscriber_count → nlp-service.app.settings.SettingsManager.set
   backend.app.dsl_validation.validate_dsl_for_execution → nlp2dsl_sdk.validation.rules.dsl_contract.validate_dsl_contract
@@ -1596,21 +1553,14 @@ EDGES:
   backend.app.routers.testql_compat.testql_runworkflow → backend.app.routers.testql_compat._alias_response
   backend.app.routers.testql_compat.testql_runworkflow → backend.app.engine.run_workflow
   backend.app.routers.testql_compat.testql_workflow_from_text → backend.app.routers.workflow.workflow_from_text
-  backend.app.routers.chat._maybe_auto_execute → backend.app.routers.chat._execute_ready_dsl
-  backend.app.routers.chat._maybe_auto_execute → backend.app.routers.chat._execution_requested
-  backend.app.routers.chat._execution_requested → backend.app.routers.chat._is_explicit_execute_request
-  backend.app.routers.chat._execution_requested → backend.app.routers.chat._is_auto_execute_requested
-  backend.app.routers.chat._uses_mullm_backend → backend.app.routers.chat._mullm_steps
-  backend.app.routers.chat._prepare_mullm_execution → backend.app.routers.chat._mullm_steps
-  backend.app.routers.chat._mark_auto_execute_message → backend.app.routers.chat._is_explicit_execute_request
 ```
 
 ### Code Analysis (`project/analysis.toon.yaml`)
 
 ```toon markpact:analysis path=project/analysis.toon.yaml
-# code2llm | 287f 39021L | python:213,json:19,shell:12,yaml:10,toml:10,txt:6,yml:3,rust:2,javascript:2,ini:1 | 2026-06-06
+# code2llm | 298f 42963L | python:220,json:23,shell:12,yaml:10,toml:10,txt:6,yml:3,rust:2,javascript:2,ini:1 | 2026-06-06
 # generated in 0.06s
-# CC̅=4.7 | critical:50/998 | dups:0 | cycles:0
+# CC̅=4.5 | critical:44/1098 | dups:0 | cycles:0
 
 HEALTH[20]:
   🟡 CC    _load_patterns_from_json CC=19 (limit:15)
@@ -1620,7 +1570,6 @@ HEALTH[20]:
   🟡 CC    _keyword_detection CC=15 (limit:15)
   🟡 CC    build_process_trace CC=17 (limit:15)
   🟡 CC    build_runtimes_for_example CC=18 (limit:15)
-  🟡 CC    merge_execution_observation CC=17 (limit:15)
   🟡 CC    format_transcript CC=25 (limit:15)
   🟡 CC    task_context_to_system_map CC=24 (limit:15)
   🟡 CC    build_target_plan CC=20 (limit:15)
@@ -1628,16 +1577,17 @@ HEALTH[20]:
   🟡 CC    validate_conversation_scenario CC=21 (limit:15)
   🟡 CC    print_run_outcome CC=21 (limit:15)
   🟡 CC    print_workflow_preview CC=18 (limit:15)
-  🟡 CC    process_policy_from_profile_block CC=23 (limit:15)
-  🟡 CC    render_system_map_doql CC=70 (limit:15)
-  🟡 CC    plan_resolutions CC=17 (limit:15)
-  🟡 CC    autofill_entities CC=15 (limit:15)
-  🟡 CC    render_doql_context CC=62 (limit:15)
+  🟡 CC    load_platform_map CC=18 (limit:15)
+  🟡 CC    enrich_task_context_from_client CC=19 (limit:15)
+  🟡 CC    collect_task_context CC=19 (limit:15)
+  🟡 CC    run CC=20 (limit:15)
+  🟡 CC    run CC=20 (limit:15)
+  🟡 CC    run_benchmark CC=16 (limit:15)
 
 REFACTOR[1]:
   1. split 20 high-CC methods  (CC>15)
 
-PIPELINES[379]:
+PIPELINES[381]:
   [1] Src [main]: main
       PURITY: 100% pure
   [2] Src [main]: main
@@ -1740,11 +1690,11 @@ PIPELINES[379]:
       PURITY: 100% pure
 
 LAYERS:
-  scripts/                        CC̄=8.5    ←in:0  →out:9  !! split
+  scripts/                        CC̄=8.6    ←in:0  →out:16  !! split
   │ !! run-example-testql-results   524L  2C   14m  CC=23     ←0
-  │ !! run-example-docker-e2e     320L  0C   12m  CC=28     ←0
-  │ !! run-conversation-scenario   260L  0C    8m  CC=36     ←0
-  │ !! run-execution-scenario     184L  0C    8m  CC=18     ←0
+  │ !! run-example-docker-e2e     358L  0C   12m  CC=40     ←0
+  │ !! run-conversation-scenario   251L  0C    8m  CC=36     ←0
+  │ !! run-execution-scenario     183L  0C    8m  CC=18     ←0
   │ aggregate-example-testql    49L  0C    1m  CC=7      ←0
   │ publish-all.sh              44L  0C    1m  CC=0.0    ←0
   │ setup-dev.sh                43L  0C    0m  CC=0.0    ←0
@@ -1757,8 +1707,12 @@ LAYERS:
   │ !! benchmark_1780673613.json   636L  0C    0m  CC=0.0    ←0
   │ !! benchmark_1780734808.json   636L  0C    0m  CC=0.0    ←0
   │ !! benchmark_1780694039.json   636L  0C    0m  CC=0.0    ←0
-  │ !! benchmark_1780672619.json   636L  0C    0m  CC=0.0    ←0
   │ !! benchmark_1780737026.json   636L  0C    0m  CC=0.0    ←0
+  │ !! benchmark_1780672619.json   636L  0C    0m  CC=0.0    ←0
+  │ !! benchmark_1780739390.json   636L  0C    0m  CC=0.0    ←0
+  │ !! benchmark_1780738187.json   636L  0C    0m  CC=0.0    ←0
+  │ !! benchmark_1780739013.json   636L  0C    0m  CC=0.0    ←0
+  │ !! benchmark_1780738565.json   636L  0C    0m  CC=0.0    ←0
   │ benchmark_1780669461.json   322L  0C    0m  CC=0.0    ←0
   │ benchmark_1780669469.json   322L  0C    0m  CC=0.0    ←0
   │ benchmark_1780668482.json   321L  0C    0m  CC=0.0    ←0
@@ -1808,55 +1762,6 @@ LAYERS:
   │ invoice-request.txt          4L  0C    0m  CC=0.0    ←0
   │ requirements.txt             1L  0C    0m  CC=0.0    ←0
   │
-  nlp2dsl_sdk/                    CC̄=5.2    ←in:60  →out:33  !! split
-  │ !! client                     893L  2C   60m  CC=14     ←0
-  │ !! compose_generator          512L  1C   16m  CC=13     ←1
-  │ !! parse                      466L  0C   24m  CC=19     ←10
-  │ !! artifacts                  432L  1C   17m  CC=17     ←10
-  │ demos                      355L  1C   11m  CC=6      ←3
-  │ !! reflection                 346L  4C   12m  CC=20     ←3
-  │ !! preview                    336L  0C   13m  CC=21     ←17
-  │ !! process_policy             290L  0C   13m  CC=23     ←4
-  │ cli                        269L  0C   13m  CC=13     ←0
-  │ system_map_ir              264L  16C    4m  CC=7      ←0
-  │ !! system_map_render          244L  0C    1m  CC=70     ←4
-  │ stack_flow                 231L  3C    6m  CC=10     ←0
-  │ !! system_map_bridge          223L  0C    5m  CC=24     ←5
-  │ system_map_generator       202L  0C    5m  CC=11     ←3
-  │ !! render                     196L  0C    2m  CC=62     ←2
-  │ !! doql_registry              189L  0C    5m  CC=17     ←4
-  │ !! system_map_runtimes        174L  0C    4m  CC=18     ←5
-  │ artifact_layout            170L  0C   10m  CC=9      ←9
-  │ messages                   169L  0C   14m  CC=6      ←1
-  │ dsl_contract               166L  0C    6m  CC=7      ←2
-  │ step_config                162L  0C    3m  CC=13     ←6
-  │ !! resolutions                155L  2C    3m  CC=17     ←1
-  │ runtime_health             136L  0C    5m  CC=10     ←3
-  │ models                     131L  7C    4m  CC=6      ←0
-  │ attachment_validation      130L  0C    6m  CC=11     ←3
-  │ pipeline                   126L  0C    9m  CC=9      ←0
-  │ attachment                 115L  0C    3m  CC=11     ←3
-  │ !! conversation_artifacts     113L  0C    3m  CC=25     ←5
-  │ autonomous_flow            105L  1C    5m  CC=8      ←0
-  │ !! runtime                    105L  0C    4m  CC=15     ←11
-  │ !! conversation_testql        103L  1C    4m  CC=21     ←1
-  │ encoding                    92L  0C    8m  CC=4      ←5
-  │ invoice_pdf                 75L  0C    3m  CC=3      ←2
-  │ issue                       61L  2C    3m  CC=8      ←5
-  │ path_resolve                56L  0C    2m  CC=9      ←0
-  │ __init__                    54L  0C    1m  CC=3      ←0
-  │ example_bootstrap           53L  0C    1m  CC=6      ←2
-  │ invoice_policy              52L  0C    3m  CC=5      ←3
-  │ doql_context                50L  0C    0m  CC=0.0    ←0
-  │ system_map_models           48L  0C    4m  CC=11     ←0
-  │ context                     48L  1C    1m  CC=3      ←0
-  │ __init__                    46L  0C    1m  CC=2      ←0
-  │ __init__                    46L  0C    0m  CC=0.0    ←0
-  │ __main__                    45L  0C    1m  CC=5      ←0
-  │ step_validation             43L  0C    2m  CC=1      ←1
-  │ example_loader              39L  0C    1m  CC=7      ←0
-  │ helpers                     36L  0C    4m  CC=3      ←4
-  │
   packages/                       CC̄=4.7    ←in:0  →out:0
   │ !! patterns.json             2016L  0C    0m  CC=0.0    ←0
   │ !! keyword_detector          1209L  2C   22m  CC=73     ←0
@@ -1898,38 +1803,93 @@ LAYERS:
   │ __init__                    12L  0C    0m  CC=0.0    ←0
   │ __init__                     3L  0C    0m  CC=0.0    ←0
   │
-  nlp-service/                    CC̄=4.5    ←in:0  →out:0
-  │ !! main                       645L  0C   26m  CC=14     ←1
-  │ !! rules                      564L  0C   31m  CC=21     ←2
-  │ registry                   421L  0C    5m  CC=5      ←5
+  nlp2dsl_sdk/                    CC̄=4.5    ←in:60  →out:39  !! split
+  │ !! client                     893L  2C   60m  CC=14     ←0
+  │ !! compose_generator          512L  1C   16m  CC=13     ←1
+  │ !! parse                      466L  0C   24m  CC=19     ←10
+  │ !! artifacts                  432L  1C   17m  CC=17     ←10
+  │ demos                      355L  1C   11m  CC=6      ←3
+  │ !! reflection                 346L  4C   12m  CC=20     ←3
+  │ process_policy             337L  0C   20m  CC=12     ←4
+  │ !! preview                    336L  0C   13m  CC=21     ←17
+  │ blocks                     300L  0C   18m  CC=9      ←1
+  │ !! profile_checks             295L  1C   16m  CC=20     ←4
+  │ system_map_ir              274L  17C    4m  CC=7      ←0
+  │ cli                        269L  0C   13m  CC=13     ←0
+  │ !! context_blocks             234L  0C   14m  CC=18     ←1
+  │ stack_flow                 231L  3C    6m  CC=10     ←0
+  │ doql_registry              230L  0C   12m  CC=11     ←4
+  │ !! system_map_bridge          223L  0C    5m  CC=24     ←5
+  │ resolutions                218L  2C   12m  CC=12     ←1
+  │ runtime                    206L  0C   15m  CC=14     ←11
+  │ system_map_generator       202L  0C    5m  CC=11     ←3
+  │ !! system_map_runtimes        174L  0C    4m  CC=18     ←6
+  │ artifact_layout            170L  0C   10m  CC=9      ←9
+  │ messages                   169L  0C   14m  CC=6      ←1
+  │ dsl_contract               166L  0C    6m  CC=7      ←2
+  │ step_config                162L  0C    3m  CC=13     ←6
+  │ runtime_health             136L  0C    5m  CC=10     ←3
+  │ models                     131L  7C    4m  CC=6      ←0
+  │ attachment_validation      130L  0C    6m  CC=11     ←2
+  │ pipeline                   126L  0C    9m  CC=9      ←0
+  │ attachment                 115L  0C    3m  CC=11     ←3
+  │ !! conversation_artifacts     113L  0C    3m  CC=25     ←5
+  │ autonomous_flow            105L  1C    5m  CC=8      ←0
+  │ !! conversation_testql        103L  1C    4m  CC=21     ←1
+  │ encoding                    93L  0C    8m  CC=4      ←5
+  │ invoice_pdf                 75L  0C    3m  CC=3      ←2
+  │ __init__                    69L  0C    1m  CC=2      ←0
+  │ issue                       61L  2C    3m  CC=8      ←5
+  │ path_resolve                56L  0C    2m  CC=9      ←0
+  │ __init__                    54L  0C    1m  CC=3      ←0
+  │ example_bootstrap           53L  0C    1m  CC=6      ←2
+  │ invoice_policy              52L  0C    3m  CC=5      ←3
+  │ doql_context                52L  0C    0m  CC=0.0    ←0
+  │ render                      49L  0C    2m  CC=1      ←2
+  │ system_map_models           48L  0C    4m  CC=11     ←0
+  │ context                     48L  1C    1m  CC=3      ←0
+  │ render                      48L  0C    1m  CC=1      ←4
+  │ __init__                    48L  0C    0m  CC=0.0    ←0
+  │ __main__                    45L  0C    1m  CC=5      ←0
+  │ helpers                     45L  0C    7m  CC=4      ←2
+  │ step_validation             43L  0C    2m  CC=1      ←1
+  │ example_loader              39L  0C    1m  CC=7      ←0
+  │ helpers                     36L  0C    4m  CC=3      ←4
+  │ __init__                     5L  0C    0m  CC=0.0    ←0
+  │
+  nlp-service/                    CC̄=4.4    ←in:0  →out:0
+  │ !! main                       648L  0C   26m  CC=14     ←0
+  │ !! rules                      586L  0C   31m  CC=24     ←3
+  │ registry                   455L  0C    5m  CC=6      ←5
   │ !! orientation                379L  1C   11m  CC=16     ←2
-  │ !! responses                  368L  0C   19m  CC=25     ←3
+  │ !! responses                  370L  0C   19m  CC=26     ←3
+  │ system                     343L  0C   13m  CC=12     ←1
+  │ !! orchestrator               333L  0C   15m  CC=17     ←1
+  │ !! autonomous_loop            324L  1C   12m  CC=21     ←1
   │ policy                     302L  2C   14m  CC=5      ←2
-  │ !! autonomous_loop            299L  1C   12m  CC=21     ←1
   │ code_generator             279L  1C    8m  CC=14     ←0
-  │ !! orchestrator               265L  0C   12m  CC=16     ←1
   │ settings                   251L  6C   11m  CC=6      ←20
-  │ !! mapper                     244L  0C    7m  CC=23     ←1
-  │ !! resolve                    196L  0C    6m  CC=18     ←1
+  │ !! mapper                     246L  0C    7m  CC=23     ←1
+  │ !! resolve                    200L  0C    6m  CC=18     ←1
   │ !! doql_registry              176L  0C    7m  CC=16     ←3
   │ config                     165L  1C   13m  CC=8      ←4
   │ schemas                    150L  12C    0m  CC=0.0    ←0
   │ enrich                     149L  0C    4m  CC=14     ←1
   │ audio_parser               148L  1C    8m  CC=9      ←1
-  │ !! doql_context               147L  0C    3m  CC=20     ←1
+  │ system_map                 147L  0C   15m  CC=6      ←18
   │ llm                        145L  0C    3m  CC=10     ←3
   │ native                     143L  0C   13m  CC=6      ←1
-  │ reflection                 137L  0C    9m  CC=10     ←1
+  │ reflection                 137L  0C    9m  CC=10     ←2
   │ !! doql_autofill              135L  0C    4m  CC=20     ←7
   │ process_agent              116L  0C    3m  CC=9      ←1
-  │ system_map                 110L  0C   12m  CC=6      ←11
   │ step_validator             109L  1C    9m  CC=9      ←1
   │ logging_setup              100L  2C    6m  CC=3      ←0
-  │ forms                       91L  0C    1m  CC=5      ←2
+  │ intent_normalize            93L  0C    6m  CC=8      ←1
   │ runtime_gate                89L  0C    3m  CC=12     ←1
+  │ prompt_catalog              89L  0C    1m  CC=9      ←0
+  │ forms                       89L  0C    2m  CC=7      ←2
   │ path_resolve                87L  0C    2m  CC=14     ←0
   │ path_policy                 83L  0C    5m  CC=6      ←2
-  │ prompt_catalog              82L  0C    1m  CC=8      ←0
   │ bootstrap                   78L  0C    3m  CC=14     ←0
   │ invoice_pdf                 73L  0C    3m  CC=3      ←0
   │ !! attachment_validation       72L  0C    1m  CC=16     ←0
@@ -1940,12 +1900,13 @@ LAYERS:
   │ redis_store                 58L  1C    7m  CC=3      ←0
   │ observability               57L  0C    3m  CC=7      ←2
   │ intent                      55L  1C    2m  CC=3      ←0
-  │ resolve_mode                53L  0C    1m  CC=11     ←2
+  │ resolve_mode                54L  0C    1m  CC=11     ←2
   │ pyproject.toml              53L  0C    0m  CC=0.0    ←0
+  │ doql_context                52L  0C    1m  CC=8      ←0
   │ delegate                    48L  0C    5m  CC=5      ←1
   │ factory                     46L  0C    1m  CC=4      ←2
   │ merge                       36L  0C    1m  CC=13     ←1
-  │ system_executor             35L  0C   13m  CC=12     ←1
+  │ system_executor             35L  0C    0m  CC=0.0    ←0
   │ pipeline                    31L  0C    1m  CC=6      ←4
   │ __init__                    30L  1C    4m  CC=1      ←0
   │ manifest.json               30L  0C    0m  CC=0.0    ←0
@@ -1955,7 +1916,7 @@ LAYERS:
   │ memory                      23L  1C    5m  CC=1      ←0
   │ __init__                    21L  0C    1m  CC=2      ←0
   │ orchestrator                21L  0C    0m  CC=0.0    ←0
-  │ facade                      20L  0C    1m  CC=3      ←0
+  │ facade                      20L  0C    1m  CC=3      ←1
   │ __init__                    17L  0C    0m  CC=0.0    ←0
   │ Dockerfile                  15L  0C    0m  CC=0.0    ←0
   │ parser_enrich               15L  0C    0m  CC=0.0    ←0
@@ -1985,7 +1946,7 @@ LAYERS:
   │ workflow                   203L  0C   10m  CC=9      ←1
   │ postgres                   172L  3C   11m  CC=4      ←0
   │ testql_compat              153L  3C    8m  CC=8      ←0
-  │ attachment_validation      109L  0C    6m  CC=11     ←1
+  │ attachment_validation      109L  0C    6m  CC=11     ←2
   │ logging_setup              100L  2C    6m  CC=3      ←5
   │ workflow_events             91L  2C    6m  CC=3      ←0
   │ settings                    81L  0C    7m  CC=2      ←0
@@ -2051,31 +2012,33 @@ LAYERS:
      backend/app/__init__.py                   0L
 
 COUPLING:
-                                                     nlp2dsl_sdk                 nlp-service.app                nlp2dsl_sdk.doql          nlp2dsl_sdk.validation                     backend.app                         scripts         packages.nlp2cmd-intent             examples.01-invoice    examples.04-scheduled-report                          worker               examples.02-email   examples.03-report-and-notify             examples.12-ir-show                        examples  examples.07-email-conversation
-                     nlp2dsl_sdk                              ──                               6                              20                               4                               2                              ←5                               1                              ←6                              ←5                              ←1                              ←4                              ←4                              ←4                              ←3                              ←3  hub
-                 nlp-service.app                               8                              ──                              13                              10                               8                              ←2                              ←5                                                                                                                                                                                                                                                                  hub
-                nlp2dsl_sdk.doql                               2                               1                              ──                               1                                                              ←2                                                                                                                                                                                                                                                                                                  hub
-          nlp2dsl_sdk.validation                              ←4                               2                              ←1                              ──                               1                                                                                                                                                              ←3                                                                                                                                                                  hub
-                     backend.app                              ←2                               3                                                               3                              ──                                                                                                                                                              ←1                                                                                                                                                                  hub
-                         scripts                               5                               2                               2                                                                                              ──                                                                                                                                                                                                                                                                                                  !! fan-out
-         packages.nlp2cmd-intent                              ←1                               5                                                                                                                                                              ──                                                                                                                                                                                                                                                                
-             examples.01-invoice                               6                                                                                                                                                                                                                              ──                                                                                                                                                                                                                                
-    examples.04-scheduled-report                               5                                                                                                                                                                                                                                                              ──                                                                                                                                                                                                
-                          worker                               1                                                                                               3                               1                                                                                                                                                              ──                                                                                                                                                                
-               examples.02-email                               4                                                                                                                                                                                                                                                                                                                              ──                                                                                                                                
-   examples.03-report-and-notify                               4                                                                                                                                                                                                                                                                                                                                                              ──                                                                                                
-             examples.12-ir-show                               4                                                                                                                                                                                                                                                                                                                                                                                              ──                                                                
-                        examples                               3                                                                                                                                                                                                                                                                                                                                                                                                                              ──                                
-  examples.07-email-conversation                               3                                                                                                                                                                                                                                                                                                                                                                                                                                                              ──
+                                                   nlp2dsl_sdk                nlp-service.app               nlp2dsl_sdk.doql         nlp2dsl_sdk.validation  nlp2dsl_sdk.system_map_render                    backend.app                        scripts        packages.nlp2cmd-intent            examples.01-invoice   examples.04-scheduled-report                         worker              examples.02-email  examples.03-report-and-notify            examples.12-ir-show                       examples
+                    nlp2dsl_sdk                             ──                              6                             20                              5                              5                              2                             ←5                              1                             ←6                             ←5                             ←1                             ←4                             ←4                             ←4                             ←3  hub
+                nlp-service.app                              7                             ──                             15                             11                                                             9                             ←2                             ←5                                                                                                                                                                                                                           hub
+               nlp2dsl_sdk.doql                              2                              1                             ──                              1                             18                                                            ←2                                                                                                                                                                                                                                                          hub
+         nlp2dsl_sdk.validation                              1                              2                             ←1                             ──                                                             1                             ←7                                                                                                                          ←3                                                                                                                              hub
+  nlp2dsl_sdk.system_map_render                             ←5                                                           ←18                                                            ──                                                                                                                                                                                                                                                                                                                        hub
+                    backend.app                             ←2                              3                                                             3                                                            ──                                                                                                                                                         ←1                                                                                                                              hub
+                        scripts                              5                              2                              2                              7                                                                                           ──                                                                                                                                                                                                                                                          !! fan-out
+        packages.nlp2cmd-intent                             ←1                              5                                                                                                                                                                                        ──                                                                                                                                                                                                                         
+            examples.01-invoice                              6                                                                                                                                                                                                                                                      ──                                                                                                                                                                                          
+   examples.04-scheduled-report                              5                                                                                                                                                                                                                                                                                     ──                                                                                                                                                           
+                         worker                              1                                                                                            3                                                             1                                                                                                                                                         ──                                                                                                                            
+              examples.02-email                              4                                                                                                                                                                                                                                                                                                                                                   ──                                                                                             
+  examples.03-report-and-notify                              4                                                                                                                                                                                                                                                                                                                                                                                  ──                                                              
+            examples.12-ir-show                              4                                                                                                                                                                                                                                                                                                                                                                                                                 ──                               
+                       examples                              3                                                                                                                                                                                                                                                                                                                                                                                                                                                ──
   CYCLES: none
-  HUB: nlp2dsl_sdk.validation/ (fan-in=21)
-  HUB: nlp-service.app/ (fan-in=20)
+  HUB: nlp2dsl_sdk.doql/ (fan-in=37)
+  HUB: backend.app/ (fan-in=13)
   HUB: nlp2dsl_sdk/ (fan-in=60)
-  HUB: backend.app/ (fan-in=12)
-  HUB: nlp2dsl_sdk.doql/ (fan-in=35)
-  SMELL: scripts/ fan-out=9 → split needed
-  SMELL: nlp-service.app/ fan-out=40 → split needed
-  SMELL: nlp2dsl_sdk/ fan-out=33 → split needed
+  HUB: nlp-service.app/ (fan-in=20)
+  HUB: nlp2dsl_sdk.system_map_render/ (fan-in=23)
+  HUB: nlp2dsl_sdk.validation/ (fan-in=30)
+  SMELL: nlp2dsl_sdk.doql/ fan-out=22 → split needed
+  SMELL: nlp2dsl_sdk/ fan-out=39 → split needed
+  SMELL: nlp-service.app/ fan-out=43 → split needed
+  SMELL: scripts/ fan-out=16 → split needed
 
 EXTERNAL:
   validation: run `vallm batch .` → validation.toon
@@ -2085,15 +2048,15 @@ EXTERNAL:
 ### Duplication (`project/duplication.toon.yaml`)
 
 ```toon markpact:analysis path=project/duplication.toon.yaml
-# redup/duplication | 23 groups | 216f 23931L | 2026-06-06
+# redup/duplication | 28 groups | 222f 24987L | 2026-06-06
 
 SUMMARY:
-  files_scanned: 216
-  total_lines:   23931
-  dup_groups:    23
-  dup_fragments: 56
-  saved_lines:   378
-  scan_ms:       3699
+  files_scanned: 222
+  total_lines:   24987
+  dup_groups:    28
+  dup_fragments: 66
+  saved_lines:   431
+  scan_ms:       2782
 
 HOTSPOTS[7] (files with most duplication):
   nlp2dsl_sdk/invoice_pdf.py  dup=65L  groups=3  frags=3  (0.3%)
@@ -2104,7 +2067,7 @@ HOTSPOTS[7] (files with most duplication):
   worker/logging_setup.py  dup=49L  groups=5  frags=5  (0.2%)
   scripts/run-example-docker-e2e.py  dup=45L  groups=1  frags=2  (0.2%)
 
-DUPLICATES[23] (ranked by impact):
+DUPLICATES[28] (ranked by impact):
   [2efbb7dcb6fc1905] ! EXAC  build_invoice_pdf_bytes  L=49 N=3 saved=98 sim=1.00
       nlp-service/app/validation/invoice_pdf.py:12-60  (build_invoice_pdf_bytes)
       nlp2dsl_sdk/invoice_pdf.py:12-61  (build_invoice_pdf_bytes)
@@ -2135,9 +2098,15 @@ DUPLICATES[23] (ranked by impact):
       backend/app/logging_setup.py:68-76  (dispatch)
       nlp-service/app/logging_setup.py:68-76  (dispatch)
       worker/logging_setup.py:68-76  (dispatch)
+  [3d66ead2ccf77aa0]   STRU  render_context_resources  L=13 N=2 saved=13 sim=1.00
+      nlp2dsl_sdk/doql/context_blocks.py:70-82  (render_context_resources)
+      nlp2dsl_sdk/system_map_render/blocks.py:114-126  (render_resources_block)
   [11197122b4458ed5]   EXAC  _wait_health  L=12 N=2 saved=12 sim=1.00
       scripts/run-conversation-scenario.py:25-36  (_wait_health)
       scripts/run-execution-scenario.py:25-36  (_wait_health)
+  [743df947ebbf4f8d]   STRU  render_context_access  L=12 N=2 saved=12 sim=1.00
+      nlp2dsl_sdk/doql/context_blocks.py:85-96  (render_context_access)
+      nlp2dsl_sdk/system_map_render/blocks.py:129-140  (render_access_block)
   [7f9ec2529df6c8b0]   STRU  chat_start  L=11 N=2 saved=11 sim=1.00
       backend/app/routers/chat.py:215-225  (chat_start)
       backend/app/routers/chat.py:229-240  (chat_message)
@@ -2150,12 +2119,21 @@ DUPLICATES[23] (ranked by impact):
   [cdcb9de5af04411d]   STRU  _missing_required_issue  L=10 N=2 saved=10 sim=1.00
       nlp2dsl_sdk/validation/messages.py:22-31  (_missing_required_issue)
       nlp2dsl_sdk/validation/messages.py:34-43  (_quality_missing_issue)
+  [05305e0063209898]   STRU  execution_completed  L=10 N=2 saved=10 sim=1.00
+      nlp2dsl_sdk/validation/profile_checks.py:101-110  (execution_completed)
+      scripts/run-execution-scenario.py:46-55  (_execution_completed)
+  [4d744b2074a16769]   STRU  _run_validation  L=10 N=2 saved=10 sim=1.00
+      scripts/run-conversation-scenario.py:102-111  (_run_validation)
+      scripts/run-execution-scenario.py:81-90  (_run_validation)
+  [c37635ef7fe2cf35]   STRU  render_data_block  L=8 N=2 saved=8 sim=1.00
+      nlp2dsl_sdk/system_map_render/blocks.py:37-44  (render_data_block)
+      nlp2dsl_sdk/system_map_render/blocks.py:154-161  (render_workflow_history_block)
   [8e33482aef8974e1]   STRU  action_schema  L=7 N=2 saved=7 sim=1.00
       backend/app/routers/settings.py:29-35  (action_schema)
       backend/app/routers/settings.py:47-53  (get_settings_section)
   [8aa06fa5f1348ed4]   STRU  _execute_keyword_in_text  L=7 N=2 saved=7 sim=1.00
       nlp-service/app/conversation/responses.py:56-62  (_execute_keyword_in_text)
-      nlp-service/app/routing/parser/rules.py:240-246  (_alias_in_text)
+      nlp-service/app/routing/parser/rules.py:259-265  (_alias_in_text)
   [e2bd3c5d1f7d650b]   EXAC  __init__  L=3 N=3 saved=6 sim=1.00
       backend/app/logging_setup.py:36-38  (__init__)
       nlp-service/app/logging_setup.py:36-38  (__init__)
@@ -2173,8 +2151,8 @@ DUPLICATES[23] (ranked by impact):
       backend/app/routers/workflow.py:84-86  (start_workflow_endpoint)
       nlp-service/app/main.py:96-101  (parse_text)
   [d8abcb97f9e3aea3]   STRU  _extract_report_type  L=6 N=2 saved=6 sim=1.00
-      nlp-service/app/routing/parser/rules.py:424-429  (_extract_report_type)
-      nlp-service/app/routing/parser/rules.py:432-437  (_extract_format)
+      nlp-service/app/routing/parser/rules.py:443-448  (_extract_report_type)
+      nlp-service/app/routing/parser/rules.py:451-456  (_extract_format)
   [2ce1096adac6d1a4]   STRU  actions_schema  L=5 N=2 saved=5 sim=1.00
       backend/app/routers/settings.py:21-25  (actions_schema)
       backend/app/routers/settings.py:39-43  (get_settings)
@@ -2182,10 +2160,10 @@ DUPLICATES[23] (ranked by impact):
       nlp2dsl_sdk/doql/parse.py:253-256  (_repo_root_from_example)
       nlp2dsl_sdk/system_map_runtimes.py:31-34  (_repo_root_from_example)
   [88c3564ed3834adc]   STRU  _extract_file_path_entity  L=4 N=2 saved=4 sim=1.00
-      nlp-service/app/routing/parser/rules.py:502-505  (_extract_file_path_entity)
-      nlp-service/app/routing/parser/rules.py:508-511  (_extract_setting_path_entity)
+      nlp-service/app/routing/parser/rules.py:524-527  (_extract_file_path_entity)
+      nlp-service/app/routing/parser/rules.py:530-533  (_extract_setting_path_entity)
 
-REFACTOR[23] (ranked by priority):
+REFACTOR[28] (ranked by priority):
   [1] ◐ extract_function   → utils/build_invoice_pdf_bytes.py
       WHY: 3 occurrences of 49-line block across 3 files — saves 98 lines
       FILES: nlp-service/app/validation/invoice_pdf.py, nlp2dsl_sdk/invoice_pdf.py, worker/invoice_pdf.py
@@ -2210,75 +2188,90 @@ REFACTOR[23] (ranked by priority):
   [8] ● extract_class      → utils/dispatch.py
       WHY: 3 occurrences of 9-line block across 3 files — saves 18 lines
       FILES: backend/app/logging_setup.py, nlp-service/app/logging_setup.py, worker/logging_setup.py
-  [9] ○ extract_function   → scripts/utils/_wait_health.py
+  [9] ○ extract_function   → nlp2dsl_sdk/utils/render_context_resources.py
+      WHY: 2 occurrences of 13-line block across 2 files — saves 13 lines
+      FILES: nlp2dsl_sdk/doql/context_blocks.py, nlp2dsl_sdk/system_map_render/blocks.py
+  [10] ○ extract_function   → scripts/utils/_wait_health.py
       WHY: 2 occurrences of 12-line block across 2 files — saves 12 lines
       FILES: scripts/run-conversation-scenario.py, scripts/run-execution-scenario.py
-  [10] ○ extract_function   → backend/app/routers/utils/chat_start.py
+  [11] ○ extract_function   → nlp2dsl_sdk/utils/render_context_access.py
+      WHY: 2 occurrences of 12-line block across 2 files — saves 12 lines
+      FILES: nlp2dsl_sdk/doql/context_blocks.py, nlp2dsl_sdk/system_map_render/blocks.py
+  [12] ○ extract_function   → backend/app/routers/utils/chat_start.py
       WHY: 2 occurrences of 11-line block across 1 files — saves 11 lines
       FILES: backend/app/routers/chat.py
-  [11] ○ extract_function   → worker/utils/handle_notify_slack.py
+  [13] ○ extract_function   → worker/utils/handle_notify_slack.py
       WHY: 2 occurrences of 11-line block across 1 files — saves 11 lines
       FILES: worker/worker.py
-  [12] ○ extract_function   → utils/_attachment_from_dsl.py
+  [14] ○ extract_function   → utils/_attachment_from_dsl.py
       WHY: 2 occurrences of 10-line block across 2 files — saves 10 lines
       FILES: backend/app/attachment_validation.py, nlp2dsl_sdk/attachment_validation.py
-  [13] ○ extract_function   → nlp2dsl_sdk/validation/utils/_missing_required_issue.py
+  [15] ○ extract_function   → nlp2dsl_sdk/validation/utils/_missing_required_issue.py
       WHY: 2 occurrences of 10-line block across 1 files — saves 10 lines
       FILES: nlp2dsl_sdk/validation/messages.py
-  [14] ○ extract_function   → backend/app/routers/utils/action_schema.py
+  [16] ○ extract_function   → utils/execution_completed.py
+      WHY: 2 occurrences of 10-line block across 2 files — saves 10 lines
+      FILES: nlp2dsl_sdk/validation/profile_checks.py, scripts/run-execution-scenario.py
+  [17] ○ extract_function   → scripts/utils/_run_validation.py
+      WHY: 2 occurrences of 10-line block across 2 files — saves 10 lines
+      FILES: scripts/run-conversation-scenario.py, scripts/run-execution-scenario.py
+  [18] ○ extract_function   → nlp2dsl_sdk/system_map_render/utils/render_data_block.py
+      WHY: 2 occurrences of 8-line block across 1 files — saves 8 lines
+      FILES: nlp2dsl_sdk/system_map_render/blocks.py
+  [19] ○ extract_function   → backend/app/routers/utils/action_schema.py
       WHY: 2 occurrences of 7-line block across 1 files — saves 7 lines
       FILES: backend/app/routers/settings.py
-  [15] ○ extract_function   → nlp-service/app/utils/_execute_keyword_in_text.py
+  [20] ○ extract_function   → nlp-service/app/utils/_execute_keyword_in_text.py
       WHY: 2 occurrences of 7-line block across 2 files — saves 7 lines
       FILES: nlp-service/app/conversation/responses.py, nlp-service/app/routing/parser/rules.py
-  [16] ● extract_class      → utils/__init__.py
+  [21] ● extract_class      → utils/__init__.py
       WHY: 3 occurrences of 3-line block across 3 files — saves 6 lines
       FILES: backend/app/logging_setup.py, nlp-service/app/logging_setup.py, worker/logging_setup.py
-  [17] ● extract_class      → utils/__init__.py
+  [22] ● extract_class      → utils/__init__.py
       WHY: 3 occurrences of 3-line block across 3 files — saves 6 lines
       FILES: backend/app/logging_setup.py, nlp-service/app/logging_setup.py, worker/logging_setup.py
-  [18] ● extract_function   → utils/add.py
+  [23] ● extract_function   → utils/add.py
       WHY: 3 occurrences of 3-line block across 3 files — saves 6 lines
       FILES: nlp-service/app/validation/invoice_pdf.py, nlp2dsl_sdk/invoice_pdf.py, worker/invoice_pdf.py
-  [19] ○ extract_function   → utils/run_workflow_endpoint.py
+  [24] ○ extract_function   → utils/run_workflow_endpoint.py
       WHY: 3 occurrences of 3-line block across 2 files — saves 6 lines
       FILES: backend/app/routers/workflow.py, nlp-service/app/main.py
-  [20] ○ extract_function   → nlp-service/app/routing/parser/utils/_extract_report_type.py
+  [25] ○ extract_function   → nlp-service/app/routing/parser/utils/_extract_report_type.py
       WHY: 2 occurrences of 6-line block across 1 files — saves 6 lines
       FILES: nlp-service/app/routing/parser/rules.py
-  [21] ○ extract_function   → backend/app/routers/utils/actions_schema.py
+  [26] ○ extract_function   → backend/app/routers/utils/actions_schema.py
       WHY: 2 occurrences of 5-line block across 1 files — saves 5 lines
       FILES: backend/app/routers/settings.py
-  [22] ○ extract_function   → nlp2dsl_sdk/utils/_repo_root_from_example.py
+  [27] ○ extract_function   → nlp2dsl_sdk/utils/_repo_root_from_example.py
       WHY: 2 occurrences of 4-line block across 2 files — saves 4 lines
       FILES: nlp2dsl_sdk/doql/parse.py, nlp2dsl_sdk/system_map_runtimes.py
-  [23] ○ extract_function   → nlp-service/app/routing/parser/utils/_extract_file_path_entity.py
+  [28] ○ extract_function   → nlp-service/app/routing/parser/utils/_extract_file_path_entity.py
       WHY: 2 occurrences of 4-line block across 1 files — saves 4 lines
       FILES: nlp-service/app/routing/parser/rules.py
 
-QUICK_WINS[12] (low risk, high savings — do first):
+QUICK_WINS[17] (low risk, high savings — do first):
   [5] extract_function   saved=22L  → scripts/utils/run_execution.py
       FILES: run-example-docker-e2e.py
   [6] extract_function   saved=20L  → nlp2dsl_sdk/utils/_process_shell_dockerfile.py
       FILES: compose_generator.py
   [7] extract_function   saved=19L  → utils/_examples_portable_candidates.py
       FILES: path_resolve.py, path_resolve.py
-  [9] extract_function   saved=12L  → scripts/utils/_wait_health.py
+  [9] extract_function   saved=13L  → nlp2dsl_sdk/utils/render_context_resources.py
+      FILES: context_blocks.py, blocks.py
+  [10] extract_function   saved=12L  → scripts/utils/_wait_health.py
       FILES: run-conversation-scenario.py, run-execution-scenario.py
-  [10] extract_function   saved=11L  → backend/app/routers/utils/chat_start.py
+  [11] extract_function   saved=12L  → nlp2dsl_sdk/utils/render_context_access.py
+      FILES: context_blocks.py, blocks.py
+  [12] extract_function   saved=11L  → backend/app/routers/utils/chat_start.py
       FILES: chat.py
-  [11] extract_function   saved=11L  → worker/utils/handle_notify_slack.py
+  [13] extract_function   saved=11L  → worker/utils/handle_notify_slack.py
       FILES: worker.py
-  [12] extract_function   saved=10L  → utils/_attachment_from_dsl.py
+  [14] extract_function   saved=10L  → utils/_attachment_from_dsl.py
       FILES: attachment_validation.py, attachment_validation.py
-  [13] extract_function   saved=10L  → nlp2dsl_sdk/validation/utils/_missing_required_issue.py
+  [15] extract_function   saved=10L  → nlp2dsl_sdk/validation/utils/_missing_required_issue.py
       FILES: messages.py
-  [14] extract_function   saved=7L  → backend/app/routers/utils/action_schema.py
-      FILES: settings.py
-  [15] extract_function   saved=7L  → nlp-service/app/utils/_execute_keyword_in_text.py
-      FILES: responses.py, rules.py
 
-DEPENDENCY_RISK[11] (duplicates spanning multiple packages):
+DEPENDENCY_RISK[12] (duplicates spanning multiple packages):
   build_invoice_pdf_bytes  packages=3  files=3
       nlp-service/app/validation/invoice_pdf.py
       nlp2dsl_sdk/invoice_pdf.py
@@ -2308,7 +2301,7 @@ DEPENDENCY_RISK[11] (duplicates spanning multiple packages):
       nlp-service/app/logging_setup.py
       worker/logging_setup.py
 
-EFFORT_ESTIMATE (total ≈ 24.5h):
+EFFORT_ESTIMATE (total ≈ 26.6h):
   hard   build_invoice_pdf_bytes             saved=98L  ~588min
   hard   setup_logging                       saved=44L  ~176min
   hard   format                              saved=24L  ~96min
@@ -2317,19 +2310,19 @@ EFFORT_ESTIMATE (total ≈ 24.5h):
   medium _process_shell_dockerfile           saved=20L  ~40min
   medium _examples_portable_candidates       saved=19L  ~76min
   medium dispatch                            saved=18L  ~72min
+  easy   render_context_resources            saved=13L  ~26min
   easy   _wait_health                        saved=12L  ~24min
-  easy   chat_start                          saved=11L  ~22min
-  ... +13 more (~244min)
+  ... +18 more (~366min)
 
 METRICS-TARGET:
-  dup_groups:  23 → 0
-  saved_lines: 378 lines recoverable
+  dup_groups:  28 → 0
+  saved_lines: 431 lines recoverable
 ```
 
 ### Evolution / Churn (`project/evolution.toon.yaml`)
 
 ```toon markpact:analysis path=project/evolution.toon.yaml
-# code2llm/evolution | 897 func | 143f | 2026-06-06
+# code2llm/evolution | 997 func | 148f | 2026-06-06
 # generated in 0.00s
 
 NEXT[10] (ranked by impact):
@@ -2341,37 +2334,37 @@ NEXT[10] (ranked by impact):
       WHY: CC=73 exceeds 15
       EFFORT: ~1h  IMPACT: 2117
 
-  [3] !! SPLIT-FUNC      render_system_map_doql  CC=70  fan=15
-      WHY: CC=70 exceeds 15
-      EFFORT: ~1h  IMPACT: 1050
+  [3] !! SPLIT-FUNC      build_and_check_dsl  CC=26  fan=23
+      WHY: CC=26 exceeds 15
+      EFFORT: ~1h  IMPACT: 598
 
-  [4] !! SPLIT-FUNC      render_doql_context  CC=62  fan=11
-      WHY: CC=62 exceeds 15
-      EFFORT: ~1h  IMPACT: 682
-
-  [5] !! SPLIT-FUNC      KeywordPatterns._load_detector_config_from_json  CC=33  fan=18
+  [4] !! SPLIT-FUNC      KeywordPatterns._load_detector_config_from_json  CC=33  fan=18
       WHY: CC=33 exceeds 15
       EFFORT: ~1h  IMPACT: 594
 
-  [6] !! SPLIT-FUNC      build_and_check_dsl  CC=25  fan=23
-      WHY: CC=25 exceeds 15
-      EFFORT: ~1h  IMPACT: 575
-
-  [7] !  SPLIT-FUNC      collect_task_context  CC=19  fan=26
+  [5] !  SPLIT-FUNC      collect_task_context  CC=19  fan=26
       WHY: CC=19 exceeds 15
       EFFORT: ~1h  IMPACT: 494
 
-  [8] !  SPLIT-FUNC      autonomous_resolve_turn  CC=21  fan=23
+  [6] !  SPLIT-FUNC      autonomous_resolve_turn  CC=21  fan=23
       WHY: CC=21 exceeds 15
       EFFORT: ~1h  IMPACT: 483
 
-  [9] !  SPLIT-FUNC      task_context_to_system_map  CC=24  fan=20
+  [7] !  SPLIT-FUNC      task_context_to_system_map  CC=24  fan=20
       WHY: CC=24 exceeds 15
       EFFORT: ~1h  IMPACT: 480
 
-  [10] !! SPLIT-FUNC      format_transcript  CC=25  fan=17
+  [8] !! SPLIT-FUNC      format_transcript  CC=25  fan=17
       WHY: CC=25 exceeds 15
       EFFORT: ~1h  IMPACT: 425
+
+  [9] !  SPLIT-FUNC      validate_conversation_scenario  CC=21  fan=20
+      WHY: CC=21 exceeds 15
+      EFFORT: ~1h  IMPACT: 420
+
+  [10] !  SPLIT-FUNC      sync_autofill_from_doql  CC=20  fan=20
+      WHY: CC=20 exceeds 15
+      EFFORT: ~1h  IMPACT: 400
 
 
 RISKS[3]:
@@ -2380,10 +2373,10 @@ RISKS[3]:
   ⚠ Splitting packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py may break 22 import paths
 
 METRICS-TARGET:
-  CC̄:          4.5 → ≤3.1
+  CC̄:          4.3 → ≤3.0
   max-CC:      73 → ≤20
   god-modules: 8 → 0
-  high-CC(≥15): 38 → ≤19
+  high-CC(≥15): 32 → ≤16
   hub-types:   0 → ≤0
 
 PATTERNS (language parser shared logic):
@@ -2411,7 +2404,7 @@ PATTERNS (language parser shared logic):
     - Standardized FunctionInfo/ClassInfo models
 
 HISTORY:
-  prev CC̄=4.6 → now CC̄=4.5
+  prev CC̄=4.5 → now CC̄=4.3
 ```
 
 ### Validation (`project/validation.toon.yaml`)

@@ -13,6 +13,7 @@ from httpx import AsyncClient
 from starlette.responses import StreamingResponse
 
 from app.engine import NLP_SERVICE_URL, _repo, run_workflow, start_workflow
+from app.action_catalog import fetch_action_catalog
 from app.dsl_validation import dsl_validation_response, validate_dsl_for_execution
 from app.logging_setup import get_request_id
 from app.workflow_events import TERMINAL_EVENT_TYPES, workflow_event_hub
@@ -47,15 +48,7 @@ def _workflow_snapshot(run: dict[str, Any]) -> dict[str, Any]:
         "created_at": run.get("created_at"),
         "updated_at": run.get("updated_at"),
     }
-ACTIONS_REGISTRY: list[ActionInfo] = [
-    ActionInfo(name="send_invoice",   description="Generuje i wysyła fakturę",       config_schema={"to": "str", "amount": "float", "currency": "str"}),
-    ActionInfo(name="send_email",     description="Wysyła e-mail",                   config_schema={"to": "str", "subject": "str", "body": "str"}),
-    ActionInfo(name="generate_report",description="Generuje raport PDF/CSV",         config_schema={"type": "str", "format": "str"}),
-    ActionInfo(name="crm_update",     description="Aktualizuje rekord w CRM",        config_schema={"entity": "str", "data": "dict"}),
-    ActionInfo(name="notify_slack",   description="Wysyła powiadomienie Slack",      config_schema={"channel": "str", "message": "str"}),
-    ActionInfo(name="notify_telegram", description="Wysyła powiadomienie Telegram",   config_schema={"chat_id": "str", "message": "str", "webhook_url": "str"}),
-    ActionInfo(name="notify_teams",    description="Wysyła powiadomienie Microsoft Teams", config_schema={"channel": "str", "message": "str", "webhook_url": "str"}),
-]
+
 
 
 @router.post("/nlp/orient")
@@ -70,8 +63,19 @@ async def orient_nlp(body: dict[str, Any]) -> dict[str, Any]:
 
 @router.get("/actions", response_model=list[ActionInfo])
 async def list_actions() -> list[ActionInfo]:
-    """Zwraca listę dostępnych akcji (DSL vocabulary)."""
-    return ACTIONS_REGISTRY
+    """Zwraca listę dostępnych akcji — proxy do nlp-service /nlp/actions (C1)."""
+    try:
+        async with AsyncClient(
+            timeout=_PROXY_TIMEOUT_SECONDS,
+            headers={"X-Request-ID": get_request_id()},
+        ) as client:
+            return await fetch_action_catalog(NLP_SERVICE_URL, client=client)
+    except Exception as exc:
+        log.exception("Failed to fetch action catalog from nlp-service")
+        raise HTTPException(
+            status_code=HTTPStatus.BAD_GATEWAY,
+            detail=f"Could not load action catalog from nlp-service: {exc}",
+        ) from exc
 
 
 @router.post("/run", response_model=WorkflowResult)

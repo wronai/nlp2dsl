@@ -10,7 +10,7 @@ Każdy request (intent + entities + DOQL) przechodzi przez **walidację opartą 
 | `dsl_ready` | `build_and_check_dsl`, `step_validator` | required fields, format (email, amount), załącznik PDF |
 | `pre_execute` | `backend/engine.py` | powtórka kontraktu przed dispatch do workera |
 | `post_execute` | `ensure_attachment_validation` (backend) | załącznik po workerze, spójność wyniku |
-| `post_health` | planowane | `GET /health` runtimes z DOQL |
+| `post_health` | `runtime_gate`, `validate_post_health_*` | `GET /health` runtimes z DOQL |
 
 ```mermaid
 flowchart TD
@@ -115,6 +115,7 @@ SDK (`ensure_services`, `wait_for_health`) czeka na wszystkie trzy endpointy `/h
 | DOQL split | `nlp2dsl_sdk/doql/models.py` (+ `doql_context.py` re-export) |
 | nlp-service | `app/validation/step_validator.py` → adapter SDK + `path_policy` |
 | backend | `app/step_validator.py` → adapter SDK (`Phase.PRE_EXECUTE`) |
+| worker | `step_validator.py`, `attachment_validation.py` → adapter SDK (`Phase.POST_EXECUTE`) |
 | reflection | `legacy_message_to_issue()` w `validation/messages.py` |
 
 ## Docelowy moduł (`nlp2dsl_sdk/validation/`)

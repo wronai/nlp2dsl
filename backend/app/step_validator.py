@@ -4,24 +4,15 @@ from __future__ import annotations
 
 from typing import Any
 
+from app.action_catalog import (
+    known_action_names_from_catalog,
+    quality_fields_for_action,
+    required_fields_for_action,
+)
 from app.path_resolve import resolve_attachment_path
-from nlp2dsl_sdk.validation.issue import Phase, ValidationIssue, issues_to_messages
 from nlp2dsl_sdk.validation.context import ValidationContext
+from nlp2dsl_sdk.validation.issue import Phase, ValidationIssue, issues_to_messages
 from nlp2dsl_sdk.validation.rules.step_config import validate_step
-
-_REQUIRED: dict[str, list[str]] = {
-    "send_invoice": ["amount", "to"],
-    "generate_invoice": ["amount", "to"],
-    "send_email": ["to", "subject", "body"],
-    "generate_report": ["report_type"],
-}
-
-_QUALITY: dict[str, list[str]] = {
-    "send_email": ["body"],
-    "notify_slack": ["message"],
-    "notify_telegram": ["message"],
-    "notify_teams": ["message"],
-}
 
 
 def _validation_context(
@@ -34,9 +25,9 @@ def _validation_context(
         phase=phase,
         action=action,
         config=config,
-        required_fields=list(_REQUIRED.get(action, [])),
-        quality_fields=list(_QUALITY.get(action, [])),
-        known_actions=None,
+        required_fields=required_fields_for_action(action),
+        quality_fields=quality_fields_for_action(action),
+        known_actions=known_action_names_from_catalog(),
         path_resolver=resolve_attachment_path,
     )
 

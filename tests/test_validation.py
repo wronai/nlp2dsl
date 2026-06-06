@@ -265,3 +265,61 @@ def test_validate_dsl_contract_allows_dynamic_actions_by_default() -> None:
     )
 
     assert issues == []
+
+
+def test_validate_post_health_from_map() -> None:
+    from nlp2dsl_sdk.system_map_ir import RuntimeSpecIR, SystemMapIR
+    from nlp2dsl_sdk.validation.pipeline import validate_post_health_from_map
+
+    ir = SystemMapIR(
+        runtimes=[RuntimeSpecIR(id="executor:worker", status="unavailable")],
+    )
+    issues = validate_post_health_from_map(ir, "send_invoice", live_probe=False)
+    assert len(issues) == 1
+    assert issues[0].code == "runtime.unavailable"
+    assert issues[0].phase.value == "post_health"
+
+
+def test_validate_post_health_preflight_phase() -> None:
+    from nlp2dsl_sdk.doql.models import DoqlRuntime
+    from nlp2dsl_sdk.validation.pipeline import validate_post_health_for_intent
+    from nlp2dsl_sdk.validation.issue import Phase
+
+    issues = validate_post_health_for_intent(
+        [DoqlRuntime(id="executor:worker", status="unavailable")],
+        "send_invoice",
+        live_probe=False,
+        phase=Phase.PREFLIGHT,
+    )
+    assert issues[0].phase == Phase.PREFLIGHT
+
+
+def test_validate_post_execute_execution_failed_step() -> None:
+    from nlp2dsl_sdk.validation.pipeline import validate_post_execute_execution
+
+    issues = validate_post_execute_execution(
+        {"steps": [{"action": "send_invoice", "status": "failed", "error": "timeout"}]}
+    )
+    assert len(issues) == 1
+    assert issues[0].code == "execution.step_failed"
+    assert issues[0].phase.value == "post_execute"
+
+
+def test_validate_post_execute_from_map_skips_required_fields() -> None:
+    from nlp2dsl_sdk.system_map_ir import CommandSchemaIR, FieldSpec, SystemMapIR
+    from nlp2dsl_sdk.validation.pipeline import validate_post_execute_from_map
+
+    ir = SystemMapIR(
+        commands=[
+            CommandSchemaIR(
+                name="send_email",
+                fields=[FieldSpec(name="to"), FieldSpec(name="body")],
+            )
+        ]
+    )
+    issues = validate_post_execute_from_map(
+        ir,
+        "send_email",
+        {"to": "a@b.pl"},
+    )
+    assert not any(i.code == "field.missing" for i in issues)

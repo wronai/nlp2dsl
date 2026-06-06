@@ -35,15 +35,44 @@ class TestHealthEndpoint:
 class TestWorkflowActions:
     """GET /workflow/actions endpoint."""
 
+    @staticmethod
+    def _sample_nlp_actions() -> dict:
+        return {
+            "send_invoice": {
+                "description": "Generuje i wysyła fakturę",
+                "required": ["amount", "to"],
+                "optional": ["currency"],
+                "aliases": [],
+            },
+            "send_email": {
+                "description": "Wysyła e-mail",
+                "required": ["to"],
+                "optional": ["subject", "body"],
+                "aliases": [],
+            },
+        }
+
     @pytest.mark.asyncio
     async def test_workflow_actions(self, client: AsyncClient) -> None:
         """GET /workflow/actions → list of available actions."""
-        resp = await client.get("/workflow/actions")
+        mock_resp = MagicMock(spec=Response)
+        mock_resp.status_code = 200
+        mock_resp.is_success = True
+        mock_resp.raise_for_status = MagicMock()
+        mock_resp.json.return_value = self._sample_nlp_actions()
+
+        with patch("app.routers.workflow.AsyncClient") as MockClient:
+            mock_instance = AsyncMock()
+            mock_instance.get.return_value = mock_resp
+            mock_instance.__aenter__ = AsyncMock(return_value=mock_instance)
+            mock_instance.__aexit__ = AsyncMock(return_value=False)
+            MockClient.return_value = mock_instance
+
+            resp = await client.get("/workflow/actions")
         assert resp.status_code == 200
         actions = resp.json()
         assert isinstance(actions, list)
         assert len(actions) > 0
-        # Each action has name and description
         for action in actions:
             assert "name" in action
             assert "description" in action
@@ -51,7 +80,20 @@ class TestWorkflowActions:
     @pytest.mark.asyncio
     async def test_workflow_actions_contains_invoice(self, client: AsyncClient) -> None:
         """Actions list includes send_invoice."""
-        resp = await client.get("/workflow/actions")
+        mock_resp = MagicMock(spec=Response)
+        mock_resp.status_code = 200
+        mock_resp.is_success = True
+        mock_resp.raise_for_status = MagicMock()
+        mock_resp.json.return_value = self._sample_nlp_actions()
+
+        with patch("app.routers.workflow.AsyncClient") as MockClient:
+            mock_instance = AsyncMock()
+            mock_instance.get.return_value = mock_resp
+            mock_instance.__aenter__ = AsyncMock(return_value=mock_instance)
+            mock_instance.__aexit__ = AsyncMock(return_value=False)
+            MockClient.return_value = mock_instance
+
+            resp = await client.get("/workflow/actions")
         names = [a["name"] for a in resp.json()]
         assert "send_invoice" in names
 

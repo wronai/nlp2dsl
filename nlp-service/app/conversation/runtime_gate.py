@@ -3,10 +3,8 @@
 from __future__ import annotations
 
 from app.conversation.doql_context import DoqlTaskContext
-from nlp2dsl_sdk.validation.rules.runtime_health import (
-    runtime_id_for_intent,
-    validate_runtime_health_for_intent,
-)
+from nlp2dsl_sdk.validation.issue import Phase
+from nlp2dsl_sdk.validation.pipeline import validate_post_health_for_intent
 
 
 def runtime_unavailable_message(
@@ -22,13 +20,16 @@ def runtime_unavailable_message(
     if not intent or not ctx.runtimes:
         return None
 
-    issues = validate_runtime_health_for_intent(
+    issues = validate_post_health_for_intent(
         ctx.runtimes,
         intent,
         live_probe=live_probe,
+        phase=Phase.PREFLIGHT,
     )
     if issues:
         return issues[0].message
+
+    from nlp2dsl_sdk.validation.rules.runtime_health import runtime_id_for_intent
 
     runtime_id = runtime_id_for_intent(intent)
     if not runtime_id:

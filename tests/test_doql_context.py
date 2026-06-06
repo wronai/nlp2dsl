@@ -4,7 +4,13 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from nlp2dsl_sdk.doql_context import DoqlArtifact, DoqlTaskContext, autofill_entities, load_doql_context
+from nlp2dsl_sdk.doql_context import (
+    DoqlArtifact,
+    DoqlTaskContext,
+    autofill_entities,
+    load_doql_context,
+    merge_inline_context,
+)
 
 
 def test_load_doql_context_all_supported_blocks(tmp_path: Path) -> None:
@@ -178,6 +184,7 @@ def test_autofill_entities_from_data_and_aliases() -> None:
             "attachment_path": "fixtures/invoice.pdf",
         },
         autofill=True,
+        attachment_required=True,
     )
 
     updated, filled = autofill_entities(
@@ -210,6 +217,37 @@ def test_autofill_entities_from_artifact_values() -> None:
     assert filled == ["send_invoice.to"]
 
 
+def test_autofill_entities_skips_optional_attachment_path() -> None:
+    ctx = DoqlTaskContext(
+        artifacts=[DoqlArtifact(path="fixtures/invoice.pdf", kind="pdf")],
+        autofill=True,
+        attachment_required=False,
+    )
+
+    updated, filled = autofill_entities({}, ["send_invoice.attachment_path"], ctx)
+
+    assert "attachment_path" not in updated
+    assert filled == []
+
+
+def test_merge_inline_context_promotes_short_aliases() -> None:
+    ctx = DoqlTaskContext(autofill=True)
+
+    merged = merge_inline_context(
+        ctx,
+        {
+            "send_invoice.amount": 1500,
+            "attachment_required": True,
+            "attachmentPath": "/tmp/faktura.pdf",
+        },
+    )
+
+    assert merged.attachment_required is True
+    assert merged.data["send_invoice.amount"] == 1500
+    assert merged.data["amount"] == 1500
+    assert merged.data["attachment_path"] == "/tmp/faktura.pdf"
+
+
 def test_autofill_entities_disabled_returns_original_object() -> None:
     entities = {"intent": "send_invoice"}
     ctx = DoqlTaskContext(data={"send_invoice.amount": 1500}, autofill=False)
@@ -218,3 +256,56 @@ def test_autofill_entities_disabled_returns_original_object() -> None:
 
     assert updated is entities
     assert filled == []
+
+
+def test_load_doql_context_parses_validations(tmp_path: Path) -> None:
+    path = tmp_path / "environment.doql.less"
+    path.write_text(
+        """
+environment[name="01-invoice"] {
+  NLP2DSL_BACKEND_URL: "http://localhost:8010";
+}
+
+validations[0] {
+  code: "profile.dsl_action";
+  action: "send_invoice";
+}
+
+validations[1] {
+  code: "profile.execution_completed";
+  status: "completed";
+}
+""".strip()
+        + "\n",
+        encoding="utf-8",
+    )
+
+    ctx = load_doql_context(path)
+
+    assert len(ctx.validations) == 2
+    assert ctx.validations[0].code == "profile.dsl_action"
+    assert ctx.validations[0].action == "send_invoice"
+    assert ctx.validations[1].code == "profile.execution_completed"
+    assert ctx.validations[1].status == "completed"
+
+
+def test_validations_doql_roundtrip_via_system_map(tmp_path: Path) -> None:
+    from nlp2dsl_sdk.system_map_bridge import doql_file_to_system_map
+    from nlp2dsl_sdk.system_map_ir import ProfileValidationIR, SystemMapIR
+    from nlp2dsl_sdk.system_map_render import render_system_map_doql
+
+    ir = SystemMapIR(
+        example_id="roundtrip-validations",
+        validations=[
+            ProfileValidationIR(code="profile.dsl_action", action="send_invoice"),
+            ProfileValidationIR(code="profile.artifact_exists", path=".nlp2dsl/out.yaml"),
+        ],
+    )
+    path = tmp_path / "environment.doql.less"
+    path.write_text(render_system_map_doql(ir), encoding="utf-8")
+
+    loaded = doql_file_to_system_map(path)
+
+    assert len(loaded.validations) == 2
+    assert loaded.validations[0].action == "send_invoice"
+    assert loaded.validations[1].path == ".nlp2dsl/out.yaml"

@@ -203,6 +203,34 @@ class TestParseComposite:
         assert intent != "unknown"
         assert result.entities.amount == 3000.0
 
+    def test_parse_report_and_email_wyslij_do(self) -> None:
+        """Report + 'wyślij do email' without explicit 'email' keyword."""
+        result = parse_rules(
+            "Co poniedziałek raport HR w xlsx i wyślij do hr@firma.pl"
+        )
+        assert result.intent.intent == "report_and_email"
+        assert result.entities.report_type == "hr"
+        assert result.entities.format == "xlsx"
+        assert result.entities.to == "hr@firma.pl"
+
+    def test_parse_report_and_email_do_recipient(self) -> None:
+        """Scheduled report delivered to email — 'raport … do user@domain'."""
+        result = parse_rules(
+            "Pierwszego każdego miesiąca raport finansów PDF do cfo@firma.pl"
+        )
+        assert result.intent.intent == "report_and_email"
+        assert result.entities.report_type == "finance"
+        assert result.entities.to == "cfo@firma.pl"
+
+    def test_parse_report_and_email_csv_wyslij_do(self) -> None:
+        result = parse_rules(
+            "Codziennie o 9:00 raport sprzedaży CSV i wyślij do manager@firma.pl"
+        )
+        assert result.intent.intent == "report_and_email"
+        assert result.entities.report_type == "sales"
+        assert result.entities.format == "csv"
+        assert result.entities.to == "manager@firma.pl"
+
 
 # ── System commands ──────────────────────────────────────────────
 

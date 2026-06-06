@@ -11,17 +11,7 @@ from __future__ import annotations
 import logging
 import os
 
-from litellm import acompletion
-
 from app.registry import get_quality_required_fields
-from app.routing.parser.llm import (
-    LLM_API_BASE,
-    LLM_MAX_TOKENS,
-    LLM_MODEL,
-    LLM_TEMPERATURE,
-    _detect_provider,
-    _parse_json_response,
-)
 from app.schemas import NLPEntities, NLPResult
 
 log = logging.getLogger("nlp.enrich")
@@ -61,6 +51,8 @@ def get_enrichable_missing(missing_fields: list[str]) -> list[str]:
 def can_enrich_missing(missing_fields: list[str]) -> bool:
     if not missing_fields or not is_enrich_enabled():
         return False
+    from app.routing.parser.llm import _detect_provider
+
     if _detect_provider() == "none":
         return False
     enrichable = get_enrichable_missing(missing_fields)
@@ -109,6 +101,16 @@ Kontekst:
 Uzupełnij brakujące pola zgodnie z intencją użytkownika."""
 
     try:
+        from litellm import acompletion
+
+        from app.routing.parser.llm import (
+            LLM_API_BASE,
+            LLM_MAX_TOKENS,
+            LLM_MODEL,
+            LLM_TEMPERATURE,
+            _parse_json_response,
+        )
+
         kwargs: dict = {
             "model": LLM_MODEL,
             "messages": [

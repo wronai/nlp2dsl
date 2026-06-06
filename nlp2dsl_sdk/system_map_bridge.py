@@ -177,6 +177,8 @@ def task_context_to_system_map(ctx: DoqlTaskContext, *, example_dir: Path | str 
         root = Path(example_dir).resolve()
         repo_root = root.parent.parent if root.parent.name == "examples" else root.parent
         apply_process_policies(ir, example_id=ctx.example_name, repo_root=repo_root)
+    if ctx.validations:
+        ir.validations = list(ctx.validations)
     return ir
 
 

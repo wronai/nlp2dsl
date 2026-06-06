@@ -18,6 +18,7 @@ from .models import (
     DoqlRuntime,
     DoqlTaskContext,
 )
+from ..system_map_ir import ProfileValidationIR
 
 _BLOCK_RE = re.compile(
     r"(environment|data|conversation|capabilities|workflow_history|process|process_access|paths)\s*(?:\[[^\]]*\])?\s*\{([^}]*)\}",
@@ -28,6 +29,7 @@ _COMMAND_RE = re.compile(r"commands\s*\[[^\]]*\]\s*\{([^}]*)\}", re.DOTALL)
 _RESOURCE_RE = re.compile(r"resources\s*\[[^\]]*\]\s*\{([^}]*)\}", re.DOTALL)
 _ACCESS_RE = re.compile(r"access\s*\[[^\]]*\]\s*\{([^}]*)\}", re.DOTALL)
 _RUNTIME_RE = re.compile(r"runtimes\s*\[[^\]]*\]\s*\{([^}]*)\}", re.DOTALL)
+_VALIDATION_RE = re.compile(r"validations\s*\[[^\]]*\]\s*\{([^}]*)\}", re.DOTALL)
 _KV_RE = re.compile(
     r"(\w+(?:\.\w+)*)\s*:\s*(\"(?:\\.|[^\"])*\"|'(?:\\.|[^'])*'|[^;]+)\s*;",
 )
@@ -129,6 +131,16 @@ def _parse_runtime_body(body: str) -> DoqlRuntime:
         model=str(kv.get("model", "")),
         roles=_split_csv(str(kv.get("roles", ""))),
         status=str(kv.get("status", "unknown")),
+    )
+
+
+def _parse_validation_body(body: str) -> ProfileValidationIR:
+    kv = _parse_block_body(body)
+    return ProfileValidationIR(
+        code=str(kv.get("code", "")),
+        action=str(kv.get("action", "")),
+        status=str(kv.get("status", "")),
+        path=str(kv.get("path", "")),
     )
 
 
@@ -237,6 +249,10 @@ def _append_collection_blocks(ctx: DoqlTaskContext, text: str) -> None:
         rt = _parse_runtime_body(body)
         if rt.id:
             ctx.runtimes.append(rt)
+    for body in _VALIDATION_RE.findall(text):
+        spec = _parse_validation_body(body)
+        if spec.code:
+            ctx.validations.append(spec)
 
 
 def load_doql_context(path: Path | str) -> DoqlTaskContext:

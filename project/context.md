@@ -5,12 +5,12 @@
 
 - **Project**: /home/tom/github/wronai/nlp2dsl
 - **Primary Language**: python
-- **Languages**: python: 213, json: 19, shell: 12, yaml: 10, toml: 10
+- **Languages**: python: 220, json: 23, shell: 12, yaml: 10, toml: 10
 - **Analysis Mode**: static
-- **Total Functions**: 998
-- **Total Classes**: 126
-- **Modules**: 287
-- **Entry Points**: 415
+- **Total Functions**: 1098
+- **Total Classes**: 128
+- **Modules**: 298
+- **Entry Points**: 417
 
 ## Architecture by Module
 
@@ -40,6 +40,10 @@
 - **Functions**: 21
 - **File**: `serve-dist.js`
 
+### nlp2dsl_sdk.process_policy
+- **Functions**: 20
+- **File**: `process_policy.py`
+
 ### backend.app.routers.chat
 - **Functions**: 19
 - **File**: `chat.py`
@@ -47,6 +51,10 @@
 ### nlp-service.app.conversation.responses
 - **Functions**: 19
 - **File**: `responses.py`
+
+### nlp2dsl_sdk.system_map_render.blocks
+- **Functions**: 18
+- **File**: `blocks.py`
 
 ### nlp2dsl_sdk.artifacts
 - **Functions**: 17
@@ -58,10 +66,31 @@
 - **Classes**: 1
 - **File**: `compose_generator.py`
 
+### nlp2dsl_sdk.validation.profile_checks
+- **Functions**: 16
+- **Classes**: 1
+- **File**: `profile_checks.py`
+
 ### packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns
 - **Functions**: 15
 - **Classes**: 1
 - **File**: `keyword_patterns.py`
+
+### nlp2dsl_sdk.doql.runtime
+- **Functions**: 15
+- **File**: `runtime.py`
+
+### nlp-service.app.conversation.system_map
+- **Functions**: 15
+- **File**: `system_map.py`
+
+### nlp-service.app.conversation.orchestrator
+- **Functions**: 15
+- **File**: `orchestrator.py`
+
+### nlp2dsl_sdk.validation.messages
+- **Functions**: 14
+- **File**: `messages.py`
 
 ### nlp-service.app.governance.policy
 - **Functions**: 14
@@ -71,36 +100,6 @@
 ### worker.worker
 - **Functions**: 14
 - **File**: `worker.py`
-
-### scripts.run-example-testql-results
-- **Functions**: 14
-- **Classes**: 2
-- **File**: `run-example-testql-results.py`
-
-### nlp2dsl_sdk.validation.messages
-- **Functions**: 14
-- **File**: `messages.py`
-
-### nlp2dsl_sdk.cli
-- **Functions**: 13
-- **File**: `cli.py`
-
-### nlp2dsl_sdk.preview
-- **Functions**: 13
-- **File**: `preview.py`
-
-### nlp2dsl_sdk.process_policy
-- **Functions**: 13
-- **File**: `process_policy.py`
-
-### nlp-service.app.system_executor
-- **Functions**: 13
-- **File**: `system_executor.py`
-
-### nlp-service.app.governance.config
-- **Functions**: 13
-- **Classes**: 1
-- **File**: `config.py`
 
 ## Key Entry Points
 
@@ -123,12 +122,6 @@ Main execution flows into the system:
 ### scripts.run-example-testql-results.main
 - **Calls**: nlp-service.app.settings.SettingsManager.set, sorted, out.write_text, print, EXAMPLES.iterdir, print, None.isoformat, len
 
-### nlp-service.app.main.chat_registry_observe
-> Merge execution / entities into environment.doql.less (registry loop).
-
-Body: {"doql_context_path": "...", "phase": "executed", "execution": {...}, "i
-- **Calls**: app.post, str, body.get, body.get, body.get, request.json, isinstance, body.get
-
 ### nlp-service.app.validation.path_resolve.resolve_attachment_path
 > Turn DOQL artifact refs (fixtures/faktura.pdf) into absolute paths when the file exists.
 
@@ -136,6 +129,12 @@ Search order:
   1. as given (absolute or cwd-relative)
   2. 
 - **Calls**: Path, path.is_file, nlp-service.app.request_context.get_example_dir, None.strip, candidates.extend, None.strip, str, candidates.extend
+
+### nlp-service.app.main.chat_registry_observe
+> Merge execution / entities into environment.doql.less (registry loop).
+
+Body: {"doql_context_path": "...", "phase": "executed", "execution": {...}, "i
+- **Calls**: app.post, str, body.get, body.get, body.get, request.json, isinstance, body.get
 
 ### nlp2dsl_sdk.stack_flow.AutonomousStackFlow.run_phases
 - **Calls**: os.environ.setdefault, StackRunResult, self.bootstrap_registry, print, self._emit_compose, result.phases.append, print, print
@@ -206,15 +205,15 @@ Returns:
 > Handle in_progress status response.
 - **Calls**: print, data.get, data.get, data.get, print, form.get, print, print
 
+### nlp-service.app.routing.parser.prompt_catalog.build_llm_system_prompt
+> Schemat intencji i pól generowany z rejestru (nie hardcoded).
+- **Calls**: nlp-service.app.conversation.system_map.known_action_names, sorted, sorted, ACTIONS_REGISTRY.items, actions_lines.append, None.join, None.join, None.join
+
 ### nlp2dsl_sdk.path_resolve.resolve_attachment_path
 - **Calls**: Path, path.is_file, None.strip, candidates.extend, str, Path, candidates.extend, nlp2dsl_sdk.path_resolve._examples_portable_candidates
 
 ### examples.02-email.scenario.run
 - **Calls**: print, nlp2dsl_sdk.preview.preview_text_examples, nlp2dsl_sdk.preview.execute_from_text, nlp2dsl_sdk.artifacts.get_example_writer, NLP2DSLClient.from_env, nlp2dsl_sdk.preview.ensure_services, result.get, result.get
-
-### nlp-service.app.routing.parser.prompt_catalog.build_llm_system_prompt
-> Schemat intencji i pól generowany z rejestru (nie hardcoded).
-- **Calls**: sorted, sorted, ACTIONS_REGISTRY.items, actions_lines.append, None.join, None.join, None.join, sorted
 
 ### scripts.run-execution-scenario.main
 - **Calls**: argparse.ArgumentParser, parser.add_argument, parser.add_argument, parser.add_argument, parser.add_argument, parser.parse_args, args.scenario.resolve, scenario_path.is_file
@@ -223,8 +222,8 @@ Returns:
 > Store server reflection + optional client-side snapshot.
 - **Calls**: data.get, isinstance, None.strip, isinstance, self.reflections.append, str, isinstance, nlp2dsl_sdk.artifact_layout.write_reflection_snapshot
 
-### nlp-service.app.system_executor._exec_file_read
-- **Calls**: config.get, nlp-service.app.system_executor._validate_file_path, None.read_text, config.get, config.get, None.exists, None.is_file, content.split
+### worker.worker.handle_generate_invoice
+- **Calls**: worker.worker.action, config.get, config.get, config.get, Path, path.parent.mkdir, nlp2dsl_sdk.invoice_pdf.write_invoice_pdf, log.info
 
 ## Process Flows
 
@@ -254,15 +253,15 @@ run [examples.01-invoice.scenario]
   └─ →> get_example_writer
 ```
 
-### Flow 5: chat_registry_observe
-```
-chat_registry_observe [nlp-service.app.main]
-```
-
-### Flow 6: resolve_attachment_path
+### Flow 5: resolve_attachment_path
 ```
 resolve_attachment_path [nlp-service.app.validation.path_resolve]
   └─ →> get_example_dir
+```
+
+### Flow 6: chat_registry_observe
+```
+chat_registry_observe [nlp-service.app.main]
 ```
 
 ### Flow 7: run_phases
@@ -381,13 +380,9 @@ Placeholder - requires WebSocket implementation.
 - **Methods**: 4
 - **Key Methods**: packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor.__init__, packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor.run, packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor._run_propact_step, packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor._run_nlp2cmd_step
 
-### nlp2dsl_sdk.system_map_ir.SystemMapIR
-> nlp2dsl.system_map.v1 — canonical map of available system capabilities.
-
-Generated at runtime by Sys
+### nlp2dsl_sdk.doql.models.DoqlTaskContext
 - **Methods**: 4
-- **Key Methods**: nlp2dsl_sdk.system_map_ir.SystemMapIR.command, nlp2dsl_sdk.system_map_ir.SystemMapIR.runtime, nlp2dsl_sdk.system_map_ir.SystemMapIR.runtime_for_command, nlp2dsl_sdk.system_map_ir.SystemMapIR.validate_step_config
-- **Inherits**: BaseModel
+- **Key Methods**: nlp2dsl_sdk.doql.models.DoqlTaskContext.entity_values, nlp2dsl_sdk.doql.models.DoqlTaskContext.command, nlp2dsl_sdk.doql.models.DoqlTaskContext.required_fields_for, nlp2dsl_sdk.doql.models.DoqlTaskContext.runtime_for
 
 ### nlp-service.app.store.ConversationStore
 > Abstrakcja persystencji stanu konwersacji.
@@ -395,9 +390,13 @@ Generated at runtime by Sys
 - **Key Methods**: nlp-service.app.store.ConversationStore.get, nlp-service.app.store.ConversationStore.save, nlp-service.app.store.ConversationStore.delete, nlp-service.app.store.ConversationStore.count
 - **Inherits**: ABC
 
-### nlp2dsl_sdk.doql.models.DoqlTaskContext
+### nlp2dsl_sdk.system_map_ir.SystemMapIR
+> nlp2dsl.system_map.v1 — canonical map of available system capabilities.
+
+Generated at runtime by Sys
 - **Methods**: 4
-- **Key Methods**: nlp2dsl_sdk.doql.models.DoqlTaskContext.entity_values, nlp2dsl_sdk.doql.models.DoqlTaskContext.command, nlp2dsl_sdk.doql.models.DoqlTaskContext.required_fields_for, nlp2dsl_sdk.doql.models.DoqlTaskContext.runtime_for
+- **Key Methods**: nlp2dsl_sdk.system_map_ir.SystemMapIR.command, nlp2dsl_sdk.system_map_ir.SystemMapIR.runtime, nlp2dsl_sdk.system_map_ir.SystemMapIR.runtime_for_command, nlp2dsl_sdk.system_map_ir.SystemMapIR.validate_step_config
+- **Inherits**: BaseModel
 
 ## Data Transformation Functions
 
@@ -448,10 +447,6 @@ Key functions that process and transform data:
 ### nlp2dsl_sdk.step_validation.validate_workflow_from_map
 - **Output to**: _validate_workflow
 
-### nlp2dsl_sdk.system_map_ir.SystemMapIR.validate_step_config
-> Return missing field names for action against this map.
-- **Output to**: self.command, config.get, missing.append, isinstance, val.strip
-
 ### nlp2dsl_sdk.conversation_artifacts.format_transcript
 > Render user ↔ nlp2dsl dialog with parser/LLM hints.
 - **Output to**: enumerate, turn.get, turn.get, turn.get, lines.append
@@ -486,6 +481,9 @@ Key functions that process and transform data:
 Uses testql.adapters.testtoon_adapter
 - **Output to**: Path, path.read_text, ConversationValidation, path.is_file, ConversationValidation
 
+### nlp2dsl_sdk.validation.helpers.parse_amount
+- **Output to**: float
+
 ## Behavioral Patterns
 
 ### recursion__merge_dict
@@ -502,17 +500,15 @@ Uses testql.adapters.testtoon_adapter
 
 Functions exposed as public API (no underscore prefix):
 
-- `nlp2dsl_sdk.system_map_render.render_system_map_doql` - 164 calls
-- `nlp2dsl_sdk.doql.render.render_doql_context` - 129 calls
 - `nlp2dsl_sdk.compose_generator.generate_stack_compose` - 79 calls
+- `scripts.run-example-docker-e2e.process_example` - 65 calls
 - `nlp2dsl_sdk.conversation_artifacts.format_transcript` - 57 calls
 - `scripts.run-example-docker-e2e.main` - 56 calls
 - `scripts.run-conversation-scenario.run_scenario` - 54 calls
 - `scripts.run-example-testql-results.process_example` - 52 calls
-- `scripts.run-example-docker-e2e.process_example` - 49 calls
-- `nlp2dsl_sdk.process_policy.process_policy_from_profile_block` - 45 calls
 - `nlp2dsl_sdk.preview.print_run_outcome` - 40 calls
 - `nlp2dsl_sdk.preview.print_workflow_preview` - 38 calls
+- `nlp2dsl_sdk.system_map_render.render.render_system_map_doql` - 37 calls
 - `nlp-service.app.conversation.autonomous_loop.autonomous_resolve_turn` - 36 calls
 - `nlp2dsl_sdk.system_map_runtimes.build_runtimes_for_example` - 35 calls
 - `nlp2dsl_sdk.conversation_testql.validate_conversation_scenario` - 34 calls
@@ -528,20 +524,22 @@ Functions exposed as public API (no underscore prefix):
 - `nlp2dsl_sdk.system_map_bridge.task_context_to_system_map` - 29 calls
 - `nlp2dsl_sdk.doql.parse.enrich_task_context_from_client` - 29 calls
 - `nlp-service.app.routing.parser.enrich.enrich_entities` - 29 calls
-- `nlp-service.app.main.chat_registry_observe` - 28 calls
+- `nlp2dsl_sdk.doql.render.render_doql_context` - 29 calls
 - `nlp-service.app.validation.path_resolve.resolve_attachment_path` - 28 calls
+- `nlp-service.app.main.chat_registry_observe` - 28 calls
+- `nlp2dsl_sdk.validation.profile_checks.parse_profile_validation` - 28 calls
 - `nlp2dsl_sdk.stack_flow.AutonomousStackFlow.run_phases` - 27 calls
 - `nlp-service.app.routing.orientation.orient_query` - 27 calls
 - `backend.app.path_resolve.resolve_attachment_path` - 26 calls
 - `nlp2dsl_sdk.cli.main` - 26 calls
 - `examples.12-ir-show.scenario.run` - 25 calls
-- `nlp2dsl_sdk.doql_registry.merge_execution_observation` - 24 calls
 - `examples.13-autonomous-invoice-stack.scenario.run` - 24 calls
 - `examples.08-multi-object-benchmark.scenario.run_benchmark` - 24 calls
 - `scripts.run-conversation-scenario.main` - 24 calls
 - `nlp2dsl_sdk.invoice_pdf.build_invoice_pdf_bytes` - 23 calls
-- `nlp-service.app.main.websocket_chat` - 23 calls
 - `nlp-service.app.validation.invoice_pdf.build_invoice_pdf_bytes` - 23 calls
+- `nlp2dsl_sdk.process_policy.process_policy_from_profile_block` - 23 calls
+- `nlp-service.app.main.websocket_chat` - 23 calls
 
 ## System Interactions
 
@@ -570,14 +568,14 @@ graph TD
     main --> write_text
     main --> print
     main --> iterdir
-    chat_registry_observ --> post
-    chat_registry_observ --> str
-    chat_registry_observ --> get
     resolve_attachment_p --> Path
     resolve_attachment_p --> is_file
     resolve_attachment_p --> get_example_dir
     resolve_attachment_p --> strip
     resolve_attachment_p --> extend
+    chat_registry_observ --> post
+    chat_registry_observ --> str
+    chat_registry_observ --> get
     run_phases --> setdefault
 ```
 
