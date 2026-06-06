@@ -1,4 +1,4 @@
-# code2llm/evolution | 542 func | 82f | 2026-06-05
+# code2llm/evolution | 897 func | 143f | 2026-06-06
 # generated in 0.00s
 
 NEXT[10] (ranked by impact):
@@ -10,37 +10,37 @@ NEXT[10] (ranked by impact):
       WHY: CC=73 exceeds 15
       EFFORT: ~1h  IMPACT: 2117
 
-  [3] !! SPLIT-FUNC      KeywordPatterns._load_detector_config_from_json  CC=33  fan=18
+  [3] !! SPLIT-FUNC      render_system_map_doql  CC=70  fan=15
+      WHY: CC=70 exceeds 15
+      EFFORT: ~1h  IMPACT: 1050
+
+  [4] !! SPLIT-FUNC      render_doql_context  CC=62  fan=11
+      WHY: CC=62 exceeds 15
+      EFFORT: ~1h  IMPACT: 682
+
+  [5] !! SPLIT-FUNC      KeywordPatterns._load_detector_config_from_json  CC=33  fan=18
       WHY: CC=33 exceeds 15
       EFFORT: ~1h  IMPACT: 594
 
-  [4] !  SPLIT-FUNC      resolve_intent  CC=18  fan=19
-      WHY: CC=18 exceeds 15
-      EFFORT: ~1h  IMPACT: 342
+  [6] !! SPLIT-FUNC      build_and_check_dsl  CC=25  fan=23
+      WHY: CC=25 exceeds 15
+      EFFORT: ~1h  IMPACT: 575
 
-  [5] !  SPLIT-FUNC      KeywordPatterns._load_patterns_from_json  CC=19  fan=17
+  [7] !  SPLIT-FUNC      collect_task_context  CC=19  fan=26
       WHY: CC=19 exceeds 15
-      EFFORT: ~1h  IMPACT: 323
+      EFFORT: ~1h  IMPACT: 494
 
-  [6] !  SPLIT-FUNC      _build_config  CC=19  fan=16
-      WHY: CC=19 exceeds 15
-      EFFORT: ~1h  IMPACT: 304
+  [8] !  SPLIT-FUNC      autonomous_resolve_turn  CC=21  fan=23
+      WHY: CC=21 exceeds 15
+      EFFORT: ~1h  IMPACT: 483
 
-  [7] !  SPLIT-FUNC      KeywordIntentDetector.detect  CC=17  fan=17
-      WHY: CC=17 exceeds 15
-      EFFORT: ~1h  IMPACT: 289
+  [9] !  SPLIT-FUNC      task_context_to_system_map  CC=24  fan=20
+      WHY: CC=24 exceeds 15
+      EFFORT: ~1h  IMPACT: 480
 
-  [8] !  SPLIT-FUNC      orient_query  CC=16  fan=16
-      WHY: CC=16 exceeds 15
-      EFFORT: ~1h  IMPACT: 256
-
-  [9] !  SPLIT-FUNC      _resolve_file_list_host_command  CC=15  fan=17
-      WHY: CC=15 exceeds 15
-      EFFORT: ~1h  IMPACT: 255
-
-  [10] !  SPLIT-FUNC      KeywordIntentDetector._keyword_detection  CC=15  fan=12
-      WHY: CC=15 exceeds 15
-      EFFORT: ~1h  IMPACT: 180
+  [10] !! SPLIT-FUNC      format_transcript  CC=25  fan=17
+      WHY: CC=25 exceeds 15
+      EFFORT: ~1h  IMPACT: 425
 
 
 RISKS[3]:
@@ -49,10 +49,10 @@ RISKS[3]:
   ⚠ Splitting packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py may break 22 import paths
 
 METRICS-TARGET:
-  CC̄:          3.6 → ≤2.5
+  CC̄:          4.5 → ≤3.1
   max-CC:      73 → ≤20
-  god-modules: 7 → 0
-  high-CC(≥15): 12 → ≤6
+  god-modules: 8 → 0
+  high-CC(≥15): 38 → ≤19
   hub-types:   0 → ≤0
 
 PATTERNS (language parser shared logic):
@@ -80,4 +80,4 @@ PATTERNS (language parser shared logic):
     - Standardized FunctionInfo/ClassInfo models
 
 HISTORY:
-  prev CC̄=3.6 → now CC̄=3.6
+  prev CC̄=4.6 → now CC̄=4.5

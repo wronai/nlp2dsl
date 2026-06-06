@@ -26,21 +26,24 @@ Katalog można wyczyścić przed runem: `rm -rf examples/NN/.nlp2dsl/*` — `mai
 
 | Tryb | Plik PDF | Identyfikator |
 |------|----------|---------------|
-| Domyślny `send_invoice` | **brak** — `attachment_path` opcjonalny, domyślnie pusty | `invoice_id` w `pipeline/*.json` i `workflow_history.last_invoice_id` |
-| Autofill z `fixtures/*.pdf` | opcjonalny załącznik w DSL | walidacja MVP (`FAKTURA` lub `%PDF`) gdy path niepusty |
-| `attachment_required` + nested generate | `/tmp/nlp2dsl-invoices/INV-*.pdf` (kontener) | j.w. + walidacja kwoty w pliku |
-| Upload użytkownika | ścieżka z `attachmentPath` / `context_json` | j.w. |
+| Domyślny `send_invoice` (bez attachment) | brak | `invoice_id` w pipeline / `workflow_history` |
+| Autofill z `fixtures/*.pdf` | fixture w `examples/NN/fixtures/` | walidacja MVP lub strict |
+| `attachment_required` + nested generate | `.nlp2dsl/generated/invoices/INV-*.pdf` | binarny `%PDF-1.4` + walidacja kwoty |
+| Upload użytkownika | ścieżka z `context_json` | j.w. |
 
 ### Walidacja załącznika
 
-- Ścieżki względne (`fixtures/faktura-2024.pdf`) są **rozwiązywane** względem `NLP2DSL_EXAMPLE_DIR` przed sprawdzeniem `is_file()`.
-- **MVP:** akceptowany jest plik tekstowy z nagłówkiem `FAKTURA` i linią `Kwota: …` zgodną z `amount`.
-- **Strict:** `NLP2DSL_STRICT_PDF=1` wymaga nagłówka binarnego `%PDF`.
-- Pusta `attachment_path` w trybie domyślnym → **brak walidacji pliku** (załącznik opcjonalny; bootstrap nie autofilluje PDF).
-- Klient wysyła `example_dir` w `context_json` (mapowany na `/examples/NN-name` w Dockerze), żeby nlp-service mógł rozwiązać `fixtures/…`.
-- Docker Compose montuje `./examples:/examples:ro` dla `nlp-service` i `backend`.
+- Ścieżki względne (`fixtures/faktura-2024.pdf`) są **rozwiązywane** względem `NLP2DSL_EXAMPLE_DIR` / mount `/examples`.
+- **MVP:** `%PDF` **lub** tekst `FAKTURA` + linia `Kwota: …` zgodna z `amount`.
+- **Strict:** `conversation { strict_pdf: true; }` w DOQL **lub** `NLP2DSL_STRICT_PDF=1` — tylko binarny `%PDF`.
+- Przykład `01-invoice`: `strict_pdf: true` w `example-profiles.yaml`; `generate_invoice` zapisuje prawdziwy PDF.
+- Pusta `attachment_path` gdy załącznik niewymagany → brak walidacji pliku.
+- Odpowiedź API zawiera `attachment_validation: { path, resolved, status, issues }`.
+- Docker: `./examples:/examples` dla nlp-service (rw), backend i worker (ro).
 
-Worker **nie** zapisuje PDF do `.nlp2dsl/` w domyślnym MVP.
+Worker zapisuje PDF do `.nlp2dsl/generated/invoices/` gdy nested generate / worker `generate_invoice` wskazuje ścieżkę pod example dir.
+
+Pełna architektura: [`validation.md`](validation.md).
 
 ## Stan procesu per tura (docelowy model)
 

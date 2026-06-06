@@ -3,7 +3,6 @@ from app.execution.delegate import (
     execution_backend_for_intent,
     is_delegated_to_mullm,
 )
-from app.execution.system import SYSTEM_EXECUTORS, execute_system_action
 
 __all__ = [
     "SYSTEM_EXECUTORS",
@@ -12,3 +11,11 @@ __all__ = [
     "execution_backend_for_intent",
     "is_delegated_to_mullm",
 ]
+
+
+def __getattr__(name: str):
+    if name in {"SYSTEM_EXECUTORS", "execute_system_action"}:
+        from app.execution import system
+
+        return getattr(system, name)
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

@@ -8,6 +8,7 @@ import pytest
 
 from app.conversation.doql_context import DoqlCommand, DoqlTaskContext
 from app.conversation.system_map import set_doql_context
+from app.validation.invoice_pdf import write_invoice_pdf
 from app.validation.step_validator import validate_step_config, validate_workflow_steps
 
 
@@ -49,9 +50,9 @@ def test_attachment_required_blocks_empty_path() -> None:
     assert any("attachment_path" in i for i in issues)
 
 
-def test_mvp_invoice_file_valid(tmp_path: Path) -> None:
+def test_pdf_invoice_file_valid(tmp_path: Path) -> None:
     pdf = tmp_path / "inv.pdf"
-    pdf.write_text("FAKTURA\nOdbiorca: a@b.pl\nKwota: 1500.0 PLN\n", encoding="utf-8")
+    write_invoice_pdf(pdf, to="a@b.pl", amount=1500, currency="PLN")
     issues = validate_step_config(
         "send_invoice",
         {"amount": 1500, "to": "a@b.pl", "attachment_path": str(pdf)},
@@ -59,9 +60,9 @@ def test_mvp_invoice_file_valid(tmp_path: Path) -> None:
     assert issues == []
 
 
-def test_mvp_invoice_amount_mismatch(tmp_path: Path) -> None:
+def test_pdf_invoice_amount_mismatch(tmp_path: Path) -> None:
     pdf = tmp_path / "inv.pdf"
-    pdf.write_text("FAKTURA\nOdbiorca: a@b.pl\nKwota: 999.0 PLN\n", encoding="utf-8")
+    write_invoice_pdf(pdf, to="a@b.pl", amount=999, currency="PLN")
     issues = validate_step_config(
         "send_invoice",
         {"amount": 1500, "to": "a@b.pl", "attachment_path": str(pdf)},
@@ -76,7 +77,7 @@ def test_invalid_attachment_content(tmp_path: Path) -> None:
         "send_invoice",
         {"amount": 1500, "to": "a@b.pl", "attachment_path": str(bad)},
     )
-    assert any("FAKTURA" in i or "PDF" in i for i in issues)
+    assert any("%PDF" in i or "PDF" in i for i in issues)
 
 
 def test_validate_workflow_steps_index() -> None:

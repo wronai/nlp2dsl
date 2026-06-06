@@ -17,6 +17,7 @@ def test_apply_invoice_policies_on_ir() -> None:
     apply_invoice_policies(ir)
     assert ir.conversation.attachment_required is True
     assert ir.conversation.generate_invoice_if_missing is True
+    assert ir.conversation.strict_pdf is True
     assert "generate_invoice" in ir.capabilities
 
 
@@ -27,6 +28,7 @@ def test_collect_task_context_sets_invoice_policy(tmp_path) -> None:
     ctx = collect_task_context(ex, example_name="01-invoice")
     assert ctx.attachment_required is True
     assert ctx.generate_invoice_if_missing is True
+    assert ctx.strict_pdf is True
 
 
 def test_apply_invoice_context() -> None:

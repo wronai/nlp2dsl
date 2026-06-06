@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.10] - 2026-06-05
 
 ### Fixed
+- Fix unused-imports issues (ticket-59eadd57)
+
+## [0.1.10] - 2026-06-05
+
+### Fixed
 - Fix unused-imports issues (ticket-808f0627)
 - Fix unused-imports issues (ticket-ae593814)
 - Fix unused-imports issues (ticket-f8a324eb)
@@ -70,6 +75,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - `nlp2cmd-intent`: normalizer zwracający `str` zamiast obiektu z `.text` w `KeywordIntentDetector`
+
+## [0.0.26] - 2026-06-06
+
+### Docs
+- Update CHANGELOG.md
+- Update README.md
+- Update SUMD.md
+- Update SUMR.md
+- Update TODO.md
+- Update docs/README.md
+- Update docs/REFACTOR-PLAN.md
+- Update docs/artifacts.md
+- Update docs/autonomous-stack.md
+- Update docs/doql-system-map.md
+- ... and 6 more files
+
+### Test
+- Update testql-scenarios/generated-examples.testql.toon.yaml
+- Update tests/test_attachment_validation.py
+- Update tests/test_doql_context.py
+- Update tests/test_doql_registry.py
+- Update tests/test_invoice_pdf.py
+- Update tests/test_invoice_policy.py
+- Update tests/test_nlp2dsl_sdk.py
+- Update tests/test_path_resolve.py
+- Update tests/test_process_policy.py
+- Update tests/test_profile_validations.py
+- ... and 2 more files
+
+### Other
+- Update app.doql.less
+- Update backend/Dockerfile
+- Update backend/app/attachment_validation.py
+- Update backend/app/dsl_validation.py
+- Update backend/app/path_resolve.py
+- Update backend/app/routers/chat.py
+- Update backend/app/routers/workflow.py
+- Update backend/app/step_validator.py
+- Update backend/tests/conftest.py
+- Update backend/tests/test_attachment_validation.py
+- ... and 114 more files
 
 ## [0.0.25] - 2026-06-05
 

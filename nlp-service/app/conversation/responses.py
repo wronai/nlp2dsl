@@ -10,7 +10,6 @@ from typing import Callable
 from app.conversation.attachment_gate import workflow_needs_attachment
 from app.dsl.forms import get_action_form
 from app.dsl.pipeline import map_to_dsl_with_enrichment
-from app.execution.system import SYSTEM_EXECUTORS
 from app.execution.delegate import execution_backend_for_intent
 from app.registry import SYSTEM_ACTIONS
 from app.routing import IntentDecision
@@ -71,6 +70,17 @@ def _is_execute_or_continue(text: str) -> bool:
 async def check_execute_keyword(state: ConversationState, text: str) -> ConversationResponse | None:
     if not _is_execute_or_continue(text):
         return None
+    if state.status == "executed" and state.execution:
+        wf_name = state.dsl.name if state.dsl else "workflow"
+        msg = f"Workflow `{wf_name}` został już wykonany w tej rozmowie."
+        state.history.append({"role": "assistant", "text": msg})
+        return ConversationResponse(
+            conversation_id=state.id,
+            status="executed",
+            message=msg,
+            dsl=state.dsl,
+            execution=state.execution,
+        )
     if state.status == "ready" and state.dsl:
         validation_failures = validate_workflow_steps(state.dsl.steps)
         if validation_failures:
@@ -131,6 +141,8 @@ def handle_unknown_intent(state: ConversationState) -> ConversationResponse | No
 def handle_system_action(state: ConversationState) -> ConversationResponse | None:
     if state.intent not in SYSTEM_ACTIONS:
         return None
+
+    from app.execution.system import SYSTEM_EXECUTORS
 
     config = {k: v for k, v in state.entities.items() if v is not None and k != "_trigger"}
     executor = SYSTEM_EXECUTORS.get(state.intent)
@@ -206,14 +218,28 @@ async def build_and_check_dsl(state: ConversationState) -> ConversationResponse 
         msg += " Wyślij 'uruchom' aby wykonać."
     if state.autofill_applied:
         msg += f"\n(Uzupełniono z environment.doql.less: {', '.join(state.autofill_applied)})"
+    attachment_validation = None
+    if dialog.workflow.steps:
+        att_raw = str(dialog.workflow.steps[0].config.get("attachment_path", "") or "").strip()
+        if att_raw:
+            from app.validation.attachment_validation import build_attachment_validation
+
+            attachment_validation = build_attachment_validation(
+                att_raw,
+                action=state.intent or dialog.workflow.steps[0].action,
+                config=dict(dialog.workflow.steps[0].config),
+            )
     state.history.append({"role": "assistant", "text": msg})
-    return ConversationResponse(
+    response = ConversationResponse(
         conversation_id=state.id,
         status="ready",
         message=msg,
         dsl=dialog.workflow,
         execution_backend=backend,
     )
+    if attachment_validation is not None:
+        response.attachment_validation = attachment_validation
+    return response
 
 
 async def build_incomplete_response(state: ConversationState) -> ConversationResponse:
@@ -248,7 +274,7 @@ async def build_incomplete_response(state: ConversationState) -> ConversationRes
 
 def _nlp_from_state(state: ConversationState) -> NLPResult:
     return NLPResult(
-        intent=NLPIntent(intent=state.intent, confidence=1.0),
+        intent=NLPIntent(intent=state.intent or "unknown", confidence=1.0),
         entities=NLPEntities(**{k: v for k, v in state.entities.items() if k != "_trigger"}),
         raw_text=" ".join(h["text"] for h in state.history if h["role"] == "user"),
     )

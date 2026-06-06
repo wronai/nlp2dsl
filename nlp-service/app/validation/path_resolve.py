@@ -8,6 +8,35 @@ from pathlib import Path
 from app.request_context import get_example_dir
 
 
+def _examples_portable_candidates(raw: str) -> list[Path]:
+    """Map /examples/01-invoice/... (Docker mount) → host example dir."""
+    norm = str(raw).replace("\\", "/")
+    rel: str | None = None
+    mount = os.environ.get("NLP2DSL_EXAMPLES_MOUNT", "/examples").strip().rstrip("/")
+    if mount and norm.startswith(f"{mount}/"):
+        rel = norm[len(mount) + 1 :]
+    elif norm.startswith("/examples/"):
+        rel = norm[len("/examples/") :]
+
+    if not rel or "/" not in rel:
+        return []
+
+    _ex_name, rest = rel.split("/", 1)
+    candidates: list[Path] = []
+
+    for source in (get_example_dir(), os.environ.get("NLP2DSL_EXAMPLE_DIR", "").strip() or None):
+        if not source:
+            continue
+        ex = Path(source)
+        candidates.append(ex / rest)
+
+    cwd = Path.cwd()
+    for base in (cwd, cwd.parent, cwd.parent.parent):
+        candidates.append(base / "examples" / _ex_name / rest)
+
+    return candidates
+
+
 def resolve_attachment_path(raw: str, *, doql_path: Path | str | None = None) -> str:
     """
     Turn DOQL artifact refs (fixtures/faktura.pdf) into absolute paths when the file exists.
@@ -34,6 +63,8 @@ def resolve_attachment_path(raw: str, *, doql_path: Path | str | None = None) ->
     if example_dir:
         ex = Path(example_dir)
         candidates.extend([ex / raw, ex / "fixtures" / path.name])
+
+    candidates.extend(_examples_portable_candidates(raw))
 
     if doql_path:
         base = Path(doql_path).resolve().parent

@@ -1,414 +1,61 @@
-<!-- code2docs:start --># nlp2dsl
+# Dokumentacja nlp2dsl
 
-![version](https://img.shields.io/badge/version-0.1.0-blue) ![python](https://img.shields.io/badge/python-%3E%3D3.10-blue) ![coverage](https://img.shields.io/badge/coverage-unknown-lightgrey) ![functions](https://img.shields.io/badge/functions-269-green)
-> **269** functions | **47** classes | **59** files | CC̄ = 2.9
+Indeks dokumentacji platformy MVP (NLP → DSL → CMD → Docker).
 
-> Auto-generated project documentation from source code analysis.
+## Szybki start
 
-**Author:** Tom Softreck <tom@sapletta.com>  
-**License:** MIT[(LICENSE)](./LICENSE)  
-**Repository:** [https://github.com/wronai/nlp2dsl](https://github.com/wronai/nlp2dsl)
+| Temat | Dokument |
+|-------|----------|
+| Instalacja, porty, conversation API | [README główny](../README.md) |
+| Przykłady i scenariusze | [examples/README.md](../examples/README.md) |
+| Przykład faktury (autonomiczny) | [examples/01-invoice/README.md](../examples/01-invoice/README.md) |
 
-## Installation
+## Architektura i mapa systemu
 
-### From PyPI
+| Dokument | Opis |
+|----------|------|
+| [doql-system-map.md](doql-system-map.md) | `environment.doql.less` — runtimes, commands, conversation |
+| [doql-runtimes.md](doql-runtimes.md) | RuntimeSpec, dispatch, health |
+| [doql-dynamic-generation.md](doql-dynamic-generation.md) | SystemMapIR, generowanie mapy LLM |
+| [process-agent.md](process-agent.md) | ProcessAgent, preflight, self-resolve |
+| [architecture-routing-refactor.md](architecture-routing-refactor.md) | Routing intentów, governance |
 
-```bash
-pip install nlp2dsl
-```
+## Walidacja i refleksja
 
-### From Source
+| Dokument | Opis |
+|----------|------|
+| [validation.md](validation.md) | **Walidacja requestu** — fazy, PDF, autonomiczna naprawa |
+| [reflection-model.md](reflection-model.md) | ReflectionReport, pętla model → decyzja → refleksja |
+| [artifacts.md](artifacts.md) | `.nlp2dsl/` — pipeline, DOQL, załączniki |
 
-```bash
-git clone https://github.com/wronai/nlp2dsl
-cd nlp2dsl
-pip install -e .
-```
+## Integracje i rozszerzenia
 
+| Dokument | Opis |
+|----------|------|
+| [intract-integration.md](intract-integration.md) | Kontrakty planu, Intract gate |
+| [access-control.md](access-control.md) | ACL, resource_areas, agenci |
+| [autonomous-stack.md](autonomous-stack.md) | Stack cron + compose (przykład 13) |
+| [encoding.md](encoding.md) | UTF-8, polskie znaki w CLI/SDK |
 
-## Quick Start
+## Refaktoryzacja i migracja
 
-### CLI Usage
+| Dokument | Opis |
+|----------|------|
+| [REFACTOR-PLAN.md](REFACTOR-PLAN.md) | Plan refaktoryzacji (Mullm, moduły, walidacja) |
+| [migration-persistence.md](migration-persistence.md) | Postgres, Redis, historia workflow |
 
-```bash
-# Generate full documentation for your project
-nlp2dsl ./my-project
+## Pakiety IR (nlp2cmd)
 
-# Only regenerate README
-nlp2dsl ./my-project --readme-only
+| Dokument | Opis |
+|----------|------|
+| [packages/README.md](../packages/README.md) | IntentIR, ExecutionPlanIR, nlp2cmd plan |
 
-# Preview what would be generated (no file writes)
-nlp2dsl ./my-project --dry-run
+## Porty Docker (domyślne)
 
-# Check documentation health
-nlp2dsl check ./my-project
+| Serwis | Host | Uwagi |
+|--------|------|-------|
+| Backend | `:8010` | Gateway, chat, workflow |
+| NLP Service | `:8012` | Conversation, voice UI `/chat` |
+| Worker | `:8004` | Executory akcji |
 
-# Sync — regenerate only changed modules
-nlp2dsl sync ./my-project
-```
-
-### Python API
-
-```python
-from nlp2dsl import generate_readme, generate_docs, Code2DocsConfig
-
-# Quick: generate README
-generate_readme("./my-project")
-
-# Full: generate all documentation
-config = Code2DocsConfig(project_name="mylib", verbose=True)
-docs = generate_docs("./my-project", config=config)
-```
-
-## Generated Output
-
-When you run `nlp2dsl`, the following files are produced:
-
-```
-<project>/
-├── README.md                 # Main project README (auto-generated sections)
-├── docs/
-│   ├── api.md               # Consolidated API reference
-│   ├── modules.md           # Module documentation with metrics
-│   ├── architecture.md      # Architecture overview with diagrams
-│   ├── dependency-graph.md  # Module dependency graphs
-│   ├── coverage.md          # Docstring coverage report
-│   ├── getting-started.md   # Getting started guide
-│   ├── configuration.md    # Configuration reference
-│   └── api-changelog.md    # API change tracking
-├── examples/
-│   ├── quickstart.py       # Basic usage examples
-│   └── advanced_usage.py   # Advanced usage examples
-├── CONTRIBUTING.md         # Contribution guidelines
-└── mkdocs.yml             # MkDocs site configuration
-```
-
-## Configuration
-
-Create `nlp2dsl.yaml` in your project root (or run `nlp2dsl init`):
-
-```yaml
-project:
-  name: my-project
-  source: ./
-  output: ./docs/
-
-readme:
-  sections:
-    - overview
-    - install
-    - quickstart
-    - api
-    - structure
-  badges:
-    - version
-    - python
-    - coverage
-  sync_markers: true
-
-docs:
-  api_reference: true
-  module_docs: true
-  architecture: true
-  changelog: true
-
-examples:
-  auto_generate: true
-  from_entry_points: true
-
-sync:
-  strategy: markers    # markers | full | git-diff
-  watch: false
-  ignore:
-    - "tests/"
-    - "__pycache__"
-```
-
-## Sync Markers
-
-nlp2dsl can update only specific sections of an existing README using HTML comment markers:
-
-```markdown
-<!-- nlp2dsl:start -->
-# Project Title
-... auto-generated content ...
-<!-- nlp2dsl:end -->
-```
-
-Content outside the markers is preserved when regenerating. Enable this with `sync_markers: true` in your configuration.
-
-## Architecture
-
-```
-nlp2dsl/
-├── metrun-profile├── project    ├── desktop            ├── main        ├── dev        ├── engine    ├── app/        ├── workflow_events        ├── main        ├── workflow            ├── memory        ├── db/            ├── postgres            ├── system        ├── routers/            ├── chat            ├── workflow            ├── settings    ├── demos├── nlp2dsl_sdk/    ├── client    ├── __main__    ├── code_generation_examples        ├── run        ├── main        ├── run        ├── main        ├── run        ├── main        ├── run        ├── main            ├── run        ├── run        ├── main        ├── logging_setup        ├── audio_parser        ├── parser_rules        ├── registry        ├── logging_setup        ├── schemas        ├── code_generator    ├── app/        ├── config        ├── mapper        ├── orchestrator        ├── main        ├── system_executor        ├── settings            ├── memory        ├── store/        ├── schemas            ├── factory    ├── config            ├── redis_store├── worker/    ├── worker        ├── config    ├── logging_setup        ├── parser_llm```
-
-## API Overview
-
-### Classes
-
-- **`WorkflowEvent`** — —
-- **`WorkflowEventHub`** — In-memory broadcaster dla workflow lifecycle events.
-- **`MemoryWorkflowRepo`** — —
-- **`WorkflowRepo`** — Abstrakcja persystencji workflow.
-- **`Base`** — —
-- **`WorkflowRunModel`** — —
-- **`PostgresWorkflowRepo`** — —
-- **`DemoSpec`** — Metadata for a runnable demo exposed by the package CLI.
-- **`NLP2DSLClient`** — Small reusable SDK for the NLP2DSL services.
-- **`ConversationFlow`** — Convenience helper for the conversational workflow example.
-- **`JSONFormatter`** — Emit log records as single-line JSON objects.
-- **`RequestIDMiddleware`** — Generate or forward X-Request-ID for every HTTP request.
-- **`StreamingSTT`** — Real-time streaming STT via Deepgram WebSocket.
-- **`JSONFormatter`** — Emit log records as single-line JSON objects.
-- **`RequestIDMiddleware`** — Generate or forward X-Request-ID for every HTTP request.
-- **`StepStatus`** — —
-- **`Step`** — Pojedynczy krok workflow — deklaratywny opis akcji.
-- **`RunWorkflowRequest`** — Żądanie uruchomienia workflow — DSL biznesowy.
-- **`StepResult`** — —
-- **`WorkflowResult`** — —
-- **`ActionInfo`** — Opis dostępnej akcji (do listowania w GUI / API).
-- **`CodeGenerator`** — Generates code in multiple programming languages using LLM.
-- **`BackendSettings`** — —
-- **`LLMSettings`** — —
-- **`NLPSettings`** — —
-- **`WorkerSettings`** — —
-- **`FileAccessSettings`** — —
-- **`SystemSettings`** — Pełny model ustawień systemu.
-- **`SettingsManager`** — Runtime settings z persystencją do JSON.
-- **`MemoryConversationStore`** — —
-- **`ConversationStore`** — Abstrakcja persystencji stanu konwersacji.
-- **`NLPIntent`** — —
-- **`NLPEntities`** — —
-- **`NLPResult`** — —
-- **`DSLStep`** — —
-- **`WorkflowDSL`** — —
-- **`DialogResponse`** — —
-- **`NLPRequest`** — —
-- **`ConversationState`** — Stan rozmowy — akumuluje dane między turami dialogu.
-- **`FieldSchema`** — —
-- **`ActionFormSchema`** — —
-- **`ConversationResponse`** — —
-- **`WorkerSettings`** — —
-- **`RedisConversationStore`** — —
-- **`NLPServiceSettings`** — —
-- **`JSONFormatter`** — Emit log records as single-line JSON objects.
-- **`RequestIDMiddleware`** — Generate or forward X-Request-ID for every HTTP request.
-
-### Functions
-
-- `main()` — —
-- `server()` — —
-- `npmCommand()` — —
-- `child()` — —
-- `shuttingDown()` — —
-- `shutdown()` — —
-- `exitCode()` — —
-- `run_workflow(req)` — Uruchamia workflow — iteruje po krokach DSL i deleguje do workera.
-- `start_workflow(req)` — Startuje workflow asynchronicznie i zwraca natychmiastowy snapshot running.
-- `health()` — —
-- `create_workflow_repo()` — Factory: zwraca Postgres repo jeśli URL jest ustawiony, inaczej memory.
-- `system_execute(body)` — Wykonaj akcję systemową. Body: {"action": "system_file_list", "config": {}}
-- `chat_start(request)` — Rozpocznij konwersację AI → DSL.
-- `chat_message(request)` — Kontynuuj konwersację — uzupełnij brakujące dane.
-- `chat_get_state(conversation_id)` — Pobierz stan konwersacji.
-- `list_actions()` — Zwraca listę dostępnych akcji (DSL vocabulary).
-- `run_workflow_endpoint(req)` — Uruchamia workflow — iteruje po krokach DSL i deleguje każdy krok do workera.
-- `start_workflow_endpoint(req)` — Startuje workflow w tle i zwraca natychmiastowy snapshot running.
-- `get_history()` — Zwraca historię wykonanych workflow.
-- `get_workflow(workflow_id)` — Zwraca szczegóły konkretnego workflow.
-- `stream_workflow(workflow_id, request)` — SSE stream with live workflow lifecycle events.
-- `workflow_from_text(body)` — Pełny pipeline: tekst → NLP → DSL → (opcjonalne) wykonanie.
-- `actions_schema()` — Schematy formularzy UI — frontend generuje dynamicznie.
-- `action_schema(action)` — Schemat formularza dla konkretnej akcji.
-- `get_settings()` — Pokaż wszystkie ustawienia systemu.
-- `get_settings_section(section)` — Pokaż ustawienia sekcji.
-- `update_settings_section(section, body)` — Zaktualizuj ustawienia sekcji.
-- `set_setting(body)` — Zmień ustawienie. Body: {"path": "llm.model", "value": "gpt-4o"}
-- `reset_settings(body)` — Resetuj ustawienia.
-- `run_crm_update_demo(client)` — —
-- `run_action_catalog_demo(client)` — —
-- `run_automation_gallery_demo(client)` — —
-- `run_invoice_demo(client)` — —
-- `run_email_demo(client)` — —
-- `run_report_and_notify_demo(client)` — —
-- `run_scheduled_report_demo(client)` — —
-- `run_code_generation_demo(client)` — —
-- `list_available_demos()` — —
-- `workflow_step(action)` — Build a declarative workflow step payload.
-- `main()` — —
-- `main()` — Run the code generation showcase via the shared SDK.
-- `main()` — Główna funkcja przykładu.
-- `main()` — Główna funkcja przykładu.
-- `main()` — Główna funkcja przykładu.
-- `main()` — Główna funkcja przykładu.
-- `main()` — Główna funkcja przykładu.
-- `get_request_id()` — —
-- `setup_logging(service, level)` — Replace root logger handlers with a JSONFormatter handler.
-- `stt_audio(audio_bytes, language)` — Transcribe audio bytes to text using Deepgram HTTP API.
-- `stt_file(file_path, language)` — Transcribe audio file to text using Deepgram.
-- `is_stt_available()` — Check if STT is available (Deepgram configured).
-- `parse_rules(text)` — Parse text using rules — no LLM needed.
-- `get_action_by_alias(text)` — Dopasuj tekst do akcji po aliasach.
-- `get_trigger(text)` — Wykryj trigger z tekstu.
-- `get_required_fields(action)` — Zwróć wymagane pola dla akcji.
-- `get_defaults(action)` — Zwróć domyślne wartości opcjonalnych pól.
-- `get_request_id()` — —
-- `setup_logging(service, level)` — Replace root logger handlers with a JSONFormatter handler.
-- `map_to_dsl(nlp)` — Konwertuje NLPResult → WorkflowDSL.
-- `start_conversation(text)` — Rozpocznij nową rozmowę od pierwszej wiadomości użytkownika.
-- `continue_conversation(conversation_id, text)` — Kontynuuj istniejącą rozmowę — użytkownik uzupełnia brakujące dane.
-- `get_conversation(conversation_id)` — Pobierz stan rozmowy.
-- `get_action_form(action)` — Generuj formularz UI z registry (schema-driven UI).
-- `parse_text(req)` — Etap 1: tekst → intent + entities.
-- `text_to_dsl(req)` — Pełny pipeline: tekst → NLP → DSL.
-- `list_actions()` — Zwraca rejestr akcji z aliasami (vocabulary DSL).
-- `health()` — —
-- `chat_start(text, audio)` — Rozpocznij nową konwersację. System rozpoznaje intencję i dopytuje o brakujące dane.
-- `chat_message(conversation_id, text, audio)` — Kontynuuj rozmowę — uzupełnij brakujące dane.
-- `chat_state(conversation_id)` — Pobierz aktualny stan konwersacji.
-- `actions_schema()` — Zwraca pełny schemat formularzy dla wszystkich akcji.
-- `action_schema(action)` — Zwraca schemat formularza dla konkretnej akcji.
-- `get_settings()` — Pokaż wszystkie ustawienia systemu.
-- `get_settings_section(section)` — Pokaż ustawienia sekcji (llm, nlp, worker, file_access).
-- `update_settings_section(section, body)` — Zaktualizuj ustawienia sekcji.
-- `set_setting(body)` — Zmień pojedyncze ustawienie. Body: {"path": "llm.model", "value": "gpt-4o"}
-- `reset_settings(body)` — Resetuj ustawienia. Body: {"section": "llm"} lub {} dla wszystkich.
-- `system_execute(body)` — Wykonaj akcję systemową bezpośrednio.
-- `generate_code(body)` — Generuje kod w wybranym języku programowania.
-- `get_supported_languages()` — Zwraca listę obsługiwanych języków programowania.
-- `websocket_chat(websocket, conversation_id)` — WebSocket endpoint dla voice chat w czasie rzeczywistym.
-- `chat_ui()` — Serwuj chat UI z voice support.
-- `execute_system_action(action, config)` — Route and execute system action.
-- `get_conversation_store()` — Singleton factory — zwraca store odpowiedni dla środowiska.
-- `action(name)` — Dekorator rejestrujący handler akcji.
-- `handle_send_invoice(config)` — —
-- `handle_send_email(config)` — —
-- `handle_generate_report(config)` — —
-- `handle_crm_update(config)` — —
-- `handle_notify_slack(config)` — —
-- `handle_notify_telegram(config)` — —
-- `handle_notify_teams(config)` — —
-- `handle_generate_code(config)` — —
-- `execute_step(step)` — Wykonuje pojedynczy krok workflow.
-- `health()` — —
-- `get_request_id()` — —
-- `setup_logging(service, level)` — Replace root logger handlers with a JSONFormatter handler.
-- `parse_llm(text)` — Parse text using LLM via LiteLLM.
-
-
-## Project Structure
-
-📦 `backend.app`
-📄 `backend.app.config` (1 classes)
-📦 `backend.app.db` (6 functions, 1 classes)
-📄 `backend.app.db.memory` (6 functions, 1 classes)
-📄 `backend.app.db.postgres` (11 functions, 3 classes)
-📄 `backend.app.engine` (7 functions)
-📄 `backend.app.logging_setup` (6 functions, 2 classes)
-📄 `backend.app.main` (1 functions)
-📦 `backend.app.routers`
-📄 `backend.app.routers.chat` (4 functions)
-📄 `backend.app.routers.settings` (7 functions)
-📄 `backend.app.routers.system` (1 functions)
-📄 `backend.app.routers.workflow` (9 functions)
-📄 `backend.app.schemas` (6 classes)
-📄 `backend.app.workflow`
-📄 `backend.app.workflow_events` (6 functions, 2 classes)
-📄 `examples.01-invoice.main` (1 functions)
-📄 `examples.01-invoice.run`
-📄 `examples.02-email.main` (1 functions)
-📄 `examples.02-email.run`
-📄 `examples.03-report-and-notify.main` (1 functions)
-📄 `examples.03-report-and-notify.run`
-📄 `examples.04-scheduled-report.main` (1 functions)
-📄 `examples.04-scheduled-report.run`
-📄 `examples.05-conversation-flow.main` (1 functions)
-📄 `examples.05-conversation-flow.run`
-📄 `examples.basic.invoice.run`
-📄 `examples.code_generation_examples` (1 functions)
-📄 `metrun-profile`
-📦 `nlp-service.app`
-📄 `nlp-service.app.audio_parser` (8 functions, 1 classes)
-📄 `nlp-service.app.code_generator` (8 functions, 1 classes)
-📄 `nlp-service.app.config` (1 classes)
-📄 `nlp-service.app.logging_setup` (6 functions, 2 classes)
-📄 `nlp-service.app.main` (20 functions)
-📄 `nlp-service.app.mapper` (6 functions)
-📄 `nlp-service.app.orchestrator` (7 functions)
-📄 `nlp-service.app.parser_llm` (3 functions)
-📄 `nlp-service.app.parser_rules` (5 functions)
-📄 `nlp-service.app.registry` (4 functions)
-📄 `nlp-service.app.schemas` (11 classes)
-📄 `nlp-service.app.settings` (11 functions, 6 classes)
-📦 `nlp-service.app.store` (4 functions, 1 classes)
-📄 `nlp-service.app.store.factory` (1 functions)
-📄 `nlp-service.app.store.memory` (5 functions, 1 classes)
-📄 `nlp-service.app.store.redis_store` (7 functions, 1 classes)
-📄 `nlp-service.app.system_executor` (13 functions)
-📦 `nlp2dsl_sdk`
-📄 `nlp2dsl_sdk.__main__` (1 functions)
-📄 `nlp2dsl_sdk.client` (47 functions, 2 classes)
-📄 `nlp2dsl_sdk.demos` (17 functions, 1 classes)
-📄 `project`
-📄 `tauri-wrapper.desktop`
-📄 `tauri-wrapper.scripts.dev` (8 functions)
-📄 `tauri-wrapper.src-tauri.src.main` (1 functions)
-📦 `worker`
-📄 `worker.config` (1 classes)
-📄 `worker.logging_setup` (6 functions, 2 classes)
-📄 `worker.worker` (12 functions)
-
-## Requirements
-
-- Python >= >=3.10
-- requests >=2.31.0
-
-## Contributing
-
-**Contributors:**
-- Tom Softreck <tom@sapletta.com>
-- Tom Sapletta <tom-sapletta-com@users.noreply.github.com>
-
-We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
-
-### Development Setup
-
-```bash
-# Clone the repository
-git clone https://github.com/wronai/nlp2dsl
-cd nlp2dsl
-
-# Install in development mode
-pip install -e ".[dev]"
-
-# Run tests
-pytest
-```
-
-## Documentation
-
-- 📖 [Full Documentation](https://github.com/wronai/nlp2dsl/tree/main/docs) — API reference, module docs, architecture
-- 🚀 [Getting Started](https://github.com/wronai/nlp2dsl/blob/main/docs/getting-started.md) — Quick start guide
-- 📚 [API Reference](https://github.com/wronai/nlp2dsl/blob/main/docs/api.md) — Complete API documentation
-- 🔧 [Configuration](https://github.com/wronai/nlp2dsl/blob/main/docs/configuration.md) — Configuration options
-- 💡 [Examples](./examples) — Usage examples and code samples
-
-### Generated Files
-
-| Output | Description | Link |
-|--------|-------------|------|
-| `README.md` | Project overview (this file) | — |
-| `docs/api.md` | Consolidated API reference | [View](./docs/api.md) |
-| `docs/modules.md` | Module reference with metrics | [View](./docs/modules.md) |
-| `docs/architecture.md` | Architecture with diagrams | [View](./docs/architecture.md) |
-| `docs/dependency-graph.md` | Dependency graphs | [View](./docs/dependency-graph.md) |
-| `docs/coverage.md` | Docstring coverage report | [View](./docs/coverage.md) |
-| `docs/getting-started.md` | Getting started guide | [View](./docs/getting-started.md) |
-| `docs/configuration.md` | Configuration reference | [View](./docs/configuration.md) |
-| `docs/api-changelog.md` | API change tracking | [View](./docs/api-changelog.md) |
-| `CONTRIBUTING.md` | Contribution guidelines | [View](./CONTRIBUTING.md) |
-| `examples/` | Usage examples | [Browse](./examples) |
-| `mkdocs.yml` | MkDocs configuration | — |
-
-<!-- code2docs:end -->
+SDK czeka na `/health` wszystkich trzech (`NLP2DSL_HEALTH_TIMEOUT`, domyślnie 120 s).

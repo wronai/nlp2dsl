@@ -11,6 +11,7 @@ import logging
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any
 
 from app.conversation.invoice_policy import invoice_attachment_policy_active
 from app.conversation.doql_autofill import (
@@ -25,7 +26,13 @@ from app.conversation.responses import _nlp_from_state, build_and_check_dsl, bui
 from app.conversation.system_map import set_doql_context
 from app.dsl.pipeline import map_to_dsl_with_enrichment
 from app.schemas import ConversationResponse, ConversationState, DialogResponse
-from app.validation.step_validator import validate_step_config, validate_workflow_steps
+from app.validation.step_validator import validate_step_config, validate_step_config_issues, validate_workflow_steps
+from nlp2dsl_sdk.validation.resolutions import (
+    ResolutionEnvironment,
+    apply_resolution_plans,
+    filter_plans_by_reflection_tokens,
+    plan_resolutions,
+)
 
 log = logging.getLogger("orchestrator.autonomous")
 
@@ -61,11 +68,39 @@ def _example_dir() -> Path | None:
     return Path(raw).resolve() if raw else None
 
 
-def _attachment_file_ok(raw: str, ctx: DoqlTaskContext) -> bool:
-    if not raw.strip():
-        return False
+def _step_config_for_validation(state: ConversationState) -> tuple[str, dict[str, Any]]:
+    intent = state.intent or "send_invoice"
+    config: dict[str, Any] = dict(state.entities)
+    if state.dsl and state.dsl.steps:
+        config = dict(state.dsl.steps[0].config)
+    return intent, config
+
+
+def _attachment_valid_ok(raw: str, ctx: DoqlTaskContext, state: ConversationState) -> bool:
     resolved = _resolve_artifact_file(raw, ctx)
-    return resolved is not None and Path(resolved).is_file()
+    if resolved is None or not Path(resolved).is_file():
+        return False
+    intent, current = _step_config_for_validation(state)
+    config: dict[str, Any] = dict(current)
+    config["attachment_path"] = resolved
+    for key in ("amount", "to", "currency"):
+        if key not in config and key in state.entities:
+            config[key] = state.entities[key]
+    issues = validate_step_config(intent, config)
+    return not any("attachment_path" in issue for issue in issues)
+
+
+def _maybe_delete_generated_attachment(raw: str, ctx: DoqlTaskContext) -> None:
+    resolved = _resolve_artifact_file(raw, ctx)
+    if not resolved:
+        return
+    path = Path(resolved)
+    markers = (".nlp2dsl/generated", "/tmp/nlp2dsl-invoices", "nlp2dsl-invoices")
+    if any(marker in str(path) for marker in markers):
+        try:
+            path.unlink(missing_ok=True)
+        except OSError:
+            pass
 
 
 def _resolve_artifact_file(raw: str, ctx: DoqlTaskContext) -> str | None:
@@ -95,7 +130,7 @@ def _try_fixture_attachment(state: ConversationState, ctx: DoqlTaskContext) -> s
     if not invoice_attachment_policy_active(ctx, state):
         return None
     current = str(state.entities.get("attachment_path", "")).strip()
-    if current and _attachment_file_ok(current, ctx):
+    if current and _attachment_valid_ok(current, ctx, state):
         return None
     if current:
         state.entities.pop("attachment_path", None)
@@ -107,7 +142,9 @@ def _try_fixture_attachment(state: ConversationState, ctx: DoqlTaskContext) -> s
             resolved = _resolve_artifact_file(art.path, ctx)
             if resolved:
                 state.entities["attachment_path"] = resolved
-                return f"attachment_path ← artifact:{art.path}"
+                if _attachment_valid_ok(resolved, ctx, state):
+                    return f"attachment_path ← artifact:{art.path}"
+                state.entities.pop("attachment_path", None)
 
     ex = _example_dir()
     if ex:
@@ -116,14 +153,16 @@ def _try_fixture_attachment(state: ConversationState, ctx: DoqlTaskContext) -> s
             for pattern in ("*.pdf", "*.PDF"):
                 for path in sorted(fixtures.glob(pattern)):
                     state.entities["attachment_path"] = str(path.resolve())
-                    return f"attachment_path ← fixtures/{path.name}"
+                    if _attachment_valid_ok(str(path), ctx, state):
+                        return f"attachment_path ← fixtures/{path.name}"
+                    state.entities.pop("attachment_path", None)
 
     return None
 
 
 def _try_generate_attachment(state: ConversationState, ctx: DoqlTaskContext) -> str | None:
     current = str(state.entities.get("attachment_path", "")).strip()
-    if current and _attachment_file_ok(current, ctx):
+    if current and _attachment_valid_ok(current, ctx, state):
         return None
     if current:
         state.entities.pop("attachment_path", None)
@@ -150,31 +189,55 @@ async def _dialog_missing(state: ConversationState) -> list[str]:
 
 
 async def _try_validation_fixes(state: ConversationState, ctx: DoqlTaskContext) -> list[str]:
-    """Fix validation errors autonomously (generate file, pick fixture)."""
-    intent = state.intent or "send_invoice"
-    config = dict(state.entities)
-    if state.dsl and state.dsl.steps:
-        config = dict(state.dsl.steps[0].config)
+    """Fix validation errors via issue → resolution plans, guided by reflection tokens."""
+    from app.conversation.reflection import reflection_from_state
 
-    issues = validate_step_config(intent, config)
-    applied: list[str] = []
-    attachment_issues = [i for i in issues if "attachment_path" in i]
-    if attachment_issues and not invoice_attachment_policy_active(ctx, state):
+    intent, config = _step_config_for_validation(state)
+    issues = validate_step_config_issues(intent, config)
+    if not issues:
         return []
-    if attachment_issues and invoice_attachment_policy_active(ctx, state):
-        raw = str(config.get("attachment_path", "")).strip()
-        if raw and not _attachment_file_ok(raw, ctx):
-            state.entities.pop("attachment_path", None)
+
+    attachment_related = any(
+        i.field_name == "attachment_path" or i.code.startswith("attachment.") for i in issues
+    )
+    if attachment_related and not invoice_attachment_policy_active(ctx, state):
+        return []
+
+    def _clear_field(field: str) -> None:
+        state.entities.pop(field, None)
+        if state.dsl and state.dsl.steps:
+            state.dsl.steps[0].config.pop(field, None)
+
+    def _try_autofill(issue) -> str | None:
+        field = issue.field_name
+        if not field:
+            return None
+        ref = f"{intent}.{field}" if "." not in field else field
+        updated, filled = autofill_entities(state.entities, [ref], ctx, intent=intent)
+        if filled:
+            state.entities.update(updated)
             if state.dsl and state.dsl.steps:
-                state.dsl.steps[0].config.pop("attachment_path", None)
-        step = _try_fixture_attachment(state, ctx)
-        if step:
-            applied.append(step)
-        else:
-            gen = _try_generate_attachment(state, ctx)
-            if gen:
-                applied.append(gen)
-    return applied
+                state.dsl.steps[0].config.update({k: updated[k] for k in filled if k in updated})
+            return filled[0]
+        return None
+
+    env = ResolutionEnvironment(
+        clear_field=_clear_field,
+        delete_generated_attachment=lambda raw: _maybe_delete_generated_attachment(raw, ctx),
+        get_attachment_path=lambda: str(
+            (state.dsl.steps[0].config.get("attachment_path") if state.dsl and state.dsl.steps else None)
+            or state.entities.get("attachment_path", "")
+        ).strip(),
+        pick_fixture=lambda: _try_fixture_attachment(state, ctx),
+        generate=lambda _hint: _try_generate_attachment(state, ctx),
+        autofill=_try_autofill,
+    )
+
+    reflection = reflection_from_state(state, "autonomous_validate")
+    tokens = reflection.get("resolutions_available") or []
+    plans = plan_resolutions(issues)
+    plans = filter_plans_by_reflection_tokens(plans, tokens)
+    return apply_resolution_plans(plans, env)
 
 
 async def autonomous_resolve_turn(state: ConversationState) -> AutonomousResolveResult:

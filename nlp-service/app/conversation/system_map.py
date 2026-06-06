@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from contextvars import ContextVar
+from typing import Any
 
 from app.conversation.doql_context import DoqlTaskContext, load_doql_context, resolve_doql_context_path
 from app.schemas import ConversationState
@@ -22,6 +23,33 @@ def load_system_map_for_state(state: ConversationState) -> DoqlTaskContext | Non
     from app.conversation.doql_autofill import load_context_for_state
 
     return load_context_for_state(state)
+
+
+def known_action_names() -> set[str]:
+    """Action names from DOQL commands[] when map is active; else ACTIONS_REGISTRY (C1)."""
+    from app.registry import ACTIONS_REGISTRY
+
+    ctx = get_doql_context()
+    if ctx and ctx.commands:
+        return {cmd.name for cmd in ctx.commands if cmd.name}
+    return set(ACTIONS_REGISTRY.keys())
+
+
+def command_meta(action: str) -> dict[str, Any]:
+    """Lightweight action metadata — DOQL command first, registry fallback."""
+    from app.registry import ACTIONS_REGISTRY
+
+    ctx = get_doql_context()
+    if ctx:
+        cmd = ctx.command(action)
+        if cmd is not None:
+            return {
+                "required": list(cmd.required),
+                "optional": list(cmd.optional),
+                "runtime": cmd.runtime,
+                "resource_area": ACTIONS_REGISTRY.get(action, {}).get("resource_area"),
+            }
+    return dict(ACTIONS_REGISTRY.get(action, {}))
 
 
 def required_fields_for_action(action: str) -> list[str] | None:

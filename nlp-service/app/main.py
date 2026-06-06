@@ -357,10 +357,19 @@ async def chat_registry_observe(request: Request) -> dict[str, Any]:
     execution = body.get("execution")
     entities = body.get("entities") or {}
     intent = body.get("intent")
+    conversation_id = body.get("conversation_id")
 
     try:
         from app.conversation.doql_registry import refresh_registry_for_state
+        from app.conversation.orchestrator import mark_conversation_executed
         from app.schemas import ConversationState
+
+        if (
+            conversation_id
+            and phase == "executed"
+            and isinstance(execution, dict)
+        ):
+            await mark_conversation_executed(str(conversation_id), execution)
 
         state = ConversationState(
             id=str(body.get("conversation_id") or "observe"),

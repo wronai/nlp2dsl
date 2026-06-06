@@ -23,13 +23,21 @@ from app.conversation.responses import (
 from app.request_context import set_example_dir
 from app.routing import IntentDecision, resolve_intent
 from app.schemas import ConversationResponse, ConversationState
+from app.store import ConversationStore
 from app.store.factory import get_conversation_store
 
 log = logging.getLogger("orchestrator")
 
-_store = get_conversation_store()
+_store: ConversationStore | None = None
 
 _CONVERSATION_ID_LENGTH: int = int("12")
+
+
+def _conversation_store() -> ConversationStore:
+    global _store
+    if _store is None:
+        _store = get_conversation_store()
+    return _store
 
 
 def _apply_request_context(inline: dict | None) -> None:
@@ -59,7 +67,7 @@ async def start_conversation(
             state.attachment_required = bool(context_inline["attachment_required"])
     state.history.append({"role": "user", "text": text})
     result = await _process_message(state, text)
-    await _store.save(state.id, state.model_dump())
+    await _conversation_store().save(state.id, state.model_dump())
     return result
 
 
@@ -69,7 +77,8 @@ async def continue_conversation(
     *,
     context_inline: dict | None = None,
 ) -> ConversationResponse:
-    raw = await _store.get(conversation_id)
+    store = _conversation_store()
+    raw = await store.get(conversation_id)
     if not raw:
         log.info("Conversation %s not found; creating new state lazily", conversation_id)
         state = ConversationState(id=conversation_id)
@@ -85,15 +94,33 @@ async def continue_conversation(
 
     state.history.append({"role": "user", "text": text})
     result = await _process_message(state, text)
-    await _store.save(state.id, state.model_dump())
+    await store.save(state.id, state.model_dump())
     return result
 
 
 async def get_conversation(conversation_id: str) -> ConversationState | None:
-    raw = await _store.get(conversation_id)
+    raw = await _conversation_store().get(conversation_id)
     if raw:
         return ConversationState(**raw)
     return None
+
+
+async def mark_conversation_executed(
+    conversation_id: str,
+    execution: dict,
+) -> ConversationState | None:
+    """Persist executed status after backend runs workflow (idempotent guard for 'uruchom')."""
+    store = _conversation_store()
+    raw = await store.get(conversation_id)
+    if not raw:
+        return None
+    state = ConversationState(**raw)
+    if state.status == "executed" and state.execution:
+        return state
+    state.status = "executed"
+    state.execution = execution
+    await store.save(state.id, state.model_dump())
+    return state
 
 
 def _attach_routing(

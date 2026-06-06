@@ -93,8 +93,19 @@ conversation {
   autofill: true;
   attachment_required: false;
   generate_invoice_if_missing: true;
+  strict_pdf: true;
 }
 ```
+
+Pola `conversation`:
+
+| Pole | Opis |
+|------|------|
+| `autofill` | Uzupełnianie z bloku `data` w tej samej turze |
+| `attachment_required` | Wymusza `attachment_path` przed `ready` |
+| `generate_invoice_if_missing` | Nested sync `generate_invoice` |
+| `strict_pdf` | Tylko binarny PDF (`%PDF`); domyślnie false (MVP akceptuje też `FAKTURA`) |
+| `sync_auto_execute` | Backend wykonuje workflow po `ready` bez „uruchom” |
 
 ## Jak mapa steruje generowaniem struktur
 
@@ -144,7 +155,9 @@ Kolejna tura czyta zaktualizowany plik (`NLP2DSL_DOQL_CONTEXT`). SDK: `nlp2dsl_s
 | `process/*.process.yaml` | wynik DSL→CMD→process |
 | `manifest.yaml` | indeks zapytań |
 | `nlp2dsl.yaml` | źródło `resources` + `access` |
-| `examples/example-profiles.yaml` | źródło `runtimes` bootstrap |
+| `examples/example-profiles.yaml` | źródło `runtimes` bootstrap + `process.conversation.strict_pdf` |
+
+Walidacja pól i załączników wynika z mapy + `conversation`: [`validation.md`](validation.md).
 
 ## Stan implementacji
 

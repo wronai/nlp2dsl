@@ -229,6 +229,44 @@ def process_example(
             if not passed:
                 report["passed"] = False
 
+    profile_validations = entry.get("validations") or []
+    if profile_validations:
+        from nlp2dsl_sdk.validation.profile_checks import response_from_e2e_trace, run_validations_from_raw
+
+        last_response: dict[str, Any] = {}
+        conv_trace_path = example_dir / ".nlp2dsl" / "conversation.trace.json"
+        exec_trace_path = example_dir / ".nlp2dsl" / "execution.trace.json"
+        if conv_trace_path.is_file():
+            try:
+                last_response = response_from_e2e_trace(
+                    json.loads(conv_trace_path.read_text(encoding="utf-8"))
+                )
+            except json.JSONDecodeError:
+                pass
+        if not last_response and exec_trace_path.is_file():
+            try:
+                last_response = response_from_e2e_trace(
+                    json.loads(exec_trace_path.read_text(encoding="utf-8"))
+                )
+            except json.JSONDecodeError:
+                pass
+
+        pv_results = run_validations_from_raw(
+            profile_validations,
+            last_response,
+            example_dir=example_dir,
+        )
+        pv_passed = all(r.get("passed") for r in pv_results)
+        report["checks"].append({
+            "id": "profile.validations",
+            "status": "passed" if pv_passed else "failed",
+            "summary": f"{sum(1 for r in pv_results if r.get('passed'))}/{len(pv_results)} profile checks",
+            "validations": pv_results,
+        })
+        report["profile_validations"] = pv_results
+        if not pv_passed:
+            report["passed"] = False
+
     report["status"] = "passed" if report["passed"] else "failed"
     return report
 

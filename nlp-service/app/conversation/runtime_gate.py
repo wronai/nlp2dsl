@@ -3,51 +3,39 @@
 from __future__ import annotations
 
 from app.conversation.doql_context import DoqlTaskContext
-
-_WORKER_ACTIONS = frozenset(
-    {
-        "send_invoice",
-        "generate_invoice",
-        "send_email",
-        "generate_report",
-        "crm_update",
-        "notify_slack",
-        "notify_telegram",
-        "notify_teams",
-        "generate_code",
-    }
+from nlp2dsl_sdk.validation.rules.runtime_health import (
+    runtime_id_for_intent,
+    validate_runtime_health_for_intent,
 )
 
 
-def _runtime_id_for_intent(intent: str | None) -> str | None:
-    if not intent:
-        return None
-    if intent.startswith("mullm_"):
-        return "delegate:mullm"
-    if intent.startswith("system_"):
-        return "orchestrator:nlp-service"
-    if intent in _WORKER_ACTIONS:
-        return "executor:worker"
-    return None
-
-
-def runtime_unavailable_message(ctx: DoqlTaskContext, intent: str | None) -> str | None:
+def runtime_unavailable_message(
+    ctx: DoqlTaskContext,
+    intent: str | None,
+    *,
+    live_probe: bool = True,
+) -> str | None:
     """
-    Return user-facing message when DOQL map lists runtime as unavailable.
+    Return user-facing message when DOQL runtime is unavailable or health check fails.
     None when OK or map has no runtimes section (legacy DOQL).
     """
-    runtime_id = _runtime_id_for_intent(intent)
-    if not runtime_id or not ctx.runtimes:
+    if not intent or not ctx.runtimes:
+        return None
+
+    issues = validate_runtime_health_for_intent(
+        ctx.runtimes,
+        intent,
+        live_probe=live_probe,
+    )
+    if issues:
+        return issues[0].message
+
+    runtime_id = runtime_id_for_intent(intent)
+    if not runtime_id:
         return None
     by_id = {r.id: r for r in ctx.runtimes}
-    rt = by_id.get(runtime_id)
-    if rt is None:
+    if runtime_id not in by_id:
         return None
-    if rt.status == "unavailable":
-        return (
-            f"Środowisko wykonania `{runtime_id}` jest niedostępne w tym przykładzie. "
-            "Sprawdź profile Docker lub mapę runtimes w environment.doql.less."
-        )
     return None
 
 
@@ -79,5 +67,23 @@ def process_scope_blocked(
         return (
             f"Akcja `{action}` (obszar `{area}`) nie należy do dozwolonych obszarów procesu "
             f"({', '.join(sorted(allow))})."
+        )
+    return None
+
+
+def intract_clarification_blocked(
+    ctx: DoqlTaskContext,
+    *,
+    intent: str | None,
+    confidence: float,
+) -> str | None:
+    """Block low-confidence / unknown intents when process.intract_enforce_clarification."""
+    if not ctx.process.intract_enforce_clarification:
+        return None
+    threshold = float(ctx.process.nlp_confidence_min or 0.5)
+    if intent == "unknown" or confidence < threshold:
+        return (
+            f"Intencja wymaga doprecyzowania (pewność {confidence:.2f}, próg {threshold:.2f}). "
+            "Opisz dokładniej, co system ma zrobić."
         )
     return None

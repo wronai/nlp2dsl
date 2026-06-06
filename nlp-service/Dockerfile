@@ -2,11 +2,12 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY requirements.txt .
+COPY nlp-service/requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY app/ app/
-COPY integrations/ integrations/
+COPY nlp2dsl_sdk/ /app/nlp2dsl_sdk/
+COPY nlp-service/app/ app/
+COPY nlp-service/integrations/ integrations/
 
 ENV PYTHONPATH=/app
 

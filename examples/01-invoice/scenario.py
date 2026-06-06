@@ -29,6 +29,20 @@ def _run_autonomous(client: NLP2DSLClient) -> dict[str, Any]:
     return result
 
 
+def _attachment_validation(result: dict[str, Any]) -> dict[str, Any] | None:
+    av = result.get("attachment_validation")
+    if isinstance(av, dict):
+        return av
+    execution = result.get("execution") or {}
+    for step in execution.get("steps") or []:
+        if not isinstance(step, dict):
+            continue
+        step_result = step.get("result") or {}
+        if isinstance(step_result, dict) and isinstance(step_result.get("attachment_validation"), dict):
+            return step_result["attachment_validation"]
+    return None
+
+
 def run(client: Optional[NLP2DSLClient] = None) -> dict[str, Any]:
     client = client or NLP2DSLClient.from_env()
     print("=== Przykład: Wysyłanie Faktury (autonomicznie) ===\n")
@@ -43,6 +57,13 @@ def run(client: Optional[NLP2DSLClient] = None) -> dict[str, Any]:
         result = execute_from_text(client, INVOICE_PROMPT, label="Wykonywanie z zapytania NLP")
     else:
         result = _run_autonomous(client)
+
+    av = _attachment_validation(result)
+    if result.get("status") == "executed" and av and av.get("status") != "ok":
+        from nlp2dsl_sdk.attachment_validation import format_attachment_validation
+
+        result["status"] = "artifact_invalid"
+        result["message"] = format_attachment_validation(av) or "Załącznik nie przeszedł walidacji."
 
     if result.get("status") == "executed":
         execution = result.get("execution") or {}

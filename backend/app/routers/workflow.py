@@ -13,6 +13,7 @@ from httpx import AsyncClient
 from starlette.responses import StreamingResponse
 
 from app.engine import NLP_SERVICE_URL, _repo, run_workflow, start_workflow
+from app.dsl_validation import dsl_validation_response, validate_dsl_for_execution
 from app.logging_setup import get_request_id
 from app.workflow_events import TERMINAL_EVENT_TYPES, workflow_event_hub
 from app.schemas import ActionInfo, RunWorkflowRequest, Step, WorkflowResult
@@ -184,7 +185,10 @@ async def workflow_from_text(body: dict) -> dict[str, Any]:
             "partial_workflow": dsl_response.get("workflow"),
         }
 
-    workflow_data = dsl_response["workflow"]
+    workflow_data = dsl_response.get("workflow")
+    contract_issues = validate_dsl_for_execution(workflow_data)
+    if contract_issues:
+        return dsl_validation_response(workflow_data, contract_issues)
 
     if execute and workflow_data:
         steps = workflow_data.get("steps", [])

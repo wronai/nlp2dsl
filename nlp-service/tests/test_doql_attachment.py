@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
+from app.validation.invoice_pdf import write_invoice_pdf
 from app.orchestrator import continue_conversation, start_conversation
 from app.store.memory import MemoryConversationStore
 
@@ -61,7 +62,7 @@ class TestAttachmentConversation:
         assert any("attachment" in m for m in resp1.missing)
 
         pdf = tmp_path / "faktura.pdf"
-        pdf.write_text("FAKTURA\nOdbiorca: klient@firma.pl\nKwota: 1500.0 PLN\n", encoding="utf-8")
+        write_invoice_pdf(pdf, to="klient@firma.pl", amount=1500, currency="PLN")
         resp2 = await continue_conversation(
             resp1.conversation_id,
             "Plik faktury: faktura.pdf",

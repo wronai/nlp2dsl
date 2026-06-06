@@ -35,6 +35,44 @@ def test_process_policy_from_profile_deterministic() -> None:
     assert effective_nlp_parser_mode(proc) == "rules"
 
 
+def test_process_policy_from_profile_overrides_all_sections() -> None:
+    proc = process_policy_from_profile_block(
+        {
+            "mode": "reactive",
+            "nlp": {"parser": "llm", "confidence_min": 0.42, "enrich_missing": False},
+            "autonomous": {"enabled": False, "max_rounds": 2, "ask_user": "never"},
+            "llm": {"reasoning": "deep", "temperature": 0.25},
+            "intract": {"gate": True, "enforce_clarification": True},
+            "access": {"agent": "assistant", "allow_areas": "files:project,mullm:rag"},
+            "paths": {"read": "fixtures/**,data/**", "write": ["generated/**"]},
+        }
+    )
+
+    assert proc.mode == "reactive"
+    assert proc.nlp_parser == "llm"
+    assert proc.nlp_confidence_min == 0.42
+    assert proc.nlp_enrich_missing is False
+    assert proc.autonomous_enabled is False
+    assert proc.autonomous_max_rounds == 2
+    assert proc.ask_user == "never"
+    assert proc.llm_reasoning == "deep"
+    assert proc.llm_temperature == 0.25
+    assert proc.intract_gate is True
+    assert proc.intract_enforce_clarification is True
+    assert proc.access.agent == "assistant"
+    assert proc.access.allow_resource_areas == ["files:project", "mullm:rag"]
+    assert proc.paths.read == ["fixtures/**", "data/**"]
+    assert proc.paths.write == ["generated/**"]
+
+
+def test_process_policy_unknown_mode_uses_balanced_preset() -> None:
+    proc = process_policy_from_profile_block({"mode": "unknown-mode"})
+
+    assert proc.mode == "balanced"
+    assert proc.nlp_parser == "auto"
+    assert proc.nlp_confidence_min == 0.5
+
+
 def test_apply_process_policies_merges_conversation() -> None:
     ir = SystemMapIR(example_id="01-invoice")
     apply_process_policies(ir, example_id="01-invoice", repo_root=".")
@@ -103,4 +141,3 @@ def test_process_scope_denied_mullm() -> None:
     msg = process_scope_denied(proc, action="mullm_list_files", resource_area="mullm:rag")
     assert msg is not None
     assert "mullm:rag" in msg
-

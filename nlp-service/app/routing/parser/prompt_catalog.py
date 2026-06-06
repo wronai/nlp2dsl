@@ -1,16 +1,20 @@
-"""Dynamiczny katalog akcji dla promptu LLM — budowany z ACTIONS_REGISTRY."""
+"""Dynamiczny katalog akcji dla promptu LLM — DOQL commands[] lub ACTIONS_REGISTRY."""
 
 from __future__ import annotations
 
 import json
 
+from app.conversation.system_map import known_action_names
 from app.registry import ACTIONS_REGISTRY, COMPOSITE_INTENTS
 
 
 def build_llm_system_prompt() -> str:
     """Schemat intencji i pól generowany z rejestru (nie hardcoded)."""
+    allowed = known_action_names()
     actions_lines: list[str] = []
     for name, meta in sorted(ACTIONS_REGISTRY.items()):
+        if name not in allowed:
+            continue
         req = ", ".join(meta.get("required", [])) or "brak"
         opt = ", ".join(meta.get("optional", {}).keys()) or "brak"
         quality = ", ".join(meta.get("quality_required", [])) or ""

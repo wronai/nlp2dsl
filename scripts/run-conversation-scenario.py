@@ -100,24 +100,15 @@ def _check_expect(response: dict[str, Any], expect: dict[str, Any]) -> tuple[boo
 
 
 def _run_validation(v: dict[str, Any], last_response: dict[str, Any]) -> dict[str, Any]:
-    vid = str(v.get("id", v.get("type", "validation")))
-    vtype = str(v.get("type", ""))
-    if vtype == "dsl_action":
-        action = str(v.get("action", ""))
-        passed = action in _dsl_actions(last_response)
-        return {
-            "id": vid,
-            "passed": passed,
-            "summary": f"dsl action {action!r} present" if passed else f"missing action {action!r}",
-        }
-    if vtype == "execution_completed":
-        passed = _execution_completed(last_response)
-        return {
-            "id": vid,
-            "passed": passed,
-            "summary": "execution completed" if passed else "execution not completed",
-        }
-    return {"id": vid, "passed": False, "summary": f"unknown validation type {vtype!r}"}
+    from nlp2dsl_sdk.validation.profile_checks import parse_profile_validation, run_profile_validation_checks
+    from nlp2dsl_sdk.validation.profile_checks import ProfileCheckContext
+
+    spec = parse_profile_validation(v)
+    if spec is None:
+        vid = str(v.get("id", v.get("type", "validation")))
+        return {"id": vid, "passed": False, "summary": f"unknown validation entry {v!r}"}
+    results = run_profile_validation_checks([spec], ProfileCheckContext(response=last_response))
+    return results[0]
 
 
 def run_scenario(

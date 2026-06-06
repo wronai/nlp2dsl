@@ -40,37 +40,78 @@ def merge_execution_observation(
     """Merge worker/backend execution result into registry fields."""
     data = dict(ir_data)
     history = dict(workflow_history)
-    stamp = datetime.now(UTC).isoformat()
 
+    _merge_execution_header(history, execution, phase=phase)
+    for step in _execution_steps(execution):
+        _merge_execution_step(data, history, step)
+    _merge_workflow_id(history, execution)
+
+    return data, history
+
+
+def _merge_execution_header(
+    history: dict[str, Any],
+    execution: Mapping[str, Any],
+    *,
+    phase: str,
+) -> None:
     history["last_phase"] = phase
-    history["last_observed_at"] = stamp
+    history["last_observed_at"] = datetime.now(UTC).isoformat()
     history["last_status"] = str(execution.get("status", execution.get("state", "")))
 
-    results = execution.get("results") or execution.get("steps") or []
-    if isinstance(results, list):
-        for step in results:
-            if not isinstance(step, dict):
-                continue
-            action = str(step.get("action", ""))
-            output = step.get("output") or step.get("result") or {}
-            if not isinstance(output, dict):
-                output = {"value": output}
-            if action == "send_invoice":
-                inv_id = output.get("invoice_id") or output.get("id")
-                if inv_id:
-                    data["send_invoice.last_invoice_id"] = inv_id
-                    history["last_invoice_id"] = str(inv_id)
-            if action == "generate_invoice":
-                path = output.get("path") or output.get("output_path")
-                if path:
-                    data["send_invoice.attachment_path"] = path
-                    data["attachment_path"] = path
 
+def _execution_steps(execution: Mapping[str, Any]) -> list[Any]:
+    raw = execution.get("results") or execution.get("steps") or []
+    return raw if isinstance(raw, list) else []
+
+
+def _merge_execution_step(
+    data: dict[str, Any],
+    history: dict[str, Any],
+    step: Any,
+) -> None:
+    if not isinstance(step, dict):
+        return
+    action = str(step.get("action", ""))
+    output = _step_output(step)
+    if action == "send_invoice":
+        _merge_send_invoice_output(data, history, output)
+    elif action == "generate_invoice":
+        _merge_generate_invoice_output(data, output)
+
+
+def _step_output(step: Mapping[str, Any]) -> dict[str, Any]:
+    output = step.get("output") or step.get("result") or {}
+    return output if isinstance(output, dict) else {"value": output}
+
+
+def _merge_send_invoice_output(
+    data: dict[str, Any],
+    history: dict[str, Any],
+    output: Mapping[str, Any],
+) -> None:
+    inv_id = output.get("invoice_id") or output.get("id")
+    if not inv_id:
+        return
+    data["send_invoice.last_invoice_id"] = inv_id
+    history["last_invoice_id"] = str(inv_id)
+
+
+def _merge_generate_invoice_output(
+    data: dict[str, Any],
+    output: Mapping[str, Any],
+) -> None:
+    path = output.get("path") or output.get("output_path")
+    if not path:
+        return
+    data["send_invoice.attachment_path"] = path
+    data["attachment_path"] = path
+
+
+def _merge_workflow_id(history: dict[str, Any], execution: Mapping[str, Any]) -> None:
     wf_id = execution.get("workflow_id") or execution.get("id")
     if wf_id:
         history["last_workflow_id"] = str(wf_id)
-
-    return data, history
 
 
 def merge_registry_observations(

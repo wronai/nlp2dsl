@@ -52,6 +52,34 @@ def test_merge_execution_observation_invoice_id() -> None:
     assert history["last_status"] == "completed"
 
 
+def test_merge_execution_observation_generated_attachment_and_workflow_id() -> None:
+    data, history = merge_execution_observation(
+        {"existing": "keep"},
+        {},
+        {
+            "workflow_id": "wf-123",
+            "state": "completed",
+            "steps": [
+                {
+                    "action": "generate_invoice",
+                    "result": {"output_path": "generated/invoice.pdf"},
+                },
+                {
+                    "action": "send_email",
+                    "result": "ok",
+                },
+            ],
+        },
+        phase="executed",
+    )
+
+    assert data["existing"] == "keep"
+    assert data["send_invoice.attachment_path"] == "generated/invoice.pdf"
+    assert data["attachment_path"] == "generated/invoice.pdf"
+    assert history["last_workflow_id"] == "wf-123"
+    assert history["last_status"] == "completed"
+
+
 def test_merge_registry_observations_preserves_history(tmp_path: Path) -> None:
     ex = tmp_path / "01-invoice"
     (ex / ".nlp2dsl").mkdir(parents=True)

@@ -105,10 +105,11 @@ def test_workflow_and_conversation_endpoints(client_factory: Any) -> None:
     assert session.calls[1][2]["json"]["steps"][0]["config"]["to"] == "klient@firma.pl"
 
     assert session.calls[2][1] == "http://backend.test/workflow/chat/start"
-    assert session.calls[2][2]["json"] == {"text": "Chcę wysłać fakturę"}
+    assert session.calls[2][2]["json"]["text"] == "Chcę wysłać fakturę"
 
     assert session.calls[3][1] == "http://backend.test/workflow/chat/message"
-    assert session.calls[3][2]["json"] == {"conversation_id": "conv-1", "text": "1500 PLN"}
+    assert session.calls[3][2]["json"]["conversation_id"] == "conv-1"
+    assert session.calls[3][2]["json"]["text"] == "1500 PLN"
 
     assert session.calls[4][1] == "http://backend.test/workflow/actions/schema/send_invoice"
 
@@ -258,6 +259,37 @@ def test_code_generation_methods_hit_expected_services(client_factory: Any) -> N
     assert session.calls[4][1] == "http://worker.test/execute"
     assert session.calls[4][2]["json"]["action"] == "generate_code"
     assert session.calls[4][2]["json"]["config"]["language"] == "cpp"
+
+
+def test_default_service_urls_match_docker_compose_ports() -> None:
+    from nlp2dsl_sdk.client import (
+        DEFAULT_BACKEND_URL,
+        DEFAULT_NLP_SERVICE_URL,
+        DEFAULT_WORKER_URL,
+    )
+
+    assert DEFAULT_BACKEND_URL == "http://localhost:8010"
+    assert DEFAULT_NLP_SERVICE_URL == "http://localhost:8012"
+    assert DEFAULT_WORKER_URL == "http://localhost:8004"
+
+
+def test_wait_for_health_retries_until_success(monkeypatch: pytest.MonkeyPatch) -> None:
+    client = NLP2DSLClient(session=DummySession([]))
+    attempts = {"n": 0}
+    sleeps: list[float] = []
+
+    def fake_health() -> dict[str, str]:
+        attempts["n"] += 1
+        if attempts["n"] < 2:
+            raise requests.ConnectionError("refused")
+        return {"backend": "ok", "nlp_service": "ok", "worker": "ok"}
+
+    monkeypatch.setattr(client, "health", fake_health)
+    monkeypatch.setattr("nlp2dsl_sdk.client.time.sleep", lambda s: sleeps.append(s))
+
+    assert client.wait_for_health(timeout_s=10, interval_s=0.01) is True
+    assert attempts["n"] == 2
+    assert sleeps == [0.01]
 
 
 def test_health_queries_all_services(client_factory: Any) -> None:

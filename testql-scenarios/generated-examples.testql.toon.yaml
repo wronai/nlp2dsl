@@ -410,3 +410,19 @@ ASSERT_EXIT_CODE 0
 # Query 5: pokaż status systemu
 SHELL "nlp2dsl run \"pokaż status systemu\" --json" 30000
 ASSERT_EXIT_CODE 0
+
+# --- 13-autonomous-invoice-stack ---
+# PIPELINE: NLP → DSL → CMD → process
+
+CONFIG[3]{key, value}:
+  cli_command, python3 main.py
+  timeout_ms, 120000
+  example_dir, examples/13-autonomous-invoice-stack
+
+# Run full example scenario
+SHELL "cd examples/13-autonomous-invoice-stack && python3 main.py" 120000
+ASSERT_EXIT_CODE 0
+
+# Query 1: autonomous-invoice-stack
+SHELL "nlp2dsl run \"autonomous-invoice-stack\" --json" 30000
+ASSERT_EXIT_CODE 0

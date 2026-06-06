@@ -11,6 +11,7 @@ from nlp2dsl_sdk.reflection import (
     reflect,
     reflect_from_chat_turn,
 )
+from nlp2dsl_sdk.invoice_pdf import write_invoice_pdf
 from nlp2dsl_sdk.system_map_ir import (
     CommandSchemaIR,
     ConversationPolicyIR,
@@ -84,7 +85,7 @@ def test_reflect_missing_attachment_when_required() -> None:
 def test_validate_attachment_mismatch(tmp_path: Path) -> None:
     ir = _invoice_ir()
     bad = tmp_path / "x.pdf"
-    bad.write_text("FAKTURA\nKwota: 999.0 PLN\n", encoding="utf-8")
+    write_invoice_pdf(bad, to="a@b.pl", amount=999, currency="PLN")
     issues = validate_step_config_from_map(
         ir,
         "send_invoice",

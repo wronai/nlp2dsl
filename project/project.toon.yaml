@@ -1,52 +1,52 @@
-# nlp2dsl | 605 func | 101f | 26410L | python | 2026-06-05
+# nlp2dsl | 998 func | 167f | 39021L | python | 2026-06-06
 # generated in 0.00s
 
 HEALTH:
-  CC̄=3.7  critical=42 (limit:10)  dup=3  cycles=0
+  CC̄=4.7  critical=114 (limit:10)  dup=3  cycles=0
 
 ALERTS[20]:
   !!! cc_exceeded      KeywordIntentDetector._fast_path_detection = 73 (limit:15)
+  !!! cc_exceeded      render_system_map_doql = 70 (limit:15)
+  !!! cc_exceeded      render_doql_context = 62 (limit:15)
+  !!! high_fan_out     generate_stack_compose = 57 (limit:10)
+  !!! high_fan_out     run_scenario = 39 (limit:10)
+  !!! high_fan_out     process_example = 37 (limit:10)
+  !!! cc_exceeded      _check_expect = 36 (limit:15)
+  !!! high_fan_out     main = 35 (limit:10)
   !!! cc_exceeded      KeywordPatterns._load_detector_config_from_json = 33 (limit:15)
-  !!! high_fan_out     process_example = 31 (limit:10)
-  !!! high_fan_out     KeywordIntentDetector._fast_path_detection = 29 (limit:10)
-  !!! high_fan_out     main = 23 (limit:10)
-  !!! high_fan_out     enrich_entities = 21 (limit:10)
-  !!  cc_exceeded      _apply_context_filters = 21 (limit:15)
-  !!  high_fan_out     _execute_workflow = 19 (limit:10)
-  !!  high_fan_out     resolve_intent = 19 (limit:10)
-  !!  high_fan_out     KeywordPatterns._load_detector_config_from_json = 18 (limit:10)
+  !!! cc_exceeded      run_scenario = 29 (limit:15)
 
-MODULES[210] (top by size):
-  M[examples/testql-results.json] 2077L C:0 F:0 CC↑0 D:0 (json)
+MODULES[287] (top by size):
   M[packages/nlp2cmd-intent/src/nlp2cmd_intent/data/patterns.json] 2016L C:0 F:0 CC↑0 D:0 (json)
+  M[examples/testql-results.json] 1980L C:0 F:0 CC↑0 D:0 (json)
   M[planfile.yaml] 1319L C:0 F:0 CC↑0 D:0 (yaml)
   M[packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py] 1209L C:2 F:22 CC↑73 D:0 (python)
+  M[nlp2dsl_sdk/client.py] 893L C:2 F:60 CC↑14 D:0 (python)
+  M[nlp-service/app/main.py] 645L C:0 F:26 CC↑14 D:1 (python)
   M[examples/08-multi-object-benchmark/results/benchmark_1780668530.json] 642L C:0 F:0 CC↑0 D:0 (json)
   M[examples/08-multi-object-benchmark/results/benchmark_1780672619.json] 636L C:0 F:0 CC↑0 D:0 (json)
   M[examples/08-multi-object-benchmark/results/benchmark_1780673613.json] 636L C:0 F:0 CC↑0 D:0 (json)
-  M[nlp2dsl_sdk/client.py] 600L C:2 F:51 CC↑9 D:0 (python)
-  M[nlp-service/app/main.py] 570L C:0 F:24 CC↑10 D:1 (python)
+  M[examples/08-multi-object-benchmark/results/benchmark_1780694039.json] 636L C:0 F:0 CC↑0 D:0 (json)
+  M[examples/08-multi-object-benchmark/results/benchmark_1780734808.json] 636L C:0 F:0 CC↑0 D:0 (json)
+  M[examples/08-multi-object-benchmark/results/benchmark_1780737026.json] 636L C:0 F:0 CC↑0 D:0 (json)
   M[nlp-service/app/routing/parser/rules.py] 564L C:0 F:31 CC↑21 D:2 (python)
-  M[goal.yaml] 512L C:0 F:0 CC↑0 D:0 (yaml)
-  M[nlp2dsl_sdk/artifacts.py] 410L C:1 F:17 CC↑17 D:7 (python)
-  M[scripts/run-example-testql-results.py] 408L C:2 F:11 CC↑19 D:0 (python)
-  M[nlp-service/app/registry.py] 403L C:0 F:5 CC↑5 D:4 (python)
-  M[testql-scenarios/generated-examples.testql.toon.yaml] 400L C:0 F:0 CC↑0 D:0 (yaml)
-  LANGS: python:145/json:15/shell:11/toml:10/other:9/yaml:9/txt:4/javascript:2/rust:2/yml:2/ini:1
+  M[scripts/run-example-testql-results.py] 524L C:2 F:14 CC↑23 D:0 (python)
+  M[nlp2dsl_sdk/compose_generator.py] 512L C:1 F:16 CC↑13 D:1 (python)
+  LANGS: python:213/json:19/shell:12/toml:10/yaml:10/other:9/txt:6/yml:3/javascript:2/rust:2/ini:1
 
 HOTSPOTS[10]:
-  ★ process_example fan=31  // Analysis pipeline, 31 stages
+  ★ generate_stack_compose fan=57  // Emit transparent docker-compose stack + cron sidecar under .nlp2dsl/generated/.
+  ★ run_scenario fan=39  // Orchestrates 39 calls
+  ★ process_example fan=37  // Analysis pipeline, 37 stages
+  ★ main fan=35  // Orchestrates 35 calls
   ★ KeywordIntentDetector._fast_path_detection fan=29  // Fast path detection for common patterns.
-  ★ main fan=23  // Orchestrates 23 calls
-  ★ enrich_entities fan=21  // Use LLM to compose missing quality fields. Returns updated NLPResult or None.
-  ★ _execute_workflow fan=19  // Orchestrates 19 calls
 
 REFACTOR[15]:
   [1] H/L Split KeywordPatterns._load_detector_config_from_json (CC=33)
   [2] H/L Split KeywordIntentDetector._fast_path_detection (CC=73)
-  [3] H/H Split god module packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py (1209L, 2 classes)
-  [4] H/H Split god module nlp-service/app/routing/parser/rules.py (564L, 0 classes)
-  [5] H/H Split god module nlp-service/app/main.py (570L, 0 classes)
+  [3] H/L Split format_transcript (CC=25)
+  [4] H/L Split render_system_map_doql (CC=70)
+  [5] H/L Split render_doql_context (CC=62)
 
 EVOLUTION:
-  2026-06-05 CC̄=3.7 crit=42 26410L // Automated analysis
+  2026-06-06 CC̄=4.7 crit=114 39021L // Automated analysis

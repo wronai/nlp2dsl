@@ -7,7 +7,7 @@ from typing import Any, Optional
 
 from nlp2dsl_sdk.client import ConversationFlow, NLP2DSLClient
 from nlp2dsl_sdk.conversation_artifacts import write_conversation_artifacts
-from nlp2dsl_sdk.conversation_artifacts import write_conversation_artifacts
+from nlp2dsl_sdk.preview import ensure_services
 
 
 def _save_conversation_artifacts(flow: ConversationFlow, example_dir: Path) -> None:
@@ -17,14 +17,11 @@ def _save_conversation_artifacts(flow: ConversationFlow, example_dir: Path) -> N
 
 
 def run_demo(client: Optional[NLP2DSLClient] = None) -> None:
-    flow = ConversationFlow(client)
+    client = client or NLP2DSLClient.from_env()
     print("=== Demonstracja Konwersacyjnego Flow ===\n")
 
-    try:
-        flow.client.health()
-    except Exception:
-        print("❌ Nie można połączyć się z API. Uruchom: docker compose up -d")
-        return
+    ensure_services(client)
+    flow = ConversationFlow(client)
 
     print("🚀 Krok 1: Inicjalizacja konwersacji")
     flow.start("Chcę wysłać fakturę")

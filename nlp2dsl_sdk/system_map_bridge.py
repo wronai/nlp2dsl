@@ -168,6 +168,7 @@ def task_context_to_system_map(ctx: DoqlTaskContext, *, example_dir: Path | str 
             attachment_required=ctx.attachment_required,
             generate_invoice_if_missing=ctx.generate_invoice_if_missing,
             sync_auto_execute=ctx.sync_auto_execute,
+            strict_pdf=ctx.strict_pdf,
         ),
         process=_process_from_ctx(ctx),
         metadata={"source": "doql_context.bootstrap"},

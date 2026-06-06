@@ -2,11 +2,12 @@
 
 app {
   name: nlp2dsl;
-  version: 0.0.19;
+  version: 0.0.25;
 }
 
 dependencies {
-  runtime: "requests>=2.31.0, pyyaml>=6.0";
+  runtime: "requests>=2.31.0, pyyaml>=6.0, pydantic>=2.0";
+  dev: "pytest>=8.0, pytest-asyncio>=0.24";
 }
 
 entity[name="NLPIntent"] {
@@ -32,6 +33,7 @@ entity[name="NLPEntities"] {
   setting_value: str | None;
   section: str | None;
   file_path: str | None;
+  attachment_path: str | None;
   content: str | None;
   directory: str | None;
   pattern: str | None;
@@ -68,6 +70,12 @@ entity[name="ConversationState"] {
   dsl: WorkflowDSL | None;
   status: string!;
   history: list[dict]!;
+  doql_context_path: str | None;
+  doql_inline: json!;
+  autofill_applied: list[str]!;
+  attachment_required: bool!;
+  autonomous_steps: list[str]!;
+  execution: dict | None;
 }
 
 entity[name="Step"] {

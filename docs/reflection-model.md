@@ -10,7 +10,7 @@ Nlp2dsl realizuje request w pętli **model → decyzja → refleksja → (pytani
 | `dsl_ready` | DSL complete | config kroku vs mapa + walidacja formatów |
 | `validation_failed` | Błąd step_validator | issues + `context_queries` |
 | `incomplete` | Braki w polach | missing + propozycje autofill/generate |
-| `executed` | Po workerze | obserwacja w registry (planowane: post-exec VALIDATE) |
+| `executed` | Po workerze | obserwacja w registry + `attachment_validation` (post-exec) |
 
 ## Artefakty
 
@@ -39,8 +39,10 @@ if not report.ready:
 Gdy `conversation.autofill: true` (domyślnie), **jedno zadanie** uruchamia wewnętrzną pętlę:
 
 ```
-validate → autofill(data) → skan fixtures/artifacts → generate_invoice → DSL → validate → …
+validate → autofill(data) → skan fixtures/artifacts → generate_invoice → validate → naprawa invalid PDF → …
 ```
+
+Przy `strict_pdf` lub błędzie formatu: usuń zły plik z `.nlp2dsl/generated/`, wygeneruj ponownie, waliduj — bez pytania użytkownika (resolution `generate`).
 
 Pyta użytkownika **dopiero gdy** strategie autonomiczne się wyczerpią.
 
@@ -62,16 +64,20 @@ conversation {
   autofill: true;
   sync_auto_execute: true;
   generate_invoice_if_missing: true;
+  strict_pdf: true;   /* opcjonalnie — wymaga binarnego %PDF */
 }
 ```
 
+Env: `NLP2DSL_AUTO_EXECUTE=1` (domyślnie) — backend wykonuje workflow po `ready`.  
+SDK: `wait_for_health()` czeka na backend `:8010`, nlp `:8012`, worker `:8004` (`NLP2DSL_HEALTH_TIMEOUT`).
 
 ## Uproszczenia w `01-invoice`
 
 - `nlp2dsl_sdk.example_bootstrap.ensure_doql_registry()` zamiast duplikatu w `scenario.py`
-- `fixtures/faktura-2024.pdf` — MVP tekstowy załącznik dla trybu `attachment`
-- Walidacja formatów: `nlp2dsl_sdk.step_validation` (SDK) + `nlp-service/app/validation/step_validator.py`
+- `generate_invoice` zapisuje **binarny PDF** (`invoice_pdf.py`), nie tekst z rozszerzeniem `.pdf`
+- Walidacja: `nlp2dsl_sdk.step_validation` + `nlp-service/app/validation/step_validator.py`
+- `strict_pdf: true` w profilu `01-invoice` (`example-profiles.yaml`)
 
-Zob. też [`process-agent.md`](process-agent.md) — walidacja trójfazowa.
+Zob. też [`validation.md`](validation.md), [`process-agent.md`](process-agent.md).
 
 Pełny stack compose + cron: [`autonomous-stack.md`](autonomous-stack.md) — przykład [`13-autonomous-invoice-stack`](../examples/13-autonomous-invoice-stack/).

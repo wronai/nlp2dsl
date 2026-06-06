@@ -99,3 +99,64 @@ Kategorie: `business` | `system` | `mullm` | (przyszłe: `koru`, …)
 - Skrypt (opcjonalnie): `scripts/sync-mullm-registry.sh`
 
 Mullm `conductor.py` może zostać cienkim klientem HTTP — logika dialogu w nlp2dsl.
+
+---
+
+## Faza 5 — Modułowa walidacja requestu
+
+**Cel:** jeden silnik walidacji dla całego requestu (preflight → post-exec), reguły ze struktury DOQL/SystemMapIR, autonomiczna naprawa bez duplikacji.
+
+### Diagnoza (code2llm / stan 2026-06)
+
+| Problem | Skutek |
+|---------|--------|
+| 3–4 kopie `step_validator` / `attachment_validation` | Drift reguł (strict PDF tylko w nlp-service) |
+| 3 źródła schematu (registry, DoqlTaskContext, SystemMapIR) | Niespójne required fields |
+| Reflection parsuje polskie stringi z validatorów | Kruche API |
+| `doql_context.py` GOD (~779L) | Trudna rozbudowa |
+| `example-profiles.validations` tylko w E2E | Brak runtime hooków |
+
+### Docelowa struktura
+
+```
+nlp2dsl_sdk/
+  doql/              # split doql_context.py
+  validation/        # ValidationIssue, Pipeline, rules/
+  reflection/        # operuje na ValidationIssue.code
+```
+
+nlp-service / backend / worker → cienkie adaptery importujące SDK.
+
+### Etapy (PR-y inkrementalne)
+
+| Etap | Zadanie | Status |
+|------|---------|--------|
+| A0 | `ValidationIssue` + kody błędów | ✅ `nlp2dsl_sdk/validation/issue.py` |
+| A1 | `validation/pipeline.py` + reguły step/attachment | ✅ SDK + adaptery nlp-service/backend |
+| A2 | Split `doql_context.py` → `doql/models.py` | 🟡 modele wydzielone; parse/render w `doql_context.py` |
+| B1 | backend/worker na pipeline SDK | ✅ backend; worker — następny |
+| B2 | Fazy `post_execute`, `post_health` | ⬜ |
+| C1 | DOQL commands zamiast ACTIONS_REGISTRY | ⬜ |
+| C2 | nlp-service usuwa duplikat doql_context | ⬜ |
+| C3 | `example-profiles.validations` → kody runtime | ⬜ |
+
+Docker: `build.context: .` — obrazy nlp-service/backend kopiują `nlp2dsl_sdk/`.
+
+### Metryki sukcesu
+
+- Zero duplikatów `path_resolve`, `invoice_pdf`, `attachment_validation`
+- Reflection na `issue.code`, nie stringach
+- Walidacja w 4 fazach z jednego pipeline
+- `doql_context.py` → shim re-export (<50L)
+
+Szczegóły: [`validation.md`](validation.md)
+
+### Powiązane pliki (dziś)
+
+| Warstwa | Plik |
+|---------|------|
+| nlp-service | `app/validation/step_validator.py`, `attachment_validation.py`, `path_policy.py` |
+| nlp-service | `app/conversation/autonomous_loop.py`, `runtime_gate.py` |
+| backend | `app/step_validator.py`, `attachment_validation.py` |
+| SDK | `step_validation.py`, `attachment_validation.py`, `reflection.py`, `invoice_pdf.py` |
+| worker | `invoice_pdf.py`, `_validate_attachment` w `worker.py` |

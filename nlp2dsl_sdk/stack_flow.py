@@ -41,7 +41,6 @@ class StackRunResult:
     ok: bool = False
 
 
-# Multi-turn prompts — each may trigger validation / reflection loop
 DEFAULT_STACK_TURNS: tuple[tuple[str, str], ...] = (
     (
         "Zbuduj autonomiczny stack wysyłki faktur z harmonogramem codziennie o 9:00",
@@ -56,6 +55,25 @@ DEFAULT_STACK_TURNS: tuple[tuple[str, str], ...] = (
         "schedule_validate",
     ),
 )
+
+
+def _reflection_follow_up(reflection: dict[str, Any], prior_text: str) -> str | None:
+    """Build follow-up from reflection resolutions / context queries (no hardcoded demo filler)."""
+    resolutions = reflection.get("resolutions_available") or []
+    for token in resolutions:
+        if token.startswith("autofill:"):
+            field = token.split(":", 1)[1]
+            return f"Uzupełniam {field} z DOQL registry."
+        if token.startswith("generate:"):
+            hint = token.split(":", 1)[1]
+            return f"Wygeneruj {hint} i użyj jako załącznika."
+
+    queries = reflection.get("context_queries") or []
+    if queries:
+        return f"Uzupełniam: {queries[0]}"
+    if prior_text.strip():
+        return prior_text
+    return None
 
 
 class AutonomousStackFlow:
@@ -184,12 +202,9 @@ class AutonomousStackFlow:
 
         reflection = resp.get("reflection") or {}
         if reflection and not reflection.get("ready"):
-            queries = reflection.get("context_queries") or []
-            if queries:
-                follow_up = conv.send_message(
-                    f"Uzupełniam: {queries[0]} — klient@firma.pl, 1500 PLN, załącznik fixtures/faktura-2024.pdf"
-                )
-                resp = follow_up
+            follow_up_text = _reflection_follow_up(reflection, text)
+            if follow_up_text:
+                resp = conv.send_message(follow_up_text)
 
         status = str(resp.get("status", "unknown"))
         return StackPhaseResult(name=phase_name, status=status, response=resp)

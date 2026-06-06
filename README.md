@@ -3,13 +3,13 @@
 
 ## AI Cost Tracking
 
-![PyPI](https://img.shields.io/badge/pypi-costs-blue) ![Version](https://img.shields.io/badge/version-0.0.25-blue) ![Python](https://img.shields.io/badge/python-3.9+-blue) ![License](https://img.shields.io/badge/license-Apache--2.0-green)
+![PyPI](https://img.shields.io/badge/pypi-costs-blue) ![Version](https://img.shields.io/badge/version-0.0.26-blue) ![Python](https://img.shields.io/badge/python-3.9+-blue) ![License](https://img.shields.io/badge/license-Apache--2.0-green)
 ![AI Cost](https://img.shields.io/badge/AI%20Cost-$7.24-orange) ![Human Time](https://img.shields.io/badge/Human%20Time-15.2h-blue) ![Model](https://img.shields.io/badge/Model-openrouter%2Fqwen%2Fqwen3--coder--next-lightgrey)
 
-- 🤖 **LLM usage:** $7.2365 (33 commits)
-- 👤 **Human dev:** ~$1517 (15.2h @ $100/h, 30min dedup)
+- 🤖 **LLM usage:** $7.2381 (34 commits)
+- 👤 **Human dev:** ~$1524 (15.2h @ $100/h, 30min dedup)
 
-Generated on 2026-06-05 using [openrouter/qwen/qwen3-coder-next](https://openrouter.ai/qwen/qwen3-coder-next)
+Generated on 2026-06-06 using [openrouter/qwen/qwen3-coder-next](https://openrouter.ai/qwen/qwen3-coder-next)
 
 ---
 
@@ -78,7 +78,7 @@ nlp2cmd plan "znajdz pliki *.py w src" --execute     # hybrid executor
 NLP2CMD_SHOW_STRUCTURE=1 nlp2cmd -q "query"          # analiza na wejściu nlp2cmd
 ```
 
-Szczegóły: [`packages/README.md`](packages/README.md) · walidacja kontraktów: [`docs/intract-integration.md`](docs/intract-integration.md)
+Szczegóły: [`packages/README.md`](packages/README.md) · walidacja kontraktów: [`docs/intract-integration.md`](docs/intract-integration.md) · walidacja requestu: [`docs/validation.md`](docs/validation.md)
 
 ### Architektura pakietów IR
 
@@ -125,6 +125,8 @@ git clone <repo-url> && cd nlp2dsl
 cp .env.example .env
 # Uzupełnij klucze API (opcjonalne - system działa z parserem reguł)
 docker compose up --build
+# Poczekaj na health (SDK robi to automatycznie w przykładach):
+curl -s http://localhost:8010/health && curl -s http://localhost:8012/health && curl -s http://localhost:8004/health
 ```
 
 | Serwis | URL | Opis |
@@ -132,6 +134,14 @@ docker compose up --build
 | Backend API | http://localhost:8010/docs | Gateway + workflow engine |
 | NLP Service | http://localhost:8012/docs | NLP + conversation + schema |
 | Worker | http://localhost:8004/docs | Executory akcji |
+
+> Port **8012** (nie 8002) — 8002 bywa zajęty przez Mullm Projector. Zmienne: `NLP2DSL_BACKEND_HOST_PORT`, `NLP2DSL_NLP_HOST_PORT`, `NLP2DSL_WORKER_HOST_PORT` w `.env`.
+
+### Walidacja requestu
+
+Struktura zapytania (`environment.doql.less` / SystemMapIR) determinuje reguły walidacji w każdej fazie (preflight → DSL ready → execute → post-exec). Autonomiczna pętla naprawia brakujące dane i niepoprawne załączniki PDF zanim zapyta użytkownika.
+
+Szczegóły: [`docs/validation.md`](docs/validation.md) · [`docs/process-agent.md`](docs/process-agent.md) · [`docs/reflection-model.md`](docs/reflection-model.md)
 
 ## Przykłady i tryb interaktywny
 
@@ -408,7 +418,9 @@ Zmienne są automatycznie przekazywane do kontenerów w `docker-compose.yml`.
 ```
 nlp2dsl/
 ├── docker-compose.yml
-├── .env.example                 # Konfiguracja LLM i serwisów
+├── .env.example                 # Konfiguracja LLM i serwisów (porty 8010/8012/8004)
+├── nlp2dsl_sdk/                 # SDK klienta, DOQL, walidacja, reflection
+├── docs/                        # Dokumentacja (indeks: docs/README.md)
 ├── examples/                    # Przykłady użycia
 │   ├── 01-invoice/
 │   ├── 02-email/
@@ -421,22 +433,21 @@ nlp2dsl/
 ├── backend/                     # API Gateway + Workflow Engine
 │   └── app/
 │       ├── main.py
-│       ├── schemas.py           # DSL models (Pydantic)
-│       └── workflow.py          # Engine + Chat proxy + Schema proxy
+│       ├── engine.py            # Workflow execution + pre-step validation
+│       └── routers/chat.py      # Chat proxy + auto_execute
 ├── nlp-service/                 # NLP → DSL Pipeline
 │   └── app/
-│       ├── main.py              # FastAPI endpoints
-│       ├── schemas.py           # NLP + DSL + Conversation + UI schemas
-│       ├── registry.py          # Actions registry (source of truth)
-│       ├── parser_rules.py      # Rule-based parser (offline)
-│       ├── parser_llm.py        # LLM-based parser (API)
-│       ├── mapper.py            # Deterministic NLP → DSL mapper
-│       └── orchestrator.py      # Conversation loop + schema-driven UI
-├── worker/                      # Imperatywne executory
+│       ├── conversation/        # orchestrator, autonomous_loop, process_agent
+│       ├── validation/          # step_validator, attachment, path_policy
+│       ├── registry.py          # Actions registry (migracja → DOQL)
+│       └── ...
+├── worker/                      # Imperatywne executory + invoice_pdf
 │   └── worker.py
 ├── tauri-wrapper/               # Desktop wrapper Tauri dla `/chat`
 └── README.md
 ```
+
+Pełna dokumentacja: [`docs/README.md`](docs/README.md)
 
 ## Przykłady użycia
 
@@ -464,7 +475,7 @@ done
 
 | Przykład | Link | Opis | Koncepcje |
 |----------|------|------|-----------|
-| **01-invoice** | [📁 examples/01-invoice/](examples/01-invoice/) | Faktura: conversation + DOQL autofill, opcjonalnie załącznik | SystemMapIR, ProcessAgent, registry loop |
+| **01-invoice** | [📁 examples/01-invoice/](examples/01-invoice/) | Faktura autonomiczna + PDF + walidacja strict | DOQL autofill, attachment_validation, reflection |
 | **02-email** | [📁 examples/02-email/](examples/02-email/) | Różne sposoby wysyłania e-maili | Aliasy komend, parametry |
 | **03-report-and-notify** | [📁 examples/03-report-and-notify/](examples/03-report-and-notify/) | Raporty + powiadomienia na wiele kanałów | Composite intents, multi-step |
 | **04-scheduled-report** | [📁 examples/04-scheduled-report/](examples/04-scheduled-report/) | Zaplanowane raporty (daily/weekly/monthly) | Triggers, schedule |
@@ -473,14 +484,16 @@ done
 #### Szybki start z przykładami:
 
 ```bash
-# Z katalogu głównego repo (nie z examples/01-invoice/)
 pip install -e .
 docker compose up -d                        # backend + nlp-service + worker
+python3 examples/01-invoice/main.py       # czeka na /health (do 120 s)
 
 ./examples/run-all.sh                       # wszystkie przykłady
 # lub pojedynczo:
 cd examples/01-invoice && python3 main.py
 ```
+
+SDK (`ensure_services`) sprawdza `http://localhost:8010`, `:8012`, `:8004` — nie uruchamiaj `main.py` w tej samej linii co `compose up` bez oczekiwania (race przy starcie uvicorn).
 
 Logi serwisu NLP (z **roota** repo, nie `examples/docker-compose.yml`):
 

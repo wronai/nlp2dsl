@@ -127,6 +127,31 @@ class TestContinueConversation:
         assert resp2.dsl is not None
         assert resp2.dsl.steps[0].config.get("body")
 
+    @pytest.mark.asyncio
+    async def test_execute_keyword_idempotent_after_executed(self) -> None:
+        """Second 'uruchom' after execution must not return ready (duplicate run guard)."""
+        from app.conversation.orchestrator import mark_conversation_executed
+
+        resp1 = await start_conversation(
+            "Wyślij email do team@firma.pl z tematem Status projektu"
+        )
+        cid = resp1.conversation_id
+        await continue_conversation(
+            cid,
+            "Treść: Projekt idzie zgodnie z planem.",
+        )
+        execution = {
+            "workflow_id": "wf-test-1",
+            "status": "completed",
+            "steps": [{"action": "send_email", "status": "completed"}],
+        }
+        await mark_conversation_executed(cid, execution)
+
+        resp3 = await continue_conversation(cid, "uruchom")
+        assert resp3.status == "executed"
+        assert resp3.execution is not None
+        assert resp3.execution["workflow_id"] == "wf-test-1"
+
 
 # ── System commands ──────────────────────────────────────────────
 

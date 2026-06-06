@@ -13,6 +13,9 @@ from pathlib import Path
 import pytest
 
 NLP_SERVICE_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 if str(NLP_SERVICE_ROOT) not in sys.path:
     sys.path.insert(0, str(NLP_SERVICE_ROOT))
 
@@ -99,3 +102,11 @@ def sample_entities() -> dict[str, dict]:
 def mock_conversation_store() -> MemoryConversationStore:
     """In-memory conversation store for testing."""
     return MemoryConversationStore()
+
+
+@pytest.fixture(autouse=True)
+def _rules_parser_mode(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Unit tests must not call live LLM (non-deterministic when API keys are set)."""
+    monkeypatch.setenv("NLP_CHAT_MODE", "rules")
+    monkeypatch.delenv("NLP2DSL_DOQL_CONTEXT", raising=False)
+    monkeypatch.delenv("NLP2DSL_EXAMPLE_DIR", raising=False)

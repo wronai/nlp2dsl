@@ -269,3 +269,39 @@ class TestFromText:
         """Empty text → 400."""
         resp = await client.post("/workflow/from-text", json={"text": ""})
         assert resp.status_code == 400
+
+    @pytest.mark.asyncio
+    async def test_from_text_rejects_invalid_workflow_contract(self, client: AsyncClient) -> None:
+        """Complete NLP response with broken workflow is reported, not executed."""
+        mock_nlp_resp = MagicMock(spec=Response)
+        mock_nlp_resp.status_code = 200
+        mock_nlp_resp.is_success = True
+        mock_nlp_resp.headers = {"content-type": "application/json"}
+        mock_nlp_resp.json.return_value = {
+            "status": "complete",
+            "workflow": {
+                "name": "broken_workflow",
+                "steps": [{"config": {"amount": 1500}}],
+            },
+        }
+
+        with patch("app.routers.workflow.AsyncClient") as MockClient, patch(
+            "app.routers.workflow.run_workflow", AsyncMock()
+        ) as run_workflow:
+            mock_instance = AsyncMock()
+            mock_instance.post.return_value = mock_nlp_resp
+            mock_instance.__aenter__ = AsyncMock(return_value=mock_instance)
+            mock_instance.__aexit__ = AsyncMock(return_value=False)
+            MockClient.return_value = mock_instance
+
+            resp = await client.post(
+                "/workflow/from-text",
+                json={"text": "Wyślij fakturę", "execute": True},
+            )
+
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["status"] == "validation_failed"
+        assert data["missing_fields"] == ["steps.0.action"]
+        assert data["validation_issues"][0]["code"] == "workflow.missing_action"
+        run_workflow.assert_not_awaited()

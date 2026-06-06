@@ -29,6 +29,7 @@ examples:
       conversation:
         autofill: true
         sync_auto_execute: true
+        strict_pdf: true
       autonomous:
         ask_user: when_exhausted
       intract:

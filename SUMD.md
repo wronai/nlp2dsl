@@ -23,7 +23,7 @@ Reusable Python SDK for the NLP2DSL platform
 ## Metadata
 
 - **name**: `nlp2dsl`
-- **version**: `0.0.19`
+- **version**: `0.0.25`
 - **python_requires**: `>=3.10`
 - **license**: Apache-2.0
 - **ai_model**: `openrouter/qwen/qwen3-coder-next`
@@ -43,11 +43,12 @@ SUMD (description) → DOQL/source (code) → taskfile (automation) → testql (
 
 app {
   name: nlp2dsl;
-  version: 0.0.19;
+  version: 0.0.25;
 }
 
 dependencies {
-  runtime: "requests>=2.31.0, pyyaml>=6.0";
+  runtime: "requests>=2.31.0, pyyaml>=6.0, pydantic>=2.0";
+  dev: "pytest>=8.0, pytest-asyncio>=0.24";
 }
 
 entity[name="NLPIntent"] {
@@ -73,6 +74,7 @@ entity[name="NLPEntities"] {
   setting_value: str | None;
   section: str | None;
   file_path: str | None;
+  attachment_path: str | None;
   content: str | None;
   directory: str | None;
   pattern: str | None;
@@ -109,6 +111,12 @@ entity[name="ConversationState"] {
   dsl: WorkflowDSL | None;
   status: string!;
   history: list[dict]!;
+  doql_context_path: str | None;
+  doql_inline: json!;
+  autofill_applied: list[str]!;
+  attachment_required: bool!;
+  autonomous_steps: list[str]!;
+  execution: dict | None;
 }
 
 entity[name="Step"] {
@@ -376,8 +384,8 @@ CONFIG[3]{key, value}:
 SHELL "cd examples/01-invoice && python3 main.py" 120000
 ASSERT_EXIT_CODE 0
 
-# Query 1: (no queries recorded)
-SHELL "nlp2dsl run \"(no queries recorded)\" --json" 30000
+# Query 1: Wyślij fakturę
+SHELL "nlp2dsl run \"Wyślij fakturę\" --json" 30000
 ASSERT_EXIT_CODE 0
 
 # --- 02-email ---
@@ -392,8 +400,8 @@ CONFIG[3]{key, value}:
 SHELL "cd examples/02-email && python3 main.py" 120000
 ASSERT_EXIT_CODE 0
 
-# Query 1: Wyślij email do team@firma.pl z tematem Status dzienny proje
-SHELL "nlp2dsl run \"Wyślij email do team@firma.pl z tematem Status dzienny projektów: Wszystkie projekty przebiegają zgodnie z harmonogramem.\" --json" 30000
+# Query 1: Wyślij email do team@firma.pl z tematem Status dzienny. Treś
+SHELL "nlp2dsl run \"Wyślij email do team@firma.pl z tematem Status dzienny. Treść: Wszystkie projekty przebiegają zgodnie z harmonogramem.\" --json" 30000
 ASSERT_EXIT_CODE 0
 
 # --- 03-report-and-notify ---
@@ -408,8 +416,8 @@ CONFIG[3]{key, value}:
 SHELL "cd examples/03-report-and-notify && python3 main.py" 120000
 ASSERT_EXIT_CODE 0
 
-# Query 1: (no queries recorded)
-SHELL "nlp2dsl run \"(no queries recorded)\" --json" 30000
+# Query 1: Co tydzień generuj raport sprzedaży PDF, wyślij email do man
+SHELL "nlp2dsl run \"Co tydzień generuj raport sprzedaży PDF, wyślij email do manager@firma.pl i powiadom na Slack #sales\" --json" 30000
 ASSERT_EXIT_CODE 0
 
 # --- 04-scheduled-report ---
@@ -755,6 +763,34 @@ ASSERT_EXIT_CODE 0
 # Query 2: Powiadom #devops: backup gotowy
 SHELL "nlp2dsl run \"Powiadom #devops: backup gotowy\" --json" 30000
 ASSERT_EXIT_CODE 0
+
+# Query 3: znajdź pliki *.py w src
+SHELL "nlp2dsl run \"znajdź pliki *.py w src\" --json" 30000
+ASSERT_EXIT_CODE 0
+
+# Query 4: uruchom testy jednostkowe
+SHELL "nlp2dsl run \"uruchom testy jednostkowe\" --json" 30000
+ASSERT_EXIT_CODE 0
+
+# Query 5: pokaż status systemu
+SHELL "nlp2dsl run \"pokaż status systemu\" --json" 30000
+ASSERT_EXIT_CODE 0
+
+# --- 13-autonomous-invoice-stack ---
+# PIPELINE: NLP → DSL → CMD → process
+
+CONFIG[3]{key, value}:
+  cli_command, python3 main.py
+  timeout_ms, 120000
+  example_dir, examples/13-autonomous-invoice-stack
+
+# Run full example scenario
+SHELL "cd examples/13-autonomous-invoice-stack && python3 main.py" 120000
+ASSERT_EXIT_CODE 0
+
+# Query 1: autonomous-invoice-stack
+SHELL "nlp2dsl run \"autonomous-invoice-stack\" --json" 30000
+ASSERT_EXIT_CODE 0
 ```
 
 #### `testql-scenarios/generated-from-pytests.testql.toon.yaml`
@@ -943,7 +979,7 @@ pipeline:
 ```yaml
 project:
   name: nlp2dsl
-  version: 0.0.19
+  version: 0.0.25
   env: local
 ```
 
@@ -954,6 +990,14 @@ project:
 ```text markpact:deps python
 requests>=2.31.0
 pyyaml>=6.0
+pydantic>=2.0
+```
+
+### Development
+
+```text markpact:deps python scope=dev
+pytest>=8.0
+pytest-asyncio>=0.24
 ```
 
 ## Deployment
@@ -967,9 +1011,9 @@ pip install -e .[dev]
 
 ### Docker Compose (`docker-compose.yml`)
 
-- **backend** image=`./backend` ports: `${NLP2DSL_BACKEND_HOST_PORT:-8010}:8000`
-- **nlp-service** image=`./nlp-service` ports: `${NLP2DSL_NLP_HOST_PORT:-8012}:8002`
-- **worker** image=`./worker` ports: `${NLP2DSL_WORKER_HOST_PORT:-8004}:8000`
+- **backend** image=`{'context': '.', 'dockerfile': 'backend/Dockerfile'}` ports: `${NLP2DSL_BACKEND_HOST_PORT:-8010}:8000`
+- **nlp-service** image=`{'context': '.', 'dockerfile': 'nlp-service/Dockerfile'}` ports: `${NLP2DSL_NLP_HOST_PORT:-8012}:8002`
+- **worker** image=`{'context': '.', 'dockerfile': 'worker/Dockerfile'}` ports: `${NLP2DSL_WORKER_HOST_PORT:-8004}:8000`
 - **postgres** image=`postgres:16-alpine`
 - **redis** image=`redis:7-alpine`
 
@@ -1027,55 +1071,62 @@ pip install -e .[dev]
 ### `project/map.toon.yaml`
 
 ```toon markpact:analysis path=project/map.toon.yaml
-# nlp2dsl | 224f 21522L | python:201,shell:17,javascript:3,rust:2,less:1 | 2026-06-05
-# stats: 577 func | 168 cls | 224 mod | CC̄=4.0 | critical:44 | cycles:0
-# alerts[5]: CC format_transcript=25; CC main=24; CC _apply_context_filters=21; CC _build_config=19; CC _check_expect=19
-# hotspots[5]: main fan=27; process_example fan=27; run_scenario fan=20; _execute_workflow fan=19; enrich_entities fan=19
+# nlp2dsl | 322f 34223L | python:298,shell:18,javascript:3,rust:2,less:1 | 2026-06-06
+# stats: 1073 func | 211 cls | 322 mod | CC̄=4.5 | critical:106 | cycles:0
+# alerts[5]: CC render_doql_context=62; CC _check_expect=36; CC test_load_doql_context_all_supported_blocks=34; CC run_scenario=29; CC process_example=28
+# hotspots[5]: run_scenario fan=32; main fan=30; process_example fan=29; generate_stack_compose fan=27; collect_task_context fan=26
 # evolution: baseline
 # Keys: M=modules, D=details, i=imports, e=exports, c=classes, f=functions, m=methods
-M[224]:
+M[322]:
   .pfix-test-wrapper.sh,16
-  app.doql.less,234
+  app.doql.less,242
   backend/app/__init__.py,1
+  backend/app/attachment_validation.py,110
   backend/app/config.py,43
   backend/app/db/__init__.py,50
   backend/app/db/memory.py,38
   backend/app/db/postgres.py,173
-  backend/app/engine.py,270
+  backend/app/dsl_validation.py,48
+  backend/app/engine.py,308
   backend/app/logging_setup.py,101
   backend/app/main.py,51
+  backend/app/path_resolve.py,65
   backend/app/routers/__init__.py,1
-  backend/app/routers/chat.py,125
+  backend/app/routers/chat.py,251
   backend/app/routers/settings.py,82
   backend/app/routers/system.py,30
-  backend/app/routers/testql_compat.py,140
-  backend/app/routers/workflow.py,200
+  backend/app/routers/testql_compat.py,154
+  backend/app/routers/workflow.py,204
   backend/app/schemas.py,65
+  backend/app/step_validator.py,61
   backend/app/workflow.py,23
   backend/app/workflow_events.py,92
   backend/tests/__init__.py,1
-  backend/tests/conftest.py,32
+  backend/tests/conftest.py,35
+  backend/tests/test_attachment_validation.py,93
+  backend/tests/test_chat_router.py,107
   backend/tests/test_config.py,83
   backend/tests/test_logging.py,124
   backend/tests/test_persistence.py,185
-  backend/tests/test_workflow_api.py,267
+  backend/tests/test_step_validator.py,51
+  backend/tests/test_workflow_api.py,308
   examples/01-invoice/main.py,34
   examples/01-invoice/run.sh,7
-  examples/01-invoice/scenario.py,49
+  examples/01-invoice/scenario.py,93
   examples/02-email/main.py,34
   examples/02-email/run.sh,7
   examples/02-email/scenario.py,58
   examples/03-report-and-notify/main.py,34
   examples/03-report-and-notify/run.sh,7
-  examples/03-report-and-notify/scenario.py,59
+  examples/03-report-and-notify/scenario.py,60
   examples/04-scheduled-report/main.py,34
   examples/04-scheduled-report/run.sh,7
   examples/04-scheduled-report/scenario.py,61
   examples/05-conversation-flow/main.py,34
   examples/05-conversation-flow/run.sh,7
-  examples/05-conversation-flow/scenario.py,55
+  examples/05-conversation-flow/scenario.py,52
   examples/06-interactive-chat/main.py,34
-  examples/06-interactive-chat/scenario.py,53
+  examples/06-interactive-chat/scenario.py,56
   examples/07-email-conversation/main.py,34
   examples/07-email-conversation/scenario.py,45
   examples/08-multi-object-benchmark/benchmark_queries.py,159
@@ -1089,10 +1140,12 @@ M[224]:
   examples/11-notify-quality/scenario.py,50
   examples/12-ir-show/main.py,34
   examples/12-ir-show/scenario.py,89
+  examples/13-autonomous-invoice-stack/main.py,34
+  examples/13-autonomous-invoice-stack/scenario.py,69
   examples/basic/invoice/run.sh,1
-  examples/bootstrap.py,27
+  examples/bootstrap.py,48
   examples/code_generation_examples.py,26
-  examples/run-all.sh,68
+  examples/run-all.sh,71
   metrun-profile.sh,49
   nlp-service/app/__init__.py,1
   nlp-service/app/access/__init__.py,16
@@ -1104,16 +1157,27 @@ M[224]:
   nlp-service/app/audio_parser.py,149
   nlp-service/app/code_generator.py,280
   nlp-service/app/config.py,61
-  nlp-service/app/conversation/__init__.py,14
+  nlp-service/app/conversation/__init__.py,2
+  nlp-service/app/conversation/attachment_gate.py,26
+  nlp-service/app/conversation/autonomous_loop.py,300
+  nlp-service/app/conversation/doql_autofill.py,136
+  nlp-service/app/conversation/doql_context.py,148
+  nlp-service/app/conversation/doql_registry.py,177
+  nlp-service/app/conversation/invoice_paths.py,71
+  nlp-service/app/conversation/invoice_policy.py,28
   nlp-service/app/conversation/merge.py,37
-  nlp-service/app/conversation/orchestrator.py,108
-  nlp-service/app/conversation/responses.py,283
+  nlp-service/app/conversation/orchestrator.py,266
+  nlp-service/app/conversation/process_agent.py,117
+  nlp-service/app/conversation/reflection.py,138
+  nlp-service/app/conversation/responses.py,369
+  nlp-service/app/conversation/runtime_gate.py,90
+  nlp-service/app/conversation/system_map.py,111
   nlp-service/app/dsl/__init__.py,5
   nlp-service/app/dsl/forms.py,92
-  nlp-service/app/dsl/mapper.py,237
+  nlp-service/app/dsl/mapper.py,245
   nlp-service/app/dsl/pipeline.py,32
-  nlp-service/app/execution/__init__.py,15
-  nlp-service/app/execution/delegate.py,30
+  nlp-service/app/execution/__init__.py,22
+  nlp-service/app/execution/delegate.py,49
   nlp-service/app/execution/system.py,343
   nlp-service/app/governance/__init__.py,15
   nlp-service/app/governance/bootstrap.py,79
@@ -1121,7 +1185,7 @@ M[224]:
   nlp-service/app/governance/policy.py,303
   nlp-service/app/governance/uri_match.py,43
   nlp-service/app/logging_setup.py,101
-  nlp-service/app/main.py,571
+  nlp-service/app/main.py,646
   nlp-service/app/mapper.py,6
   nlp-service/app/orchestrator.py,22
   nlp-service/app/parser_enrich.py,16
@@ -1129,55 +1193,114 @@ M[224]:
   nlp-service/app/parser_rules.py,6
   nlp-service/app/parsing/__init__.py,4
   nlp-service/app/parsing/facade.py,6
-  nlp-service/app/registry.py,404
+  nlp-service/app/registry.py,422
+  nlp-service/app/request_context.py,24
   nlp-service/app/routing/__init__.py,18
   nlp-service/app/routing/intent.py,56
   nlp-service/app/routing/native.py,144
   nlp-service/app/routing/observability.py,58
   nlp-service/app/routing/orientation.py,380
   nlp-service/app/routing/parser/__init__.py,4
-  nlp-service/app/routing/parser/enrich.py,142
-  nlp-service/app/routing/parser/facade.py,20
+  nlp-service/app/routing/parser/enrich.py,150
+  nlp-service/app/routing/parser/facade.py,21
   nlp-service/app/routing/parser/llm.py,146
   nlp-service/app/routing/parser/prompt_catalog.py,83
-  nlp-service/app/routing/parser/resolve_mode.py,48
+  nlp-service/app/routing/parser/resolve_mode.py,54
   nlp-service/app/routing/parser/rules.py,565
-  nlp-service/app/routing/resolve.py,195
-  nlp-service/app/schemas.py,138
+  nlp-service/app/routing/resolve.py,197
+  nlp-service/app/schemas.py,151
   nlp-service/app/settings.py,252
   nlp-service/app/store/__init__.py,31
   nlp-service/app/store/factory.py,47
   nlp-service/app/store/memory.py,24
   nlp-service/app/store/redis_store.py,59
   nlp-service/app/system_executor.py,36
+  nlp-service/app/validation/__init__.py,16
+  nlp-service/app/validation/attachment_validation.py,73
+  nlp-service/app/validation/invoice_pdf.py,74
+  nlp-service/app/validation/path_policy.py,84
+  nlp-service/app/validation/path_resolve.py,88
+  nlp-service/app/validation/step_validator.py,110
   nlp-service/integrations/__init__.py,6
   nlp-service/integrations/loader.py,63
   nlp-service/integrations/mullm/__init__.py,2
   nlp-service/integrations/mullm/registry.py,67
   nlp-service/tests/__init__.py,1
-  nlp-service/tests/conftest.py,102
+  nlp-service/tests/conftest.py,113
   nlp-service/tests/test_access.py,75
+  nlp-service/tests/test_attachment_validation.py,61
+  nlp-service/tests/test_autonomous_loop.py,113
+  nlp-service/tests/test_doql_attachment.py,75
+  nlp-service/tests/test_doql_autofill.py,59
+  nlp-service/tests/test_doql_context.py,153
+  nlp-service/tests/test_doql_registry.py,65
   nlp-service/tests/test_enrich.py,138
-  nlp-service/tests/test_execution_delegate.py,25
+  nlp-service/tests/test_execution_delegate.py,80
   nlp-service/tests/test_mapper.py,295
-  nlp-service/tests/test_orchestrator.py,250
+  nlp-service/tests/test_orchestrator.py,275
   nlp-service/tests/test_orientation.py,107
-  nlp-service/tests/test_parser_rules.py,314
+  nlp-service/tests/test_parser_rules.py,324
+  nlp-service/tests/test_path_policy.py,57
+  nlp-service/tests/test_path_resolve.py,28
+  nlp-service/tests/test_process_agent.py,159
   nlp-service/tests/test_registry.py,169
+  nlp-service/tests/test_registry_observe.py,113
   nlp-service/tests/test_routing_observability.py,42
-  nlp-service/tests/test_routing_resolve.py,62
+  nlp-service/tests/test_routing_resolve.py,64
+  nlp-service/tests/test_step_validator.py,90
   nlp-service/tests/test_store.py,193
   nlp-service/tests/test_system_executor.py,422
-  nlp2dsl_sdk/__init__.py,38
+  nlp2dsl_sdk/__init__.py,55
   nlp2dsl_sdk/__main__.py,46
-  nlp2dsl_sdk/artifacts.py,411
-  nlp2dsl_sdk/cli.py,229
-  nlp2dsl_sdk/client.py,630
+  nlp2dsl_sdk/artifact_layout.py,171
+  nlp2dsl_sdk/artifacts.py,433
+  nlp2dsl_sdk/attachment_validation.py,131
+  nlp2dsl_sdk/autonomous_flow.py,106
+  nlp2dsl_sdk/cli.py,270
+  nlp2dsl_sdk/client.py,894
+  nlp2dsl_sdk/compose_generator.py,513
   nlp2dsl_sdk/conversation_artifacts.py,114
-  nlp2dsl_sdk/demos.py,355
+  nlp2dsl_sdk/conversation_testql.py,104
+  nlp2dsl_sdk/demos.py,356
+  nlp2dsl_sdk/doql/__init__.py,47
+  nlp2dsl_sdk/doql/models.py,132
+  nlp2dsl_sdk/doql/parse.py,467
+  nlp2dsl_sdk/doql/render.py,197
+  nlp2dsl_sdk/doql/runtime.py,128
+  nlp2dsl_sdk/doql_context.py,51
+  nlp2dsl_sdk/doql_registry.py,190
   nlp2dsl_sdk/encoding.py,93
+  nlp2dsl_sdk/example_bootstrap.py,54
   nlp2dsl_sdk/example_loader.py,40
-  nlp2dsl_sdk/preview.py,209
+  nlp2dsl_sdk/invoice_pdf.py,76
+  nlp2dsl_sdk/invoice_policy.py,53
+  nlp2dsl_sdk/path_resolve.py,57
+  nlp2dsl_sdk/preview.py,337
+  nlp2dsl_sdk/process_policy.py,291
+  nlp2dsl_sdk/reflection.py,347
+  nlp2dsl_sdk/stack_flow.py,232
+  nlp2dsl_sdk/step_validation.py,44
+  nlp2dsl_sdk/system_map_bridge.py,224
+  nlp2dsl_sdk/system_map_generator.py,203
+  nlp2dsl_sdk/system_map_ir.py,265
+  nlp2dsl_sdk/system_map_models.py,49
+  nlp2dsl_sdk/system_map_render/__init__.py,6
+  nlp2dsl_sdk/system_map_render/blocks.py,286
+  nlp2dsl_sdk/system_map_render/helpers.py,46
+  nlp2dsl_sdk/system_map_render/render.py,47
+  nlp2dsl_sdk/system_map_runtimes.py,175
+  nlp2dsl_sdk/validation/__init__.py,47
+  nlp2dsl_sdk/validation/context.py,49
+  nlp2dsl_sdk/validation/helpers.py,37
+  nlp2dsl_sdk/validation/issue.py,62
+  nlp2dsl_sdk/validation/messages.py,170
+  nlp2dsl_sdk/validation/pipeline.py,127
+  nlp2dsl_sdk/validation/resolutions.py,194
+  nlp2dsl_sdk/validation/rules/__init__.py,1
+  nlp2dsl_sdk/validation/rules/attachment.py,116
+  nlp2dsl_sdk/validation/rules/dsl_contract.py,167
+  nlp2dsl_sdk/validation/rules/runtime_health.py,137
+  nlp2dsl_sdk/validation/rules/step_config.py,163
   packages/install-dev.sh,26
   packages/nlp2cmd-intent/src/nlp2cmd_intent/__init__.py,32
   packages/nlp2cmd-intent/src/nlp2cmd_intent/clarification.py,38
@@ -1224,12 +1347,15 @@ M[224]:
   packages/pact-ir/src/pact_ir/target_kind.py,35
   packages/pact-ir/tests/test_ir_roundtrip.py,37
   project.sh,59
-  run-all-tests.sh,45
+  run-all-tests.sh,91
+  scripts/_dotenv.py,24
   scripts/aggregate-example-testql.py,50
+  scripts/bootstrap-venv.sh,32
   scripts/publish-all.sh,45
-  scripts/run-conversation-scenario.py,194
-  scripts/run-example-docker-e2e.py,249
-  scripts/run-example-testql-results.py,478
+  scripts/run-conversation-scenario.py,261
+  scripts/run-example-docker-e2e.py,321
+  scripts/run-example-testql-results.py,525
+  scripts/run-execution-scenario.py,185
   scripts/setup-dev.sh,44
   tauri-wrapper/desktop.sh,80
   tauri-wrapper/scripts/dev.js,57
@@ -1246,20 +1372,44 @@ M[224]:
   tests/e2e/test_nlp_service.py,216
   tests/e2e/test_websocket.py,112
   tests/run.sh,86
+  tests/test_artifact_layout.py,73
+  tests/test_attachment_validation.py,79
+  tests/test_cli_run_output.py,71
+  tests/test_compose_generator.py,67
+  tests/test_conversation_testql.py,40
+  tests/test_doql_context.py,221
+  tests/test_doql_registry.py,78
   tests/test_encoding.py,39
-  tests/test_nlp2dsl_sdk.py,277
+  tests/test_invoice_pdf.py,26
+  tests/test_invoice_policy.py,39
+  tests/test_nlp2dsl_sdk.py,309
+  tests/test_path_resolve.py,78
   tests/test_placeholder.py,12
+  tests/test_process_policy.py,107
+  tests/test_reflection.py,104
+  tests/test_system_map_ir.py,140
   tests/test_tests.py,12
+  tests/test_validation.py,242
   tree.sh,2
   worker/__init__.py,6
+  worker/attachment_validation.py,64
   worker/config.py,28
+  worker/invoice_pdf.py,74
   worker/logging_setup.py,101
   worker/tests/__init__.py,1
   worker/tests/conftest.py,46
   worker/tests/test_worker.py,173
-  worker/worker.py,231
+  worker/worker.py,272
 D:
   backend/app/__init__.py:
+  backend/app/attachment_validation.py:
+    e: build_attachment_validation,_top_level_attachment_validation,_execution_attachment_validation,_attachment_from_dsl,validation_from_chat_result,ensure_attachment_validation
+    build_attachment_validation(raw_path)
+    _top_level_attachment_validation(result)
+    _execution_attachment_validation(execution)
+    _attachment_from_dsl(dsl)
+    validation_from_chat_result(result)
+    ensure_attachment_validation(result)
   backend/app/config.py:
     e: BackendSettings
     BackendSettings:
@@ -1275,6 +1425,13 @@ D:
     Base:
     WorkflowRunModel: to_dict(0)
     PostgresWorkflowRepo: __init__(1),_ensure_engine(0),_get_session_factory(0),_ensure_tables(0),save_run(4),update_run_status(2),get_run(1),list_runs(2),count_runs(0),close(0)
+  backend/app/dsl_validation.py:
+    e: validate_dsl_for_execution,validation_issue_payloads,missing_fields_from_issues,format_dsl_validation_message,dsl_validation_response
+    validate_dsl_for_execution(dsl)
+    validation_issue_payloads(issues)
+    missing_fields_from_issues(issues)
+    format_dsl_validation_message(issues)
+    dsl_validation_response(dsl;issues)
   backend/app/engine.py:
     e: _workflow_steps_payload,_persist_workflow_snapshot,_publish_workflow_event,_execute_workflow,_track_background_task,run_workflow,start_workflow
     _workflow_steps_payload(result)
@@ -1293,10 +1450,29 @@ D:
   backend/app/main.py:
     e: health
     health()
+  backend/app/path_resolve.py:
+    e: _examples_portable_candidates,resolve_attachment_path
+    _examples_portable_candidates(raw)
+    resolve_attachment_path(raw)
   backend/app/routers/__init__.py:
   backend/app/routers/chat.py:
-    e: _proxy_chat_payload,chat_start,chat_message,chat_get_state
+    e: _merge_attachment_validation,_proxy_chat_payload,_maybe_auto_execute,_execution_requested,_is_explicit_execute_request,_is_auto_execute_requested,_dsl_steps,_mullm_steps,_uses_mullm_backend,_prepare_mullm_execution,_workflow_request_from_dsl,_mark_auto_execute_message,_doql_context_path,_execution_observation_from_dsl,_observe_registry_execution,_execute_ready_dsl,chat_start,chat_message,chat_get_state
+    _merge_attachment_validation(result)
     _proxy_chat_payload(request;endpoint)
+    _maybe_auto_execute(result;body)
+    _execution_requested(result;body)
+    _is_explicit_execute_request(body)
+    _is_auto_execute_requested(result;body)
+    _dsl_steps(dsl)
+    _mullm_steps(steps)
+    _uses_mullm_backend(result;steps)
+    _prepare_mullm_execution(result;steps)
+    _workflow_request_from_dsl(dsl;steps)
+    _mark_auto_execute_message(result;body)
+    _doql_context_path(body)
+    _execution_observation_from_dsl(dsl)
+    _observe_registry_execution(result;body)
+    _execute_ready_dsl(result;body)
     chat_start(request)
     chat_message(request)
     chat_get_state(conversation_id)
@@ -1345,6 +1521,11 @@ D:
     StepResult:
     WorkflowResult:
     ActionInfo:  # Opis dostępnej akcji (do listowania w GUI / API).
+  backend/app/step_validator.py:
+    e: _validation_context,validate_step_config_issues,validate_step_config
+    _validation_context(action;config)
+    validate_step_config_issues(action;config)
+    validate_step_config(action;config)
   backend/app/workflow.py:
   backend/app/workflow_events.py:
     e: WorkflowEvent,WorkflowEventHub
@@ -1354,6 +1535,19 @@ D:
   backend/tests/conftest.py:
     e: client
     client()
+  backend/tests/test_attachment_validation.py:
+    e: _write_pdf,test_validation_from_chat_result_prefers_top_level,test_validation_from_chat_result_reads_execution_step_result,test_validation_from_chat_result_builds_from_dsl,test_ensure_attachment_validation_marks_unused_invalid_attachment
+    _write_pdf(path)
+    test_validation_from_chat_result_prefers_top_level()
+    test_validation_from_chat_result_reads_execution_step_result()
+    test_validation_from_chat_result_builds_from_dsl(tmp_path)
+    test_ensure_attachment_validation_marks_unused_invalid_attachment(tmp_path)
+  backend/tests/test_chat_router.py:
+    e: test_ready_chat_auto_executes_worker_workflow,test_ready_chat_delegates_mullm_steps_without_worker_execution,test_ready_chat_rejects_invalid_dsl_contract_before_execution,DummyWorkflowResult
+    DummyWorkflowResult: __init__(1),model_dump(0)
+    test_ready_chat_auto_executes_worker_workflow()
+    test_ready_chat_delegates_mullm_steps_without_worker_execution()
+    test_ready_chat_rejects_invalid_dsl_contract_before_execution()
   backend/tests/test_config.py:
     e: TestBackendSettingsDefaults,TestBackendSettingsEnvOverride,TestBackendSettingsIntegration
     TestBackendSettingsDefaults: test_worker_url_default(1),test_nlp_service_url_default(1),test_postgres_url_default_none(1),test_log_level_default(1)  # BackendSettings reads sane defaults when env vars are absent
@@ -1371,17 +1565,27 @@ D:
     TestMemoryRepoEviction: test_eviction_oldest(0)  # MemoryWorkflowRepo enforces max_size.
     TestSerializationRoundtrip: test_steps_json_roundtrip(0)  # Data saved to repo preserves all fields through roundtrip.
     TestWorkflowRepoFactory: test_factory_returns_memory_without_postgres(1),test_factory_returns_postgres_with_url(1)  # create_workflow_repo() factory behavior.
+  backend/tests/test_step_validator.py:
+    e: _write_test_pdf,test_send_invoice_ok,test_missing_attachment_file,test_pdf_invoice_ok,test_text_pdf_rejected
+    _write_test_pdf(path)
+    test_send_invoice_ok()
+    test_missing_attachment_file()
+    test_pdf_invoice_ok(tmp_path)
+    test_text_pdf_rejected(tmp_path)
   backend/tests/test_workflow_api.py:
     e: _mock_worker_response,TestHealthEndpoint,TestWorkflowActions,TestRunWorkflow,TestWorkflowHistory,TestFromText
     TestHealthEndpoint: test_health_endpoint(1)  # Backend health check.
     TestWorkflowActions: test_workflow_actions(1),test_workflow_actions_contains_invoice(1)  # GET /workflow/actions endpoint.
     TestRunWorkflow: test_run_workflow(1),test_run_workflow_step_failure(1),test_start_workflow(1),test_stream_workflow(1)  # POST /workflow/run endpoint.
     TestWorkflowHistory: test_workflow_history(1)  # GET /workflow/history endpoint.
-    TestFromText: test_from_text_complete(1),test_from_text_incomplete(1),test_from_text_empty(1)  # POST /workflow/from-text endpoint.
+    TestFromText: test_from_text_complete(1),test_from_text_incomplete(1),test_from_text_empty(1),test_from_text_rejects_invalid_workflow_contract(1)  # POST /workflow/from-text endpoint.
     _mock_worker_response(status_code;json_data)
   examples/01-invoice/main.py:
   examples/01-invoice/scenario.py:
-    e: run
+    e: _example_dir,_run_autonomous,_attachment_validation,run
+    _example_dir()
+    _run_autonomous(client)
+    _attachment_validation(result)
     run(client)
   examples/02-email/main.py:
   examples/02-email/scenario.py:
@@ -1439,6 +1643,11 @@ D:
     e: _run_show,run
     _run_show(query)
     run(client)
+  examples/13-autonomous-invoice-stack/main.py:
+  examples/13-autonomous-invoice-stack/scenario.py:
+    e: _example_dir,run
+    _example_dir()
+    run(client)
   examples/bootstrap.py:
     e: bootstrap
     bootstrap(example_dir)
@@ -1465,16 +1674,87 @@ D:
     e: NLPServiceSettings
     NLPServiceSettings:
   nlp-service/app/conversation/__init__.py:
+  nlp-service/app/conversation/attachment_gate.py:
+    e: workflow_needs_attachment
+    workflow_needs_attachment(state;dialog;ctx)
+  nlp-service/app/conversation/autonomous_loop.py:
+    e: _max_autonomous_rounds,_autonomous_enabled,_example_dir,_step_config_for_validation,_attachment_valid_ok,_maybe_delete_generated_attachment,_resolve_artifact_file,_try_fixture_attachment,_try_generate_attachment,_dialog_missing,_try_validation_fixes,autonomous_resolve_turn,AutonomousResolveResult
+    AutonomousResolveResult:
+    _max_autonomous_rounds(ctx)
+    _autonomous_enabled(ctx)
+    _example_dir()
+    _step_config_for_validation(state)
+    _attachment_valid_ok(raw;ctx;state)
+    _maybe_delete_generated_attachment(raw;ctx)
+    _resolve_artifact_file(raw;ctx)
+    _try_fixture_attachment(state;ctx)
+    _try_generate_attachment(state;ctx)
+    _dialog_missing(state)
+    _try_validation_fixes(state;ctx)
+    autonomous_resolve_turn(state)
+  nlp-service/app/conversation/doql_autofill.py:
+    e: load_context_for_state,_resolve_attachment_path,_nested_generate_invoice,sync_autofill_from_doql
+    load_context_for_state(state)
+    _resolve_attachment_path(raw;ctx)
+    _nested_generate_invoice(state;ctx)
+    sync_autofill_from_doql(state)
+  nlp-service/app/conversation/doql_context.py:
+    e: resolve_doql_context_path,merge_inline_context,autofill_entities
+    resolve_doql_context_path(explicit)
+    merge_inline_context(ctx;inline)
+    autofill_entities(entities;missing_refs;ctx)
+  nlp-service/app/conversation/doql_registry.py:
+    e: _format_value,_render_block,_entities_to_data,_patch_doql_file,_try_sdk_refresh,refresh_registry_for_state,reload_context_after_refresh
+    _format_value(val)
+    _render_block(name;data)
+    _entities_to_data(intent;entities)
+    _patch_doql_file(path)
+    _try_sdk_refresh(path)
+    refresh_registry_for_state(state)
+    reload_context_after_refresh(state)
+  nlp-service/app/conversation/invoice_paths.py:
+    e: example_root_from_doql,resolve_example_root,invoice_output_dir,store_attachment_path
+    example_root_from_doql(doql_path)
+    resolve_example_root()
+    invoice_output_dir()
+    store_attachment_path(out_path;example_root)
+  nlp-service/app/conversation/invoice_policy.py:
+    e: is_invoice_example,invoice_attachment_policy_active
+    is_invoice_example(name)
+    invoice_attachment_policy_active(ctx;state)
   nlp-service/app/conversation/merge.py:
     e: merge_into_state
     merge_into_state(state;nlp)
   nlp-service/app/conversation/orchestrator.py:
-    e: start_conversation,continue_conversation,get_conversation,_attach_routing,_process_message
+    e: _conversation_store,_apply_request_context,start_conversation,continue_conversation,get_conversation,mark_conversation_executed,_attach_routing,_entity_field_from_inline_key,_merge_inline_entities,_attach_autofill,_attach_reflection,_process_message
+    _conversation_store()
+    _apply_request_context(inline)
     start_conversation(text)
     continue_conversation(conversation_id;text)
     get_conversation(conversation_id)
+    mark_conversation_executed(conversation_id;execution)
     _attach_routing(resp;decision)
+    _entity_field_from_inline_key(key)
+    _merge_inline_entities(state;inline)
+    _attach_autofill(resp;state)
+    _attach_reflection(resp;state;phase)
     _process_message(state;text)
+  nlp-service/app/conversation/process_agent.py:
+    e: preflight_turn,reflect_turn,observe_turn
+    preflight_turn(state;decision)
+    reflect_turn(state;phase)
+    observe_turn(state)
+  nlp-service/app/conversation/reflection.py:
+    e: _intent_from_state,_current_config,_target_config,_empty,_validation_issues,_policies,_pseudo_response,_resolve_doql_path,reflection_from_state
+    _intent_from_state(state)
+    _current_config(state)
+    _target_config(state)
+    _empty(val)
+    _validation_issues(state)
+    _policies(state)
+    _pseudo_response(state)
+    _resolve_doql_path(state)
+    reflection_from_state(state;phase)
   nlp-service/app/conversation/responses.py:
     e: deny_message,_execute_keyword_in_text,_is_execute_or_continue,check_execute_keyword,handle_unknown_intent,handle_system_action,build_and_check_dsl,build_incomplete_response,_nlp_from_state,format_system_result,_format_system_status,_format_settings_get,_format_settings_set,_format_settings_reset,_format_file_read,_format_file_write,_format_file_list,_format_registry_list,_format_registry_update
     deny_message(decision)
@@ -1496,6 +1776,25 @@ D:
     _format_file_list(inner)
     _format_registry_list(inner)
     _format_registry_update(inner)
+  nlp-service/app/conversation/runtime_gate.py:
+    e: runtime_unavailable_message,process_scope_blocked,intract_clarification_blocked
+    runtime_unavailable_message(ctx;intent)
+    process_scope_blocked(ctx)
+    intract_clarification_blocked(ctx)
+  nlp-service/app/conversation/system_map.py:
+    e: set_doql_context,get_doql_context,load_system_map_for_state,known_action_names,command_meta,required_fields_for_action,runtime_id_for_action,effective_nlp_parser_mode,effective_nlp_confidence_min,autonomous_max_rounds,autonomous_enabled,load_doql_from_path
+    set_doql_context(ctx)
+    get_doql_context()
+    load_system_map_for_state(state)
+    known_action_names()
+    command_meta(action)
+    required_fields_for_action(action)
+    runtime_id_for_action(action)
+    effective_nlp_parser_mode()
+    effective_nlp_confidence_min()
+    autonomous_max_rounds()
+    autonomous_enabled()
+    load_doql_from_path(path)
   nlp-service/app/dsl/__init__.py:
   nlp-service/app/dsl/forms.py:
     e: get_action_form
@@ -1513,9 +1812,12 @@ D:
     e: map_to_dsl_with_enrichment
     map_to_dsl_with_enrichment(nlp)
   nlp-service/app/execution/__init__.py:
+    e: __getattr__
+    __getattr__(name)
   nlp-service/app/execution/delegate.py:
-    e: is_delegated_to_mullm,execution_backend_for_intent,mullm_action_names,delegate_payload
+    e: is_delegated_to_mullm,execution_backend_for_runtime,execution_backend_for_intent,mullm_action_names,delegate_payload
     is_delegated_to_mullm(intent)
+    execution_backend_for_runtime(runtime_id)
     execution_backend_for_intent(intent)
     mullm_action_names()
     delegate_payload(action;config)
@@ -1583,7 +1885,7 @@ D:
     get_request_id()
     setup_logging(service;level)
   nlp-service/app/main.py:
-    e: orient_text,parse_text,text_to_dsl,access_config,access_check,access_reload,list_actions,health,chat_start,chat_message,chat_state,actions_schema,action_schema,get_settings,get_settings_section,update_settings_section,set_setting,reset_settings,system_execute,generate_code,get_supported_languages,_run_parser,websocket_chat,chat_ui
+    e: orient_text,parse_text,text_to_dsl,access_config,access_check,access_reload,list_actions,health,chat_start,_parse_context_json,chat_message,chat_state,chat_registry_observe,actions_schema,action_schema,get_settings,get_settings_section,update_settings_section,set_setting,reset_settings,system_execute,generate_code,get_supported_languages,_run_parser,websocket_chat,chat_ui
     orient_text(req)
     parse_text(req)
     text_to_dsl(req)
@@ -1592,9 +1894,11 @@ D:
     access_reload()
     list_actions()
     health()
-    chat_start(text;audio)
-    chat_message(conversation_id;text;audio)
+    chat_start(text;audio;doql_context_path;context_json)
+    _parse_context_json(raw)
+    chat_message(conversation_id;text;audio;context_json)
     chat_state(conversation_id)
+    chat_registry_observe(request)
     actions_schema()
     action_schema(action)
     get_settings()
@@ -1622,6 +1926,10 @@ D:
     get_required_fields(action)
     get_defaults(action)
     get_quality_required_fields(action)
+  nlp-service/app/request_context.py:
+    e: set_example_dir,get_example_dir
+    set_example_dir(path)
+    get_example_dir()
   nlp-service/app/routing/__init__.py:
   nlp-service/app/routing/intent.py:
     e: IntentDecision
@@ -1757,6 +2065,37 @@ D:
     e: RedisConversationStore
     RedisConversationStore: __init__(2),_key(1),get(1),save(2),delete(1),count(0),close(0)
   nlp-service/app/system_executor.py:
+  nlp-service/app/validation/__init__.py:
+  nlp-service/app/validation/attachment_validation.py:
+    e: build_attachment_validation
+    build_attachment_validation(raw_path)
+  nlp-service/app/validation/invoice_pdf.py:
+    e: _pdf_escape,build_invoice_pdf_bytes,write_invoice_pdf
+    _pdf_escape(text)
+    build_invoice_pdf_bytes()
+    write_invoice_pdf(path)
+  nlp-service/app/validation/path_policy.py:
+    e: _glob_to_regex,path_matches_glob,example_relative_path,path_allowed_by_patterns,validate_process_path
+    _glob_to_regex(pattern)
+    path_matches_glob(rel_path;pattern)
+    example_relative_path(resolved;example_dir)
+    path_allowed_by_patterns(rel_path;patterns)
+    validate_process_path(ctx;resolved_path)
+  nlp-service/app/validation/path_resolve.py:
+    e: _examples_portable_candidates,resolve_attachment_path
+    _examples_portable_candidates(raw)
+    resolve_attachment_path(raw)
+  nlp-service/app/validation/step_validator.py:
+    e: _required_fields,_path_scope_check,_path_resolver,_validation_context,validate_step_config_issues,validate_step_config,validate_workflow_steps,format_validation_message,StepValidationError
+    StepValidationError: __init__(2)
+    _required_fields(action)
+    _path_scope_check(resolved)
+    _path_resolver(raw)
+    _validation_context(action;config)
+    validate_step_config_issues(action;config)
+    validate_step_config(action;config)
+    validate_workflow_steps(steps)
+    format_validation_message(failures)
   nlp-service/integrations/__init__.py:
   nlp-service/integrations/loader.py:
     e: _integration_names,load_integration_registries,apply_integrations
@@ -1767,11 +2106,12 @@ D:
   nlp-service/integrations/mullm/registry.py:
   nlp-service/tests/__init__.py:
   nlp-service/tests/conftest.py:
-    e: sample_texts,expected_intents,sample_entities,mock_conversation_store
+    e: sample_texts,expected_intents,sample_entities,mock_conversation_store,_rules_parser_mode
     sample_texts()
     expected_intents()
     sample_entities()
     mock_conversation_store()
+    _rules_parser_mode(monkeypatch)
   nlp-service/tests/test_access.py:
     e: _point_config,test_config_loads_areas,test_uri_match_mullm,test_files_agent_can_list,test_mail_agent_denied_mullm_execute,test_native_lista_plikow_registry,test_registry_has_yaml_action
     _point_config(monkeypatch)
@@ -1781,6 +2121,38 @@ D:
     test_mail_agent_denied_mullm_execute()
     test_native_lista_plikow_registry()
     test_registry_has_yaml_action()
+  nlp-service/tests/test_attachment_validation.py:
+    e: test_resolve_examples_mount_path_on_host,test_build_attachment_validation_ok,test_build_attachment_validation_rejects_text_pdf
+    test_resolve_examples_mount_path_on_host(tmp_path;monkeypatch)
+    test_build_attachment_validation_ok(tmp_path;monkeypatch)
+    test_build_attachment_validation_rejects_text_pdf(tmp_path;monkeypatch)
+  nlp-service/tests/test_autonomous_loop.py:
+    e: _patch_store,test_autonomous_resolves_invoice_to_ready,test_start_conversation_autonomous_ready,test_autonomous_rejects_text_pdf_artifact_and_generates
+    _patch_store(monkeypatch;tmp_path)
+    test_autonomous_resolves_invoice_to_ready()
+    test_start_conversation_autonomous_ready()
+    test_autonomous_rejects_text_pdf_artifact_and_generates(tmp_path;monkeypatch)
+  nlp-service/tests/test_doql_attachment.py:
+    e: _patch_store,TestAttachmentConversation
+    TestAttachmentConversation: test_incomplete_then_attachment_inline(1)
+    _patch_store(monkeypatch;tmp_path)
+  nlp-service/tests/test_doql_autofill.py:
+    e: _patch_store,TestDoqlAutofillConversation
+    TestDoqlAutofillConversation: test_start_incomplete_autofilled_to_ready(0)
+    _patch_store(monkeypatch;tmp_path)
+  nlp-service/tests/test_doql_context.py:
+    e: test_load_doql_context,test_autofill_entities_from_data,test_merge_inline_attachment_path,test_merge_inline_dotted_action_fields,test_merge_inline_entities_dotted_keys,test_load_doql_runtimes,test_runtime_unavailable_message
+    test_load_doql_context(tmp_path)
+    test_autofill_entities_from_data()
+    test_merge_inline_attachment_path()
+    test_merge_inline_dotted_action_fields()
+    test_merge_inline_entities_dotted_keys()
+    test_load_doql_runtimes(tmp_path)
+    test_runtime_unavailable_message()
+  nlp-service/tests/test_doql_registry.py:
+    e: test_patch_doql_data_and_history,test_refresh_registry_for_state
+    test_patch_doql_data_and_history(tmp_path)
+    test_refresh_registry_for_state(tmp_path;monkeypatch)
   nlp-service/tests/test_enrich.py:
     e: _enable_enrich,_FakeMessage,_FakeChoice,_FakeResponse,TestEnrichHelpers,TestEnrichEntities,TestEnrichPipeline
     _FakeMessage: __init__(1)
@@ -1791,9 +2163,11 @@ D:
     TestEnrichPipeline: test_pipeline_completes_after_enrich(2)
     _enable_enrich(monkeypatch)
   nlp-service/tests/test_execution_delegate.py:
-    e: test_mullm_shell_delegated,test_invoice_worker_backend,test_delegate_payload_shape
+    e: test_delegate_import_does_not_require_system_settings_dependency,test_mullm_shell_delegated,test_invoice_worker_backend,test_system_runtime_backend,test_delegate_payload_shape
+    test_delegate_import_does_not_require_system_settings_dependency()
     test_mullm_shell_delegated()
     test_invoice_worker_backend()
+    test_system_runtime_backend()
     test_delegate_payload_shape()
   nlp-service/tests/test_mapper.py:
     e: TestMapCompleteDSL,TestMapIncomplete,TestMapComposite,TestMapUnknown,TestMapDefaults,TestMapTrigger,TestMapSystemAction,TestMapAllBusinessActions,TestResolveActions
@@ -1810,7 +2184,7 @@ D:
     e: _patch_store,TestStartConversation,TestExecuteKeywordMatching,TestContinueConversation,TestSystemCommands,TestGetConversation,TestGetActionForm,TestMergeIntoState
     TestStartConversation: test_start_conversation_complete(0),test_start_conversation_incomplete(0),test_start_conversation_unknown(0)  # Starting a new conversation from initial user text.
     TestExecuteKeywordMatching: test_go_not_matched_inside_zgodnie(0)
-    TestContinueConversation: test_continue_conversation(0),test_continue_conversation_lazy_create(0),test_continue_conversation_email_body(0)  # Multi-turn dialog: providing missing data in follow-up messa
+    TestContinueConversation: test_continue_conversation(0),test_continue_conversation_lazy_create(0),test_continue_conversation_email_body(0),test_execute_keyword_idempotent_after_executed(0)  # Multi-turn dialog: providing missing data in follow-up messa
     TestSystemCommands: test_system_command_status(0),test_system_command_settings(0),test_format_system_file_list(0),test_format_system_failed_result(0)  # System actions executed directly (no DSL generation).
     TestGetConversation: test_get_conversation_exists(0),test_get_conversation_not_found(0)  # Retrieving stored conversation state.
     TestGetActionForm: test_action_form_send_invoice(0),test_action_form_nonexistent(0)  # Schema-driven UI form generation.
@@ -1823,7 +2197,7 @@ D:
   nlp-service/tests/test_parser_rules.py:
     e: TestParseInvoice,TestParseEmail,TestParseNotifyQuality,TestParseReport,TestParseComposite,TestParseSystem,TestParseUnknown,TestAmountExtraction,TestTriggerDetection,TestResultStructure
     TestParseInvoice: test_parse_invoice_simple(0),test_parse_invoice_missing_data(0),test_parse_invoice_eur(0),test_parse_invoice_usd(0)  # Invoice intent detection and entity extraction.
-    TestParseEmail: test_parse_email(0),test_parse_email_english(0),test_parse_email_reminder(0),test_parse_email_with_subject(0),test_parse_email_colon_body(0),test_parse_body_content_prefix(0),test_parse_body_content_prefix_long_form(0),test_parse_email_offer(0),test_parse_slack_with_message(0),test_parse_slack_about_message(0)  # Email intent detection.
+    TestParseEmail: test_parse_email(0),test_parse_email_english(0),test_parse_email_reminder(0),test_parse_email_with_subject(0),test_parse_email_subject_and_body_same_line(0),test_parse_email_colon_body(0),test_parse_body_content_prefix(0),test_parse_body_content_prefix_long_form(0),test_parse_email_offer(0),test_parse_slack_with_message(0),test_parse_slack_about_message(0)  # Email intent detection.
     TestParseNotifyQuality: test_notify_channel_only_maps_incomplete_without_message(0)
     TestParseReport: test_parse_report_weekly(0),test_parse_report_hr_xlsx_no_false_system(0),test_parse_report_finance_csv(0)  # Report intent and entity extraction.
     TestParseComposite: test_parse_composite_invoice_notify(0),test_parse_composite_full_flow(0)  # Multi-action (composite) intent detection.
@@ -1832,6 +2206,25 @@ D:
     TestAmountExtraction: test_parse_amount_extraction(3)  # Currency and amount parsing across formats.
     TestTriggerDetection: test_parse_trigger_detection(2)  # Schedule trigger extraction from text.
     TestResultStructure: test_result_is_nlp_result(0),test_raw_text_preserved(0)  # NLPResult output structure validation.
+  nlp-service/tests/test_path_policy.py:
+    e: test_path_matches_glob_fixtures,test_path_allowed_by_patterns_empty_means_allow,test_validate_process_path_denies_outside_scope,test_example_relative_path
+    test_path_matches_glob_fixtures()
+    test_path_allowed_by_patterns_empty_means_allow()
+    test_validate_process_path_denies_outside_scope(tmp_path;monkeypatch)
+    test_example_relative_path(tmp_path)
+  nlp-service/tests/test_path_resolve.py:
+    e: test_validate_resolves_relative_fixture
+    test_validate_resolves_relative_fixture(tmp_path;monkeypatch)
+  nlp-service/tests/test_process_agent.py:
+    e: test_load_doql_commands,test_mapper_uses_doql_required_fields,test_execution_backend_for_runtime,test_execution_backend_from_doql_map,test_preflight_blocks_unavailable_runtime,test_preflight_blocks_process_scope_deny,test_preflight_blocks_intract_clarification,test_required_fields_for_action_helper
+    test_load_doql_commands(tmp_path)
+    test_mapper_uses_doql_required_fields()
+    test_execution_backend_for_runtime()
+    test_execution_backend_from_doql_map()
+    test_preflight_blocks_unavailable_runtime()
+    test_preflight_blocks_process_scope_deny()
+    test_preflight_blocks_intract_clarification()
+    test_required_fields_for_action_helper()
   nlp-service/tests/test_registry.py:
     e: TestRegistryStructure,TestAliasResolution,TestTriggerDetection,TestHelperFunctions,TestCategories,TestCompositeIntents
     TestRegistryStructure: test_registry_entry_has_required_keys(1)  # Validate registry entries have required keys.
@@ -1840,6 +2233,13 @@ D:
     TestHelperFunctions: test_get_required_fields_invoice(0),test_get_required_fields_unknown(0),test_get_defaults_invoice(0),test_get_defaults_unknown(0)  # get_required_fields, get_defaults.
     TestCategories: test_system_actions_nonempty(0),test_business_actions_nonempty(0),test_no_overlap(0),test_union_is_complete(0),test_mullm_actions_loaded(0)  # System vs business action sets.
     TestCompositeIntents: test_composite_actions_exist(1)  # COMPOSITE_INTENTS structure validation.
+  nlp-service/tests/test_registry_observe.py:
+    e: client,test_registry_observe_requires_path,test_registry_observe_merges_entities,_patch_store,test_registry_observe_marks_conversation_executed
+    client()
+    test_registry_observe_requires_path(client)
+    test_registry_observe_merges_entities(client;tmp_path)
+    _patch_store(monkeypatch)
+    test_registry_observe_marks_conversation_executed(client;tmp_path)
   nlp-service/tests/test_routing_observability.py:
     e: _reset_metrics,test_record_increments_rules_hit,test_resolve_intent_updates_metrics
     _reset_metrics()
@@ -1848,8 +2248,19 @@ D:
   nlp-service/tests/test_routing_resolve.py:
     e: TestParserSource,TestResolveIntent,TestOrchestratorRoutingField
     TestParserSource: test_rules_mode(1)
-    TestResolveIntent: test_invoice_rules_path(0),test_unknown_intent(0),test_native_file_list_route(0),test_decision_serializable(0)
+    TestResolveIntent: test_invoice_rules_path(0),test_unknown_intent(1),test_native_file_list_route(0),test_decision_serializable(0)
     TestOrchestratorRoutingField: test_start_conversation_includes_routing(1)
+  nlp-service/tests/test_step_validator.py:
+    e: _clear_doql,test_send_invoice_valid_without_attachment,test_send_invoice_missing_to,test_send_invoice_invalid_email,test_attachment_required_blocks_empty_path,test_pdf_invoice_file_valid,test_pdf_invoice_amount_mismatch,test_invalid_attachment_content,test_validate_workflow_steps_index
+    _clear_doql()
+    test_send_invoice_valid_without_attachment()
+    test_send_invoice_missing_to()
+    test_send_invoice_invalid_email()
+    test_attachment_required_blocks_empty_path()
+    test_pdf_invoice_file_valid(tmp_path)
+    test_pdf_invoice_amount_mismatch(tmp_path)
+    test_invalid_attachment_content(tmp_path)
+    test_validate_workflow_steps_index()
   nlp-service/tests/test_store.py:
     e: TestMemoryStoreCRUD,TestSerializationRoundtrip,TestStoreFactory,TestStoreIsolation
     TestMemoryStoreCRUD: store(0),test_save_and_get(1),test_get_nonexistent(1),test_save_overwrites(1),test_delete(1),test_delete_nonexistent(1),test_count_empty(1),test_count_after_saves(1),test_count_after_delete(1)  # Basic CRUD operations on MemoryConversationStore.
@@ -1873,9 +2284,23 @@ D:
     TestExecutorMapping: test_all_system_actions_have_executor(0),test_executors_count(0)  # SYSTEM_EXECUTORS dict is complete.
     _reset_settings(monkeypatch)
   nlp2dsl_sdk/__init__.py:
+    e: __getattr__
+    __getattr__(name)
   nlp2dsl_sdk/__main__.py:
     e: main
     main()
+  nlp2dsl_sdk/artifact_layout.py:
+    e: artifact_root,example_fixtures_dir,ensure_layout,resolve_registry_path,write_registry,current_run_id,run_dir,write_turn_snapshot,write_reflection_snapshot,write_last_run_report
+    artifact_root(example_dir)
+    example_fixtures_dir(example_dir)
+    ensure_layout(root)
+    resolve_registry_path()
+    write_registry(root;content)
+    current_run_id(root)
+    run_dir(root;run_id)
+    write_turn_snapshot(artifact_root_path)
+    write_reflection_snapshot(artifact_root_path)
+    write_last_run_report(root;payload)
   nlp2dsl_sdk/artifacts.py:
     e: example_artifact_root,_slugify,_mask_secret,collect_environment,write_environment_doql,build_process_trace,_action_endpoint,_action_transport,write_query_artifacts,write_manifest,write_testql_commands,write_services_snapshot,_extract_actions,get_example_writer,ExampleArtifactWriter
     ExampleArtifactWriter: __init__(1),record(2),finalize(1)  # Accumulates query results and flushes .nlp2dsl/ on finalize(
@@ -1893,13 +2318,27 @@ D:
     write_services_snapshot(artifact_root;actions)
     _extract_actions(result)
     get_example_writer()
+  nlp2dsl_sdk/attachment_validation.py:
+    e: format_attachment_validation,build_attachment_validation,_attachment_from_dsl,_prefer_local_validation,_apply_attachment_to_execution,enrich_chat_response
+    format_attachment_validation(payload)
+    build_attachment_validation(raw_path)
+    _attachment_from_dsl(dsl)
+    _prefer_local_validation(remote;local)
+    _apply_attachment_to_execution(execution;av)
+    enrich_chat_response(data)
+  nlp2dsl_sdk/autonomous_flow.py:
+    e: AutonomousFlow
+    AutonomousFlow: __init__(1),run_task(1),_should_auto_execute(0),_default_example_dir(0),_start_with_extra(1)  # Single-shot task runner with server-side autonomous resoluti
   nlp2dsl_sdk/cli.py:
-    e: _analyze,_display,show,_client,_health,_run,_actions,_chat_start,_demo,main
+    e: _detect_example_dir,_doql_context_label,_analyze,_display,show,_client,_health,_run_with_doql,_run,_actions,_chat_start,_demo,main
+    _detect_example_dir()
+    _doql_context_label(example_dir)
     _analyze(query)
     _display(result)
     show(query)
     _client()
     _health()
+    _run_with_doql(client;query)
     _run(query)
     _actions()
     _chat_start(text)
@@ -1907,14 +2346,40 @@ D:
     main(argv)
   nlp2dsl_sdk/client.py:
     e: workflow_step,NLP2DSLClient,ConversationFlow
-    NLP2DSLClient: __init__(5),from_env(2),close(0),__enter__(0),__exit__(3),_request(3),_backend(2),_nlp_service(2),_worker(2),backend_health(0),nlp_service_health(0),worker_health(0),health(0),workflow_from_text(3),run_workflow(4),workflow_actions(0),workflow_action_schema(1),settings(0),settings_section(1),update_settings_section(2),set_setting(2),reset_settings(1),chat_start(2),chat_message(3),chat_state(1),nlp_chat_start(2),nlp_chat_message(3),nlp_chat_state(1),generate_code(4),supported_languages(0),worker_execute(3),worker_generate_code(5),send_invoice(5),send_email(5),generate_report(4),generate_report_and_notify(7),create_scheduled_report(7),notify_slack(4),crm_update(4),send_invoice_and_notify(7)  # Small reusable SDK for the NLP2DSL services.
-    ConversationFlow: __init__(1),start(2),send_message(2),_record_turn(4),export_trace(0),_handle_response(1),_handle_in_progress_response(2),_handle_ready_response(2),_handle_completed_response(2),_handle_error_response(1),run_demo(0),run_interactive(0)  # Convenience helper for the conversational workflow example.
+    NLP2DSLClient: __init__(5),from_env(2),close(0),__enter__(0),__exit__(3),_request(3),_backend(2),_nlp_service(2),_worker(2),backend_health(0),nlp_service_health(0),worker_health(0),health(0),wait_for_health(0),workflow_from_text(3),run_workflow(4),workflow_actions(0),workflow_history(1),workflow_action_schema(1),settings(0),settings_section(1),update_settings_section(2),set_setting(2),reset_settings(1),chat_start(2),chat_message(3),chat_state(1),nlp_chat_start(2),nlp_chat_message(3),nlp_chat_state(1),generate_code(4),supported_languages(0),worker_execute(3),worker_generate_code(5),send_invoice(5),send_email(5),generate_report(4),generate_report_and_notify(7),create_scheduled_report(7),notify_slack(4),crm_update(4),send_invoice_and_notify(7)  # Small reusable SDK for the NLP2DSL services.
+    ConversationFlow: __init__(1),start(2),send_message(2),_record_turn(4),save_artifacts(1),export_trace(0),_handle_response(1),_persist_reflection(1),_refresh_doql_registry(1),_handle_in_progress_response(2),_handle_ready_response(2),_handle_completed_response(2),_print_attachment_validation(1),_reflect_executed_turn(1),_handle_error_response(1),run_demo(0),run_interactive(0)  # Convenience helper for the conversational workflow example.
     workflow_step(action)
+  nlp2dsl_sdk/compose_generator.py:
+    e: _default_deploy,_default_schedules,_default_generated_services,enrich_ir_for_stack,_wait_for_backend_shell,_run_script_content,_run_process_host_script,_run_process_docker_script,_up_platform_script,_run_process_wrapper_script,_process_shell_dockerfile,_cron_sidecar_dockerfile,_crontab_content,_stack_compose_dict,_runner_dockerfile,generate_stack_compose,ComposeGenerationResult
+    ComposeGenerationResult:
+    _default_deploy(example_id;profile)
+    _default_schedules(example_id)
+    _default_generated_services(example_id)
+    enrich_ir_for_stack(ir)
+    _wait_for_backend_shell()
+    _run_script_content()
+    _run_process_host_script()
+    _run_process_docker_script()
+    _up_platform_script(repo_root)
+    _run_process_wrapper_script(repo_root;stack_rel)
+    _process_shell_dockerfile()
+    _cron_sidecar_dockerfile()
+    _crontab_content(schedules)
+    _stack_compose_dict(ir)
+    _runner_dockerfile()
+    generate_stack_compose(ir)
   nlp2dsl_sdk/conversation_artifacts.py:
     e: _routing_summary,format_transcript,write_conversation_artifacts
     _routing_summary(data)
     format_transcript(trace)
     write_conversation_artifacts(artifact_root;trace)
+  nlp2dsl_sdk/conversation_testql.py:
+    e: _is_nlp_kind,_endpoints_from_text,validate_conversation_scenario,dry_run_conversation_scenario,ConversationValidation
+    ConversationValidation:
+    _is_nlp_kind(kind)
+    _endpoints_from_text(text)
+    validate_conversation_scenario(path)
+    dry_run_conversation_scenario(path)
   nlp2dsl_sdk/demos.py:
     e: _print_code_generation_preview,run_crm_update_demo,run_action_catalog_demo,run_automation_gallery_demo,run_code_generation_demo,_run_direct_code_generation,_get_supported_languages,_run_workflow_code_examples,_run_conversation_code_example,_run_worker_code_generation,list_available_demos,DemoSpec
     DemoSpec:  # Metadata for a runnable demo exposed by the package CLI.
@@ -1929,6 +2394,67 @@ D:
     _run_conversation_code_example(client)
     _run_worker_code_generation(client)
     list_available_demos()
+  nlp2dsl_sdk/doql/__init__.py:
+  nlp2dsl_sdk/doql/models.py:
+    e: DoqlArtifact,DoqlRuntime,DoqlCommand,DoqlResource,DoqlAccess,DoqlProcessPolicy,DoqlTaskContext
+    DoqlArtifact:
+    DoqlRuntime:  # Execution environment (where command effects run).
+    DoqlCommand:  # Schema kroku CMD — akcja workflow + wymagane pola + runtime 
+    DoqlResource:
+    DoqlAccess:
+    DoqlProcessPolicy:
+    DoqlTaskContext: entity_values(1),command(1),required_fields_for(1),runtime_for(1)
+  nlp2dsl_sdk/doql/parse.py:
+    e: _parse_value,_parse_block_body,_split_csv,_parse_command_body,_parse_resource_body,_parse_access_body,_parse_runtime_body,_parse_artifact_body,_apply_context_metadata,_apply_conversation_block,_apply_capabilities_block,_apply_process_block,_apply_process_access_block,_apply_paths_block,_apply_context_block,_append_collection_blocks,load_doql_context,_repo_root_from_example,_command_transport,load_platform_map,load_commands_from_services_yaml,enrich_task_context_from_client,parse_fixture_metadata,collect_task_context
+    _parse_value(raw)
+    _parse_block_body(body)
+    _split_csv(raw)
+    _parse_command_body(body)
+    _parse_resource_body(body)
+    _parse_access_body(body)
+    _parse_runtime_body(body)
+    _parse_artifact_body(body)
+    _apply_context_metadata(ctx;text)
+    _apply_conversation_block(ctx;kv)
+    _apply_capabilities_block(ctx;kv)
+    _apply_process_block(ctx;kv)
+    _apply_process_access_block(ctx;kv)
+    _apply_paths_block(ctx;kv)
+    _apply_context_block(ctx;block_type;kv)
+    _append_collection_blocks(ctx;text)
+    load_doql_context(path)
+    _repo_root_from_example(example_dir)
+    _command_transport(action)
+    load_platform_map(repo_root)
+    load_commands_from_services_yaml(path)
+    enrich_task_context_from_client(ctx;client)
+    parse_fixture_metadata(path)
+    collect_task_context(example_dir)
+  nlp2dsl_sdk/doql/render.py:
+    e: render_doql_context,write_doql_context
+    render_doql_context(ctx)
+    write_doql_context(path;ctx)
+  nlp2dsl_sdk/doql/runtime.py:
+    e: resolve_doql_context_path,context_inline_payload,load_doql_inline_from_env,autofill_entities,_split_missing_ref,_canonical_field,_autofill_value,_candidate_data_keys,_value_from_data,_value_from_artifacts,_needs_field
+    resolve_doql_context_path()
+    context_inline_payload(ctx)
+    load_doql_inline_from_env()
+    autofill_entities(entities;missing_refs;ctx)
+    _split_missing_ref(ref;entities)
+    _canonical_field(field)
+    _autofill_value(action;field;ctx)
+    _candidate_data_keys(action;field)
+    _value_from_data(candidates;ctx)
+    _value_from_artifacts(field;ctx)
+    _needs_field(entities;field)
+  nlp2dsl_sdk/doql_context.py:
+  nlp2dsl_sdk/doql_registry.py:
+    e: entities_to_data,merge_execution_observation,merge_registry_observations,refresh_doql_registry,refresh_doql_registry_from_state
+    entities_to_data(intent;entities)
+    merge_execution_observation(ir_data;workflow_history;execution)
+    merge_registry_observations(ir;path)
+    refresh_doql_registry(path)
+    refresh_doql_registry_from_state(path)
   nlp2dsl_sdk/encoding.py:
     e: utf8_auto_enabled,_explicit_utf8_locale,_apply_utf8_locale_env,_reconfigure_stdio,_set_utf8_locale,configure_utf8,_auto_configure_once,utf8_open
     utf8_auto_enabled()
@@ -1939,12 +2465,33 @@ D:
     configure_utf8()
     _auto_configure_once()
     utf8_open(path;mode)
+  nlp2dsl_sdk/example_bootstrap.py:
+    e: ensure_doql_registry
+    ensure_doql_registry(example_dir)
   nlp2dsl_sdk/example_loader.py:
     e: load_example_runner
     load_example_runner(example_dir)
+  nlp2dsl_sdk/invoice_pdf.py:
+    e: _pdf_escape,build_invoice_pdf_bytes,write_invoice_pdf
+    _pdf_escape(text)
+    build_invoice_pdf_bytes()
+    write_invoice_pdf(path)
+  nlp2dsl_sdk/invoice_policy.py:
+    e: is_invoice_example,apply_invoice_policies,apply_invoice_context
+    is_invoice_example(example_id)
+    apply_invoice_policies(ir)
+    apply_invoice_context(ctx)
+  nlp2dsl_sdk/path_resolve.py:
+    e: _examples_portable_candidates,resolve_attachment_path
+    _examples_portable_candidates(raw)
+    resolve_attachment_path(raw)
   nlp2dsl_sdk/preview.py:
-    e: print_json,print_workflow_preview,print_execution_result,workflow_http_error_result,preview_text_examples,execute_from_text,execute_text_examples,finalize_example_artifacts,ensure_services
+    e: print_json,execution_payload,print_execution_step_detail,print_run_context_hints,print_run_outcome,print_workflow_preview,print_execution_result,workflow_http_error_result,preview_text_examples,execute_from_text,execute_text_examples,finalize_example_artifacts,ensure_services
     print_json(payload)
+    execution_payload(result)
+    print_execution_step_detail(step)
+    print_run_context_hints(result)
+    print_run_outcome(result)
     print_workflow_preview(result)
     print_execution_result(result)
     workflow_http_error_result(exc)
@@ -1953,6 +2500,210 @@ D:
     execute_text_examples(client;title;examples)
     finalize_example_artifacts(client)
     ensure_services(client)
+  nlp2dsl_sdk/process_policy.py:
+    e: _as_list,_deep_merge_process,_load_nlp2dsl_payload,load_platform_process_defaults,_merge_access,_merge_paths,process_policy_from_profile_block,_merge_conversation_from_profile,merge_process_config,apply_process_policies,effective_nlp_parser_mode,process_policy_to_doql_dict,process_scope_denied
+    _as_list(raw)
+    _deep_merge_process(base;override)
+    _load_nlp2dsl_payload(repo_root)
+    load_platform_process_defaults(repo_root)
+    _merge_access(raw)
+    _merge_paths(raw)
+    process_policy_from_profile_block(raw)
+    _merge_conversation_from_profile(ir;raw)
+    merge_process_config()
+    apply_process_policies(ir)
+    effective_nlp_parser_mode(process)
+    process_policy_to_doql_dict(process)
+    process_scope_denied(process)
+  nlp2dsl_sdk/reflection.py:
+    e: _intent_from_response,_entities_from_response,_data_lookup,build_target_plan,_parse_validation_issue,_missing_vs_target,_context_queries_from_issues,_resolutions_available,reflect,reflect_from_chat_turn,reflect_from_doql_path,format_reflection_summary,TargetStep,TargetPlan,ReflectionIssue,ReflectionReport
+    TargetStep:
+    TargetPlan:  # Docelowy model realizacji requestu.
+    ReflectionIssue:
+    ReflectionReport: primary_context_query(0)
+    _intent_from_response(response)
+    _entities_from_response(response)
+    _data_lookup(ir;action;field)
+    build_target_plan(ir;intent;entities)
+    _parse_validation_issue(raw)
+    _missing_vs_target(phase;target;current;ir)
+    _context_queries_from_issues(issues)
+    _resolutions_available(issues;ir)
+    reflect(phase;target;current)
+    reflect_from_chat_turn(ir;response;phase)
+    reflect_from_doql_path(doql_path;response;phase)
+    format_reflection_summary(report)
+  nlp2dsl_sdk/stack_flow.py:
+    e: _reflection_follow_up,StackPhaseResult,StackRunResult,AutonomousStackFlow
+    StackPhaseResult:
+    StackRunResult:
+    AutonomousStackFlow: __init__(1),bootstrap_registry(0),run_phases(1),_run_phase(2),_emit_compose(0)  # End-to-end: registry → autonomous execute → multi-turn valid
+    _reflection_follow_up(reflection;prior_text)
+  nlp2dsl_sdk/step_validation.py:
+    e: validate_step_config_from_map,validate_workflow_from_map
+    validate_step_config_from_map(ir;action;config)
+    validate_workflow_from_map(ir;steps)
+  nlp2dsl_sdk/system_map_bridge.py:
+    e: _mime_for_artifact,_process_from_ctx,task_context_to_system_map,_command_to_ir,doql_file_to_system_map
+    _mime_for_artifact(art)
+    _process_from_ctx(ctx)
+    task_context_to_system_map(ctx)
+    _command_to_ir(cmd)
+    doql_file_to_system_map(path)
+  nlp2dsl_sdk/system_map_generator.py:
+    e: build_introspection_payload,_bootstrap_system_map,_litellm_complete,_parse_llm_json,generate_system_map
+    build_introspection_payload(example_dir)
+    _bootstrap_system_map(example_dir)
+    _litellm_complete(system;user)
+    _parse_llm_json(raw)
+    generate_system_map(example_dir)
+  nlp2dsl_sdk/system_map_ir.py:
+    e: MimeTypeSpec,RuntimeSpecIR,ProtocolSpec,FieldSpec,CommandSchemaIR,ResourceSpecIR,AccessGrantIR,ArtifactSpecIR,ConversationPolicyIR,ProcessAccessScopeIR,ProcessPathsIR,ProcessPolicyIR,ScheduleSpecIR,GeneratedServiceIR,DeploySpecIR,SystemMapIR
+    MimeTypeSpec:  # Artifact or payload MIME + optional Pydantic schema referenc
+    RuntimeSpecIR:  # Execution environment available to the example (where effect
+    ProtocolSpec:  # Transport / execution protocol for a command step.
+    FieldSpec:  # Single command parameter with optional MIME/schema.
+    CommandSchemaIR: required_names(0),optional_names(0)  # CMD layer schema — one workflow action / service call.
+    ResourceSpecIR:
+    AccessGrantIR:
+    ArtifactSpecIR:
+    ConversationPolicyIR:
+    ProcessAccessScopeIR:  # Process-level ACL scope (subset of platform grants).
+    ProcessPathsIR:  # Filesystem paths available to the process agent.
+    ProcessPolicyIR:  # Per-example process behaviour — workflow style, NLP/LLM, Int
+    ScheduleSpecIR:  # Cron / trigger schedule bound to a workflow or NL task.
+    GeneratedServiceIR:  # Optional service stub emitted under .nlp2dsl/generated/servi
+    DeploySpecIR:  # Docker Compose deployment descriptor for transparent process
+    SystemMapIR: command(1),runtime(1),runtime_for_command(1),validate_step_config(2)  # nlp2dsl.system_map.v1 — canonical map of available system ca
+  nlp2dsl_sdk/system_map_models.py:
+    e: _annotation_for_field,command_input_model,build_command_registry,validate_config_against_map
+    _annotation_for_field(field)
+    command_input_model(cmd)
+    build_command_registry(ir)
+    validate_config_against_map(ir;action;config)
+  nlp2dsl_sdk/system_map_render/__init__.py:
+  nlp2dsl_sdk/system_map_render/blocks.py:
+    e: render_header,render_environment_block,render_data_block,render_artifacts_block,render_runtimes_block,render_commands_block,render_resources_block,render_access_block,render_capabilities_block,render_workflow_history_block,render_conversation_block,render_process_block,render_process_access_block,render_paths_block,render_schedules_block,render_deploy_block,render_generated_services_block
+    render_header(ir)
+    render_environment_block(ir)
+    render_data_block(ir)
+    render_artifacts_block(ir)
+    render_runtimes_block(ir)
+    render_commands_block(ir)
+    render_resources_block(ir)
+    render_access_block(ir)
+    render_capabilities_block(ir)
+    render_workflow_history_block(ir)
+    render_conversation_block(ir)
+    render_process_block(ir)
+    render_process_access_block(ir)
+    render_paths_block(ir)
+    render_schedules_block(ir)
+    render_deploy_block(ir)
+    render_generated_services_block(ir)
+  nlp2dsl_sdk/system_map_render/helpers.py:
+    e: esc_str,esc_str_full,bool_lit,join_csv,data_value_line,history_value_line,process_field_line
+    esc_str(value)
+    esc_str_full(value)
+    bool_lit(value)
+    join_csv(items)
+    data_value_line(key;val)
+    history_value_line(key;val)
+    process_field_line(key;val)
+  nlp2dsl_sdk/system_map_render/render.py:
+    e: render_system_map_doql
+    render_system_map_doql(ir)
+  nlp2dsl_sdk/system_map_runtimes.py:
+    e: _repo_root_from_example,load_example_profile,resolve_command_runtime,build_runtimes_for_example
+    _repo_root_from_example(example_dir)
+    load_example_profile(example_id;repo_root)
+    resolve_command_runtime(action)
+    build_runtimes_for_example(example_id)
+  nlp2dsl_sdk/validation/__init__.py:
+    e: __getattr__
+    __getattr__(name)
+  nlp2dsl_sdk/validation/context.py:
+    e: ValidationContext
+    ValidationContext: from_map(1)
+  nlp2dsl_sdk/validation/helpers.py:
+    e: is_empty,parse_amount,pdf_structure_issues,pdf_amount_mismatch
+    is_empty(val)
+    parse_amount(val)
+    pdf_structure_issues(data)
+    pdf_amount_mismatch(data;expected_amount)
+  nlp2dsl_sdk/validation/issue.py:
+    e: issues_to_messages,Phase,ValidationIssue
+    Phase:
+    ValidationIssue: to_dict(0),to_legacy_message(0)
+    issues_to_messages(issues)
+  nlp2dsl_sdk/validation/messages.py:
+    e: legacy_message_to_issue,_missing_required_issue,_quality_missing_issue,_attachment_missing_issue,_attachment_issue,_field_format_issue,_unknown_action_issue,_missing_action_issue,_field_after_colon,_invalid_field_issue,_attachment_resolution,_attachment_kind,_attachment_code,_other_issue
+    legacy_message_to_issue(raw)
+    _missing_required_issue(raw)
+    _quality_missing_issue(raw)
+    _attachment_missing_issue(raw)
+    _attachment_issue(raw)
+    _field_format_issue(raw)
+    _unknown_action_issue(raw)
+    _missing_action_issue(raw)
+    _field_after_colon(raw)
+    _invalid_field_issue(raw)
+    _attachment_resolution(raw)
+    _attachment_kind(raw)
+    _attachment_code(raw)
+    _other_issue(raw)
+  nlp2dsl_sdk/validation/pipeline.py:
+    e: validate_step_issues,validate_step_messages,validate_dsl_contract_issues,validate_dsl_contract_messages,validate_step_config_from_map,validate_step_config_from_map_issues,validate_workflow_from_map,validate_workflow_from_map_issues,_context_from_map
+    validate_step_issues(ctx)
+    validate_step_messages(ctx)
+    validate_dsl_contract_issues(dsl)
+    validate_dsl_contract_messages(dsl)
+    validate_step_config_from_map(ir;action;config)
+    validate_step_config_from_map_issues(ir;action;config)
+    validate_workflow_from_map(ir;steps)
+    validate_workflow_from_map_issues(ir;steps)
+    _context_from_map(ir;action;config)
+  nlp2dsl_sdk/validation/resolutions.py:
+    e: plan_resolutions,_attachment_issues,_is_attachment_issue,_append_attachment_plans,_append_autofill_plans,_has_invalid_attachment,_should_generate_attachment,_attachment_source_hint,_is_autofill_issue,apply_resolution_plans,_append_plan,ResolutionPlan,ResolutionEnvironment
+    ResolutionPlan:
+    ResolutionEnvironment:  # Side-effect handlers injected by orchestrator / SDK flow.
+    plan_resolutions(issues)
+    _attachment_issues(issues)
+    _is_attachment_issue(issue)
+    _append_attachment_plans(plans;seen;attachment)
+    _append_autofill_plans(plans;seen;issues)
+    _has_invalid_attachment(issues)
+    _should_generate_attachment(issues)
+    _attachment_source_hint(issues)
+    _is_autofill_issue(issue)
+    apply_resolution_plans(plans;env)
+    _append_plan(plans;seen;plan)
+  nlp2dsl_sdk/validation/rules/__init__.py:
+  nlp2dsl_sdk/validation/rules/attachment.py:
+    e: _resolve_path,validate_attachment_path,attachment_issues_for_config
+    _resolve_path(ctx;path_str)
+    validate_attachment_path(ctx;path_str)
+    attachment_issues_for_config(ctx)
+  nlp2dsl_sdk/validation/rules/dsl_contract.py:
+    e: validate_dsl_contract,_validate_step,_validate_optional_text_field,_issue,_is_non_empty_string,_type_name
+    validate_dsl_contract(dsl)
+    _validate_step(index;step)
+    _validate_optional_text_field(dsl;field;issues;phase)
+    _issue(code;field;message;phase)
+    _is_non_empty_string(value)
+    _type_name(value)
+  nlp2dsl_sdk/validation/rules/runtime_health.py:
+    e: runtime_id_for_intent,probe_health_endpoint,_runtime_field,validate_runtime_health,validate_runtime_health_for_intent
+    runtime_id_for_intent(intent)
+    probe_health_endpoint(url)
+    _runtime_field(rt;name;default)
+    validate_runtime_health(runtimes;runtime_id)
+    validate_runtime_health_for_intent(runtimes;intent)
+  nlp2dsl_sdk/validation/rules/step_config.py:
+    e: validate_step,_format_issues,validate_workflow_steps
+    validate_step(ctx)
+    _format_issues(ctx)
+    validate_workflow_steps(contexts)
   packages/nlp2cmd-intent/src/nlp2cmd_intent/__init__.py:
   packages/nlp2cmd-intent/src/nlp2cmd_intent/clarification.py:
     e: clarification_enforced,ensure_intent_clear,IntentClarificationRequired
@@ -2157,6 +2908,9 @@ D:
     e: test_intent_ir_roundtrip_json,test_execution_plan_from_intent
     test_intent_ir_roundtrip_json()
     test_execution_plan_from_intent()
+  scripts/_dotenv.py:
+    e: load_dotenv
+    load_dotenv(path)
   scripts/aggregate-example-testql.py:
     e: main
     main()
@@ -2171,7 +2925,7 @@ D:
     run_scenario(scenario_path)
     main(argv)
   scripts/run-example-docker-e2e.py:
-    e: _py,_load_profiles,_health_ok,_collect_profiles,docker_up,docker_down,wait_platform,run_example_main,run_conversation,process_example,main
+    e: _py,_load_profiles,_health_ok,_collect_profiles,docker_up,docker_down,wait_platform,run_example_main,run_execution,run_conversation,process_example,main
     _py()
     _load_profiles()
     _health_ok(base_url)
@@ -2180,7 +2934,8 @@ D:
     docker_down()
     wait_platform(base_url;timeout_s)
     run_example_main(example_dir)
-    run_conversation(example_dir;entry;base_url)
+    run_execution(example_dir;rel;base_url)
+    run_conversation(example_dir;rel;base_url)
     process_example(example_id;entry)
     main(argv)
   scripts/run-example-testql-results.py:
@@ -2199,6 +2954,16 @@ D:
     _manifest_consistency(manifest;artifact_root)
     _write_toon_report(report)
     process_example(example_dir)
+    main(argv)
+  scripts/run-execution-scenario.py:
+    e: _load_yaml,_wait_health,_dsl_actions,_execution_completed,_check_expect,_run_validation,run_scenario,main
+    _load_yaml(path)
+    _wait_health(base_url;timeout_s)
+    _dsl_actions(result)
+    _execution_completed(result)
+    _check_expect(result;expect)
+    _run_validation(v;last)
+    run_scenario(scenario_path)
     main(argv)
   test_code_generation.py:
     e: test_code_generation
@@ -2290,14 +3055,60 @@ D:
     test_websocket_clean_disconnect()
     test_websocket_server_survives_abrupt_close()
     test_websocket_concurrent_connections()
+  tests/test_artifact_layout.py:
+    e: test_write_registry_creates_layout,test_resolve_registry_path_prefers_registry,test_write_environment_doql_uses_registry,test_turn_snapshot_after_refresh
+    test_write_registry_creates_layout(tmp_path)
+    test_resolve_registry_path_prefers_registry(tmp_path;monkeypatch)
+    test_write_environment_doql_uses_registry(tmp_path)
+    test_turn_snapshot_after_refresh(tmp_path)
+  tests/test_attachment_validation.py:
+    e: test_format_attachment_validation_ok,test_enrich_chat_response_from_dsl,test_build_attachment_validation_rejects_text_pdf
+    test_format_attachment_validation_ok()
+    test_enrich_chat_response_from_dsl(tmp_path;monkeypatch)
+    test_build_attachment_validation_rejects_text_pdf(tmp_path;monkeypatch)
+  tests/test_cli_run_output.py:
+    e: test_execution_payload_prefers_execution_then_result,test_print_run_outcome_shows_invoice_id_and_reflection,test_detect_example_dir_from_cwd
+    test_execution_payload_prefers_execution_then_result()
+    test_print_run_outcome_shows_invoice_id_and_reflection(capsys)
+    test_detect_example_dir_from_cwd(tmp_path;monkeypatch)
+  tests/test_compose_generator.py:
+    e: test_generate_stack_compose_writes_artifacts,test_enrich_ir_adds_defaults
+    test_generate_stack_compose_writes_artifacts(tmp_path)
+    test_enrich_ir_adds_defaults(tmp_path)
+  tests/test_conversation_testql.py:
+    e: test_endpoints_from_text_scans_nlp_dsl_rows,test_validate_hand_authored_conversation
+    test_endpoints_from_text_scans_nlp_dsl_rows()
+    test_validate_hand_authored_conversation()
+  tests/test_doql_context.py:
+    e: test_load_doql_context_all_supported_blocks,test_doql_roundtrip_preserves_core_fields,test_autofill_entities_from_data_and_aliases,test_autofill_entities_from_artifact_values,test_autofill_entities_disabled_returns_original_object
+    test_load_doql_context_all_supported_blocks(tmp_path)
+    test_doql_roundtrip_preserves_core_fields(tmp_path)
+    test_autofill_entities_from_data_and_aliases()
+    test_autofill_entities_from_artifact_values()
+    test_autofill_entities_disabled_returns_original_object()
+  tests/test_doql_registry.py:
+    e: test_refresh_merges_entities,test_merge_execution_observation_invoice_id,test_merge_registry_observations_preserves_history
+    test_refresh_merges_entities(tmp_path)
+    test_merge_execution_observation_invoice_id()
+    test_merge_registry_observations_preserves_history(tmp_path)
   tests/test_encoding.py:
     e: test_configure_utf8_reconfigures_stdout,test_configure_utf8_respects_disable,test_configure_utf8_upgrades_ascii_locale,test_utf8_auto_enabled_default
     test_configure_utf8_reconfigures_stdout(monkeypatch)
     test_configure_utf8_respects_disable(monkeypatch)
     test_configure_utf8_upgrades_ascii_locale(monkeypatch)
     test_utf8_auto_enabled_default(monkeypatch)
+  tests/test_invoice_pdf.py:
+    e: test_build_invoice_pdf_starts_with_pdf_header,test_write_invoice_pdf_creates_valid_file
+    test_build_invoice_pdf_starts_with_pdf_header()
+    test_write_invoice_pdf_creates_valid_file(tmp_path)
+  tests/test_invoice_policy.py:
+    e: test_is_invoice_example,test_apply_invoice_policies_on_ir,test_collect_task_context_sets_invoice_policy,test_apply_invoice_context
+    test_is_invoice_example()
+    test_apply_invoice_policies_on_ir()
+    test_collect_task_context_sets_invoice_policy(tmp_path)
+    test_apply_invoice_context()
   tests/test_nlp2dsl_sdk.py:
-    e: client_factory,test_from_env_prefers_repo_env_names,test_workflow_and_conversation_endpoints,test_request_retries_transient_server_errors,test_report_helpers_use_report_type_and_schedule,test_new_workflow_helpers_are_data_driven,test_code_generation_methods_hit_expected_services,test_health_queries_all_services,DummyResponse,DummySession
+    e: client_factory,test_from_env_prefers_repo_env_names,test_workflow_and_conversation_endpoints,test_request_retries_transient_server_errors,test_report_helpers_use_report_type_and_schedule,test_new_workflow_helpers_are_data_driven,test_code_generation_methods_hit_expected_services,test_default_service_urls_match_docker_compose_ports,test_wait_for_health_retries_until_success,test_health_queries_all_services,DummyResponse,DummySession
     DummyResponse: __init__(2),raise_for_status(0),json(0)
     DummySession: __init__(1),request(2),close(0)
     client_factory()
@@ -2307,19 +3118,77 @@ D:
     test_report_helpers_use_report_type_and_schedule(client_factory)
     test_new_workflow_helpers_are_data_driven(client_factory)
     test_code_generation_methods_hit_expected_services(client_factory)
+    test_default_service_urls_match_docker_compose_ports()
+    test_wait_for_health_retries_until_success(monkeypatch)
     test_health_queries_all_services(client_factory)
+  tests/test_path_resolve.py:
+    e: test_resolve_fixture_relative_path,test_resolve_examples_mount_portable_path,test_pdf_attachment_passes_with_valid_pdf,test_pdf_attachment_rejects_text_file
+    test_resolve_fixture_relative_path(tmp_path;monkeypatch)
+    test_resolve_examples_mount_portable_path(tmp_path;monkeypatch)
+    test_pdf_attachment_passes_with_valid_pdf(tmp_path;monkeypatch)
+    test_pdf_attachment_rejects_text_file(tmp_path;monkeypatch)
   tests/test_placeholder.py:
     e: test_placeholder,test_import
     test_placeholder()
     test_import()
+  tests/test_process_policy.py:
+    e: test_process_policy_from_profile_deterministic,test_apply_process_policies_merges_conversation,test_render_and_roundtrip_process_block,test_generate_system_map_01_invoice_has_process,test_ensure_doql_registry_writes_process_block,test_platform_defaults_merge_with_example,test_process_scope_denied_mullm
+    test_process_policy_from_profile_deterministic()
+    test_apply_process_policies_merges_conversation()
+    test_render_and_roundtrip_process_block(tmp_path)
+    test_generate_system_map_01_invoice_has_process()
+    test_ensure_doql_registry_writes_process_block()
+    test_platform_defaults_merge_with_example()
+    test_process_scope_denied_mullm()
+  tests/test_reflection.py:
+    e: _invoice_ir,test_build_target_plan_from_data,test_reflect_ready_when_complete,test_reflect_missing_attachment_when_required,test_validate_attachment_mismatch
+    _invoice_ir()
+    test_build_target_plan_from_data()
+    test_reflect_ready_when_complete()
+    test_reflect_missing_attachment_when_required()
+    test_validate_attachment_mismatch(tmp_path)
+  tests/test_system_map_ir.py:
+    e: test_system_map_validate_step_config,test_dynamic_command_input_model,test_task_context_to_system_map_and_render,test_build_runtimes_for_01_invoice,test_resolve_command_runtime,test_doql_roundtrip_runtimes,test_generate_system_map_01_invoice
+    test_system_map_validate_step_config()
+    test_dynamic_command_input_model()
+    test_task_context_to_system_map_and_render()
+    test_build_runtimes_for_01_invoice()
+    test_resolve_command_runtime()
+    test_doql_roundtrip_runtimes(tmp_path)
+    test_generate_system_map_01_invoice()
   tests/test_tests.py:
     e: test_placeholder,test_import
     test_placeholder()
     test_import()
+  tests/test_validation.py:
+    e: test_legacy_message_to_issue_pdf,test_legacy_message_to_issue_missing_file,test_legacy_message_to_issue_variants,test_validate_step_config_from_map_issues_structure,test_issues_to_messages_roundtrip,test_plan_resolutions_invalid_pdf,test_plan_resolutions_deduplicates_attachment_repairs,test_plan_resolutions_autofill_issue,test_apply_resolution_plans_stops_after_fixture,test_runtime_health_unavailable,test_runtime_id_for_intent,test_validate_step_config_from_map_backward_compat,test_validate_dsl_contract_rejects_broken_steps,test_validate_dsl_contract_allows_dynamic_actions_by_default
+    test_legacy_message_to_issue_pdf()
+    test_legacy_message_to_issue_missing_file()
+    test_legacy_message_to_issue_variants()
+    test_validate_step_config_from_map_issues_structure(tmp_path)
+    test_issues_to_messages_roundtrip()
+    test_plan_resolutions_invalid_pdf()
+    test_plan_resolutions_deduplicates_attachment_repairs()
+    test_plan_resolutions_autofill_issue()
+    test_apply_resolution_plans_stops_after_fixture()
+    test_runtime_health_unavailable()
+    test_runtime_id_for_intent()
+    test_validate_step_config_from_map_backward_compat(tmp_path)
+    test_validate_dsl_contract_rejects_broken_steps()
+    test_validate_dsl_contract_allows_dynamic_actions_by_default()
   worker/__init__.py:
+  worker/attachment_validation.py:
+    e: resolve_worker_attachment_path,validate_invoice_attachment
+    resolve_worker_attachment_path(raw)
+    validate_invoice_attachment(raw_path;config)
   worker/config.py:
     e: WorkerSettings
     WorkerSettings:
+  worker/invoice_pdf.py:
+    e: _pdf_escape,build_invoice_pdf_bytes,write_invoice_pdf
+    _pdf_escape(text)
+    build_invoice_pdf_bytes()
+    write_invoice_pdf(path)
   worker/logging_setup.py:
     e: get_request_id,setup_logging,JSONFormatter,RequestIDMiddleware
     JSONFormatter: __init__(1),format(1)  # Emit log records as single-line JSON objects.
@@ -2339,10 +3208,12 @@ D:
     TestActionRegistry: test_handlers_registered(0),test_all_handlers_callable(0)  # ACTION_HANDLERS dict validation.
     client()
   worker/worker.py:
-    e: action,_deliver_notification,handle_send_invoice,handle_send_email,handle_generate_report,handle_crm_update,handle_notify_slack,handle_notify_telegram,handle_notify_teams,handle_generate_code,execute_step,health
+    e: action,_deliver_notification,handle_send_invoice,_resolve_attachment_path,handle_generate_invoice,handle_send_email,handle_generate_report,handle_crm_update,handle_notify_slack,handle_notify_telegram,handle_notify_teams,handle_generate_code,execute_step,health
     action(name)
     _deliver_notification(provider;config;payload;env_var)
     handle_send_invoice(config)
+    _resolve_attachment_path(raw)
+    handle_generate_invoice(config)
     handle_send_email(config)
     handle_generate_report(config)
     handle_crm_update(config)
@@ -2358,51 +3229,58 @@ D:
 
 ```prolog markpact:analysis path=project/logic.pl
 % ── Project Metadata ─────────────────────────────────────
-project_metadata('nlp2dsl', '0.0.19', 'python').
+project_metadata('nlp2dsl', '0.0.25', 'python').
 
 % ── Project Files ────────────────────────────────────────
 project_file('.pfix-test-wrapper.sh', 16, 'shell').
-project_file('app.doql.less', 234, 'less').
+project_file('app.doql.less', 242, 'less').
 project_file('backend/app/__init__.py', 1, 'python').
+project_file('backend/app/attachment_validation.py', 110, 'python').
 project_file('backend/app/config.py', 43, 'python').
 project_file('backend/app/db/__init__.py', 50, 'python').
 project_file('backend/app/db/memory.py', 38, 'python').
 project_file('backend/app/db/postgres.py', 173, 'python').
-project_file('backend/app/engine.py', 270, 'python').
+project_file('backend/app/dsl_validation.py', 48, 'python').
+project_file('backend/app/engine.py', 308, 'python').
 project_file('backend/app/logging_setup.py', 101, 'python').
 project_file('backend/app/main.py', 51, 'python').
+project_file('backend/app/path_resolve.py', 65, 'python').
 project_file('backend/app/routers/__init__.py', 1, 'python').
-project_file('backend/app/routers/chat.py', 125, 'python').
+project_file('backend/app/routers/chat.py', 251, 'python').
 project_file('backend/app/routers/settings.py', 82, 'python').
 project_file('backend/app/routers/system.py', 30, 'python').
-project_file('backend/app/routers/testql_compat.py', 140, 'python').
-project_file('backend/app/routers/workflow.py', 200, 'python').
+project_file('backend/app/routers/testql_compat.py', 154, 'python').
+project_file('backend/app/routers/workflow.py', 204, 'python').
 project_file('backend/app/schemas.py', 65, 'python').
+project_file('backend/app/step_validator.py', 61, 'python').
 project_file('backend/app/workflow.py', 23, 'python').
 project_file('backend/app/workflow_events.py', 92, 'python').
 project_file('backend/tests/__init__.py', 1, 'python').
-project_file('backend/tests/conftest.py', 32, 'python').
+project_file('backend/tests/conftest.py', 35, 'python').
+project_file('backend/tests/test_attachment_validation.py', 93, 'python').
+project_file('backend/tests/test_chat_router.py', 107, 'python').
 project_file('backend/tests/test_config.py', 83, 'python').
 project_file('backend/tests/test_logging.py', 124, 'python').
 project_file('backend/tests/test_persistence.py', 185, 'python').
-project_file('backend/tests/test_workflow_api.py', 267, 'python').
+project_file('backend/tests/test_step_validator.py', 51, 'python').
+project_file('backend/tests/test_workflow_api.py', 308, 'python').
 project_file('examples/01-invoice/main.py', 34, 'python').
 project_file('examples/01-invoice/run.sh', 7, 'shell').
-project_file('examples/01-invoice/scenario.py', 49, 'python').
+project_file('examples/01-invoice/scenario.py', 93, 'python').
 project_file('examples/02-email/main.py', 34, 'python').
 project_file('examples/02-email/run.sh', 7, 'shell').
 project_file('examples/02-email/scenario.py', 58, 'python').
 project_file('examples/03-report-and-notify/main.py', 34, 'python').
 project_file('examples/03-report-and-notify/run.sh', 7, 'shell').
-project_file('examples/03-report-and-notify/scenario.py', 59, 'python').
+project_file('examples/03-report-and-notify/scenario.py', 60, 'python').
 project_file('examples/04-scheduled-report/main.py', 34, 'python').
 project_file('examples/04-scheduled-report/run.sh', 7, 'shell').
 project_file('examples/04-scheduled-report/scenario.py', 61, 'python').
 project_file('examples/05-conversation-flow/main.py', 34, 'python').
 project_file('examples/05-conversation-flow/run.sh', 7, 'shell').
-project_file('examples/05-conversation-flow/scenario.py', 55, 'python').
+project_file('examples/05-conversation-flow/scenario.py', 52, 'python').
 project_file('examples/06-interactive-chat/main.py', 34, 'python').
-project_file('examples/06-interactive-chat/scenario.py', 53, 'python').
+project_file('examples/06-interactive-chat/scenario.py', 56, 'python').
 project_file('examples/07-email-conversation/main.py', 34, 'python').
 project_file('examples/07-email-conversation/scenario.py', 45, 'python').
 project_file('examples/08-multi-object-benchmark/benchmark_queries.py', 159, 'python').
@@ -2416,10 +3294,12 @@ project_file('examples/11-notify-quality/main.py', 34, 'python').
 project_file('examples/11-notify-quality/scenario.py', 50, 'python').
 project_file('examples/12-ir-show/main.py', 34, 'python').
 project_file('examples/12-ir-show/scenario.py', 89, 'python').
+project_file('examples/13-autonomous-invoice-stack/main.py', 34, 'python').
+project_file('examples/13-autonomous-invoice-stack/scenario.py', 69, 'python').
 project_file('examples/basic/invoice/run.sh', 1, 'shell').
-project_file('examples/bootstrap.py', 27, 'python').
+project_file('examples/bootstrap.py', 48, 'python').
 project_file('examples/code_generation_examples.py', 26, 'python').
-project_file('examples/run-all.sh', 68, 'shell').
+project_file('examples/run-all.sh', 71, 'shell').
 project_file('metrun-profile.sh', 49, 'shell').
 project_file('nlp-service/app/__init__.py', 1, 'python').
 project_file('nlp-service/app/access/__init__.py', 16, 'python').
@@ -2431,16 +3311,27 @@ project_file('nlp-service/app/access/uri_match.py', 4, 'python').
 project_file('nlp-service/app/audio_parser.py', 149, 'python').
 project_file('nlp-service/app/code_generator.py', 280, 'python').
 project_file('nlp-service/app/config.py', 61, 'python').
-project_file('nlp-service/app/conversation/__init__.py', 14, 'python').
+project_file('nlp-service/app/conversation/__init__.py', 2, 'python').
+project_file('nlp-service/app/conversation/attachment_gate.py', 26, 'python').
+project_file('nlp-service/app/conversation/autonomous_loop.py', 300, 'python').
+project_file('nlp-service/app/conversation/doql_autofill.py', 136, 'python').
+project_file('nlp-service/app/conversation/doql_context.py', 148, 'python').
+project_file('nlp-service/app/conversation/doql_registry.py', 177, 'python').
+project_file('nlp-service/app/conversation/invoice_paths.py', 71, 'python').
+project_file('nlp-service/app/conversation/invoice_policy.py', 28, 'python').
 project_file('nlp-service/app/conversation/merge.py', 37, 'python').
-project_file('nlp-service/app/conversation/orchestrator.py', 108, 'python').
-project_file('nlp-service/app/conversation/responses.py', 283, 'python').
+project_file('nlp-service/app/conversation/orchestrator.py', 266, 'python').
+project_file('nlp-service/app/conversation/process_agent.py', 117, 'python').
+project_file('nlp-service/app/conversation/reflection.py', 138, 'python').
+project_file('nlp-service/app/conversation/responses.py', 369, 'python').
+project_file('nlp-service/app/conversation/runtime_gate.py', 90, 'python').
+project_file('nlp-service/app/conversation/system_map.py', 111, 'python').
 project_file('nlp-service/app/dsl/__init__.py', 5, 'python').
 project_file('nlp-service/app/dsl/forms.py', 92, 'python').
-project_file('nlp-service/app/dsl/mapper.py', 237, 'python').
+project_file('nlp-service/app/dsl/mapper.py', 245, 'python').
 project_file('nlp-service/app/dsl/pipeline.py', 32, 'python').
-project_file('nlp-service/app/execution/__init__.py', 15, 'python').
-project_file('nlp-service/app/execution/delegate.py', 30, 'python').
+project_file('nlp-service/app/execution/__init__.py', 22, 'python').
+project_file('nlp-service/app/execution/delegate.py', 49, 'python').
 project_file('nlp-service/app/execution/system.py', 343, 'python').
 project_file('nlp-service/app/governance/__init__.py', 15, 'python').
 project_file('nlp-service/app/governance/bootstrap.py', 79, 'python').
@@ -2448,7 +3339,7 @@ project_file('nlp-service/app/governance/config.py', 166, 'python').
 project_file('nlp-service/app/governance/policy.py', 303, 'python').
 project_file('nlp-service/app/governance/uri_match.py', 43, 'python').
 project_file('nlp-service/app/logging_setup.py', 101, 'python').
-project_file('nlp-service/app/main.py', 571, 'python').
+project_file('nlp-service/app/main.py', 646, 'python').
 project_file('nlp-service/app/mapper.py', 6, 'python').
 project_file('nlp-service/app/orchestrator.py', 22, 'python').
 project_file('nlp-service/app/parser_enrich.py', 16, 'python').
@@ -2456,55 +3347,114 @@ project_file('nlp-service/app/parser_llm.py', 6, 'python').
 project_file('nlp-service/app/parser_rules.py', 6, 'python').
 project_file('nlp-service/app/parsing/__init__.py', 4, 'python').
 project_file('nlp-service/app/parsing/facade.py', 6, 'python').
-project_file('nlp-service/app/registry.py', 404, 'python').
+project_file('nlp-service/app/registry.py', 422, 'python').
+project_file('nlp-service/app/request_context.py', 24, 'python').
 project_file('nlp-service/app/routing/__init__.py', 18, 'python').
 project_file('nlp-service/app/routing/intent.py', 56, 'python').
 project_file('nlp-service/app/routing/native.py', 144, 'python').
 project_file('nlp-service/app/routing/observability.py', 58, 'python').
 project_file('nlp-service/app/routing/orientation.py', 380, 'python').
 project_file('nlp-service/app/routing/parser/__init__.py', 4, 'python').
-project_file('nlp-service/app/routing/parser/enrich.py', 142, 'python').
-project_file('nlp-service/app/routing/parser/facade.py', 20, 'python').
+project_file('nlp-service/app/routing/parser/enrich.py', 150, 'python').
+project_file('nlp-service/app/routing/parser/facade.py', 21, 'python').
 project_file('nlp-service/app/routing/parser/llm.py', 146, 'python').
 project_file('nlp-service/app/routing/parser/prompt_catalog.py', 83, 'python').
-project_file('nlp-service/app/routing/parser/resolve_mode.py', 48, 'python').
+project_file('nlp-service/app/routing/parser/resolve_mode.py', 54, 'python').
 project_file('nlp-service/app/routing/parser/rules.py', 565, 'python').
-project_file('nlp-service/app/routing/resolve.py', 195, 'python').
-project_file('nlp-service/app/schemas.py', 138, 'python').
+project_file('nlp-service/app/routing/resolve.py', 197, 'python').
+project_file('nlp-service/app/schemas.py', 151, 'python').
 project_file('nlp-service/app/settings.py', 252, 'python').
 project_file('nlp-service/app/store/__init__.py', 31, 'python').
 project_file('nlp-service/app/store/factory.py', 47, 'python').
 project_file('nlp-service/app/store/memory.py', 24, 'python').
 project_file('nlp-service/app/store/redis_store.py', 59, 'python').
 project_file('nlp-service/app/system_executor.py', 36, 'python').
+project_file('nlp-service/app/validation/__init__.py', 16, 'python').
+project_file('nlp-service/app/validation/attachment_validation.py', 73, 'python').
+project_file('nlp-service/app/validation/invoice_pdf.py', 74, 'python').
+project_file('nlp-service/app/validation/path_policy.py', 84, 'python').
+project_file('nlp-service/app/validation/path_resolve.py', 88, 'python').
+project_file('nlp-service/app/validation/step_validator.py', 110, 'python').
 project_file('nlp-service/integrations/__init__.py', 6, 'python').
 project_file('nlp-service/integrations/loader.py', 63, 'python').
 project_file('nlp-service/integrations/mullm/__init__.py', 2, 'python').
 project_file('nlp-service/integrations/mullm/registry.py', 67, 'python').
 project_file('nlp-service/tests/__init__.py', 1, 'python').
-project_file('nlp-service/tests/conftest.py', 102, 'python').
+project_file('nlp-service/tests/conftest.py', 113, 'python').
 project_file('nlp-service/tests/test_access.py', 75, 'python').
+project_file('nlp-service/tests/test_attachment_validation.py', 61, 'python').
+project_file('nlp-service/tests/test_autonomous_loop.py', 113, 'python').
+project_file('nlp-service/tests/test_doql_attachment.py', 75, 'python').
+project_file('nlp-service/tests/test_doql_autofill.py', 59, 'python').
+project_file('nlp-service/tests/test_doql_context.py', 153, 'python').
+project_file('nlp-service/tests/test_doql_registry.py', 65, 'python').
 project_file('nlp-service/tests/test_enrich.py', 138, 'python').
-project_file('nlp-service/tests/test_execution_delegate.py', 25, 'python').
+project_file('nlp-service/tests/test_execution_delegate.py', 80, 'python').
 project_file('nlp-service/tests/test_mapper.py', 295, 'python').
-project_file('nlp-service/tests/test_orchestrator.py', 250, 'python').
+project_file('nlp-service/tests/test_orchestrator.py', 275, 'python').
 project_file('nlp-service/tests/test_orientation.py', 107, 'python').
-project_file('nlp-service/tests/test_parser_rules.py', 314, 'python').
+project_file('nlp-service/tests/test_parser_rules.py', 324, 'python').
+project_file('nlp-service/tests/test_path_policy.py', 57, 'python').
+project_file('nlp-service/tests/test_path_resolve.py', 28, 'python').
+project_file('nlp-service/tests/test_process_agent.py', 159, 'python').
 project_file('nlp-service/tests/test_registry.py', 169, 'python').
+project_file('nlp-service/tests/test_registry_observe.py', 113, 'python').
 project_file('nlp-service/tests/test_routing_observability.py', 42, 'python').
-project_file('nlp-service/tests/test_routing_resolve.py', 62, 'python').
+project_file('nlp-service/tests/test_routing_resolve.py', 64, 'python').
+project_file('nlp-service/tests/test_step_validator.py', 90, 'python').
 project_file('nlp-service/tests/test_store.py', 193, 'python').
 project_file('nlp-service/tests/test_system_executor.py', 422, 'python').
-project_file('nlp2dsl_sdk/__init__.py', 38, 'python').
+project_file('nlp2dsl_sdk/__init__.py', 55, 'python').
 project_file('nlp2dsl_sdk/__main__.py', 46, 'python').
-project_file('nlp2dsl_sdk/artifacts.py', 411, 'python').
-project_file('nlp2dsl_sdk/cli.py', 229, 'python').
-project_file('nlp2dsl_sdk/client.py', 630, 'python').
+project_file('nlp2dsl_sdk/artifact_layout.py', 171, 'python').
+project_file('nlp2dsl_sdk/artifacts.py', 433, 'python').
+project_file('nlp2dsl_sdk/attachment_validation.py', 131, 'python').
+project_file('nlp2dsl_sdk/autonomous_flow.py', 106, 'python').
+project_file('nlp2dsl_sdk/cli.py', 270, 'python').
+project_file('nlp2dsl_sdk/client.py', 894, 'python').
+project_file('nlp2dsl_sdk/compose_generator.py', 513, 'python').
 project_file('nlp2dsl_sdk/conversation_artifacts.py', 114, 'python').
-project_file('nlp2dsl_sdk/demos.py', 355, 'python').
+project_file('nlp2dsl_sdk/conversation_testql.py', 104, 'python').
+project_file('nlp2dsl_sdk/demos.py', 356, 'python').
+project_file('nlp2dsl_sdk/doql/__init__.py', 47, 'python').
+project_file('nlp2dsl_sdk/doql/models.py', 132, 'python').
+project_file('nlp2dsl_sdk/doql/parse.py', 467, 'python').
+project_file('nlp2dsl_sdk/doql/render.py', 197, 'python').
+project_file('nlp2dsl_sdk/doql/runtime.py', 128, 'python').
+project_file('nlp2dsl_sdk/doql_context.py', 51, 'python').
+project_file('nlp2dsl_sdk/doql_registry.py', 190, 'python').
 project_file('nlp2dsl_sdk/encoding.py', 93, 'python').
+project_file('nlp2dsl_sdk/example_bootstrap.py', 54, 'python').
 project_file('nlp2dsl_sdk/example_loader.py', 40, 'python').
-project_file('nlp2dsl_sdk/preview.py', 209, 'python').
+project_file('nlp2dsl_sdk/invoice_pdf.py', 76, 'python').
+project_file('nlp2dsl_sdk/invoice_policy.py', 53, 'python').
+project_file('nlp2dsl_sdk/path_resolve.py', 57, 'python').
+project_file('nlp2dsl_sdk/preview.py', 337, 'python').
+project_file('nlp2dsl_sdk/process_policy.py', 291, 'python').
+project_file('nlp2dsl_sdk/reflection.py', 347, 'python').
+project_file('nlp2dsl_sdk/stack_flow.py', 232, 'python').
+project_file('nlp2dsl_sdk/step_validation.py', 44, 'python').
+project_file('nlp2dsl_sdk/system_map_bridge.py', 224, 'python').
+project_file('nlp2dsl_sdk/system_map_generator.py', 203, 'python').
+project_file('nlp2dsl_sdk/system_map_ir.py', 265, 'python').
+project_file('nlp2dsl_sdk/system_map_models.py', 49, 'python').
+project_file('nlp2dsl_sdk/system_map_render/__init__.py', 6, 'python').
+project_file('nlp2dsl_sdk/system_map_render/blocks.py', 286, 'python').
+project_file('nlp2dsl_sdk/system_map_render/helpers.py', 46, 'python').
+project_file('nlp2dsl_sdk/system_map_render/render.py', 47, 'python').
+project_file('nlp2dsl_sdk/system_map_runtimes.py', 175, 'python').
+project_file('nlp2dsl_sdk/validation/__init__.py', 47, 'python').
+project_file('nlp2dsl_sdk/validation/context.py', 49, 'python').
+project_file('nlp2dsl_sdk/validation/helpers.py', 37, 'python').
+project_file('nlp2dsl_sdk/validation/issue.py', 62, 'python').
+project_file('nlp2dsl_sdk/validation/messages.py', 170, 'python').
+project_file('nlp2dsl_sdk/validation/pipeline.py', 127, 'python').
+project_file('nlp2dsl_sdk/validation/resolutions.py', 194, 'python').
+project_file('nlp2dsl_sdk/validation/rules/__init__.py', 1, 'python').
+project_file('nlp2dsl_sdk/validation/rules/attachment.py', 116, 'python').
+project_file('nlp2dsl_sdk/validation/rules/dsl_contract.py', 167, 'python').
+project_file('nlp2dsl_sdk/validation/rules/runtime_health.py', 137, 'python').
+project_file('nlp2dsl_sdk/validation/rules/step_config.py', 163, 'python').
 project_file('packages/install-dev.sh', 26, 'shell').
 project_file('packages/nlp2cmd-intent/src/nlp2cmd_intent/__init__.py', 32, 'python').
 project_file('packages/nlp2cmd-intent/src/nlp2cmd_intent/clarification.py', 38, 'python').
@@ -2551,12 +3501,15 @@ project_file('packages/pact-ir/src/pact_ir/intent.py', 45, 'python').
 project_file('packages/pact-ir/src/pact_ir/target_kind.py', 35, 'python').
 project_file('packages/pact-ir/tests/test_ir_roundtrip.py', 37, 'python').
 project_file('project.sh', 59, 'shell').
-project_file('run-all-tests.sh', 45, 'shell').
+project_file('run-all-tests.sh', 91, 'shell').
+project_file('scripts/_dotenv.py', 24, 'python').
 project_file('scripts/aggregate-example-testql.py', 50, 'python').
+project_file('scripts/bootstrap-venv.sh', 32, 'shell').
 project_file('scripts/publish-all.sh', 45, 'shell').
-project_file('scripts/run-conversation-scenario.py', 194, 'python').
-project_file('scripts/run-example-docker-e2e.py', 249, 'python').
-project_file('scripts/run-example-testql-results.py', 478, 'python').
+project_file('scripts/run-conversation-scenario.py', 261, 'python').
+project_file('scripts/run-example-docker-e2e.py', 321, 'python').
+project_file('scripts/run-example-testql-results.py', 525, 'python').
+project_file('scripts/run-execution-scenario.py', 185, 'python').
 project_file('scripts/setup-dev.sh', 44, 'shell').
 project_file('tauri-wrapper/desktop.sh', 80, 'shell').
 project_file('tauri-wrapper/scripts/dev.js', 57, 'javascript').
@@ -2573,34 +3526,78 @@ project_file('tests/e2e/test_chat_ui.py', 263, 'python').
 project_file('tests/e2e/test_nlp_service.py', 216, 'python').
 project_file('tests/e2e/test_websocket.py', 112, 'python').
 project_file('tests/run.sh', 86, 'shell').
+project_file('tests/test_artifact_layout.py', 73, 'python').
+project_file('tests/test_attachment_validation.py', 79, 'python').
+project_file('tests/test_cli_run_output.py', 71, 'python').
+project_file('tests/test_compose_generator.py', 67, 'python').
+project_file('tests/test_conversation_testql.py', 40, 'python').
+project_file('tests/test_doql_context.py', 221, 'python').
+project_file('tests/test_doql_registry.py', 78, 'python').
 project_file('tests/test_encoding.py', 39, 'python').
-project_file('tests/test_nlp2dsl_sdk.py', 277, 'python').
+project_file('tests/test_invoice_pdf.py', 26, 'python').
+project_file('tests/test_invoice_policy.py', 39, 'python').
+project_file('tests/test_nlp2dsl_sdk.py', 309, 'python').
+project_file('tests/test_path_resolve.py', 78, 'python').
 project_file('tests/test_placeholder.py', 12, 'python').
+project_file('tests/test_process_policy.py', 107, 'python').
+project_file('tests/test_reflection.py', 104, 'python').
+project_file('tests/test_system_map_ir.py', 140, 'python').
 project_file('tests/test_tests.py', 12, 'python').
+project_file('tests/test_validation.py', 242, 'python').
 project_file('tree.sh', 2, 'shell').
 project_file('worker/__init__.py', 6, 'python').
+project_file('worker/attachment_validation.py', 64, 'python').
 project_file('worker/config.py', 28, 'python').
+project_file('worker/invoice_pdf.py', 74, 'python').
 project_file('worker/logging_setup.py', 101, 'python').
 project_file('worker/tests/__init__.py', 1, 'python').
 project_file('worker/tests/conftest.py', 46, 'python').
 project_file('worker/tests/test_worker.py', 173, 'python').
-project_file('worker/worker.py', 231, 'python').
+project_file('worker/worker.py', 272, 'python').
 
 % ── Python Functions ─────────────────────────────────────
+python_function('backend/app/attachment_validation.py', 'build_attachment_validation', 1, 11, 11).
+python_function('backend/app/attachment_validation.py', '_top_level_attachment_validation', 1, 2, 2).
+python_function('backend/app/attachment_validation.py', '_execution_attachment_validation', 1, 7, 2).
+python_function('backend/app/attachment_validation.py', '_attachment_from_dsl', 1, 8, 6).
+python_function('backend/app/attachment_validation.py', 'validation_from_chat_result', 1, 5, 4).
+python_function('backend/app/attachment_validation.py', 'ensure_attachment_validation', 1, 10, 5).
 python_function('backend/app/db/__init__.py', 'create_workflow_repo', 0, 2, 3).
+python_function('backend/app/dsl_validation.py', 'validate_dsl_for_execution', 1, 1, 1).
+python_function('backend/app/dsl_validation.py', 'validation_issue_payloads', 1, 2, 1).
+python_function('backend/app/dsl_validation.py', 'missing_fields_from_issues', 1, 5, 3).
+python_function('backend/app/dsl_validation.py', 'format_dsl_validation_message', 1, 2, 3).
+python_function('backend/app/dsl_validation.py', 'dsl_validation_response', 2, 1, 3).
 python_function('backend/app/engine.py', '_workflow_steps_payload', 1, 2, 1).
 python_function('backend/app/engine.py', '_persist_workflow_snapshot', 2, 2, 2).
 python_function('backend/app/engine.py', '_publish_workflow_event', 4, 2, 2).
-python_function('backend/app/engine.py', '_execute_workflow', 2, 11, 19).
+python_function('backend/app/engine.py', '_execute_workflow', 2, 13, 21).
 python_function('backend/app/engine.py', '_track_background_task', 1, 1, 5).
 python_function('backend/app/engine.py', 'run_workflow', 1, 1, 2).
 python_function('backend/app/engine.py', 'start_workflow', 1, 1, 7).
 python_function('backend/app/logging_setup.py', 'get_request_id', 0, 1, 1).
 python_function('backend/app/logging_setup.py', 'setup_logging', 2, 3, 9).
 python_function('backend/app/main.py', 'health', 0, 1, 1).
+python_function('backend/app/path_resolve.py', '_examples_portable_candidates', 1, 8, 11).
+python_function('backend/app/path_resolve.py', 'resolve_attachment_path', 1, 13, 11).
+python_function('backend/app/routers/chat.py', '_merge_attachment_validation', 1, 9, 2).
 python_function('backend/app/routers/chat.py', '_proxy_chat_payload', 2, 9, 12).
-python_function('backend/app/routers/chat.py', 'chat_start', 1, 2, 4).
-python_function('backend/app/routers/chat.py', 'chat_message', 1, 12, 13).
+python_function('backend/app/routers/chat.py', '_maybe_auto_execute', 2, 3, 3).
+python_function('backend/app/routers/chat.py', '_execution_requested', 2, 2, 2).
+python_function('backend/app/routers/chat.py', '_is_explicit_execute_request', 1, 2, 4).
+python_function('backend/app/routers/chat.py', '_is_auto_execute_requested', 2, 3, 2).
+python_function('backend/app/routers/chat.py', '_dsl_steps', 1, 4, 2).
+python_function('backend/app/routers/chat.py', '_mullm_steps', 1, 3, 3).
+python_function('backend/app/routers/chat.py', '_uses_mullm_backend', 2, 2, 3).
+python_function('backend/app/routers/chat.py', '_prepare_mullm_execution', 2, 2, 1).
+python_function('backend/app/routers/chat.py', '_workflow_request_from_dsl', 2, 2, 3).
+python_function('backend/app/routers/chat.py', '_mark_auto_execute_message', 2, 6, 8).
+python_function('backend/app/routers/chat.py', '_doql_context_path', 1, 2, 1).
+python_function('backend/app/routers/chat.py', '_execution_observation_from_dsl', 1, 4, 3).
+python_function('backend/app/routers/chat.py', '_observe_registry_execution', 2, 5, 7).
+python_function('backend/app/routers/chat.py', '_execute_ready_dsl', 2, 5, 16).
+python_function('backend/app/routers/chat.py', 'chat_start', 1, 2, 5).
+python_function('backend/app/routers/chat.py', 'chat_message', 1, 2, 5).
 python_function('backend/app/routers/chat.py', 'chat_get_state', 1, 2, 6).
 python_function('backend/app/routers/settings.py', 'actions_schema', 0, 1, 4).
 python_function('backend/app/routers/settings.py', 'action_schema', 1, 2, 5).
@@ -2614,8 +3611,8 @@ python_function('backend/app/routers/testql_compat.py', '_alias_response', 1, 3,
 python_function('backend/app/routers/testql_compat.py', '_resolve_text', 1, 8, 5).
 python_function('backend/app/routers/testql_compat.py', '_resolve_conv_id', 1, 3, 2).
 python_function('backend/app/routers/testql_compat.py', '_maybe_execute_on_message', 2, 6, 8).
-python_function('backend/app/routers/testql_compat.py', 'testql_chatstart', 1, 3, 6).
-python_function('backend/app/routers/testql_compat.py', 'testql_chatmessage', 1, 2, 8).
+python_function('backend/app/routers/testql_compat.py', 'testql_chatstart', 1, 5, 7).
+python_function('backend/app/routers/testql_compat.py', 'testql_chatmessage', 1, 4, 9).
 python_function('backend/app/routers/testql_compat.py', 'testql_runworkflow', 1, 4, 11).
 python_function('backend/app/routers/testql_compat.py', 'testql_workflow_from_text', 1, 1, 2).
 python_function('backend/app/routers/workflow.py', '_format_sse', 2, 5, 4).
@@ -2627,18 +3624,37 @@ python_function('backend/app/routers/workflow.py', 'start_workflow_endpoint', 1,
 python_function('backend/app/routers/workflow.py', 'get_history', 0, 1, 2).
 python_function('backend/app/routers/workflow.py', 'get_workflow', 1, 2, 3).
 python_function('backend/app/routers/workflow.py', 'stream_workflow', 2, 2, 12).
-python_function('backend/app/routers/workflow.py', 'workflow_from_text', 1, 8, 12).
+python_function('backend/app/routers/workflow.py', 'workflow_from_text', 1, 9, 14).
+python_function('backend/app/step_validator.py', '_validation_context', 2, 1, 3).
+python_function('backend/app/step_validator.py', 'validate_step_config_issues', 2, 2, 3).
+python_function('backend/app/step_validator.py', 'validate_step_config', 2, 1, 2).
 python_function('backend/tests/conftest.py', 'client', 0, 1, 2).
+python_function('backend/tests/test_attachment_validation.py', '_write_pdf', 1, 1, 2).
+python_function('backend/tests/test_attachment_validation.py', 'test_validation_from_chat_result_prefers_top_level', 0, 2, 1).
+python_function('backend/tests/test_attachment_validation.py', 'test_validation_from_chat_result_reads_execution_step_result', 0, 2, 1).
+python_function('backend/tests/test_attachment_validation.py', 'test_validation_from_chat_result_builds_from_dsl', 1, 4, 3).
+python_function('backend/tests/test_attachment_validation.py', 'test_ensure_attachment_validation_marks_unused_invalid_attachment', 1, 4, 2).
+python_function('backend/tests/test_chat_router.py', 'test_ready_chat_auto_executes_worker_workflow', 0, 9, 4).
+python_function('backend/tests/test_chat_router.py', 'test_ready_chat_delegates_mullm_steps_without_worker_execution', 0, 5, 4).
+python_function('backend/tests/test_chat_router.py', 'test_ready_chat_rejects_invalid_dsl_contract_before_execution', 0, 5, 4).
+python_function('backend/tests/test_step_validator.py', '_write_test_pdf', 1, 1, 2).
+python_function('backend/tests/test_step_validator.py', 'test_send_invoice_ok', 0, 2, 1).
+python_function('backend/tests/test_step_validator.py', 'test_missing_attachment_file', 0, 2, 2).
+python_function('backend/tests/test_step_validator.py', 'test_pdf_invoice_ok', 1, 2, 3).
+python_function('backend/tests/test_step_validator.py', 'test_text_pdf_rejected', 1, 2, 4).
 python_function('backend/tests/test_workflow_api.py', '_mock_worker_response', 2, 2, 1).
-python_function('examples/01-invoice/scenario.py', 'run', 1, 7, 8).
+python_function('examples/01-invoice/scenario.py', '_example_dir', 0, 1, 2).
+python_function('examples/01-invoice/scenario.py', '_run_autonomous', 1, 1, 7).
+python_function('examples/01-invoice/scenario.py', '_attachment_validation', 1, 9, 2).
+python_function('examples/01-invoice/scenario.py', 'run', 1, 20, 14).
 python_function('examples/02-email/scenario.py', 'run', 1, 7, 9).
-python_function('examples/03-report-and-notify/scenario.py', 'run', 1, 6, 8).
+python_function('examples/03-report-and-notify/scenario.py', 'run', 1, 6, 9).
 python_function('examples/04-scheduled-report/scenario.py', 'run', 1, 11, 12).
 python_function('examples/05-conversation-flow/scenario.py', '_save_conversation_artifacts', 2, 1, 2).
-python_function('examples/05-conversation-flow/scenario.py', 'run_demo', 1, 2, 9).
+python_function('examples/05-conversation-flow/scenario.py', 'run_demo', 1, 2, 10).
 python_function('examples/05-conversation-flow/scenario.py', 'run_interactive', 1, 1, 2).
 python_function('examples/05-conversation-flow/scenario.py', 'run', 1, 2, 2).
-python_function('examples/06-interactive-chat/scenario.py', 'run_demo', 1, 3, 10).
+python_function('examples/06-interactive-chat/scenario.py', 'run_demo', 1, 4, 12).
 python_function('examples/06-interactive-chat/scenario.py', 'run_interactive', 1, 1, 3).
 python_function('examples/06-interactive-chat/scenario.py', 'run', 1, 2, 2).
 python_function('examples/07-email-conversation/scenario.py', 'run', 1, 3, 12).
@@ -2651,26 +3667,80 @@ python_function('examples/10-llm-benchmark/scenario.py', 'run', 1, 3, 7).
 python_function('examples/11-notify-quality/scenario.py', 'run', 1, 8, 9).
 python_function('examples/12-ir-show/scenario.py', '_run_show', 1, 8, 5).
 python_function('examples/12-ir-show/scenario.py', 'run', 1, 13, 13).
-python_function('examples/bootstrap.py', 'bootstrap', 1, 3, 4).
+python_function('examples/13-autonomous-invoice-stack/scenario.py', '_example_dir', 0, 1, 2).
+python_function('examples/13-autonomous-invoice-stack/scenario.py', 'run', 1, 20, 16).
+python_function('examples/bootstrap.py', 'bootstrap', 1, 11, 8).
 python_function('examples/code_generation_examples.py', 'main', 0, 1, 1).
 python_function('nlp-service/app/audio_parser.py', 'stt_audio', 2, 9, 9).
 python_function('nlp-service/app/audio_parser.py', 'stt_file', 2, 2, 4).
 python_function('nlp-service/app/audio_parser.py', 'is_stt_available', 0, 2, 0).
+python_function('nlp-service/app/conversation/attachment_gate.py', 'workflow_needs_attachment', 3, 8, 4).
+python_function('nlp-service/app/conversation/autonomous_loop.py', '_max_autonomous_rounds', 1, 3, 1).
+python_function('nlp-service/app/conversation/autonomous_loop.py', '_autonomous_enabled', 1, 3, 1).
+python_function('nlp-service/app/conversation/autonomous_loop.py', '_example_dir', 0, 3, 5).
+python_function('nlp-service/app/conversation/autonomous_loop.py', '_step_config_for_validation', 1, 4, 1).
+python_function('nlp-service/app/conversation/autonomous_loop.py', '_attachment_valid_ok', 3, 7, 7).
+python_function('nlp-service/app/conversation/autonomous_loop.py', '_maybe_delete_generated_attachment', 2, 5, 5).
+python_function('nlp-service/app/conversation/autonomous_loop.py', '_resolve_artifact_file', 2, 7, 7).
+python_function('nlp-service/app/conversation/autonomous_loop.py', '_try_fixture_attachment', 2, 16, 14).
+python_function('nlp-service/app/conversation/autonomous_loop.py', '_try_generate_attachment', 2, 9, 8).
+python_function('nlp-service/app/conversation/autonomous_loop.py', '_dialog_missing', 1, 3, 3).
+python_function('nlp-service/app/conversation/autonomous_loop.py', '_try_validation_fixes', 2, 9, 15).
+python_function('nlp-service/app/conversation/autonomous_loop.py', 'autonomous_resolve_turn', 1, 21, 23).
+python_function('nlp-service/app/conversation/doql_autofill.py', 'load_context_for_state', 1, 8, 5).
+python_function('nlp-service/app/conversation/doql_autofill.py', '_resolve_attachment_path', 2, 1, 2).
+python_function('nlp-service/app/conversation/doql_autofill.py', '_nested_generate_invoice', 2, 5, 11).
+python_function('nlp-service/app/conversation/doql_autofill.py', 'sync_autofill_from_doql', 1, 20, 20).
+python_function('nlp-service/app/conversation/doql_context.py', 'resolve_doql_context_path', 1, 8, 5).
+python_function('nlp-service/app/conversation/doql_context.py', 'merge_inline_context', 2, 17, 8).
+python_function('nlp-service/app/conversation/doql_context.py', 'autofill_entities', 3, 20, 6).
+python_function('nlp-service/app/conversation/doql_registry.py', '_format_value', 1, 4, 3).
+python_function('nlp-service/app/conversation/doql_registry.py', '_render_block', 2, 2, 4).
+python_function('nlp-service/app/conversation/doql_registry.py', '_entities_to_data', 2, 5, 4).
+python_function('nlp-service/app/conversation/doql_registry.py', '_patch_doql_file', 1, 5, 10).
+python_function('nlp-service/app/conversation/doql_registry.py', '_try_sdk_refresh', 1, 4, 6).
+python_function('nlp-service/app/conversation/doql_registry.py', 'refresh_registry_for_state', 1, 16, 12).
+python_function('nlp-service/app/conversation/doql_registry.py', 'reload_context_after_refresh', 1, 1, 2).
+python_function('nlp-service/app/conversation/invoice_paths.py', 'example_root_from_doql', 1, 9, 7).
+python_function('nlp-service/app/conversation/invoice_paths.py', 'resolve_example_root', 0, 4, 3).
+python_function('nlp-service/app/conversation/invoice_paths.py', 'invoice_output_dir', 0, 2, 4).
+python_function('nlp-service/app/conversation/invoice_paths.py', 'store_attachment_path', 2, 5, 9).
+python_function('nlp-service/app/conversation/invoice_policy.py', 'is_invoice_example', 1, 2, 1).
+python_function('nlp-service/app/conversation/invoice_policy.py', 'invoice_attachment_policy_active', 2, 9, 2).
 python_function('nlp-service/app/conversation/merge.py', 'merge_into_state', 2, 13, 4).
-python_function('nlp-service/app/conversation/orchestrator.py', 'start_conversation', 1, 1, 6).
-python_function('nlp-service/app/conversation/orchestrator.py', 'continue_conversation', 2, 2, 7).
-python_function('nlp-service/app/conversation/orchestrator.py', 'get_conversation', 1, 2, 2).
+python_function('nlp-service/app/conversation/orchestrator.py', '_conversation_store', 0, 2, 1).
+python_function('nlp-service/app/conversation/orchestrator.py', '_apply_request_context', 1, 4, 3).
+python_function('nlp-service/app/conversation/orchestrator.py', 'start_conversation', 1, 4, 12).
+python_function('nlp-service/app/conversation/orchestrator.py', 'continue_conversation', 2, 4, 11).
+python_function('nlp-service/app/conversation/orchestrator.py', 'get_conversation', 1, 2, 3).
+python_function('nlp-service/app/conversation/orchestrator.py', 'mark_conversation_executed', 2, 4, 5).
 python_function('nlp-service/app/conversation/orchestrator.py', '_attach_routing', 2, 1, 1).
-python_function('nlp-service/app/conversation/orchestrator.py', '_process_message', 2, 6, 12).
+python_function('nlp-service/app/conversation/orchestrator.py', '_entity_field_from_inline_key', 1, 5, 4).
+python_function('nlp-service/app/conversation/orchestrator.py', '_merge_inline_entities', 2, 8, 3).
+python_function('nlp-service/app/conversation/orchestrator.py', '_attach_autofill', 2, 3, 1).
+python_function('nlp-service/app/conversation/orchestrator.py', '_attach_reflection', 3, 2, 2).
+python_function('nlp-service/app/conversation/orchestrator.py', '_process_message', 2, 16, 19).
+python_function('nlp-service/app/conversation/process_agent.py', 'preflight_turn', 2, 9, 14).
+python_function('nlp-service/app/conversation/process_agent.py', 'reflect_turn', 2, 4, 4).
+python_function('nlp-service/app/conversation/process_agent.py', 'observe_turn', 1, 2, 2).
+python_function('nlp-service/app/conversation/reflection.py', '_intent_from_state', 1, 4, 0).
+python_function('nlp-service/app/conversation/reflection.py', '_current_config', 1, 3, 1).
+python_function('nlp-service/app/conversation/reflection.py', '_target_config', 1, 10, 7).
+python_function('nlp-service/app/conversation/reflection.py', '_empty', 1, 3, 2).
+python_function('nlp-service/app/conversation/reflection.py', '_validation_issues', 1, 3, 5).
+python_function('nlp-service/app/conversation/reflection.py', '_policies', 1, 2, 1).
+python_function('nlp-service/app/conversation/reflection.py', '_pseudo_response', 1, 2, 1).
+python_function('nlp-service/app/conversation/reflection.py', '_resolve_doql_path', 1, 4, 3).
+python_function('nlp-service/app/conversation/reflection.py', 'reflection_from_state', 2, 8, 14).
 python_function('nlp-service/app/conversation/responses.py', 'deny_message', 1, 3, 0).
 python_function('nlp-service/app/conversation/responses.py', '_execute_keyword_in_text', 2, 3, 4).
 python_function('nlp-service/app/conversation/responses.py', '_is_execute_or_continue', 1, 2, 4).
-python_function('nlp-service/app/conversation/responses.py', 'check_execute_keyword', 2, 7, 5).
+python_function('nlp-service/app/conversation/responses.py', 'check_execute_keyword', 2, 11, 8).
 python_function('nlp-service/app/conversation/responses.py', 'handle_unknown_intent', 1, 5, 4).
 python_function('nlp-service/app/conversation/responses.py', 'handle_system_action', 1, 7, 7).
-python_function('nlp-service/app/conversation/responses.py', 'build_and_check_dsl', 1, 4, 6).
-python_function('nlp-service/app/conversation/responses.py', 'build_incomplete_response', 1, 3, 6).
-python_function('nlp-service/app/conversation/responses.py', '_nlp_from_state', 1, 5, 5).
+python_function('nlp-service/app/conversation/responses.py', 'build_and_check_dsl', 1, 25, 21).
+python_function('nlp-service/app/conversation/responses.py', 'build_incomplete_response', 1, 6, 9).
+python_function('nlp-service/app/conversation/responses.py', '_nlp_from_state', 1, 6, 5).
 python_function('nlp-service/app/conversation/responses.py', 'format_system_result', 2, 3, 3).
 python_function('nlp-service/app/conversation/responses.py', '_format_system_status', 1, 1, 1).
 python_function('nlp-service/app/conversation/responses.py', '_format_settings_get', 1, 1, 2).
@@ -2681,17 +3751,34 @@ python_function('nlp-service/app/conversation/responses.py', '_format_file_write
 python_function('nlp-service/app/conversation/responses.py', '_format_file_list', 1, 2, 3).
 python_function('nlp-service/app/conversation/responses.py', '_format_registry_list', 1, 3, 4).
 python_function('nlp-service/app/conversation/responses.py', '_format_registry_update', 1, 1, 1).
+python_function('nlp-service/app/conversation/runtime_gate.py', 'runtime_unavailable_message', 2, 7, 2).
+python_function('nlp-service/app/conversation/runtime_gate.py', 'process_scope_blocked', 1, 12, 6).
+python_function('nlp-service/app/conversation/runtime_gate.py', 'intract_clarification_blocked', 1, 5, 1).
+python_function('nlp-service/app/conversation/system_map.py', 'set_doql_context', 1, 1, 1).
+python_function('nlp-service/app/conversation/system_map.py', 'get_doql_context', 0, 1, 1).
+python_function('nlp-service/app/conversation/system_map.py', 'load_system_map_for_state', 1, 1, 1).
+python_function('nlp-service/app/conversation/system_map.py', 'known_action_names', 0, 5, 4).
+python_function('nlp-service/app/conversation/system_map.py', 'command_meta', 1, 3, 5).
+python_function('nlp-service/app/conversation/system_map.py', 'required_fields_for_action', 1, 2, 2).
+python_function('nlp-service/app/conversation/system_map.py', 'runtime_id_for_action', 1, 2, 2).
+python_function('nlp-service/app/conversation/system_map.py', 'effective_nlp_parser_mode', 0, 6, 4).
+python_function('nlp-service/app/conversation/system_map.py', 'effective_nlp_confidence_min', 0, 2, 3).
+python_function('nlp-service/app/conversation/system_map.py', 'autonomous_max_rounds', 0, 2, 2).
+python_function('nlp-service/app/conversation/system_map.py', 'autonomous_enabled', 0, 3, 2).
+python_function('nlp-service/app/conversation/system_map.py', 'load_doql_from_path', 1, 1, 1).
 python_function('nlp-service/app/dsl/forms.py', 'get_action_form', 1, 5, 5).
 python_function('nlp-service/app/dsl/mapper.py', 'map_to_dsl', 1, 8, 14).
 python_function('nlp-service/app/dsl/mapper.py', '_resolve_actions', 1, 7, 4).
-python_function('nlp-service/app/dsl/mapper.py', '_build_config', 2, 19, 13).
+python_function('nlp-service/app/dsl/mapper.py', '_build_config', 2, 23, 14).
 python_function('nlp-service/app/dsl/mapper.py', '_auto_notify_message', 2, 6, 1).
 python_function('nlp-service/app/dsl/mapper.py', '_get_field_mapping', 1, 1, 1).
 python_function('nlp-service/app/dsl/mapper.py', '_make_name', 2, 3, 2).
 python_function('nlp-service/app/dsl/mapper.py', '_build_prompt', 1, 2, 6).
 python_function('nlp-service/app/dsl/pipeline.py', 'map_to_dsl_with_enrichment', 1, 6, 3).
+python_function('nlp-service/app/execution/__init__.py', '__getattr__', 1, 2, 2).
 python_function('nlp-service/app/execution/delegate.py', 'is_delegated_to_mullm', 1, 2, 1).
-python_function('nlp-service/app/execution/delegate.py', 'execution_backend_for_intent', 1, 2, 1).
+python_function('nlp-service/app/execution/delegate.py', 'execution_backend_for_runtime', 1, 4, 0).
+python_function('nlp-service/app/execution/delegate.py', 'execution_backend_for_intent', 1, 5, 4).
 python_function('nlp-service/app/execution/delegate.py', 'mullm_action_names', 0, 1, 1).
 python_function('nlp-service/app/execution/delegate.py', 'delegate_payload', 2, 1, 0).
 python_function('nlp-service/app/execution/system.py', '_validate_file_path', 1, 5, 7).
@@ -2747,9 +3834,11 @@ python_function('nlp-service/app/main.py', 'access_check', 5, 3, 3).
 python_function('nlp-service/app/main.py', 'access_reload', 0, 2, 2).
 python_function('nlp-service/app/main.py', 'list_actions', 0, 2, 4).
 python_function('nlp-service/app/main.py', 'health', 0, 3, 8).
-python_function('nlp-service/app/main.py', 'chat_start', 2, 5, 10).
-python_function('nlp-service/app/main.py', 'chat_message', 3, 5, 10).
+python_function('nlp-service/app/main.py', 'chat_start', 4, 7, 11).
+python_function('nlp-service/app/main.py', '_parse_context_json', 1, 5, 3).
+python_function('nlp-service/app/main.py', 'chat_message', 4, 6, 11).
 python_function('nlp-service/app/main.py', 'chat_state', 1, 2, 4).
+python_function('nlp-service/app/main.py', 'chat_registry_observe', 1, 14, 11).
 python_function('nlp-service/app/main.py', 'actions_schema', 0, 3, 3).
 python_function('nlp-service/app/main.py', 'action_schema', 1, 2, 3).
 python_function('nlp-service/app/main.py', 'get_settings', 0, 1, 3).
@@ -2768,6 +3857,8 @@ python_function('nlp-service/app/registry.py', 'get_trigger', 1, 3, 2).
 python_function('nlp-service/app/registry.py', 'get_required_fields', 1, 1, 1).
 python_function('nlp-service/app/registry.py', 'get_defaults', 1, 1, 2).
 python_function('nlp-service/app/registry.py', 'get_quality_required_fields', 1, 1, 2).
+python_function('nlp-service/app/request_context.py', 'set_example_dir', 1, 3, 3).
+python_function('nlp-service/app/request_context.py', 'get_example_dir', 0, 2, 3).
 python_function('nlp-service/app/routing/native.py', '_match_route', 2, 4, 5).
 python_function('nlp-service/app/routing/native.py', '_patterns_match', 2, 3, 3).
 python_function('nlp-service/app/routing/native.py', '_pattern_matches', 2, 4, 5).
@@ -2794,16 +3885,16 @@ python_function('nlp-service/app/routing/orientation.py', '_resolve_project_host
 python_function('nlp-service/app/routing/orientation.py', '_resolve_list_path_remainder', 2, 6, 5).
 python_function('nlp-service/app/routing/orientation.py', '_resolve_file_list_host_command', 1, 15, 9).
 python_function('nlp-service/app/routing/orientation.py', 'orient_query', 1, 16, 14).
-python_function('nlp-service/app/routing/parser/enrich.py', 'is_enrich_enabled', 0, 1, 3).
+python_function('nlp-service/app/routing/parser/enrich.py', 'is_enrich_enabled', 0, 3, 5).
 python_function('nlp-service/app/routing/parser/enrich.py', 'get_enrichable_missing', 1, 5, 3).
 python_function('nlp-service/app/routing/parser/enrich.py', 'can_enrich_missing', 1, 4, 4).
 python_function('nlp-service/app/routing/parser/enrich.py', 'enrich_entities', 2, 14, 19).
-python_function('nlp-service/app/routing/parser/facade.py', 'parse_text', 2, 2, 4).
+python_function('nlp-service/app/routing/parser/facade.py', 'parse_text', 2, 3, 6).
 python_function('nlp-service/app/routing/parser/llm.py', 'parse_llm', 1, 3, 11).
 python_function('nlp-service/app/routing/parser/llm.py', '_detect_provider', 0, 10, 1).
 python_function('nlp-service/app/routing/parser/llm.py', '_parse_json_response', 1, 6, 7).
 python_function('nlp-service/app/routing/parser/prompt_catalog.py', 'build_llm_system_prompt', 0, 8, 8).
-python_function('nlp-service/app/routing/parser/resolve_mode.py', 'parse_with_mode', 2, 10, 7).
+python_function('nlp-service/app/routing/parser/resolve_mode.py', 'parse_with_mode', 2, 11, 7).
 python_function('nlp-service/app/routing/parser/rules.py', 'parse_rules', 1, 15, 10).
 python_function('nlp-service/app/routing/parser/rules.py', '_detect_actions', 1, 6, 6).
 python_function('nlp-service/app/routing/parser/rules.py', '_apply_context_filters', 2, 21, 6).
@@ -2835,14 +3926,33 @@ python_function('nlp-service/app/routing/parser/rules.py', '_extract_numeric_set
 python_function('nlp-service/app/routing/parser/rules.py', '_extract_mode_setting_entity', 2, 6, 1).
 python_function('nlp-service/app/routing/parser/rules.py', '_extract_fallback_recipient', 2, 7, 2).
 python_function('nlp-service/app/routing/parser/rules.py', '_set_entity', 3, 3, 2).
-python_function('nlp-service/app/routing/resolve.py', '_parser_source', 1, 5, 4).
+python_function('nlp-service/app/routing/resolve.py', '_parser_source', 1, 4, 3).
 python_function('nlp-service/app/routing/resolve.py', '_intent_from_native', 1, 3, 3).
 python_function('nlp-service/app/routing/resolve.py', '_intent_from_nlp', 2, 2, 4).
 python_function('nlp-service/app/routing/resolve.py', '_apply_auth', 2, 4, 1).
 python_function('nlp-service/app/routing/resolve.py', '_intent_from_orientation', 2, 4, 6).
-python_function('nlp-service/app/routing/resolve.py', 'resolve_intent', 1, 18, 17).
+python_function('nlp-service/app/routing/resolve.py', 'resolve_intent', 1, 18, 18).
 python_function('nlp-service/app/settings.py', '_coerce_type', 2, 5, 5).
 python_function('nlp-service/app/store/factory.py', 'get_conversation_store', 0, 4, 5).
+python_function('nlp-service/app/validation/attachment_validation.py', 'build_attachment_validation', 1, 16, 12).
+python_function('nlp-service/app/validation/invoice_pdf.py', '_pdf_escape', 1, 1, 1).
+python_function('nlp-service/app/validation/invoice_pdf.py', 'build_invoice_pdf_bytes', 0, 3, 8).
+python_function('nlp-service/app/validation/invoice_pdf.py', 'write_invoice_pdf', 1, 1, 4).
+python_function('nlp-service/app/validation/path_policy.py', '_glob_to_regex', 1, 2, 5).
+python_function('nlp-service/app/validation/path_policy.py', 'path_matches_glob', 2, 2, 5).
+python_function('nlp-service/app/validation/path_policy.py', 'example_relative_path', 2, 6, 7).
+python_function('nlp-service/app/validation/path_policy.py', 'path_allowed_by_patterns', 2, 3, 2).
+python_function('nlp-service/app/validation/path_policy.py', 'validate_process_path', 2, 6, 5).
+python_function('nlp-service/app/validation/path_resolve.py', '_examples_portable_candidates', 1, 10, 12).
+python_function('nlp-service/app/validation/path_resolve.py', 'resolve_attachment_path', 1, 14, 12).
+python_function('nlp-service/app/validation/step_validator.py', '_required_fields', 1, 3, 4).
+python_function('nlp-service/app/validation/step_validator.py', '_path_scope_check', 1, 2, 2).
+python_function('nlp-service/app/validation/step_validator.py', '_path_resolver', 1, 1, 2).
+python_function('nlp-service/app/validation/step_validator.py', '_validation_context', 2, 3, 8).
+python_function('nlp-service/app/validation/step_validator.py', 'validate_step_config_issues', 2, 3, 5).
+python_function('nlp-service/app/validation/step_validator.py', 'validate_step_config', 2, 1, 2).
+python_function('nlp-service/app/validation/step_validator.py', 'validate_workflow_steps', 1, 9, 8).
+python_function('nlp-service/app/validation/step_validator.py', 'format_validation_message', 1, 3, 2).
 python_function('nlp-service/integrations/loader.py', '_integration_names', 0, 5, 4).
 python_function('nlp-service/integrations/loader.py', 'load_integration_registries', 0, 5, 8).
 python_function('nlp-service/integrations/loader.py', 'apply_integrations', 1, 5, 6).
@@ -2850,6 +3960,7 @@ python_function('nlp-service/tests/conftest.py', 'sample_texts', 0, 1, 0).
 python_function('nlp-service/tests/conftest.py', 'expected_intents', 0, 1, 0).
 python_function('nlp-service/tests/conftest.py', 'sample_entities', 0, 1, 0).
 python_function('nlp-service/tests/conftest.py', 'mock_conversation_store', 0, 1, 1).
+python_function('nlp-service/tests/conftest.py', '_rules_parser_mode', 1, 1, 3).
 python_function('nlp-service/tests/test_access.py', '_point_config', 1, 1, 3).
 python_function('nlp-service/tests/test_access.py', 'test_config_loads_areas', 0, 3, 3).
 python_function('nlp-service/tests/test_access.py', 'test_uri_match_mullm', 0, 4, 1).
@@ -2857,21 +3968,79 @@ python_function('nlp-service/tests/test_access.py', 'test_files_agent_can_list',
 python_function('nlp-service/tests/test_access.py', 'test_mail_agent_denied_mullm_execute', 0, 2, 1).
 python_function('nlp-service/tests/test_access.py', 'test_native_lista_plikow_registry', 0, 3, 1).
 python_function('nlp-service/tests/test_access.py', 'test_registry_has_yaml_action', 0, 3, 2).
+python_function('nlp-service/tests/test_attachment_validation.py', 'test_resolve_examples_mount_path_on_host', 2, 3, 8).
+python_function('nlp-service/tests/test_attachment_validation.py', 'test_build_attachment_validation_ok', 2, 4, 7).
+python_function('nlp-service/tests/test_attachment_validation.py', 'test_build_attachment_validation_rejects_text_pdf', 2, 3, 6).
+python_function('nlp-service/tests/test_autonomous_loop.py', '_patch_store', 2, 1, 6).
+python_function('nlp-service/tests/test_autonomous_loop.py', 'test_autonomous_resolves_invoice_to_ready', 0, 4, 3).
+python_function('nlp-service/tests/test_autonomous_loop.py', 'test_start_conversation_autonomous_ready', 0, 4, 1).
+python_function('nlp-service/tests/test_autonomous_loop.py', 'test_autonomous_rejects_text_pdf_artifact_and_generates', 2, 7, 13).
+python_function('nlp-service/tests/test_doql_attachment.py', '_patch_store', 2, 1, 6).
+python_function('nlp-service/tests/test_doql_autofill.py', '_patch_store', 2, 1, 6).
+python_function('nlp-service/tests/test_doql_context.py', 'test_load_doql_context', 1, 6, 3).
+python_function('nlp-service/tests/test_doql_context.py', 'test_autofill_entities_from_data', 0, 4, 3).
+python_function('nlp-service/tests/test_doql_context.py', 'test_merge_inline_attachment_path', 0, 2, 2).
+python_function('nlp-service/tests/test_doql_context.py', 'test_merge_inline_dotted_action_fields', 0, 5, 2).
+python_function('nlp-service/tests/test_doql_context.py', 'test_merge_inline_entities_dotted_keys', 0, 4, 2).
+python_function('nlp-service/tests/test_doql_context.py', 'test_load_doql_runtimes', 1, 3, 3).
+python_function('nlp-service/tests/test_doql_context.py', 'test_runtime_unavailable_message', 0, 4, 3).
+python_function('nlp-service/tests/test_doql_registry.py', 'test_patch_doql_data_and_history', 1, 5, 4).
+python_function('nlp-service/tests/test_doql_registry.py', 'test_refresh_registry_for_state', 2, 3, 6).
 python_function('nlp-service/tests/test_enrich.py', '_enable_enrich', 1, 1, 2).
+python_function('nlp-service/tests/test_execution_delegate.py', 'test_delegate_import_does_not_require_system_settings_dependency', 0, 2, 8).
 python_function('nlp-service/tests/test_execution_delegate.py', 'test_mullm_shell_delegated', 0, 3, 2).
 python_function('nlp-service/tests/test_execution_delegate.py', 'test_invoice_worker_backend', 0, 2, 1).
+python_function('nlp-service/tests/test_execution_delegate.py', 'test_system_runtime_backend', 0, 2, 4).
 python_function('nlp-service/tests/test_execution_delegate.py', 'test_delegate_payload_shape', 0, 3, 1).
 python_function('nlp-service/tests/test_orchestrator.py', '_patch_store', 1, 1, 3).
+python_function('nlp-service/tests/test_path_policy.py', 'test_path_matches_glob_fixtures', 0, 4, 1).
+python_function('nlp-service/tests/test_path_policy.py', 'test_path_allowed_by_patterns_empty_means_allow', 0, 2, 1).
+python_function('nlp-service/tests/test_path_policy.py', 'test_validate_process_path_denies_outside_scope', 2, 4, 7).
+python_function('nlp-service/tests/test_path_policy.py', 'test_example_relative_path', 1, 2, 3).
+python_function('nlp-service/tests/test_path_resolve.py', 'test_validate_resolves_relative_fixture', 2, 3, 8).
+python_function('nlp-service/tests/test_process_agent.py', 'test_load_doql_commands', 1, 4, 4).
+python_function('nlp-service/tests/test_process_agent.py', 'test_mapper_uses_doql_required_fields', 0, 3, 7).
+python_function('nlp-service/tests/test_process_agent.py', 'test_execution_backend_for_runtime', 0, 4, 1).
+python_function('nlp-service/tests/test_process_agent.py', 'test_execution_backend_from_doql_map', 0, 3, 5).
+python_function('nlp-service/tests/test_process_agent.py', 'test_preflight_blocks_unavailable_runtime', 0, 4, 6).
+python_function('nlp-service/tests/test_process_agent.py', 'test_preflight_blocks_process_scope_deny', 0, 4, 7).
+python_function('nlp-service/tests/test_process_agent.py', 'test_preflight_blocks_intract_clarification', 0, 4, 6).
+python_function('nlp-service/tests/test_process_agent.py', 'test_required_fields_for_action_helper', 0, 2, 4).
+python_function('nlp-service/tests/test_registry_observe.py', 'client', 0, 1, 2).
+python_function('nlp-service/tests/test_registry_observe.py', 'test_registry_observe_requires_path', 1, 2, 1).
+python_function('nlp-service/tests/test_registry_observe.py', 'test_registry_observe_merges_entities', 2, 6, 8).
+python_function('nlp-service/tests/test_registry_observe.py', '_patch_store', 1, 1, 3).
+python_function('nlp-service/tests/test_registry_observe.py', 'test_registry_observe_marks_conversation_executed', 2, 5, 6).
 python_function('nlp-service/tests/test_routing_observability.py', '_reset_metrics', 0, 1, 2).
 python_function('nlp-service/tests/test_routing_observability.py', 'test_record_increments_rules_hit', 0, 2, 4).
 python_function('nlp-service/tests/test_routing_observability.py', 'test_resolve_intent_updates_metrics', 0, 2, 3).
+python_function('nlp-service/tests/test_step_validator.py', '_clear_doql', 0, 1, 2).
+python_function('nlp-service/tests/test_step_validator.py', 'test_send_invoice_valid_without_attachment', 0, 2, 1).
+python_function('nlp-service/tests/test_step_validator.py', 'test_send_invoice_missing_to', 0, 2, 2).
+python_function('nlp-service/tests/test_step_validator.py', 'test_send_invoice_invalid_email', 0, 2, 2).
+python_function('nlp-service/tests/test_step_validator.py', 'test_attachment_required_blocks_empty_path', 0, 2, 5).
+python_function('nlp-service/tests/test_step_validator.py', 'test_pdf_invoice_file_valid', 1, 2, 3).
+python_function('nlp-service/tests/test_step_validator.py', 'test_pdf_invoice_amount_mismatch', 1, 2, 5).
+python_function('nlp-service/tests/test_step_validator.py', 'test_invalid_attachment_content', 1, 2, 4).
+python_function('nlp-service/tests/test_step_validator.py', 'test_validate_workflow_steps_index', 0, 2, 2).
 python_function('nlp-service/tests/test_system_executor.py', '_reset_settings', 1, 1, 3).
+python_function('nlp2dsl_sdk/__init__.py', '__getattr__', 1, 3, 2).
 python_function('nlp2dsl_sdk/__main__.py', 'main', 0, 5, 8).
+python_function('nlp2dsl_sdk/artifact_layout.py', 'artifact_root', 1, 1, 2).
+python_function('nlp2dsl_sdk/artifact_layout.py', 'example_fixtures_dir', 1, 1, 2).
+python_function('nlp2dsl_sdk/artifact_layout.py', 'ensure_layout', 1, 1, 3).
+python_function('nlp2dsl_sdk/artifact_layout.py', 'resolve_registry_path', 0, 9, 5).
+python_function('nlp2dsl_sdk/artifact_layout.py', 'write_registry', 2, 2, 4).
+python_function('nlp2dsl_sdk/artifact_layout.py', 'current_run_id', 1, 2, 4).
+python_function('nlp2dsl_sdk/artifact_layout.py', 'run_dir', 2, 2, 4).
+python_function('nlp2dsl_sdk/artifact_layout.py', 'write_turn_snapshot', 1, 4, 13).
+python_function('nlp2dsl_sdk/artifact_layout.py', 'write_reflection_snapshot', 1, 1, 7).
+python_function('nlp2dsl_sdk/artifact_layout.py', 'write_last_run_report', 2, 1, 6).
 python_function('nlp2dsl_sdk/artifacts.py', 'example_artifact_root', 1, 1, 2).
 python_function('nlp2dsl_sdk/artifacts.py', '_slugify', 1, 2, 4).
 python_function('nlp2dsl_sdk/artifacts.py', '_mask_secret', 1, 3, 1).
 python_function('nlp2dsl_sdk/artifacts.py', 'collect_environment', 0, 6, 4).
-python_function('nlp2dsl_sdk/artifacts.py', 'write_environment_doql', 3, 3, 9).
+python_function('nlp2dsl_sdk/artifacts.py', 'write_environment_doql', 3, 3, 7).
 python_function('nlp2dsl_sdk/artifacts.py', 'build_process_trace', 2, 17, 5).
 python_function('nlp2dsl_sdk/artifacts.py', '_action_endpoint', 1, 3, 1).
 python_function('nlp2dsl_sdk/artifacts.py', '_action_transport', 1, 3, 1).
@@ -2881,20 +4050,49 @@ python_function('nlp2dsl_sdk/artifacts.py', 'write_testql_commands', 1, 4, 8).
 python_function('nlp2dsl_sdk/artifacts.py', 'write_services_snapshot', 2, 3, 5).
 python_function('nlp2dsl_sdk/artifacts.py', '_extract_actions', 1, 4, 2).
 python_function('nlp2dsl_sdk/artifacts.py', 'get_example_writer', 0, 2, 3).
+python_function('nlp2dsl_sdk/attachment_validation.py', 'format_attachment_validation', 1, 10, 3).
+python_function('nlp2dsl_sdk/attachment_validation.py', 'build_attachment_validation', 1, 8, 14).
+python_function('nlp2dsl_sdk/attachment_validation.py', '_attachment_from_dsl', 1, 8, 6).
+python_function('nlp2dsl_sdk/attachment_validation.py', '_prefer_local_validation', 2, 4, 1).
+python_function('nlp2dsl_sdk/attachment_validation.py', '_apply_attachment_to_execution', 2, 7, 3).
+python_function('nlp2dsl_sdk/attachment_validation.py', 'enrich_chat_response', 1, 11, 5).
+python_function('nlp2dsl_sdk/cli.py', '_detect_example_dir', 0, 4, 3).
+python_function('nlp2dsl_sdk/cli.py', '_doql_context_label', 1, 2, 3).
 python_function('nlp2dsl_sdk/cli.py', '_analyze', 1, 2, 1).
 python_function('nlp2dsl_sdk/cli.py', '_display', 1, 13, 5).
 python_function('nlp2dsl_sdk/cli.py', 'show', 1, 2, 3).
 python_function('nlp2dsl_sdk/cli.py', '_client', 0, 1, 1).
 python_function('nlp2dsl_sdk/cli.py', '_health', 0, 2, 5).
-python_function('nlp2dsl_sdk/cli.py', '_run', 1, 12, 9).
+python_function('nlp2dsl_sdk/cli.py', '_run_with_doql', 2, 6, 11).
+python_function('nlp2dsl_sdk/cli.py', '_run', 1, 5, 8).
 python_function('nlp2dsl_sdk/cli.py', '_actions', 0, 3, 5).
 python_function('nlp2dsl_sdk/cli.py', '_chat_start', 1, 2, 5).
 python_function('nlp2dsl_sdk/cli.py', '_demo', 2, 6, 3).
 python_function('nlp2dsl_sdk/cli.py', 'main', 1, 7, 13).
 python_function('nlp2dsl_sdk/client.py', 'workflow_step', 1, 1, 1).
+python_function('nlp2dsl_sdk/compose_generator.py', '_default_deploy', 2, 1, 2).
+python_function('nlp2dsl_sdk/compose_generator.py', '_default_schedules', 1, 1, 1).
+python_function('nlp2dsl_sdk/compose_generator.py', '_default_generated_services', 1, 2, 2).
+python_function('nlp2dsl_sdk/compose_generator.py', 'enrich_ir_for_stack', 1, 5, 5).
+python_function('nlp2dsl_sdk/compose_generator.py', '_wait_for_backend_shell', 0, 1, 1).
+python_function('nlp2dsl_sdk/compose_generator.py', '_run_script_content', 0, 2, 3).
+python_function('nlp2dsl_sdk/compose_generator.py', '_run_process_host_script', 0, 1, 1).
+python_function('nlp2dsl_sdk/compose_generator.py', '_run_process_docker_script', 0, 1, 1).
+python_function('nlp2dsl_sdk/compose_generator.py', '_up_platform_script', 1, 1, 1).
+python_function('nlp2dsl_sdk/compose_generator.py', '_run_process_wrapper_script', 2, 1, 1).
+python_function('nlp2dsl_sdk/compose_generator.py', '_process_shell_dockerfile', 0, 1, 1).
+python_function('nlp2dsl_sdk/compose_generator.py', '_cron_sidecar_dockerfile', 0, 1, 1).
+python_function('nlp2dsl_sdk/compose_generator.py', '_crontab_content', 1, 4, 2).
+python_function('nlp2dsl_sdk/compose_generator.py', '_stack_compose_dict', 1, 8, 5).
+python_function('nlp2dsl_sdk/compose_generator.py', '_runner_dockerfile', 0, 1, 1).
+python_function('nlp2dsl_sdk/compose_generator.py', 'generate_stack_compose', 1, 13, 27).
 python_function('nlp2dsl_sdk/conversation_artifacts.py', '_routing_summary', 1, 6, 4).
 python_function('nlp2dsl_sdk/conversation_artifacts.py', 'format_transcript', 1, 25, 10).
 python_function('nlp2dsl_sdk/conversation_artifacts.py', 'write_conversation_artifacts', 2, 1, 10).
+python_function('nlp2dsl_sdk/conversation_testql.py', '_is_nlp_kind', 1, 1, 2).
+python_function('nlp2dsl_sdk/conversation_testql.py', '_endpoints_from_text', 1, 2, 3).
+python_function('nlp2dsl_sdk/conversation_testql.py', 'validate_conversation_scenario', 1, 21, 19).
+python_function('nlp2dsl_sdk/conversation_testql.py', 'dry_run_conversation_scenario', 1, 1, 1).
 python_function('nlp2dsl_sdk/demos.py', '_print_code_generation_preview', 1, 3, 3).
 python_function('nlp2dsl_sdk/demos.py', 'run_crm_update_demo', 1, 3, 5).
 python_function('nlp2dsl_sdk/demos.py', 'run_action_catalog_demo', 1, 6, 9).
@@ -2906,6 +4104,55 @@ python_function('nlp2dsl_sdk/demos.py', '_run_workflow_code_examples', 1, 1, 1).
 python_function('nlp2dsl_sdk/demos.py', '_run_conversation_code_example', 1, 3, 5).
 python_function('nlp2dsl_sdk/demos.py', '_run_worker_code_generation', 1, 6, 6).
 python_function('nlp2dsl_sdk/demos.py', 'list_available_demos', 0, 1, 0).
+python_function('nlp2dsl_sdk/doql/parse.py', '_parse_value', 1, 10, 8).
+python_function('nlp2dsl_sdk/doql/parse.py', '_parse_block_body', 1, 2, 3).
+python_function('nlp2dsl_sdk/doql/parse.py', '_split_csv', 1, 3, 3).
+python_function('nlp2dsl_sdk/doql/parse.py', '_parse_command_body', 1, 1, 5).
+python_function('nlp2dsl_sdk/doql/parse.py', '_parse_resource_body', 1, 1, 5).
+python_function('nlp2dsl_sdk/doql/parse.py', '_parse_access_body', 1, 1, 5).
+python_function('nlp2dsl_sdk/doql/parse.py', '_parse_runtime_body', 1, 1, 5).
+python_function('nlp2dsl_sdk/doql/parse.py', '_parse_artifact_body', 1, 3, 4).
+python_function('nlp2dsl_sdk/doql/parse.py', '_apply_context_metadata', 2, 3, 2).
+python_function('nlp2dsl_sdk/doql/parse.py', '_apply_conversation_block', 2, 1, 2).
+python_function('nlp2dsl_sdk/doql/parse.py', '_apply_capabilities_block', 2, 5, 4).
+python_function('nlp2dsl_sdk/doql/parse.py', '_apply_process_block', 2, 9, 6).
+python_function('nlp2dsl_sdk/doql/parse.py', '_apply_process_access_block', 2, 4, 2).
+python_function('nlp2dsl_sdk/doql/parse.py', '_apply_paths_block', 2, 3, 2).
+python_function('nlp2dsl_sdk/doql/parse.py', '_apply_context_block', 3, 10, 9).
+python_function('nlp2dsl_sdk/doql/parse.py', '_append_collection_blocks', 2, 10, 7).
+python_function('nlp2dsl_sdk/doql/parse.py', 'load_doql_context', 1, 2, 8).
+python_function('nlp2dsl_sdk/doql/parse.py', '_repo_root_from_example', 1, 2, 0).
+python_function('nlp2dsl_sdk/doql/parse.py', '_command_transport', 1, 3, 1).
+python_function('nlp2dsl_sdk/doql/parse.py', 'load_platform_map', 1, 18, 10).
+python_function('nlp2dsl_sdk/doql/parse.py', 'load_commands_from_services_yaml', 1, 14, 10).
+python_function('nlp2dsl_sdk/doql/parse.py', 'enrich_task_context_from_client', 2, 19, 10).
+python_function('nlp2dsl_sdk/doql/parse.py', 'parse_fixture_metadata', 1, 10, 11).
+python_function('nlp2dsl_sdk/doql/parse.py', 'collect_task_context', 1, 19, 26).
+python_function('nlp2dsl_sdk/doql/render.py', 'render_doql_context', 1, 62, 8).
+python_function('nlp2dsl_sdk/doql/render.py', 'write_doql_context', 2, 1, 4).
+python_function('nlp2dsl_sdk/doql/runtime.py', 'resolve_doql_context_path', 0, 1, 1).
+python_function('nlp2dsl_sdk/doql/runtime.py', 'context_inline_payload', 1, 14, 10).
+python_function('nlp2dsl_sdk/doql/runtime.py', 'load_doql_inline_from_env', 0, 2, 3).
+python_function('nlp2dsl_sdk/doql/runtime.py', 'autofill_entities', 3, 6, 6).
+python_function('nlp2dsl_sdk/doql/runtime.py', '_split_missing_ref', 2, 3, 4).
+python_function('nlp2dsl_sdk/doql/runtime.py', '_canonical_field', 1, 1, 2).
+python_function('nlp2dsl_sdk/doql/runtime.py', '_autofill_value', 3, 2, 3).
+python_function('nlp2dsl_sdk/doql/runtime.py', '_candidate_data_keys', 2, 1, 0).
+python_function('nlp2dsl_sdk/doql/runtime.py', '_value_from_data', 2, 4, 0).
+python_function('nlp2dsl_sdk/doql/runtime.py', '_value_from_artifacts', 2, 4, 0).
+python_function('nlp2dsl_sdk/doql/runtime.py', '_needs_field', 2, 1, 1).
+python_function('nlp2dsl_sdk/doql_registry.py', 'entities_to_data', 2, 5, 4).
+python_function('nlp2dsl_sdk/doql_registry.py', 'merge_execution_observation', 3, 2, 5).
+python_function('nlp2dsl_sdk/doql_registry.py', '_merge_execution_header', 2, 1, 4).
+python_function('nlp2dsl_sdk/doql_registry.py', '_execution_steps', 1, 4, 2).
+python_function('nlp2dsl_sdk/doql_registry.py', '_merge_execution_step', 3, 4, 6).
+python_function('nlp2dsl_sdk/doql_registry.py', '_step_output', 1, 4, 2).
+python_function('nlp2dsl_sdk/doql_registry.py', '_merge_send_invoice_output', 3, 3, 2).
+python_function('nlp2dsl_sdk/doql_registry.py', '_merge_generate_invoice_output', 2, 3, 1).
+python_function('nlp2dsl_sdk/doql_registry.py', '_merge_workflow_id', 2, 3, 2).
+python_function('nlp2dsl_sdk/doql_registry.py', 'merge_registry_observations', 2, 11, 9).
+python_function('nlp2dsl_sdk/doql_registry.py', 'refresh_doql_registry', 1, 10, 16).
+python_function('nlp2dsl_sdk/doql_registry.py', 'refresh_doql_registry_from_state', 1, 1, 1).
 python_function('nlp2dsl_sdk/encoding.py', 'utf8_auto_enabled', 0, 1, 3).
 python_function('nlp2dsl_sdk/encoding.py', '_explicit_utf8_locale', 0, 4, 2).
 python_function('nlp2dsl_sdk/encoding.py', '_apply_utf8_locale_env', 0, 2, 2).
@@ -2914,16 +4161,157 @@ python_function('nlp2dsl_sdk/encoding.py', '_set_utf8_locale', 0, 3, 1).
 python_function('nlp2dsl_sdk/encoding.py', 'configure_utf8', 0, 3, 4).
 python_function('nlp2dsl_sdk/encoding.py', '_auto_configure_once', 0, 2, 1).
 python_function('nlp2dsl_sdk/encoding.py', 'utf8_open', 2, 3, 1).
+python_function('nlp2dsl_sdk/example_bootstrap.py', 'ensure_doql_registry', 1, 6, 16).
 python_function('nlp2dsl_sdk/example_loader.py', 'load_example_runner', 1, 7, 11).
+python_function('nlp2dsl_sdk/invoice_pdf.py', '_pdf_escape', 1, 1, 1).
+python_function('nlp2dsl_sdk/invoice_pdf.py', 'build_invoice_pdf_bytes', 0, 3, 8).
+python_function('nlp2dsl_sdk/invoice_pdf.py', 'write_invoice_pdf', 1, 1, 4).
+python_function('nlp2dsl_sdk/invoice_policy.py', 'is_invoice_example', 1, 2, 1).
+python_function('nlp2dsl_sdk/invoice_policy.py', 'apply_invoice_policies', 1, 5, 5).
+python_function('nlp2dsl_sdk/invoice_policy.py', 'apply_invoice_context', 1, 3, 6).
+python_function('nlp2dsl_sdk/path_resolve.py', '_examples_portable_candidates', 1, 8, 11).
+python_function('nlp2dsl_sdk/path_resolve.py', 'resolve_attachment_path', 1, 9, 9).
 python_function('nlp2dsl_sdk/preview.py', 'print_json', 1, 1, 2).
-python_function('nlp2dsl_sdk/preview.py', 'print_workflow_preview', 1, 11, 5).
+python_function('nlp2dsl_sdk/preview.py', 'execution_payload', 1, 3, 2).
+python_function('nlp2dsl_sdk/preview.py', 'print_execution_step_detail', 1, 6, 4).
+python_function('nlp2dsl_sdk/preview.py', 'print_run_context_hints', 1, 13, 6).
+python_function('nlp2dsl_sdk/preview.py', 'print_run_outcome', 1, 21, 11).
+python_function('nlp2dsl_sdk/preview.py', 'print_workflow_preview', 1, 18, 10).
 python_function('nlp2dsl_sdk/preview.py', 'print_execution_result', 1, 5, 5).
 python_function('nlp2dsl_sdk/preview.py', 'workflow_http_error_result', 1, 11, 4).
 python_function('nlp2dsl_sdk/preview.py', 'preview_text_examples', 3, 9, 8).
 python_function('nlp2dsl_sdk/preview.py', 'execute_from_text', 2, 8, 7).
 python_function('nlp2dsl_sdk/preview.py', 'execute_text_examples', 3, 8, 8).
 python_function('nlp2dsl_sdk/preview.py', 'finalize_example_artifacts', 1, 2, 2).
-python_function('nlp2dsl_sdk/preview.py', 'ensure_services', 1, 2, 2).
+python_function('nlp2dsl_sdk/preview.py', 'ensure_services', 1, 5, 7).
+python_function('nlp2dsl_sdk/process_policy.py', '_as_list', 1, 8, 4).
+python_function('nlp2dsl_sdk/process_policy.py', '_deep_merge_process', 2, 5, 5).
+python_function('nlp2dsl_sdk/process_policy.py', '_load_nlp2dsl_payload', 1, 12, 7).
+python_function('nlp2dsl_sdk/process_policy.py', 'load_platform_process_defaults', 1, 4, 6).
+python_function('nlp2dsl_sdk/process_policy.py', '_merge_access', 1, 5, 4).
+python_function('nlp2dsl_sdk/process_policy.py', '_merge_paths', 1, 4, 3).
+python_function('nlp2dsl_sdk/process_policy.py', 'process_policy_from_profile_block', 1, 23, 10).
+python_function('nlp2dsl_sdk/process_policy.py', '_merge_conversation_from_profile', 2, 5, 4).
+python_function('nlp2dsl_sdk/process_policy.py', 'merge_process_config', 0, 4, 5).
+python_function('nlp2dsl_sdk/process_policy.py', 'apply_process_policies', 1, 7, 8).
+python_function('nlp2dsl_sdk/process_policy.py', 'effective_nlp_parser_mode', 1, 5, 1).
+python_function('nlp2dsl_sdk/process_policy.py', 'process_policy_to_doql_dict', 1, 2, 0).
+python_function('nlp2dsl_sdk/process_policy.py', 'process_scope_denied', 1, 12, 6).
+python_function('nlp2dsl_sdk/reflection.py', '_intent_from_response', 1, 10, 4).
+python_function('nlp2dsl_sdk/reflection.py', '_entities_from_response', 1, 6, 3).
+python_function('nlp2dsl_sdk/reflection.py', '_data_lookup', 3, 3, 0).
+python_function('nlp2dsl_sdk/reflection.py', 'build_target_plan', 3, 20, 14).
+python_function('nlp2dsl_sdk/reflection.py', '_parse_validation_issue', 1, 2, 3).
+python_function('nlp2dsl_sdk/reflection.py', '_missing_vs_target', 4, 20, 8).
+python_function('nlp2dsl_sdk/reflection.py', '_context_queries_from_issues', 1, 9, 4).
+python_function('nlp2dsl_sdk/reflection.py', '_resolutions_available', 2, 6, 3).
+python_function('nlp2dsl_sdk/reflection.py', 'reflect', 3, 9, 11).
+python_function('nlp2dsl_sdk/reflection.py', 'reflect_from_chat_turn', 3, 10, 10).
+python_function('nlp2dsl_sdk/reflection.py', 'reflect_from_doql_path', 3, 2, 4).
+python_function('nlp2dsl_sdk/reflection.py', 'format_reflection_summary', 1, 6, 5).
+python_function('nlp2dsl_sdk/stack_flow.py', '_reflection_follow_up', 2, 8, 4).
+python_function('nlp2dsl_sdk/step_validation.py', 'validate_step_config_from_map', 3, 1, 1).
+python_function('nlp2dsl_sdk/step_validation.py', 'validate_workflow_from_map', 2, 1, 1).
+python_function('nlp2dsl_sdk/system_map_bridge.py', '_mime_for_artifact', 1, 4, 3).
+python_function('nlp2dsl_sdk/system_map_bridge.py', '_process_from_ctx', 1, 12, 10).
+python_function('nlp2dsl_sdk/system_map_bridge.py', 'task_context_to_system_map', 1, 24, 20).
+python_function('nlp2dsl_sdk/system_map_bridge.py', '_command_to_ir', 1, 12, 8).
+python_function('nlp2dsl_sdk/system_map_bridge.py', 'doql_file_to_system_map', 1, 1, 3).
+python_function('nlp2dsl_sdk/system_map_generator.py', 'build_introspection_payload', 1, 11, 16).
+python_function('nlp2dsl_sdk/system_map_generator.py', '_bootstrap_system_map', 1, 2, 3).
+python_function('nlp2dsl_sdk/system_map_generator.py', '_litellm_complete', 2, 3, 5).
+python_function('nlp2dsl_sdk/system_map_generator.py', '_parse_llm_json', 1, 5, 7).
+python_function('nlp2dsl_sdk/system_map_generator.py', 'generate_system_map', 1, 8, 14).
+python_function('nlp2dsl_sdk/system_map_models.py', '_annotation_for_field', 1, 11, 2).
+python_function('nlp2dsl_sdk/system_map_models.py', 'command_input_model', 1, 4, 5).
+python_function('nlp2dsl_sdk/system_map_models.py', 'build_command_registry', 1, 2, 1).
+python_function('nlp2dsl_sdk/system_map_models.py', 'validate_config_against_map', 3, 2, 5).
+python_function('nlp2dsl_sdk/system_map_render/blocks.py', 'render_header', 1, 1, 2).
+python_function('nlp2dsl_sdk/system_map_render/blocks.py', 'render_environment_block', 1, 2, 5).
+python_function('nlp2dsl_sdk/system_map_render/blocks.py', 'render_data_block', 1, 3, 4).
+python_function('nlp2dsl_sdk/system_map_render/blocks.py', 'render_artifacts_block', 1, 6, 6).
+python_function('nlp2dsl_sdk/system_map_render/blocks.py', 'render_runtimes_block', 1, 8, 4).
+python_function('nlp2dsl_sdk/system_map_render/blocks.py', 'render_commands_block', 1, 9, 5).
+python_function('nlp2dsl_sdk/system_map_render/blocks.py', 'render_resources_block', 1, 5, 5).
+python_function('nlp2dsl_sdk/system_map_render/blocks.py', 'render_access_block', 1, 4, 4).
+python_function('nlp2dsl_sdk/system_map_render/blocks.py', 'render_capabilities_block', 1, 2, 1).
+python_function('nlp2dsl_sdk/system_map_render/blocks.py', 'render_workflow_history_block', 1, 3, 4).
+python_function('nlp2dsl_sdk/system_map_render/blocks.py', 'render_conversation_block', 1, 3, 3).
+python_function('nlp2dsl_sdk/system_map_render/blocks.py', 'render_process_block', 1, 3, 3).
+python_function('nlp2dsl_sdk/system_map_render/blocks.py', 'render_process_access_block', 1, 7, 3).
+python_function('nlp2dsl_sdk/system_map_render/blocks.py', 'render_paths_block', 1, 5, 3).
+python_function('nlp2dsl_sdk/system_map_render/blocks.py', 'render_schedules_block', 1, 3, 5).
+python_function('nlp2dsl_sdk/system_map_render/blocks.py', 'render_deploy_block', 1, 3, 3).
+python_function('nlp2dsl_sdk/system_map_render/blocks.py', 'render_generated_services_block', 1, 6, 5).
+python_function('nlp2dsl_sdk/system_map_render/helpers.py', 'esc_str', 1, 1, 1).
+python_function('nlp2dsl_sdk/system_map_render/helpers.py', 'esc_str_full', 1, 1, 1).
+python_function('nlp2dsl_sdk/system_map_render/helpers.py', 'bool_lit', 1, 2, 0).
+python_function('nlp2dsl_sdk/system_map_render/helpers.py', 'join_csv', 1, 1, 1).
+python_function('nlp2dsl_sdk/system_map_render/helpers.py', 'data_value_line', 2, 3, 3).
+python_function('nlp2dsl_sdk/system_map_render/helpers.py', 'history_value_line', 2, 4, 3).
+python_function('nlp2dsl_sdk/system_map_render/helpers.py', 'process_field_line', 2, 3, 2).
+python_function('nlp2dsl_sdk/system_map_render/render.py', 'render_system_map_doql', 1, 1, 19).
+python_function('nlp2dsl_sdk/system_map_runtimes.py', '_repo_root_from_example', 1, 2, 0).
+python_function('nlp2dsl_sdk/system_map_runtimes.py', 'load_example_profile', 2, 7, 6).
+python_function('nlp2dsl_sdk/system_map_runtimes.py', 'resolve_command_runtime', 1, 7, 2).
+python_function('nlp2dsl_sdk/system_map_runtimes.py', 'build_runtimes_for_example', 1, 18, 12).
+python_function('nlp2dsl_sdk/validation/__init__.py', '__getattr__', 1, 2, 2).
+python_function('nlp2dsl_sdk/validation/helpers.py', 'is_empty', 1, 3, 2).
+python_function('nlp2dsl_sdk/validation/helpers.py', 'parse_amount', 1, 3, 1).
+python_function('nlp2dsl_sdk/validation/helpers.py', 'pdf_structure_issues', 1, 3, 1).
+python_function('nlp2dsl_sdk/validation/helpers.py', 'pdf_amount_mismatch', 2, 3, 5).
+python_function('nlp2dsl_sdk/validation/issue.py', 'issues_to_messages', 1, 2, 1).
+python_function('nlp2dsl_sdk/validation/messages.py', 'legacy_message_to_issue', 1, 3, 2).
+python_function('nlp2dsl_sdk/validation/messages.py', '_missing_required_issue', 1, 2, 3).
+python_function('nlp2dsl_sdk/validation/messages.py', '_quality_missing_issue', 1, 2, 3).
+python_function('nlp2dsl_sdk/validation/messages.py', '_attachment_missing_issue', 1, 2, 2).
+python_function('nlp2dsl_sdk/validation/messages.py', '_attachment_issue', 1, 3, 4).
+python_function('nlp2dsl_sdk/validation/messages.py', '_field_format_issue', 1, 4, 2).
+python_function('nlp2dsl_sdk/validation/messages.py', '_unknown_action_issue', 1, 2, 3).
+python_function('nlp2dsl_sdk/validation/messages.py', '_missing_action_issue', 1, 2, 2).
+python_function('nlp2dsl_sdk/validation/messages.py', '_field_after_colon', 1, 1, 2).
+python_function('nlp2dsl_sdk/validation/messages.py', '_invalid_field_issue', 1, 1, 1).
+python_function('nlp2dsl_sdk/validation/messages.py', '_attachment_resolution', 1, 6, 0).
+python_function('nlp2dsl_sdk/validation/messages.py', '_attachment_kind', 1, 5, 0).
+python_function('nlp2dsl_sdk/validation/messages.py', '_attachment_code', 1, 4, 0).
+python_function('nlp2dsl_sdk/validation/messages.py', '_other_issue', 1, 1, 1).
+python_function('nlp2dsl_sdk/validation/pipeline.py', 'validate_step_issues', 1, 1, 1).
+python_function('nlp2dsl_sdk/validation/pipeline.py', 'validate_step_messages', 1, 1, 2).
+python_function('nlp2dsl_sdk/validation/pipeline.py', 'validate_dsl_contract_issues', 1, 1, 1).
+python_function('nlp2dsl_sdk/validation/pipeline.py', 'validate_dsl_contract_messages', 1, 1, 2).
+python_function('nlp2dsl_sdk/validation/pipeline.py', 'validate_step_config_from_map', 3, 2, 2).
+python_function('nlp2dsl_sdk/validation/pipeline.py', 'validate_step_config_from_map_issues', 3, 2, 3).
+python_function('nlp2dsl_sdk/validation/pipeline.py', 'validate_workflow_from_map', 2, 2, 2).
+python_function('nlp2dsl_sdk/validation/pipeline.py', 'validate_workflow_from_map_issues', 2, 9, 10).
+python_function('nlp2dsl_sdk/validation/pipeline.py', '_context_from_map', 3, 3, 5).
+python_function('nlp2dsl_sdk/validation/resolutions.py', 'plan_resolutions', 1, 2, 4).
+python_function('nlp2dsl_sdk/validation/resolutions.py', '_attachment_issues', 1, 3, 1).
+python_function('nlp2dsl_sdk/validation/resolutions.py', '_is_attachment_issue', 1, 3, 1).
+python_function('nlp2dsl_sdk/validation/resolutions.py', '_append_attachment_plans', 3, 4, 5).
+python_function('nlp2dsl_sdk/validation/resolutions.py', '_append_autofill_plans', 3, 4, 3).
+python_function('nlp2dsl_sdk/validation/resolutions.py', '_has_invalid_attachment', 1, 2, 1).
+python_function('nlp2dsl_sdk/validation/resolutions.py', '_should_generate_attachment', 1, 2, 1).
+python_function('nlp2dsl_sdk/validation/resolutions.py', '_attachment_source_hint', 1, 4, 1).
+python_function('nlp2dsl_sdk/validation/resolutions.py', '_is_autofill_issue', 1, 2, 1).
+python_function('nlp2dsl_sdk/validation/resolutions.py', 'apply_resolution_plans', 2, 12, 7).
+python_function('nlp2dsl_sdk/validation/resolutions.py', '_append_plan', 3, 2, 2).
+python_function('nlp2dsl_sdk/validation/rules/attachment.py', '_resolve_path', 2, 2, 2).
+python_function('nlp2dsl_sdk/validation/rules/attachment.py', 'validate_attachment_path', 2, 11, 9).
+python_function('nlp2dsl_sdk/validation/rules/attachment.py', 'attachment_issues_for_config', 1, 3, 5).
+python_function('nlp2dsl_sdk/validation/rules/dsl_contract.py', 'validate_dsl_contract', 1, 6, 9).
+python_function('nlp2dsl_sdk/validation/rules/dsl_contract.py', '_validate_step', 2, 7, 8).
+python_function('nlp2dsl_sdk/validation/rules/dsl_contract.py', '_validate_optional_text_field', 4, 5, 5).
+python_function('nlp2dsl_sdk/validation/rules/dsl_contract.py', '_issue', 4, 1, 1).
+python_function('nlp2dsl_sdk/validation/rules/dsl_contract.py', '_is_non_empty_string', 1, 2, 3).
+python_function('nlp2dsl_sdk/validation/rules/dsl_contract.py', '_type_name', 1, 2, 1).
+python_function('nlp2dsl_sdk/validation/rules/runtime_health.py', 'runtime_id_for_intent', 1, 5, 1).
+python_function('nlp2dsl_sdk/validation/rules/runtime_health.py', 'probe_health_endpoint', 1, 9, 10).
+python_function('nlp2dsl_sdk/validation/rules/runtime_health.py', '_runtime_field', 3, 4, 4).
+python_function('nlp2dsl_sdk/validation/rules/runtime_health.py', 'validate_runtime_health', 2, 10, 4).
+python_function('nlp2dsl_sdk/validation/rules/runtime_health.py', 'validate_runtime_health_for_intent', 2, 1, 2).
+python_function('nlp2dsl_sdk/validation/rules/step_config.py', 'validate_step', 1, 13, 8).
+python_function('nlp2dsl_sdk/validation/rules/step_config.py', '_format_issues', 1, 11, 10).
+python_function('nlp2dsl_sdk/validation/rules/step_config.py', 'validate_workflow_steps', 1, 4, 4).
 python_function('packages/nlp2cmd-intent/src/nlp2cmd_intent/clarification.py', 'clarification_enforced', 0, 1, 3).
 python_function('packages/nlp2cmd-intent/src/nlp2cmd_intent/clarification.py', 'ensure_intent_clear', 1, 4, 3).
 python_function('packages/nlp2cmd-intent/src/nlp2cmd_intent/data_files.py', 'get_user_config_dir', 0, 3, 4).
@@ -3021,14 +4409,15 @@ python_function('packages/nlp2dsl-show/tests/test_cli.py', 'test_cli_show_json',
 python_function('packages/nlp2dsl-show/tests/test_cli.py', 'test_cli_show_rejects_ambiguous_query_when_enforced', 0, 3, 1).
 python_function('packages/pact-ir/tests/test_ir_roundtrip.py', 'test_intent_ir_roundtrip_json', 0, 3, 3).
 python_function('packages/pact-ir/tests/test_ir_roundtrip.py', 'test_execution_plan_from_intent', 0, 4, 4).
+python_function('scripts/_dotenv.py', 'load_dotenv', 1, 9, 7).
 python_function('scripts/aggregate-example-testql.py', 'main', 0, 7, 11).
 python_function('scripts/run-conversation-scenario.py', '_load_yaml', 1, 2, 2).
 python_function('scripts/run-conversation-scenario.py', '_wait_health', 2, 4, 5).
 python_function('scripts/run-conversation-scenario.py', '_dsl_actions', 1, 5, 3).
 python_function('scripts/run-conversation-scenario.py', '_execution_completed', 1, 7, 4).
-python_function('scripts/run-conversation-scenario.py', '_check_expect', 2, 19, 6).
+python_function('scripts/run-conversation-scenario.py', '_check_expect', 2, 36, 6).
 python_function('scripts/run-conversation-scenario.py', '_run_validation', 2, 5, 4).
-python_function('scripts/run-conversation-scenario.py', 'run_scenario', 1, 16, 20).
+python_function('scripts/run-conversation-scenario.py', 'run_scenario', 1, 29, 32).
 python_function('scripts/run-conversation-scenario.py', 'main', 1, 11, 9).
 python_function('scripts/run-example-docker-e2e.py', '_py', 0, 3, 2).
 python_function('scripts/run-example-docker-e2e.py', '_load_profiles', 0, 2, 2).
@@ -3038,22 +4427,31 @@ python_function('scripts/run-example-docker-e2e.py', 'docker_up', 1, 3, 7).
 python_function('scripts/run-example-docker-e2e.py', 'docker_down', 0, 1, 2).
 python_function('scripts/run-example-docker-e2e.py', 'wait_platform', 2, 3, 3).
 python_function('scripts/run-example-docker-e2e.py', 'run_example_main', 1, 2, 4).
-python_function('scripts/run-example-docker-e2e.py', 'run_conversation', 3, 6, 7).
-python_function('scripts/run-example-docker-e2e.py', 'process_example', 2, 15, 6).
-python_function('scripts/run-example-docker-e2e.py', 'main', 1, 24, 27).
+python_function('scripts/run-example-docker-e2e.py', 'run_execution', 3, 6, 6).
+python_function('scripts/run-example-docker-e2e.py', 'run_conversation', 3, 6, 6).
+python_function('scripts/run-example-docker-e2e.py', 'process_example', 2, 28, 8).
+python_function('scripts/run-example-docker-e2e.py', 'main', 1, 26, 30).
 python_function('scripts/run-example-testql-results.py', '_load_manifest', 1, 3, 3).
 python_function('scripts/run-example-testql-results.py', '_testql_dry_run', 1, 2, 4).
 python_function('scripts/run-example-testql-results.py', '_testql_ir_parse', 1, 4, 4).
-python_function('scripts/run-example-testql-results.py', '_nlp2dsl_run_query', 2, 19, 11).
+python_function('scripts/run-example-testql-results.py', '_nlp2dsl_run_query', 2, 23, 11).
 python_function('scripts/run-example-testql-results.py', '_is_hand_authored_conversation', 1, 4, 2).
-python_function('scripts/run-example-testql-results.py', '_generate_conversation_toon', 2, 6, 7).
+python_function('scripts/run-example-testql-results.py', '_generate_conversation_toon', 2, 5, 6).
 python_function('scripts/run-example-testql-results.py', '_conversation_execute', 2, 5, 13).
 python_function('scripts/run-example-testql-results.py', '_conversation_transcript_check', 1, 5, 7).
-python_function('scripts/run-example-testql-results.py', '_conversation_dry_run', 1, 8, 8).
+python_function('scripts/run-example-testql-results.py', '_conversation_dry_run', 1, 10, 9).
 python_function('scripts/run-example-testql-results.py', '_manifest_consistency', 2, 10, 5).
 python_function('scripts/run-example-testql-results.py', '_write_toon_report', 1, 4, 5).
-python_function('scripts/run-example-testql-results.py', 'process_example', 1, 13, 27).
+python_function('scripts/run-example-testql-results.py', 'process_example', 1, 15, 29).
 python_function('scripts/run-example-testql-results.py', 'main', 1, 16, 18).
+python_function('scripts/run-execution-scenario.py', '_load_yaml', 1, 2, 2).
+python_function('scripts/run-execution-scenario.py', '_wait_health', 2, 4, 5).
+python_function('scripts/run-execution-scenario.py', '_dsl_actions', 1, 6, 3).
+python_function('scripts/run-execution-scenario.py', '_execution_completed', 1, 8, 4).
+python_function('scripts/run-execution-scenario.py', '_check_expect', 2, 16, 4).
+python_function('scripts/run-execution-scenario.py', '_run_validation', 2, 5, 4).
+python_function('scripts/run-execution-scenario.py', 'run_scenario', 1, 18, 20).
+python_function('scripts/run-execution-scenario.py', 'main', 1, 8, 9).
 python_function('test_code_generation.py', 'test_code_generation', 0, 11, 14).
 python_function('tests/e2e/conftest.py', '_resolve_browser_executable', 0, 3, 1).
 python_function('tests/e2e/conftest.py', 'nlp_client', 0, 1, 1).
@@ -3130,22 +4528,94 @@ python_function('tests/e2e/test_websocket.py', 'test_websocket_accepts_multiple_
 python_function('tests/e2e/test_websocket.py', 'test_websocket_clean_disconnect', 0, 3, 4).
 python_function('tests/e2e/test_websocket.py', 'test_websocket_server_survives_abrupt_close', 0, 2, 5).
 python_function('tests/e2e/test_websocket.py', 'test_websocket_concurrent_connections', 0, 4, 7).
+python_function('tests/test_artifact_layout.py', 'test_write_registry_creates_layout', 1, 6, 3).
+python_function('tests/test_artifact_layout.py', 'test_resolve_registry_path_prefers_registry', 2, 2, 5).
+python_function('tests/test_artifact_layout.py', 'test_write_environment_doql_uses_registry', 1, 5, 3).
+python_function('tests/test_artifact_layout.py', 'test_turn_snapshot_after_refresh', 1, 3, 6).
+python_function('tests/test_attachment_validation.py', 'test_format_attachment_validation_ok', 0, 4, 1).
+python_function('tests/test_attachment_validation.py', 'test_enrich_chat_response_from_dsl', 2, 4, 5).
+python_function('tests/test_attachment_validation.py', 'test_build_attachment_validation_rejects_text_pdf', 2, 3, 6).
+python_function('tests/test_cli_run_output.py', 'test_execution_payload_prefers_execution_then_result', 0, 4, 1).
+python_function('tests/test_cli_run_output.py', 'test_print_run_outcome_shows_invoice_id_and_reflection', 1, 7, 2).
+python_function('tests/test_cli_run_output.py', 'test_detect_example_dir_from_cwd', 2, 2, 5).
+python_function('tests/test_compose_generator.py', 'test_generate_stack_compose_writes_artifacts', 1, 14, 8).
+python_function('tests/test_compose_generator.py', 'test_enrich_ir_adds_defaults', 1, 3, 6).
+python_function('tests/test_conversation_testql.py', 'test_endpoints_from_text_scans_nlp_dsl_rows', 0, 2, 1).
+python_function('tests/test_conversation_testql.py', 'test_validate_hand_authored_conversation', 0, 4, 6).
+python_function('tests/test_doql_context.py', 'test_load_doql_context_all_supported_blocks', 1, 34, 3).
+python_function('tests/test_doql_context.py', 'test_doql_roundtrip_preserves_core_fields', 1, 7, 5).
+python_function('tests/test_doql_context.py', 'test_autofill_entities_from_data_and_aliases', 0, 4, 2).
+python_function('tests/test_doql_context.py', 'test_autofill_entities_from_artifact_values', 0, 3, 3).
+python_function('tests/test_doql_context.py', 'test_autofill_entities_disabled_returns_original_object', 0, 3, 2).
+python_function('tests/test_doql_registry.py', 'test_refresh_merges_entities', 1, 4, 7).
+python_function('tests/test_doql_registry.py', 'test_merge_execution_observation_invoice_id', 0, 4, 1).
+python_function('tests/test_doql_registry.py', 'test_merge_registry_observations_preserves_history', 1, 4, 5).
 python_function('tests/test_encoding.py', 'test_configure_utf8_reconfigures_stdout', 1, 2, 6).
 python_function('tests/test_encoding.py', 'test_configure_utf8_respects_disable', 1, 2, 6).
 python_function('tests/test_encoding.py', 'test_configure_utf8_upgrades_ascii_locale', 1, 3, 3).
 python_function('tests/test_encoding.py', 'test_utf8_auto_enabled_default', 1, 3, 3).
+python_function('tests/test_invoice_pdf.py', 'test_build_invoice_pdf_starts_with_pdf_header', 0, 5, 4).
+python_function('tests/test_invoice_pdf.py', 'test_write_invoice_pdf_creates_valid_file', 1, 5, 6).
+python_function('tests/test_invoice_policy.py', 'test_is_invoice_example', 0, 3, 1).
+python_function('tests/test_invoice_policy.py', 'test_apply_invoice_policies_on_ir', 0, 5, 2).
+python_function('tests/test_invoice_policy.py', 'test_collect_task_context_sets_invoice_policy', 1, 4, 2).
+python_function('tests/test_invoice_policy.py', 'test_apply_invoice_context', 0, 3, 2).
 python_function('tests/test_nlp2dsl_sdk.py', 'client_factory', 0, 1, 3).
 python_function('tests/test_nlp2dsl_sdk.py', 'test_from_env_prefers_repo_env_names', 1, 5, 3).
-python_function('tests/test_nlp2dsl_sdk.py', 'test_workflow_and_conversation_endpoints', 1, 17, 7).
+python_function('tests/test_nlp2dsl_sdk.py', 'test_workflow_and_conversation_endpoints', 1, 18, 7).
 python_function('tests/test_nlp2dsl_sdk.py', 'test_request_retries_transient_server_errors', 2, 4, 7).
 python_function('tests/test_nlp2dsl_sdk.py', 'test_report_helpers_use_report_type_and_schedule', 1, 10, 4).
 python_function('tests/test_nlp2dsl_sdk.py', 'test_new_workflow_helpers_are_data_driven', 1, 14, 6).
 python_function('tests/test_nlp2dsl_sdk.py', 'test_code_generation_methods_hit_expected_services', 1, 16, 7).
+python_function('tests/test_nlp2dsl_sdk.py', 'test_default_service_urls_match_docker_compose_ports', 0, 4, 0).
+python_function('tests/test_nlp2dsl_sdk.py', 'test_wait_for_health_retries_until_success', 1, 4, 6).
 python_function('tests/test_nlp2dsl_sdk.py', 'test_health_queries_all_services', 1, 7, 3).
+python_function('tests/test_path_resolve.py', 'test_resolve_fixture_relative_path', 2, 3, 8).
+python_function('tests/test_path_resolve.py', 'test_resolve_examples_mount_portable_path', 2, 2, 7).
+python_function('tests/test_path_resolve.py', 'test_pdf_attachment_passes_with_valid_pdf', 2, 2, 8).
+python_function('tests/test_path_resolve.py', 'test_pdf_attachment_rejects_text_file', 2, 2, 9).
 python_function('tests/test_placeholder.py', 'test_placeholder', 0, 2, 0).
 python_function('tests/test_placeholder.py', 'test_import', 0, 1, 0).
+python_function('tests/test_process_policy.py', 'test_process_policy_from_profile_deterministic', 0, 8, 2).
+python_function('tests/test_process_policy.py', 'test_apply_process_policies_merges_conversation', 0, 4, 2).
+python_function('tests/test_process_policy.py', 'test_render_and_roundtrip_process_block', 1, 9, 5).
+python_function('tests/test_process_policy.py', 'test_generate_system_map_01_invoice_has_process', 0, 4, 2).
+python_function('tests/test_process_policy.py', 'test_ensure_doql_registry_writes_process_block', 0, 3, 2).
+python_function('tests/test_process_policy.py', 'test_platform_defaults_merge_with_example', 0, 5, 3).
+python_function('tests/test_process_policy.py', 'test_process_scope_denied_mullm', 0, 3, 2).
+python_function('tests/test_reflection.py', '_invoice_ir', 0, 1, 4).
+python_function('tests/test_reflection.py', 'test_build_target_plan_from_data', 0, 3, 2).
+python_function('tests/test_reflection.py', 'test_reflect_ready_when_complete', 0, 3, 3).
+python_function('tests/test_reflection.py', 'test_reflect_missing_attachment_when_required', 0, 4, 4).
+python_function('tests/test_reflection.py', 'test_validate_attachment_mismatch', 1, 4, 7).
+python_function('tests/test_system_map_ir.py', 'test_system_map_validate_step_config', 0, 3, 5).
+python_function('tests/test_system_map_ir.py', 'test_dynamic_command_input_model', 0, 3, 7).
+python_function('tests/test_system_map_ir.py', 'test_task_context_to_system_map_and_render', 0, 12, 7).
+python_function('tests/test_system_map_ir.py', 'test_build_runtimes_for_01_invoice', 0, 9, 2).
+python_function('tests/test_system_map_ir.py', 'test_resolve_command_runtime', 0, 4, 1).
+python_function('tests/test_system_map_ir.py', 'test_doql_roundtrip_runtimes', 1, 3, 7).
+python_function('tests/test_system_map_ir.py', 'test_generate_system_map_01_invoice', 0, 3, 2).
 python_function('tests/test_tests.py', 'test_placeholder', 0, 2, 0).
 python_function('tests/test_tests.py', 'test_import', 0, 1, 0).
+python_function('tests/test_validation.py', 'test_legacy_message_to_issue_pdf', 0, 4, 1).
+python_function('tests/test_validation.py', 'test_legacy_message_to_issue_missing_file', 0, 3, 1).
+python_function('tests/test_validation.py', 'test_legacy_message_to_issue_variants', 0, 3, 1).
+python_function('tests/test_validation.py', 'test_validate_step_config_from_map_issues_structure', 1, 2, 7).
+python_function('tests/test_validation.py', 'test_issues_to_messages_roundtrip', 0, 2, 2).
+python_function('tests/test_validation.py', 'test_plan_resolutions_invalid_pdf', 0, 3, 2).
+python_function('tests/test_validation.py', 'test_plan_resolutions_deduplicates_attachment_repairs', 0, 2, 2).
+python_function('tests/test_validation.py', 'test_plan_resolutions_autofill_issue', 0, 5, 3).
+python_function('tests/test_validation.py', 'test_apply_resolution_plans_stops_after_fixture', 0, 3, 5).
+python_function('tests/test_validation.py', 'test_runtime_health_unavailable', 0, 3, 3).
+python_function('tests/test_validation.py', 'test_runtime_id_for_intent', 0, 3, 1).
+python_function('tests/test_validation.py', 'test_validate_step_config_from_map_backward_compat', 1, 2, 8).
+python_function('tests/test_validation.py', 'test_validate_dsl_contract_rejects_broken_steps', 0, 4, 2).
+python_function('tests/test_validation.py', 'test_validate_dsl_contract_allows_dynamic_actions_by_default', 0, 2, 1).
+python_function('worker/attachment_validation.py', 'resolve_worker_attachment_path', 1, 6, 8).
+python_function('worker/attachment_validation.py', 'validate_invoice_attachment', 2, 8, 13).
+python_function('worker/invoice_pdf.py', '_pdf_escape', 1, 1, 1).
+python_function('worker/invoice_pdf.py', 'build_invoice_pdf_bytes', 0, 3, 8).
+python_function('worker/invoice_pdf.py', 'write_invoice_pdf', 1, 1, 4).
 python_function('worker/logging_setup.py', 'get_request_id', 0, 1, 1).
 python_function('worker/logging_setup.py', 'setup_logging', 2, 3, 9).
 python_function('worker/tests/conftest.py', '_noop_sleep', 0, 1, 0).
@@ -3154,7 +4624,9 @@ python_function('worker/tests/conftest.py', 'client', 0, 1, 2).
 python_function('worker/tests/test_worker.py', 'client', 0, 1, 2).
 python_function('worker/worker.py', 'action', 1, 1, 0).
 python_function('worker/worker.py', '_deliver_notification', 4, 5, 8).
-python_function('worker/worker.py', 'handle_send_invoice', 1, 1, 6).
+python_function('worker/worker.py', 'handle_send_invoice', 1, 3, 7).
+python_function('worker/worker.py', '_resolve_attachment_path', 1, 1, 1).
+python_function('worker/worker.py', 'handle_generate_invoice', 1, 3, 9).
 python_function('worker/worker.py', 'handle_send_email', 1, 1, 4).
 python_function('worker/worker.py', 'handle_generate_report', 1, 1, 6).
 python_function('worker/worker.py', 'handle_crm_update', 1, 1, 4).
@@ -3218,6 +4690,9 @@ python_method('WorkflowEventHub', 'subscribe', 1, 1, 2).
 python_method('WorkflowEventHub', 'unsubscribe', 2, 3, 3).
 python_method('WorkflowEventHub', 'publish', 1, 2, 4).
 python_method('WorkflowEventHub', 'subscriber_count', 1, 1, 3).
+python_class('backend/tests/test_chat_router.py', 'DummyWorkflowResult').
+python_method('DummyWorkflowResult', '__init__', 1, 1, 0).
+python_method('DummyWorkflowResult', 'model_dump', 0, 1, 0).
 python_class('backend/tests/test_config.py', 'TestBackendSettingsDefaults').
 python_method('TestBackendSettingsDefaults', 'test_worker_url_default', 1, 2, 2).
 python_method('TestBackendSettingsDefaults', 'test_nlp_service_url_default', 1, 2, 2).
@@ -3279,6 +4754,7 @@ python_class('backend/tests/test_workflow_api.py', 'TestFromText').
 python_method('TestFromText', 'test_from_text_complete', 1, 4, 5).
 python_method('TestFromText', 'test_from_text_incomplete', 1, 4, 5).
 python_method('TestFromText', 'test_from_text_empty', 1, 2, 1).
+python_method('TestFromText', 'test_from_text_rejects_invalid_workflow_contract', 1, 5, 6).
 python_class('examples/08-multi-object-benchmark/benchmark_queries.py', 'BenchmarkQuery').
 python_class('nlp-service/app/audio_parser.py', 'StreamingSTT').
 python_method('StreamingSTT', '__init__', 1, 2, 1).
@@ -3296,6 +4772,7 @@ python_method('CodeGenerator', '_split_code_and_tests', 2, 3, 2).
 python_method('CodeGenerator', 'get_supported_languages', 0, 1, 2).
 python_method('CodeGenerator', 'get_language_info', 1, 1, 1).
 python_class('nlp-service/app/config.py', 'NLPServiceSettings').
+python_class('nlp-service/app/conversation/autonomous_loop.py', 'AutonomousResolveResult').
 python_class('nlp-service/app/governance/config.py', 'AccessConfig').
 python_method('AccessConfig', 'action_to_area', 0, 6, 1).
 python_method('AccessConfig', 'area_by_id', 1, 4, 1).
@@ -3361,6 +4838,12 @@ python_method('RedisConversationStore', 'save', 2, 1, 5).
 python_method('RedisConversationStore', 'delete', 1, 1, 3).
 python_method('RedisConversationStore', 'count', 0, 1, 1).
 python_method('RedisConversationStore', 'close', 0, 1, 1).
+python_class('nlp-service/app/validation/step_validator.py', 'StepValidationError').
+python_method('StepValidationError', '__init__', 2, 1, 3).
+python_class('nlp-service/tests/test_doql_attachment.py', 'TestAttachmentConversation').
+python_method('TestAttachmentConversation', 'test_incomplete_then_attachment_inline', 1, 7, 6).
+python_class('nlp-service/tests/test_doql_autofill.py', 'TestDoqlAutofillConversation').
+python_method('TestDoqlAutofillConversation', 'test_start_incomplete_autofilled_to_ready', 0, 5, 1).
 python_class('nlp-service/tests/test_enrich.py', '_FakeMessage').
 python_method('_FakeMessage', '__init__', 1, 1, 0).
 python_class('nlp-service/tests/test_enrich.py', '_FakeChoice').
@@ -3413,6 +4896,7 @@ python_class('nlp-service/tests/test_orchestrator.py', 'TestContinueConversation
 python_method('TestContinueConversation', 'test_continue_conversation', 0, 5, 2).
 python_method('TestContinueConversation', 'test_continue_conversation_lazy_create', 0, 3, 1).
 python_method('TestContinueConversation', 'test_continue_conversation_email_body', 0, 6, 4).
+python_method('TestContinueConversation', 'test_execute_keyword_idempotent_after_executed', 0, 4, 3).
 python_class('nlp-service/tests/test_orchestrator.py', 'TestSystemCommands').
 python_method('TestSystemCommands', 'test_system_command_status', 0, 3, 1).
 python_method('TestSystemCommands', 'test_system_command_settings', 0, 3, 2).
@@ -3454,6 +4938,7 @@ python_method('TestParseEmail', 'test_parse_email', 0, 3, 1).
 python_method('TestParseEmail', 'test_parse_email_english', 0, 3, 1).
 python_method('TestParseEmail', 'test_parse_email_reminder', 0, 5, 1).
 python_method('TestParseEmail', 'test_parse_email_with_subject', 0, 4, 1).
+python_method('TestParseEmail', 'test_parse_email_subject_and_body_same_line', 0, 4, 1).
 python_method('TestParseEmail', 'test_parse_email_colon_body', 0, 4, 1).
 python_method('TestParseEmail', 'test_parse_body_content_prefix', 0, 3, 1).
 python_method('TestParseEmail', 'test_parse_body_content_prefix_long_form', 0, 3, 1).
@@ -3516,7 +5001,7 @@ python_class('nlp-service/tests/test_routing_resolve.py', 'TestParserSource').
 python_method('TestParserSource', 'test_rules_mode', 1, 2, 2).
 python_class('nlp-service/tests/test_routing_resolve.py', 'TestResolveIntent').
 python_method('TestResolveIntent', 'test_invoice_rules_path', 0, 6, 2).
-python_method('TestResolveIntent', 'test_unknown_intent', 0, 4, 1).
+python_method('TestResolveIntent', 'test_unknown_intent', 1, 4, 2).
 python_method('TestResolveIntent', 'test_native_file_list_route', 0, 4, 1).
 python_method('TestResolveIntent', 'test_decision_serializable', 0, 4, 2).
 python_class('nlp-service/tests/test_routing_resolve.py', 'TestOrchestratorRoutingField').
@@ -3588,7 +5073,13 @@ python_method('TestExecutorMapping', 'test_executors_count', 0, 2, 1).
 python_class('nlp2dsl_sdk/artifacts.py', 'ExampleArtifactWriter').
 python_method('ExampleArtifactWriter', '__init__', 1, 5, 6).
 python_method('ExampleArtifactWriter', 'record', 2, 1, 4).
-python_method('ExampleArtifactWriter', 'finalize', 1, 4, 6).
+python_method('ExampleArtifactWriter', 'finalize', 1, 5, 13).
+python_class('nlp2dsl_sdk/autonomous_flow.py', 'AutonomousFlow').
+python_method('AutonomousFlow', '__init__', 1, 1, 2).
+python_method('AutonomousFlow', 'run_task', 1, 8, 8).
+python_method('AutonomousFlow', '_should_auto_execute', 0, 2, 3).
+python_method('AutonomousFlow', '_default_example_dir', 0, 1, 1).
+python_method('AutonomousFlow', '_start_with_extra', 1, 6, 18).
 python_class('nlp2dsl_sdk/client.py', 'NLP2DSLClient').
 python_method('NLP2DSLClient', '__init__', 5, 2, 3).
 python_method('NLP2DSLClient', 'from_env', 2, 1, 4).
@@ -3603,17 +5094,19 @@ python_method('NLP2DSLClient', 'backend_health', 0, 1, 2).
 python_method('NLP2DSLClient', 'nlp_service_health', 0, 1, 2).
 python_method('NLP2DSLClient', 'worker_health', 0, 1, 2).
 python_method('NLP2DSLClient', 'health', 0, 1, 3).
+python_method('NLP2DSLClient', 'wait_for_health', 0, 4, 6).
 python_method('NLP2DSLClient', 'workflow_from_text', 3, 1, 2).
 python_method('NLP2DSLClient', 'run_workflow', 4, 3, 3).
 python_method('NLP2DSLClient', 'workflow_actions', 0, 1, 2).
+python_method('NLP2DSLClient', 'workflow_history', 1, 5, 5).
 python_method('NLP2DSLClient', 'workflow_action_schema', 1, 2, 2).
 python_method('NLP2DSLClient', 'settings', 0, 1, 2).
 python_method('NLP2DSLClient', 'settings_section', 1, 1, 2).
 python_method('NLP2DSLClient', 'update_settings_section', 2, 1, 3).
 python_method('NLP2DSLClient', 'set_setting', 2, 1, 2).
 python_method('NLP2DSLClient', 'reset_settings', 1, 2, 3).
-python_method('NLP2DSLClient', 'chat_start', 2, 2, 4).
-python_method('NLP2DSLClient', 'chat_message', 3, 2, 4).
+python_method('NLP2DSLClient', 'chat_start', 2, 4, 8).
+python_method('NLP2DSLClient', 'chat_message', 3, 6, 9).
 python_method('NLP2DSLClient', 'chat_state', 1, 1, 2).
 python_method('NLP2DSLClient', 'nlp_chat_start', 2, 2, 4).
 python_method('NLP2DSLClient', 'nlp_chat_message', 3, 2, 4).
@@ -3632,18 +5125,79 @@ python_method('NLP2DSLClient', 'crm_update', 4, 2, 3).
 python_method('NLP2DSLClient', 'send_invoice_and_notify', 7, 4, 3).
 python_class('nlp2dsl_sdk/client.py', 'ConversationFlow').
 python_method('ConversationFlow', '__init__', 1, 2, 1).
-python_method('ConversationFlow', 'start', 2, 1, 5).
+python_method('ConversationFlow', 'start', 2, 2, 11).
 python_method('ConversationFlow', 'send_message', 2, 2, 6).
-python_method('ConversationFlow', '_record_turn', 4, 1, 1).
+python_method('ConversationFlow', '_record_turn', 4, 1, 2).
+python_method('ConversationFlow', 'save_artifacts', 1, 2, 4).
 python_method('ConversationFlow', 'export_trace', 0, 1, 2).
-python_method('ConversationFlow', '_handle_response', 1, 5, 6).
-python_method('ConversationFlow', '_handle_in_progress_response', 2, 6, 3).
-python_method('ConversationFlow', '_handle_ready_response', 2, 4, 5).
-python_method('ConversationFlow', '_handle_completed_response', 2, 4, 2).
+python_method('ConversationFlow', '_handle_response', 1, 5, 8).
+python_method('ConversationFlow', '_persist_reflection', 1, 11, 12).
+python_method('ConversationFlow', '_refresh_doql_registry', 1, 13, 9).
+python_method('ConversationFlow', '_handle_in_progress_response', 2, 7, 3).
+python_method('ConversationFlow', '_handle_ready_response', 2, 4, 6).
+python_method('ConversationFlow', '_handle_completed_response', 2, 14, 5).
+python_method('ConversationFlow', '_print_attachment_validation', 1, 3, 3).
+python_method('ConversationFlow', '_reflect_executed_turn', 1, 5, 10).
 python_method('ConversationFlow', '_handle_error_response', 1, 1, 1).
-python_method('ConversationFlow', 'run_demo', 0, 2, 5).
+python_method('ConversationFlow', 'run_demo', 0, 2, 7).
 python_method('ConversationFlow', 'run_interactive', 0, 6, 6).
+python_class('nlp2dsl_sdk/compose_generator.py', 'ComposeGenerationResult').
+python_class('nlp2dsl_sdk/conversation_testql.py', 'ConversationValidation').
 python_class('nlp2dsl_sdk/demos.py', 'DemoSpec').
+python_class('nlp2dsl_sdk/doql/models.py', 'DoqlArtifact').
+python_class('nlp2dsl_sdk/doql/models.py', 'DoqlRuntime').
+python_class('nlp2dsl_sdk/doql/models.py', 'DoqlCommand').
+python_class('nlp2dsl_sdk/doql/models.py', 'DoqlResource').
+python_class('nlp2dsl_sdk/doql/models.py', 'DoqlAccess').
+python_class('nlp2dsl_sdk/doql/models.py', 'DoqlProcessPolicy').
+python_class('nlp2dsl_sdk/doql/models.py', 'DoqlTaskContext').
+python_method('DoqlTaskContext', 'entity_values', 1, 5, 3).
+python_method('DoqlTaskContext', 'command', 1, 3, 0).
+python_method('DoqlTaskContext', 'required_fields_for', 1, 3, 2).
+python_method('DoqlTaskContext', 'runtime_for', 1, 6, 3).
+python_class('nlp2dsl_sdk/reflection.py', 'TargetStep').
+python_class('nlp2dsl_sdk/reflection.py', 'TargetPlan').
+python_class('nlp2dsl_sdk/reflection.py', 'ReflectionIssue').
+python_class('nlp2dsl_sdk/reflection.py', 'ReflectionReport').
+python_method('ReflectionReport', 'primary_context_query', 0, 2, 0).
+python_class('nlp2dsl_sdk/stack_flow.py', 'StackPhaseResult').
+python_class('nlp2dsl_sdk/stack_flow.py', 'StackRunResult').
+python_class('nlp2dsl_sdk/stack_flow.py', 'AutonomousStackFlow').
+python_method('AutonomousStackFlow', '__init__', 1, 2, 3).
+python_method('AutonomousStackFlow', 'bootstrap_registry', 0, 1, 6).
+python_method('AutonomousStackFlow', 'run_phases', 1, 7, 12).
+python_method('AutonomousStackFlow', '_run_phase', 2, 10, 11).
+python_method('AutonomousStackFlow', '_emit_compose', 0, 3, 8).
+python_class('nlp2dsl_sdk/system_map_ir.py', 'MimeTypeSpec').
+python_class('nlp2dsl_sdk/system_map_ir.py', 'RuntimeSpecIR').
+python_class('nlp2dsl_sdk/system_map_ir.py', 'ProtocolSpec').
+python_class('nlp2dsl_sdk/system_map_ir.py', 'FieldSpec').
+python_class('nlp2dsl_sdk/system_map_ir.py', 'CommandSchemaIR').
+python_method('CommandSchemaIR', 'required_names', 0, 3, 0).
+python_method('CommandSchemaIR', 'optional_names', 0, 3, 0).
+python_class('nlp2dsl_sdk/system_map_ir.py', 'ResourceSpecIR').
+python_class('nlp2dsl_sdk/system_map_ir.py', 'AccessGrantIR').
+python_class('nlp2dsl_sdk/system_map_ir.py', 'ArtifactSpecIR').
+python_class('nlp2dsl_sdk/system_map_ir.py', 'ConversationPolicyIR').
+python_class('nlp2dsl_sdk/system_map_ir.py', 'ProcessAccessScopeIR').
+python_class('nlp2dsl_sdk/system_map_ir.py', 'ProcessPathsIR').
+python_class('nlp2dsl_sdk/system_map_ir.py', 'ProcessPolicyIR').
+python_class('nlp2dsl_sdk/system_map_ir.py', 'ScheduleSpecIR').
+python_class('nlp2dsl_sdk/system_map_ir.py', 'GeneratedServiceIR').
+python_class('nlp2dsl_sdk/system_map_ir.py', 'DeploySpecIR').
+python_class('nlp2dsl_sdk/system_map_ir.py', 'SystemMapIR').
+python_method('SystemMapIR', 'command', 1, 3, 0).
+python_method('SystemMapIR', 'runtime', 1, 3, 0).
+python_method('SystemMapIR', 'runtime_for_command', 1, 3, 2).
+python_method('SystemMapIR', 'validate_step_config', 2, 7, 5).
+python_class('nlp2dsl_sdk/validation/context.py', 'ValidationContext').
+python_method('ValidationContext', 'from_map', 1, 3, 3).
+python_class('nlp2dsl_sdk/validation/issue.py', 'Phase').
+python_class('nlp2dsl_sdk/validation/issue.py', 'ValidationIssue').
+python_method('ValidationIssue', 'to_dict', 0, 1, 2).
+python_method('ValidationIssue', 'to_legacy_message', 0, 8, 1).
+python_class('nlp2dsl_sdk/validation/resolutions.py', 'ResolutionPlan').
+python_class('nlp2dsl_sdk/validation/resolutions.py', 'ResolutionEnvironment').
 python_class('packages/nlp2cmd-intent/src/nlp2cmd_intent/clarification.py', 'IntentClarificationRequired').
 python_method('IntentClarificationRequired', '__init__', 1, 4, 4).
 python_class('packages/nlp2cmd-intent/src/nlp2cmd_intent/facade.py', 'PassthroughEntityExtractor').
@@ -3887,72 +5441,80 @@ sumd_deploy_compose_file('docker-compose.yml').
 
 ## Call Graph
 
-*346 nodes · 353 edges · 73 modules · CC̄=3.7*
+*451 nodes · 500 edges · 107 modules · CC̄=4.7*
 
 ### Hubs (by degree)
 
 | Function | CC | in | out | total |
 |----------|----|----|-----|-------|
+| `render_system_map_doql` *(in nlp2dsl_sdk.system_map_render)* | 70 ⚠ | 5 | 164 | **169** |
+| `render_doql_context` *(in nlp2dsl_sdk.doql.render)* | 62 ⚠ | 2 | 129 | **131** |
+| `generate_stack_compose` *(in nlp2dsl_sdk.compose_generator)* | 13 ⚠ | 1 | 79 | **80** |
+| `format_transcript` *(in nlp2dsl_sdk.conversation_artifacts)* | 25 ⚠ | 1 | 57 | **58** |
+| `_execute_workflow` *(in backend.app.engine)* | 13 ⚠ | 2 | 50 | **52** |
 | `_load_detector_config_from_json` *(in packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns)* | 33 ⚠ | 0 | 48 | **48** |
-| `_execute_workflow` *(in backend.app.engine)* | 11 ⚠ | 2 | 42 | **44** |
-| `process_example` *(in scripts.run-example-testql-results)* | 11 ⚠ | 1 | 38 | **39** |
-| `print_workflow_preview` *(in nlp2dsl_sdk.preview)* | 11 ⚠ | 8 | 27 | **35** |
-| `resolve_intent` *(in nlp-service.app.routing.resolve)* | 18 ⚠ | 1 | 31 | **32** |
-| `_run` *(in nlp2dsl_sdk.cli)* | 12 ⚠ | 1 | 30 | **31** |
-| `main` *(in scripts.run-example-testql-results)* | 16 ⚠ | 0 | 31 | **31** |
-| `enrich_entities` *(in nlp-service.app.routing.parser.enrich)* | 14 ⚠ | 1 | 29 | **30** |
+| `print_workflow_preview` *(in nlp2dsl_sdk.preview)* | 18 ⚠ | 8 | 38 | **46** |
+| `process_policy_from_profile_block` *(in nlp2dsl_sdk.process_policy)* | 23 ⚠ | 1 | 45 | **46** |
 
 ```toon markpact:analysis path=project/calls.toon.yaml
 # code2llm call graph | /home/tom/github/wronai/nlp2dsl
-# generated in 0.26s
-# nodes: 346 | edges: 353 | modules: 73
-# CC̄=3.7
+# generated in 0.22s
+# nodes: 451 | edges: 500 | modules: 107
+# CC̄=4.7
 
 HUBS[20]:
+  nlp2dsl_sdk.system_map_render.render_system_map_doql
+    CC=70  in:5  out:164  total:169
+  nlp2dsl_sdk.doql.render.render_doql_context
+    CC=62  in:2  out:129  total:131
+  nlp2dsl_sdk.compose_generator.generate_stack_compose
+    CC=13  in:1  out:79  total:80
+  nlp2dsl_sdk.conversation_artifacts.format_transcript
+    CC=25  in:1  out:57  total:58
+  backend.app.engine._execute_workflow
+    CC=13  in:2  out:50  total:52
   packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_detector_config_from_json
     CC=33  in:0  out:48  total:48
-  backend.app.engine._execute_workflow
-    CC=11  in:2  out:42  total:44
-  scripts.run-example-testql-results.process_example
-    CC=11  in:1  out:38  total:39
   nlp2dsl_sdk.preview.print_workflow_preview
-    CC=11  in:8  out:27  total:35
-  nlp-service.app.routing.resolve.resolve_intent
-    CC=18  in:1  out:31  total:32
-  nlp2dsl_sdk.cli._run
-    CC=12  in:1  out:30  total:31
-  scripts.run-example-testql-results.main
-    CC=16  in:0  out:31  total:31
-  nlp-service.app.routing.parser.enrich.enrich_entities
-    CC=14  in:1  out:29  total:30
+    CC=18  in:8  out:38  total:46
+  nlp2dsl_sdk.process_policy.process_policy_from_profile_block
+    CC=23  in:1  out:45  total:46
+  nlp2dsl_sdk.preview.print_run_outcome
+    CC=21  in:1  out:40  total:41
+  nlp-service.app.settings.SettingsManager.set
+    CC=4  in:27  out:11  total:38
+  nlp2dsl_sdk.system_map_runtimes.build_runtimes_for_example
+    CC=18  in:1  out:35  total:36
+  nlp2dsl_sdk.conversation_testql.validate_conversation_scenario
+    CC=21  in:1  out:34  total:35
+  nlp2dsl_sdk.doql.parse.collect_task_context
+    CC=19  in:3  out:32  total:35
+  backend.app.path_resolve.resolve_attachment_path
+    CC=13  in:9  out:26  total:35
+  examples.01-invoice.scenario.run
+    CC=20  in:0  out:34  total:34
+  nlp2dsl_sdk.doql.parse.load_platform_map
+    CC=18  in:1  out:32  total:33
+  nlp2dsl_sdk.system_map_bridge.task_context_to_system_map
+    CC=24  in:3  out:29  total:32
+  nlp2dsl_sdk.doql.parse.enrich_task_context_from_client
+    CC=19  in:1  out:29  total:30
   nlp2dsl_sdk.artifacts.build_process_trace
     CC=17  in:1  out:29  total:30
-  nlp-service.app.dsl.mapper._build_config
-    CC=19  in:1  out:29  total:30
-  nlp-service.app.routing.orientation.orient_query
-    CC=16  in:2  out:27  total:29
-  nlp2dsl_sdk.cli._display
-    CC=13  in:1  out:27  total:28
-  nlp-service.app.governance.bootstrap._actions_from_yaml_areas
-    CC=14  in:1  out:26  total:27
-  examples.08-multi-object-benchmark.scenario.run_benchmark
-    CC=16  in:2  out:24  total:26
-  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_patterns_from_json
-    CC=19  in:0  out:26  total:26
-  examples.12-ir-show.scenario.run
-    CC=13  in:0  out:25  total:25
-  nlp2dsl_sdk.cli.main
-    CC=7  in:0  out:25  total:25
-  nlp-service.app.routing.orientation._resolve_file_list_host_command
-    CC=15  in:1  out:24  total:25
-  packages.nlp2cmd-intent.src.nlp2cmd_intent.nlp2cmd_convert.detection_to_intent_ir
-    CC=10  in:2  out:22  total:24
-  nlp-service.app.settings.SettingsManager.set
-    CC=4  in:13  out:11  total:24
+  backend.app.routers.workflow.workflow_from_text
+    CC=9  in:1  out:29  total:30
 
 MODULES:
+  backend.app.attachment_validation  [1 funcs]
+    ensure_attachment_validation  CC=10  out:10
+  backend.app.dsl_validation  [5 funcs]
+    dsl_validation_response  CC=1  out:3
+    format_dsl_validation_message  CC=2  out:4
+    missing_fields_from_issues  CC=5  out:3
+    validate_dsl_for_execution  CC=1  out:1
+    validation_issue_payloads  CC=2  out:1
   backend.app.engine  [7 funcs]
-    _execute_workflow  CC=11  out:42
+    _execute_workflow  CC=13  out:50
     _persist_workflow_snapshot  CC=2  out:2
     _publish_workflow_event  CC=2  out:2
     _track_background_task  CC=1  out:5
@@ -3961,11 +5523,20 @@ MODULES:
     start_workflow  CC=1  out:7
   backend.app.logging_setup  [1 funcs]
     get_request_id  CC=1  out:1
-  backend.app.routers.chat  [4 funcs]
-    _proxy_chat_payload  CC=9  out:16
-    chat_get_state  CC=2  out:7
-    chat_message  CC=12  out:21
-    chat_start  CC=2  out:4
+  backend.app.path_resolve  [2 funcs]
+    _examples_portable_candidates  CC=8  out:16
+    resolve_attachment_path  CC=13  out:26
+  backend.app.routers.chat  [19 funcs]
+    _doql_context_path  CC=2  out:2
+    _dsl_steps  CC=4  out:2
+    _execute_ready_dsl  CC=5  out:16
+    _execution_observation_from_dsl  CC=4  out:4
+    _execution_requested  CC=2  out:2
+    _is_auto_execute_requested  CC=3  out:4
+    _is_explicit_execute_request  CC=2  out:4
+    _mark_auto_execute_message  CC=6  out:9
+    _maybe_auto_execute  CC=3  out:3
+    _merge_attachment_validation  CC=9  out:7
   backend.app.routers.settings  [7 funcs]
     action_schema  CC=2  out:6
     actions_schema  CC=1  out:5
@@ -3976,33 +5547,51 @@ MODULES:
     update_settings_section  CC=2  out:6
   backend.app.routers.system  [1 funcs]
     system_execute  CC=2  out:6
-  backend.app.routers.workflow  [5 funcs]
+  backend.app.routers.testql_compat  [8 funcs]
+    _alias_response  CC=3  out:1
+    _maybe_execute_on_message  CC=6  out:13
+    _resolve_conv_id  CC=3  out:2
+    _resolve_text  CC=8  out:8
+    testql_chatmessage  CC=4  out:10
+    testql_chatstart  CC=5  out:9
+    testql_runworkflow  CC=4  out:17
+    testql_workflow_from_text  CC=1  out:2
+  backend.app.routers.workflow  [6 funcs]
     _format_sse  CC=5  out:6
     _workflow_snapshot  CC=1  out:7
     run_workflow_endpoint  CC=1  out:2
     start_workflow_endpoint  CC=1  out:2
     stream_workflow  CC=2  out:22
+    workflow_from_text  CC=9  out:29
+  backend.app.step_validator  [3 funcs]
+    _validation_context  CC=1  out:5
+    validate_step_config  CC=1  out:2
+    validate_step_config_issues  CC=2  out:3
   backend.app.workflow_events  [2 funcs]
     publish  CC=2  out:4
     subscriber_count  CC=1  out:3
-  examples.01-invoice.scenario  [1 funcs]
-    run  CC=7  out:22
+  examples.01-invoice.scenario  [4 funcs]
+    _attachment_validation  CC=9  out:9
+    _example_dir  CC=1  out:2
+    _run_autonomous  CC=1  out:9
+    run  CC=20  out:34
   examples.02-email.scenario  [1 funcs]
     run  CC=7  out:19
   examples.03-report-and-notify.scenario  [1 funcs]
-    run  CC=6  out:16
+    run  CC=6  out:17
   examples.04-scheduled-report.scenario  [1 funcs]
     run  CC=11  out:21
-  examples.05-conversation-flow.scenario  [3 funcs]
+  examples.05-conversation-flow.scenario  [4 funcs]
+    _save_conversation_artifacts  CC=1  out:2
     run  CC=2  out:2
-    run_demo  CC=2  out:15
+    run_demo  CC=2  out:18
     run_interactive  CC=1  out:2
   examples.06-interactive-chat.scenario  [3 funcs]
     run  CC=2  out:2
-    run_demo  CC=3  out:9
+    run_demo  CC=4  out:15
     run_interactive  CC=1  out:4
   examples.07-email-conversation.scenario  [1 funcs]
-    run  CC=3  out:11
+    run  CC=3  out:15
   examples.08-multi-object-benchmark.scenario  [4 funcs]
     _evaluate  CC=6  out:9
     _extract_actions  CC=5  out:5
@@ -4016,141 +5605,89 @@ MODULES:
     run  CC=8  out:17
   examples.12-ir-show.scenario  [1 funcs]
     run  CC=13  out:25
+  examples.13-autonomous-invoice-stack.scenario  [1 funcs]
+    run  CC=20  out:24
   examples.bootstrap  [1 funcs]
-    bootstrap  CC=3  out:4
+    bootstrap  CC=11  out:16
   examples.code_generation_examples  [1 funcs]
     main  CC=1  out:1
-  nlp-service.app.access.uri_match  [3 funcs]
-    normalize_uri  CC=2  out:1
-    scheme_allowed  CC=5  out:2
-    uri_matches  CC=8  out:11
   nlp-service.app.audio_parser  [4 funcs]
     send_audio  CC=2  out:2
     is_stt_available  CC=2  out:0
     stt_audio  CC=9  out:14
     stt_file  CC=2  out:4
+  nlp-service.app.conversation.attachment_gate  [1 funcs]
+    workflow_needs_attachment  CC=8  out:4
+  nlp-service.app.conversation.autonomous_loop  [6 funcs]
+    _attachment_valid_ok  CC=7  out:7
+    _example_dir  CC=3  out:5
+    _maybe_delete_generated_attachment  CC=5  out:5
+    _resolve_artifact_file  CC=7  out:13
+    _step_config_for_validation  CC=4  out:2
+    _try_fixture_attachment  CC=16  out:20
+  nlp-service.app.conversation.doql_autofill  [2 funcs]
+    _resolve_attachment_path  CC=1  out:2
+    load_context_for_state  CC=8  out:5
+  nlp-service.app.conversation.doql_registry  [7 funcs]
+    _entities_to_data  CC=5  out:4
+    _format_value  CC=4  out:5
+    _patch_doql_file  CC=5  out:16
+    _render_block  CC=2  out:5
+    _try_sdk_refresh  CC=4  out:7
+    refresh_registry_for_state  CC=16  out:21
+    reload_context_after_refresh  CC=1  out:2
+  nlp-service.app.conversation.invoice_policy  [2 funcs]
+    invoice_attachment_policy_active  CC=9  out:2
+    is_invoice_example  CC=2  out:1
   nlp-service.app.conversation.merge  [1 funcs]
     merge_into_state  CC=13  out:4
-  nlp-service.app.conversation.orchestrator  [5 funcs]
-    _attach_routing  CC=1  out:1
-    _process_message  CC=6  out:16
-    continue_conversation  CC=2  out:8
-    get_conversation  CC=2  out:2
-    start_conversation  CC=1  out:6
-  nlp-service.app.conversation.responses  [10 funcs]
-    _execute_keyword_in_text  CC=3  out:4
-    _is_execute_or_continue  CC=2  out:4
-    _nlp_from_state  CC=5  out:5
-    build_and_check_dsl  CC=4  out:6
-    build_incomplete_response  CC=3  out:6
-    check_execute_keyword  CC=7  out:5
-    deny_message  CC=3  out:0
-    format_system_result  CC=3  out:6
-    handle_system_action  CC=7  out:7
-    handle_unknown_intent  CC=5  out:6
+  nlp-service.app.conversation.orchestrator  [3 funcs]
+    continue_conversation  CC=4  out:13
+    get_conversation  CC=2  out:3
+    start_conversation  CC=4  out:12
+  nlp-service.app.conversation.runtime_gate  [2 funcs]
+    process_scope_blocked  CC=12  out:7
+    runtime_unavailable_message  CC=7  out:2
+  nlp-service.app.conversation.system_map  [3 funcs]
+    get_doql_context  CC=1  out:1
+    runtime_id_for_action  CC=2  out:2
+    set_doql_context  CC=1  out:1
   nlp-service.app.dsl.forms  [1 funcs]
     get_action_form  CC=5  out:12
-  nlp-service.app.dsl.mapper  [5 funcs]
-    _build_config  CC=19  out:29
-    _get_field_mapping  CC=1  out:1
-    _make_name  CC=3  out:2
-    _resolve_actions  CC=7  out:4
-    map_to_dsl  CC=8  out:17
   nlp-service.app.dsl.pipeline  [1 funcs]
     map_to_dsl_with_enrichment  CC=6  out:4
-  nlp-service.app.execution.delegate  [2 funcs]
-    execution_backend_for_intent  CC=2  out:1
+  nlp-service.app.execution.delegate  [3 funcs]
+    execution_backend_for_intent  CC=5  out:4
+    execution_backend_for_runtime  CC=4  out:0
     is_delegated_to_mullm  CC=2  out:1
-  nlp-service.app.governance.bootstrap  [3 funcs]
-    _actions_from_yaml_areas  CC=14  out:26
-    apply_yaml_actions  CC=4  out:6
-    bootstrap_registry  CC=1  out:7
-  nlp-service.app.governance.config  [11 funcs]
-    _allowed_uri_schemes  CC=3  out:2
-    _build_access_config  CC=7  out:18
-    _default_agent  CC=3  out:3
-    _enabled_integrations  CC=7  out:5
-    _load_merged_config  CC=4  out:7
-    _load_yaml_file  CC=3  out:4
-    _merge_dict  CC=8  out:6
-    _search_paths  CC=6  out:17
+  nlp-service.app.governance.config  [2 funcs]
     get_access_config  CC=1  out:1
-    load_access_config  CC=3  out:2
-  nlp-service.app.governance.policy  [13 funcs]
-    _action_context  CC=5  out:5
-    _area_selector_match  CC=3  out:0
-    _decision  CC=1  out:1
-    _effect_decision  CC=4  out:4
-    _grant_action_matches  CC=4  out:4
-    _grant_matches  CC=2  out:2
-    _grant_target_matches  CC=5  out:6
-    _matched_effect  CC=3  out:4
-    _scheme_decision  CC=3  out:2
-    _unknown_agent_decision  CC=4  out:3
-  nlp-service.app.main  [15 funcs]
+    reload_access_config  CC=1  out:1
+  nlp-service.app.governance.policy  [1 funcs]
+    authorize_action  CC=5  out:8
+  nlp-service.app.main  [16 funcs]
+    _parse_context_json  CC=5  out:3
     _run_parser  CC=3  out:3
     access_check  CC=3  out:6
     access_config  CC=3  out:12
     access_reload  CC=2  out:2
     action_schema  CC=2  out:3
     actions_schema  CC=3  out:3
-    chat_message  CC=5  out:13
-    chat_start  CC=5  out:12
+    chat_message  CC=6  out:15
+    chat_start  CC=7  out:15
     chat_state  CC=2  out:4
-    health  CC=3  out:8
-  nlp-service.app.registry  [4 funcs]
-    get_defaults  CC=1  out:3
-    get_quality_required_fields  CC=1  out:3
-    get_required_fields  CC=1  out:2
+  nlp-service.app.registry  [1 funcs]
     get_trigger  CC=3  out:2
-  nlp-service.app.routing.native  [13 funcs]
-    _aliases_match  CC=2  out:3
-    _best_action_alias  CC=3  out:3
-    _best_alias_for_action  CC=6  out:5
-    _keywords_pattern_matches  CC=4  out:5
-    _match_route  CC=4  out:6
-    _pattern_matches  CC=4  out:5
-    _patterns_match  CC=3  out:3
-    _regex_pattern_matches  CC=4  out:4
-    _resolve_action_alias  CC=2  out:6
-    _resolve_configured_route  CC=5  out:5
-  nlp-service.app.routing.observability  [2 funcs]
-    record_intent_decision  CC=7  out:4
+  nlp-service.app.request_context  [1 funcs]
+    get_example_dir  CC=2  out:3
+  nlp-service.app.routing.observability  [1 funcs]
     routing_metrics_snapshot  CC=1  out:1
-  nlp-service.app.routing.orientation  [4 funcs]
-    _host_list_root  CC=3  out:2
-    _is_file_list_query  CC=5  out:8
-    _resolve_file_list_host_command  CC=15  out:24
+  nlp-service.app.routing.orientation  [1 funcs]
     orient_query  CC=16  out:27
-  nlp-service.app.routing.parser.enrich  [4 funcs]
-    can_enrich_missing  CC=4  out:5
-    enrich_entities  CC=14  out:29
-    get_enrichable_missing  CC=5  out:3
-    is_enrich_enabled  CC=1  out:3
-  nlp-service.app.routing.parser.facade  [1 funcs]
-    parse_text  CC=2  out:4
-  nlp-service.app.routing.parser.llm  [3 funcs]
+  nlp-service.app.routing.parser.llm  [1 funcs]
     _detect_provider  CC=10  out:8
-    _parse_json_response  CC=6  out:10
-    parse_llm  CC=3  out:16
   nlp-service.app.routing.parser.resolve_mode  [1 funcs]
-    parse_with_mode  CC=10  out:12
-  nlp-service.app.routing.parser.rules  [30 funcs]
-    _action_alias_scores  CC=4  out:3
-    _action_category  CC=1  out:2
-    _actions_by_score  CC=1  out:2
-    _alias_in_text  CC=3  out:4
-    _apply_context_filters  CC=21  out:17
-    _detect_actions  CC=6  out:6
-    _dominant_overlap_action  CC=4  out:5
-    _extract_amount  CC=5  out:7
-    _extract_body_content_prefix  CC=4  out:4
-    _extract_email  CC=3  out:2
-  nlp-service.app.routing.resolve  [4 funcs]
-    _intent_from_nlp  CC=2  out:7
-    _intent_from_orientation  CC=4  out:9
-    _parser_source  CC=5  out:4
-    resolve_intent  CC=18  out:31
+    parse_with_mode  CC=11  out:12
   nlp-service.app.settings  [2 funcs]
     set  CC=4  out:11
     _coerce_type  CC=5  out:6
@@ -4162,15 +5699,21 @@ MODULES:
     _is_read_only  CC=2  out:5
     _validate_file_path  CC=5  out:9
     execute_system_action  CC=3  out:5
-  nlp-service.integrations.loader  [3 funcs]
-    _integration_names  CC=5  out:6
-    apply_integrations  CC=5  out:7
-    load_integration_registries  CC=5  out:10
   nlp2dsl_sdk.__main__  [1 funcs]
     main  CC=5  out:10
-  nlp2dsl_sdk.artifacts  [15 funcs]
+  nlp2dsl_sdk.artifact_layout  [9 funcs]
+    artifact_root  CC=1  out:2
+    current_run_id  CC=2  out:4
+    ensure_layout  CC=1  out:6
+    resolve_registry_path  CC=9  out:11
+    run_dir  CC=2  out:4
+    write_last_run_report  CC=1  out:6
+    write_reflection_snapshot  CC=1  out:8
+    write_registry  CC=2  out:5
+    write_turn_snapshot  CC=4  out:21
+  nlp2dsl_sdk.artifacts  [14 funcs]
     __init__  CC=5  out:6
-    finalize  CC=4  out:6
+    finalize  CC=5  out:13
     record  CC=1  out:6
     _extract_actions  CC=4  out:5
     _mask_secret  CC=3  out:1
@@ -4179,26 +5722,56 @@ MODULES:
     collect_environment  CC=6  out:4
     example_artifact_root  CC=1  out:2
     get_example_writer  CC=2  out:4
-  nlp2dsl_sdk.cli  [10 funcs]
+  nlp2dsl_sdk.attachment_validation  [6 funcs]
+    _apply_attachment_to_execution  CC=7  out:6
+    _attachment_from_dsl  CC=8  out:10
+    _prefer_local_validation  CC=4  out:2
+    build_attachment_validation  CC=8  out:15
+    enrich_chat_response  CC=11  out:12
+    format_attachment_validation  CC=10  out:8
+  nlp2dsl_sdk.autonomous_flow  [1 funcs]
+    _start_with_extra  CC=6  out:22
+  nlp2dsl_sdk.cli  [12 funcs]
     _actions  CC=3  out:8
     _analyze  CC=2  out:1
     _chat_start  CC=2  out:10
     _client  CC=1  out:1
     _demo  CC=6  out:5
+    _detect_example_dir  CC=4  out:4
     _display  CC=13  out:27
     _health  CC=2  out:6
-    _run  CC=12  out:30
-    main  CC=7  out:25
-    show  CC=2  out:3
-  nlp2dsl_sdk.client  [8 funcs]
-    crm_update  CC=2  out:3
-    generate_report  CC=1  out:2
-    generate_report_and_notify  CC=4  out:6
-    notify_slack  CC=2  out:2
-    send_email  CC=3  out:2
-    send_invoice  CC=1  out:2
-    send_invoice_and_notify  CC=4  out:6
-    workflow_step  CC=1  out:1
+    _run  CC=5  out:9
+    _run_with_doql  CC=6  out:12
+  nlp2dsl_sdk.client  [18 funcs]
+    _handle_completed_response  CC=14  out:22
+    _persist_reflection  CC=11  out:18
+    _print_attachment_validation  CC=3  out:3
+    _record_turn  CC=1  out:2
+    _reflect_executed_turn  CC=5  out:10
+    _refresh_doql_registry  CC=13  out:15
+    save_artifacts  CC=2  out:4
+    start  CC=2  out:12
+    chat_message  CC=6  out:11
+    chat_start  CC=4  out:10
+  nlp2dsl_sdk.compose_generator  [10 funcs]
+    _default_deploy  CC=1  out:2
+    _default_generated_services  CC=2  out:2
+    _default_schedules  CC=1  out:1
+    _run_process_docker_script  CC=1  out:1
+    _run_process_host_script  CC=1  out:1
+    _run_script_content  CC=2  out:3
+    _stack_compose_dict  CC=8  out:10
+    _wait_for_backend_shell  CC=1  out:1
+    enrich_ir_for_stack  CC=5  out:5
+    generate_stack_compose  CC=13  out:79
+  nlp2dsl_sdk.conversation_artifacts  [3 funcs]
+    _routing_summary  CC=6  out:4
+    format_transcript  CC=25  out:57
+    write_conversation_artifacts  CC=1  out:13
+  nlp2dsl_sdk.conversation_testql  [3 funcs]
+    _is_nlp_kind  CC=1  out:2
+    dry_run_conversation_scenario  CC=1  out:1
+    validate_conversation_scenario  CC=21  out:34
   nlp2dsl_sdk.demos  [10 funcs]
     _get_supported_languages  CC=3  out:6
     _print_code_generation_preview  CC=3  out:11
@@ -4210,6 +5783,28 @@ MODULES:
     run_automation_gallery_demo  CC=4  out:6
     run_code_generation_demo  CC=6  out:14
     run_crm_update_demo  CC=3  out:5
+  nlp2dsl_sdk.doql.parse  [23 funcs]
+    _append_collection_blocks  CC=10  out:15
+    _apply_capabilities_block  CC=5  out:7
+    _apply_context_block  CC=10  out:10
+    _apply_context_metadata  CC=3  out:4
+    _apply_conversation_block  CC=1  out:10
+    _apply_paths_block  CC=3  out:4
+    _apply_process_access_block  CC=4  out:5
+    _apply_process_block  CC=9  out:12
+    _command_transport  CC=3  out:2
+    _parse_access_body  CC=1  out:12
+  nlp2dsl_sdk.doql.render  [2 funcs]
+    render_doql_context  CC=62  out:129
+    write_doql_context  CC=1  out:4
+  nlp2dsl_sdk.doql.runtime  [3 funcs]
+    context_inline_payload  CC=14  out:18
+    load_doql_inline_from_env  CC=2  out:3
+    resolve_doql_context_path  CC=1  out:1
+  nlp2dsl_sdk.doql_registry  [3 funcs]
+    merge_registry_observations  CC=11  out:10
+    refresh_doql_registry  CC=10  out:17
+    refresh_doql_registry_from_state  CC=1  out:1
   nlp2dsl_sdk.encoding  [7 funcs]
     _apply_utf8_locale_env  CC=2  out:3
     _auto_configure_once  CC=2  out:1
@@ -4218,16 +5813,120 @@ MODULES:
     _set_utf8_locale  CC=3  out:1
     configure_utf8  CC=3  out:4
     utf8_auto_enabled  CC=1  out:3
-  nlp2dsl_sdk.preview  [9 funcs]
-    ensure_services  CC=2  out:2
+  nlp2dsl_sdk.example_bootstrap  [1 funcs]
+    ensure_doql_registry  CC=6  out:16
+  nlp2dsl_sdk.invoice_pdf  [2 funcs]
+    build_invoice_pdf_bytes  CC=3  out:23
+    write_invoice_pdf  CC=1  out:4
+  nlp2dsl_sdk.invoice_policy  [3 funcs]
+    apply_invoice_context  CC=3  out:8
+    apply_invoice_policies  CC=5  out:6
+    is_invoice_example  CC=2  out:1
+  nlp2dsl_sdk.path_resolve  [2 funcs]
+    _examples_portable_candidates  CC=8  out:16
+    resolve_attachment_path  CC=9  out:19
+  nlp2dsl_sdk.preview  [12 funcs]
+    ensure_services  CC=5  out:8
     execute_from_text  CC=8  out:15
     execute_text_examples  CC=8  out:9
+    execution_payload  CC=3  out:3
     finalize_example_artifacts  CC=2  out:2
     preview_text_examples  CC=9  out:13
     print_execution_result  CC=5  out:11
     print_json  CC=1  out:2
-    print_workflow_preview  CC=11  out:27
-    workflow_http_error_result  CC=11  out:13
+    print_run_context_hints  CC=13  out:20
+    print_run_outcome  CC=21  out:40
+  nlp2dsl_sdk.process_policy  [11 funcs]
+    _as_list  CC=8  out:9
+    _deep_merge_process  CC=5  out:7
+    _load_nlp2dsl_payload  CC=12  out:12
+    _merge_access  CC=5  out:10
+    _merge_conversation_from_profile  CC=5  out:4
+    _merge_paths  CC=4  out:8
+    apply_process_policies  CC=7  out:9
+    load_platform_process_defaults  CC=4  out:7
+    merge_process_config  CC=4  out:5
+    process_policy_from_profile_block  CC=23  out:45
+  nlp2dsl_sdk.reflection  [12 funcs]
+    _context_queries_from_issues  CC=9  out:4
+    _data_lookup  CC=3  out:0
+    _entities_from_response  CC=6  out:5
+    _intent_from_response  CC=10  out:8
+    _missing_vs_target  CC=20  out:18
+    _parse_validation_issue  CC=2  out:3
+    _resolutions_available  CC=6  out:4
+    build_target_plan  CC=20  out:21
+    format_reflection_summary  CC=6  out:6
+    reflect  CC=9  out:11
+  nlp2dsl_sdk.stack_flow  [2 funcs]
+    _emit_compose  CC=3  out:8
+    bootstrap_registry  CC=1  out:6
+  nlp2dsl_sdk.step_validation  [1 funcs]
+    validate_step_config_from_map  CC=1  out:1
+  nlp2dsl_sdk.system_map_bridge  [3 funcs]
+    _command_to_ir  CC=12  out:10
+    doql_file_to_system_map  CC=1  out:3
+    task_context_to_system_map  CC=24  out:29
+  nlp2dsl_sdk.system_map_generator  [4 funcs]
+    _bootstrap_system_map  CC=2  out:3
+    _parse_llm_json  CC=5  out:8
+    build_introspection_payload  CC=11  out:20
+    generate_system_map  CC=8  out:15
+  nlp2dsl_sdk.system_map_models  [4 funcs]
+    _annotation_for_field  CC=11  out:3
+    build_command_registry  CC=2  out:1
+    command_input_model  CC=4  out:5
+    validate_config_against_map  CC=2  out:5
+  nlp2dsl_sdk.system_map_render  [1 funcs]
+    render_system_map_doql  CC=70  out:164
+  nlp2dsl_sdk.system_map_runtimes  [4 funcs]
+    _repo_root_from_example  CC=2  out:0
+    build_runtimes_for_example  CC=18  out:35
+    load_example_profile  CC=7  out:7
+    resolve_command_runtime  CC=7  out:3
+  nlp2dsl_sdk.validation.helpers  [4 funcs]
+    is_empty  CC=3  out:2
+    parse_amount  CC=3  out:1
+    pdf_amount_mismatch  CC=3  out:5
+    pdf_structure_issues  CC=3  out:1
+  nlp2dsl_sdk.validation.issue  [1 funcs]
+    issues_to_messages  CC=2  out:1
+  nlp2dsl_sdk.validation.messages  [1 funcs]
+    legacy_message_to_issue  CC=3  out:2
+  nlp2dsl_sdk.validation.pipeline  [9 funcs]
+    _context_from_map  CC=3  out:5
+    validate_dsl_contract_issues  CC=1  out:1
+    validate_dsl_contract_messages  CC=1  out:2
+    validate_step_config_from_map  CC=2  out:2
+    validate_step_config_from_map_issues  CC=2  out:3
+    validate_step_issues  CC=1  out:1
+    validate_step_messages  CC=1  out:2
+    validate_workflow_from_map  CC=2  out:2
+    validate_workflow_from_map_issues  CC=9  out:17
+  nlp2dsl_sdk.validation.resolutions  [2 funcs]
+    _append_plan  CC=2  out:2
+    plan_resolutions  CC=17  out:15
+  nlp2dsl_sdk.validation.rules.attachment  [3 funcs]
+    _resolve_path  CC=2  out:2
+    attachment_issues_for_config  CC=3  out:6
+    validate_attachment_path  CC=11  out:17
+  nlp2dsl_sdk.validation.rules.dsl_contract  [6 funcs]
+    _is_non_empty_string  CC=2  out:3
+    _issue  CC=1  out:1
+    _type_name  CC=2  out:1
+    _validate_optional_text_field  CC=5  out:5
+    _validate_step  CC=7  out:17
+    validate_dsl_contract  CC=6  out:15
+  nlp2dsl_sdk.validation.rules.runtime_health  [5 funcs]
+    _runtime_field  CC=4  out:5
+    probe_health_endpoint  CC=9  out:11
+    runtime_id_for_intent  CC=5  out:2
+    validate_runtime_health  CC=10  out:8
+    validate_runtime_health_for_intent  CC=1  out:2
+  nlp2dsl_sdk.validation.rules.step_config  [3 funcs]
+    _format_issues  CC=11  out:21
+    validate_step  CC=13  out:18
+    validate_workflow_steps  CC=4  out:5
   packages.nlp2cmd-intent.src.nlp2cmd_intent.clarification  [2 funcs]
     clarification_enforced  CC=1  out:3
     ensure_intent_clear  CC=4  out:3
@@ -4299,11 +5998,6 @@ MODULES:
     _shell_command  CC=3  out:3
   packages.nlp2dsl-show.src.nlp2dsl_show.cli  [1 funcs]
     main  CC=7  out:17
-  scripts.run-example-testql-results  [4 funcs]
-    _generate_conversation_toon  CC=6  out:18
-    _load_manifest  CC=3  out:3
-    main  CC=16  out:31
-    process_example  CC=11  out:38
   tauri-wrapper.scripts.dev  [3 funcs]
     exitCode  CC=2  out:1
     main  CC=11  out:10
@@ -4318,17 +6012,6 @@ MODULES:
     server  CC=4  out:5
     startServer  CC=4  out:10
     stat  CC=2  out:2
-  worker.worker  [10 funcs]
-    _deliver_notification  CC=5  out:16
-    action  CC=1  out:0
-    handle_crm_update  CC=1  out:5
-    handle_generate_code  CC=5  out:17
-    handle_generate_report  CC=1  out:9
-    handle_notify_slack  CC=1  out:5
-    handle_notify_teams  CC=1  out:6
-    handle_notify_telegram  CC=1  out:5
-    handle_send_email  CC=1  out:8
-    handle_send_invoice  CC=1  out:9
 
 EDGES:
   tauri-wrapper.scripts.dev.main → tauri-wrapper.scripts.dev.shutdown
@@ -4350,37 +6033,37 @@ EDGES:
   backend.app.engine.start_workflow → backend.app.engine._track_background_task
   backend.app.engine.start_workflow → backend.app.engine._persist_workflow_snapshot
   backend.app.engine.start_workflow → backend.app.engine._execute_workflow
+  backend.app.step_validator.validate_step_config_issues → nlp2dsl_sdk.validation.rules.step_config.validate_step
+  backend.app.step_validator.validate_step_config_issues → backend.app.step_validator._validation_context
+  backend.app.step_validator.validate_step_config → nlp2dsl_sdk.validation.issue.issues_to_messages
+  backend.app.step_validator.validate_step_config → backend.app.step_validator.validate_step_config_issues
   backend.app.workflow_events.WorkflowEventHub.publish → nlp-service.app.settings.SettingsManager.set
   backend.app.workflow_events.WorkflowEventHub.subscriber_count → nlp-service.app.settings.SettingsManager.set
+  backend.app.dsl_validation.validate_dsl_for_execution → nlp2dsl_sdk.validation.rules.dsl_contract.validate_dsl_contract
+  backend.app.dsl_validation.missing_fields_from_issues → nlp-service.app.settings.SettingsManager.set
+  backend.app.dsl_validation.dsl_validation_response → backend.app.dsl_validation.missing_fields_from_issues
+  backend.app.dsl_validation.dsl_validation_response → backend.app.dsl_validation.format_dsl_validation_message
+  backend.app.dsl_validation.dsl_validation_response → backend.app.dsl_validation.validation_issue_payloads
+  backend.app.path_resolve.resolve_attachment_path → backend.app.path_resolve._examples_portable_candidates
   backend.app.routers.system.system_execute → backend.app.logging_setup.get_request_id
-  backend.app.routers.chat.chat_start → backend.app.routers.chat._proxy_chat_payload
-  backend.app.routers.chat.chat_message → backend.app.routers.chat._proxy_chat_payload
-  backend.app.routers.chat.chat_get_state → backend.app.logging_setup.get_request_id
-  backend.app.routers.workflow.run_workflow_endpoint → backend.app.engine.run_workflow
-  backend.app.routers.workflow.start_workflow_endpoint → backend.app.engine.start_workflow
-  backend.app.routers.workflow.stream_workflow → backend.app.routers.workflow._workflow_snapshot
-  backend.app.routers.workflow.stream_workflow → backend.app.routers.workflow._format_sse
-  backend.app.routers.settings.actions_schema → backend.app.logging_setup.get_request_id
-  backend.app.routers.settings.action_schema → backend.app.logging_setup.get_request_id
-  backend.app.routers.settings.get_settings → backend.app.logging_setup.get_request_id
-  backend.app.routers.settings.get_settings_section → backend.app.logging_setup.get_request_id
-  backend.app.routers.settings.update_settings_section → backend.app.logging_setup.get_request_id
-  backend.app.routers.settings.set_setting → backend.app.logging_setup.get_request_id
-  backend.app.routers.settings.reset_settings → backend.app.logging_setup.get_request_id
-  packages.nlp2cmd-intent.src.nlp2cmd_intent.clarification.ensure_intent_clear → packages.nlp2cmd-intent.src.nlp2cmd_intent.clarification.clarification_enforced
-  packages.nlp2cmd-intent.src.nlp2cmd_intent.facade.KeywordIntentAdapter.detect → packages.nlp2cmd-intent.src.nlp2cmd_intent.nlp2cmd_convert.detection_to_intent_ir
-  packages.nlp2cmd-intent.src.nlp2cmd_intent.facade.IntentPipeline.__init__ → packages.nlp2cmd-intent.src.nlp2cmd_intent.facade.default_intent_detector
-  packages.nlp2cmd-intent.src.nlp2cmd_intent.input.analyze_query → packages.nlp2cmd-intent.src.nlp2cmd_intent.clarification.ensure_intent_clear
-  packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files.find_data_files → nlp-service.app.settings.SettingsManager.set
-  packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files.find_data_files → packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files._package_data_dir
-  packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files.find_data_files → packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files._nlp2cmd_data_dir
-  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._dedupe_case_insensitive → nlp-service.app.settings.SettingsManager.set
-  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.__init__ → nlp-service.app.settings.SettingsManager.set
-  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_patterns_from_json → packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._find_data_files
-  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns._load_detector_config_from_json → packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._find_data_files
-  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.add_pattern → packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._normalize_polish_text
-  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns.KeywordPatterns.add_pattern → packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns._dedupe_case_insensitive
-  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector.detect → packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector._get_query_normalizer
+  backend.app.routers.testql_compat._maybe_execute_on_message → backend.app.engine.run_workflow
+  backend.app.routers.testql_compat.testql_chatstart → backend.app.routers.testql_compat._resolve_text
+  backend.app.routers.testql_compat.testql_chatstart → backend.app.routers.testql_compat._alias_response
+  backend.app.routers.testql_compat.testql_chatmessage → backend.app.routers.testql_compat._resolve_conv_id
+  backend.app.routers.testql_compat.testql_chatmessage → backend.app.routers.testql_compat._resolve_text
+  backend.app.routers.testql_compat.testql_chatmessage → backend.app.routers.testql_compat._alias_response
+  backend.app.routers.testql_compat.testql_chatmessage → backend.app.routers.testql_compat._maybe_execute_on_message
+  backend.app.routers.testql_compat.testql_runworkflow → backend.app.routers.testql_compat._resolve_conv_id
+  backend.app.routers.testql_compat.testql_runworkflow → backend.app.routers.testql_compat._alias_response
+  backend.app.routers.testql_compat.testql_runworkflow → backend.app.engine.run_workflow
+  backend.app.routers.testql_compat.testql_workflow_from_text → backend.app.routers.workflow.workflow_from_text
+  backend.app.routers.chat._maybe_auto_execute → backend.app.routers.chat._execute_ready_dsl
+  backend.app.routers.chat._maybe_auto_execute → backend.app.routers.chat._execution_requested
+  backend.app.routers.chat._execution_requested → backend.app.routers.chat._is_explicit_execute_request
+  backend.app.routers.chat._execution_requested → backend.app.routers.chat._is_auto_execute_requested
+  backend.app.routers.chat._uses_mullm_backend → backend.app.routers.chat._mullm_steps
+  backend.app.routers.chat._prepare_mullm_execution → backend.app.routers.chat._mullm_steps
+  backend.app.routers.chat._mark_auto_execute_message → backend.app.routers.chat._is_explicit_execute_request
 ```
 
 ## Test Contracts

@@ -55,7 +55,7 @@ flowchart TB
 | **1. Understand** | `routing/parser/llm.py` | NL → intent + entities |
 | **2. Plan** | `mapper.py` / pact-ir | WorkflowDSL lub ExecutionPlanIR |
 | **3. Preflight** | `doql_autofill.py` + docelowy ProcessAgent | plan ↔ stan ↔ mapa |
-| **4. Self-resolve** | autofill, nested `generate_invoice`, skan artifacts | bez pytania usera |
+| **4. Self-resolve** | autofill, nested `generate_invoice`, skan artifacts, **naprawa invalid PDF** | bez pytania usera |
 | **5. User gate** | `build_incomplete_response` | tylko reszta luk |
 | **6. Execute** | `backend/engine` + `worker` | dispatch po `command.runtime` |
 | **7. Observe** | `artifacts.py` process trace | merge wyniku, resume planu |
@@ -65,7 +65,8 @@ flowchart TB
 | Sytuacja | Decyzja |
 |----------|---------|
 | Pole w `data` / fixture | Autofill |
-| Brak PDF, `generate_invoice_if_missing` | Nested sync `generate_invoice` |
+| Brak PDF, `generate_invoice_if_missing` | Nested sync `generate_invoice` (binarny PDF) |
+| Niepoprawny PDF (strict / format) | Usuń plik → regenerate → validate ponownie |
 | Jeden pasujący artifact | Ustaw `attachment_path` |
 | Dwa pasujące pliki | Pytaj: który załącznik |
 | Runtime `executor:worker` offline | Komunikat o środowisku, nie o fakturze |
@@ -111,7 +112,8 @@ Odświeżanie w locie: `refresh_doql_registry()` / `refresh_registry_for_state()
 |-----------|------|
 | Pełny wielokrokowy plan | ExecutionPlanIR |
 | LLM clarification | prompt przed `incomplete` |
-| Health check runtimes | introspection online |
+| Health check runtimes | introspection online (`post_health` w pipeline) |
+| Modułowy validation pipeline | `nlp2dsl_sdk/validation/` — zob. [`validation.md`](validation.md) |
 | Usunięcie registry jako źródła pól | gdy DOQL zawsze obecny |
 
 ### Dziś (conversation orchestrator)
@@ -148,13 +150,13 @@ async def handle_turn(state: ConversationState, text: str) -> ConversationRespon
 
 ## Walidacja trójfazowa
 
-Z [`examples/01-invoice/README.md`](../examples/01-invoice/README.md):
+Z [`examples/01-invoice/README.md`](../examples/01-invoice/README.md) i [`validation.md`](validation.md):
 
-1. **Preflight** — mapa + stan świata (runtimes, artifacts, data)
-2. **Kontrakt planu** — walidacja pól i formatów (`app/validation/step_validator.py`) przed `ready` i przed dispatch kroku w backendzie
-3. **Post-exec** — TestQL VALIDATE file/email (planowane)
+1. **Preflight** — mapa + stan świata (runtimes, artifacts, data, runtime_gate)
+2. **Kontrakt planu (dsl_ready + pre_execute)** — `step_validator`: required, format, PDF strict, path scope
+3. **Post-exec** — `attachment_validation` po workerze; planowane: health runtimes + pełny pipeline SDK
 
-ProcessAgent operuje w fazie 1; faza 2 blokuje `ready` / wykonanie gdy dane lub plik (PDF/MVP) są niepoprawne; faza 3 pozostaje w pipeline artefaktów.
+ProcessAgent + `autonomous_loop` operują w fazach 1–2; przy błędzie załącznika regenerują PDF zanim zapytają użytkownika.
 
 ## Powiązane moduły SDK
 

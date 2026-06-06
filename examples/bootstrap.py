@@ -19,6 +19,9 @@ def bootstrap(example_dir: Path | str, *, title: str = "") -> Path:
     root = Path(example_dir).resolve()
     os.environ["NLP2DSL_EXAMPLE_DIR"] = str(root)
     backend = os.environ.get("NLP2DSL_BACKEND_URL", "http://localhost:8010")
+    os.environ.setdefault("NLP2DSL_BACKEND_URL", backend)
+    os.environ.setdefault("NLP2DSL_NLP_SERVICE_URL", "http://localhost:8012")
+    os.environ.setdefault("NLP2DSL_WORKER_URL", "http://localhost:8004")
     if not os.environ.get("NLP2DSL_EXAMPLES_MOUNT") and "8010" in backend:
         os.environ.setdefault("NLP2DSL_EXAMPLES_MOUNT", "/examples")
     if title:

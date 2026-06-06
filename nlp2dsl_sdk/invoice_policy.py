@@ -30,6 +30,7 @@ def apply_invoice_policies(
 
     ir.conversation.attachment_required = True
     ir.conversation.generate_invoice_if_missing = True
+    ir.conversation.strict_pdf = True
     ir.data.pop("send_invoice.attachment_path", None)
     ir.data.pop("attachment_path", None)
     caps = set(ir.capabilities)
@@ -43,6 +44,7 @@ def apply_invoice_context(ctx: Any) -> None:
         return
     ctx.attachment_required = True
     ctx.generate_invoice_if_missing = True
+    ctx.strict_pdf = True
     ctx.data.pop("send_invoice.attachment_path", None)
     ctx.data.pop("attachment_path", None)
     caps = set(getattr(ctx, "capabilities", []) or [])

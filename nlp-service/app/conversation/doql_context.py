@@ -1,276 +1,31 @@
-"""DOQL task context reader — mirrors nlp2dsl_sdk/doql_context.py format."""
+"""DOQL context — SDK shim + nlp-service conversation helpers (C2)."""
 
 from __future__ import annotations
 
 import os
-import re
-from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-
-@dataclass
-class DoqlArtifact:
-    path: str
-    kind: str = "file"
-    values: dict[str, Any] = field(default_factory=dict)
-
-
-@dataclass
-class DoqlCommand:
-    name: str
-    description: str = ""
-    required: list[str] = field(default_factory=list)
-    optional: list[str] = field(default_factory=list)
-    runtime: str = ""
-    protocol: str = ""
-    transport: str = ""
-
-
-@dataclass
-class DoqlRuntime:
-    id: str
-    kind: str = "worker"
-    url: str = ""
-    status: str = "unknown"
-    roles: list[str] = field(default_factory=list)
-
-
-@dataclass
-class DoqlProcessPolicy:
-    mode: str = "balanced"
-    nlp_parser: str = "auto"
-    nlp_confidence_min: float = 0.5
-    nlp_enrich_missing: bool = False
-    llm_reasoning: str = "shallow"
-    llm_temperature: float | None = None
-    autonomous_enabled: bool = True
-    autonomous_max_rounds: int = 8
-    ask_user: str = "when_exhausted"
-    intract_gate: bool = False
-    intract_enforce_clarification: bool = False
-    agent: str = ""
-    allow_resource_areas: list[str] = field(default_factory=list)
-    deny_resource_areas: list[str] = field(default_factory=list)
-    paths_read: list[str] = field(default_factory=list)
-    paths_write: list[str] = field(default_factory=list)
-
-
-@dataclass
-class DoqlTaskContext:
-    example_name: str = ""
-    generated_at: str = ""
-    environment: dict[str, str] = field(default_factory=dict)
-    data: dict[str, Any] = field(default_factory=dict)
-    artifacts: list[DoqlArtifact] = field(default_factory=list)
-    runtimes: list[DoqlRuntime] = field(default_factory=list)
-    commands: list[DoqlCommand] = field(default_factory=list)
-    capabilities: list[str] = field(default_factory=list)
-    workflow_history: dict[str, Any] = field(default_factory=dict)
-    autofill: bool = True
-    sync_auto_execute: bool = False
-    attachment_required: bool = False
-    generate_invoice_if_missing: bool = True
-    process: DoqlProcessPolicy = field(default_factory=DoqlProcessPolicy)
-
-    def command(self, name: str) -> DoqlCommand | None:
-        for cmd in self.commands:
-            if cmd.name == name:
-                return cmd
-        return None
-
-    def required_fields_for(self, action: str) -> list[str] | None:
-        cmd = self.command(action)
-        if cmd and cmd.required:
-            return list(cmd.required)
-        return None
-
-    def runtime_for(self, action: str) -> str | None:
-        cmd = self.command(action)
-        if cmd and cmd.runtime:
-            return cmd.runtime
-        rt = self._runtime_id_for_action(action)
-        if rt and any(r.id == rt for r in self.runtimes):
-            return rt
-        return rt
-
-    @staticmethod
-    def _runtime_id_for_action(action: str) -> str | None:
-        if action.startswith("mullm_"):
-            return "delegate:mullm"
-        if action.startswith("system_"):
-            return "orchestrator:nlp-service"
-        return "executor:worker"
-
-
-_BLOCK_RE = re.compile(
-    r"(environment|data|conversation|capabilities|workflow_history|process|process_access|paths)\s*(?:\[[^\]]*\])?\s*\{([^}]*)\}",
-    re.DOTALL,
+from nlp2dsl_sdk.doql.models import (
+    DoqlArtifact,
+    DoqlCommand,
+    DoqlProcessPolicy,
+    DoqlRuntime,
+    DoqlTaskContext,
 )
-_ARTIFACT_RE = re.compile(
-    r"artifacts\s*\[[^\]]*\]\s*\{([^}]*)\}",
-    re.DOTALL,
-)
-_RUNTIME_RE = re.compile(
-    r"runtimes\s*\[[^\]]*\]\s*\{([^}]*)\}",
-    re.DOTALL,
-)
-_COMMAND_RE = re.compile(
-    r"commands\s*\[[^\]]*\]\s*\{([^}]*)\}",
-    re.DOTALL,
-)
-_KV_RE = re.compile(
-    r"(\w+(?:\.\w+)*)\s*:\s*(\"(?:\\.|[^\"])*\"|'(?:\\.|[^'])*'|[^;]+)\s*;",
-)
+from nlp2dsl_sdk.doql.parse import load_doql_context
 
-
-def _parse_value(raw: str) -> Any:
-    text = raw.strip().rstrip(",")
-    if not text:
-        return ""
-    if text.startswith('"') and text.endswith('"'):
-        return text[1:-1].replace('\\"', '"')
-    if text.startswith("'") and text.endswith("'"):
-        return text[1:-1].replace("\\'", "'")
-    lower = text.lower()
-    if lower == "true":
-        return True
-    if lower == "false":
-        return False
-    try:
-        if "." in text:
-            return float(text)
-        return int(text)
-    except ValueError:
-        return text
-
-
-def _parse_block_body(body: str) -> dict[str, Any]:
-    out: dict[str, Any] = {}
-    for match in _KV_RE.finditer(body):
-        out[match.group(1)] = _parse_value(match.group(2))
-    return out
-
-
-def _split_csv(raw: str) -> list[str]:
-    return [p.strip() for p in str(raw).split(",") if p.strip()]
-
-
-def _parse_runtime_body(body: str) -> DoqlRuntime:
-    kv = _parse_block_body(body)
-    return DoqlRuntime(
-        id=str(kv.get("id", "")),
-        kind=str(kv.get("kind", "worker")),
-        url=str(kv.get("url", "")),
-        status=str(kv.get("status", "unknown")),
-        roles=_split_csv(str(kv.get("roles", ""))),
-    )
-
-
-def _parse_command_body(body: str) -> DoqlCommand:
-    kv = _parse_block_body(body)
-    return DoqlCommand(
-        name=str(kv.get("name", kv.get("action", ""))),
-        description=str(kv.get("description", "")),
-        required=_split_csv(str(kv.get("required", ""))),
-        optional=_split_csv(str(kv.get("optional", ""))),
-        runtime=str(kv.get("runtime", "")),
-        protocol=str(kv.get("protocol", "")),
-        transport=str(kv.get("transport", "")),
-    )
-
-
-def _parse_artifact_body(body: str) -> DoqlArtifact:
-    kv = _parse_block_body(body)
-    values: dict[str, Any] = {}
-    path = str(kv.get("path", ""))
-    kind = str(kv.get("kind", "file"))
-    for key in ("to", "amount", "currency", "attachment_path", "recipient"):
-        if key in kv:
-            values[key] = kv[key]
-    return DoqlArtifact(path=path, kind=kind, values=values)
-
-
-def load_doql_context(path: Path | str) -> DoqlTaskContext:
-    path = Path(path)
-    text = path.read_text(encoding="utf-8")
-    ctx = DoqlTaskContext()
-
-    name_match = re.search(r'environment\[name="([^"]+)"\]', text)
-    if name_match:
-        ctx.example_name = name_match.group(1)
-
-    gen_match = re.search(r"//\s*generated:\s*(\S+)", text)
-    if gen_match:
-        ctx.generated_at = gen_match.group(1)
-
-    for block_type, body in _BLOCK_RE.findall(text):
-        kv = _parse_block_body(body)
-        if block_type == "environment":
-            ctx.environment = {str(k): str(v) for k, v in kv.items()}
-        elif block_type == "data":
-            ctx.data.update(kv)
-        elif block_type == "conversation":
-            ctx.autofill = bool(kv.get("autofill", True))
-            ctx.sync_auto_execute = bool(kv.get("sync_auto_execute", False))
-            ctx.attachment_required = bool(kv.get("attachment_required", False))
-            ctx.generate_invoice_if_missing = bool(kv.get("generate_invoice_if_missing", True))
-        elif block_type == "capabilities":
-            if "actions" in kv:
-                raw = str(kv["actions"]).strip('"')
-                ctx.capabilities = [a.strip() for a in raw.split(",") if a.strip()]
-            else:
-                ctx.capabilities = sorted(str(k) for k in kv)
-        elif block_type == "workflow_history":
-            ctx.workflow_history = dict(kv)
-        elif block_type == "process":
-            ctx.process.mode = str(kv.get("mode", ctx.process.mode))
-            ctx.process.nlp_parser = str(kv.get("nlp_parser", ctx.process.nlp_parser))
-            if "nlp_confidence_min" in kv:
-                ctx.process.nlp_confidence_min = float(kv["nlp_confidence_min"])
-            if "nlp_enrich_missing" in kv:
-                ctx.process.nlp_enrich_missing = bool(kv["nlp_enrich_missing"])
-            if "llm_reasoning" in kv:
-                ctx.process.llm_reasoning = str(kv["llm_reasoning"])
-            if "llm_temperature" in kv:
-                ctx.process.llm_temperature = float(kv["llm_temperature"])
-            if "autonomous" in kv:
-                ctx.process.autonomous_enabled = bool(kv["autonomous"])
-            if "autonomous_max_rounds" in kv:
-                ctx.process.autonomous_max_rounds = int(kv["autonomous_max_rounds"])
-            if "ask_user" in kv:
-                ctx.process.ask_user = str(kv["ask_user"])
-            if "intract_gate" in kv:
-                ctx.process.intract_gate = bool(kv["intract_gate"])
-            if "intract_enforce_clarification" in kv:
-                ctx.process.intract_enforce_clarification = bool(kv["intract_enforce_clarification"])
-        elif block_type == "process_access":
-            if "agent" in kv:
-                ctx.process.agent = str(kv["agent"])
-            if "allow_areas" in kv:
-                ctx.process.allow_resource_areas = _split_csv(str(kv["allow_areas"]))
-            if "deny_areas" in kv:
-                ctx.process.deny_resource_areas = _split_csv(str(kv["deny_areas"]))
-        elif block_type == "paths":
-            if "read" in kv:
-                ctx.process.paths_read = _split_csv(str(kv["read"]))
-            if "write" in kv:
-                ctx.process.paths_write = _split_csv(str(kv["write"]))
-
-    for body in _ARTIFACT_RE.findall(text):
-        ctx.artifacts.append(_parse_artifact_body(body))
-
-    for body in _RUNTIME_RE.findall(text):
-        rt = _parse_runtime_body(body)
-        if rt.id:
-            ctx.runtimes.append(rt)
-
-    for body in _COMMAND_RE.findall(text):
-        cmd = _parse_command_body(body)
-        if cmd.name:
-            ctx.commands.append(cmd)
-
-    return ctx
+__all__ = [
+    "DoqlArtifact",
+    "DoqlCommand",
+    "DoqlProcessPolicy",
+    "DoqlRuntime",
+    "DoqlTaskContext",
+    "autofill_entities",
+    "load_doql_context",
+    "merge_inline_context",
+    "resolve_doql_context_path",
+]
 
 
 def resolve_doql_context_path(explicit: str | None = None) -> Path | None:
@@ -292,7 +47,9 @@ def resolve_doql_context_path(explicit: str | None = None) -> Path | None:
         ):
             if candidate.is_file():
                 return candidate
-    return None
+    from nlp2dsl_sdk.doql.runtime import resolve_doql_context_path as sdk_resolve
+
+    return sdk_resolve()
 
 
 def merge_inline_context(ctx: DoqlTaskContext, inline: dict[str, Any]) -> DoqlTaskContext:
@@ -310,6 +67,7 @@ def merge_inline_context(ctx: DoqlTaskContext, inline: dict[str, Any]) -> DoqlTa
             "currency": "send_invoice.currency",
             "attachment_required": "conversation.attachment_required",
             "generate_invoice_if_missing": "conversation.generate_invoice_if_missing",
+            "strict_pdf": "conversation.strict_pdf",
         }
         mapped = camel.get(key, key)
         conv_key = key if key.startswith("conversation.") else mapped
@@ -319,6 +77,8 @@ def merge_inline_context(ctx: DoqlTaskContext, inline: dict[str, Any]) -> DoqlTa
                 ctx.attachment_required = bool(value)
             elif flag == "generate_invoice_if_missing":
                 ctx.generate_invoice_if_missing = bool(value)
+            elif flag == "strict_pdf":
+                ctx.strict_pdf = bool(value)
             elif flag == "autofill":
                 ctx.autofill = bool(value)
             elif flag == "sync_auto_execute":

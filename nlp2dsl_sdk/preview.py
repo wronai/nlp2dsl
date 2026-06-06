@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 from typing import TYPE_CHECKING, Any, Mapping, Sequence
 
 if TYPE_CHECKING:
@@ -306,10 +307,30 @@ def finalize_example_artifacts(client: NLP2DSLClient | None = None) -> None:
         writer.finalize(client)
 
 
-def ensure_services(client: NLP2DSLClient) -> bool:
-    try:
-        client.health()
+def ensure_services(
+    client: NLP2DSLClient,
+    *,
+    timeout_s: float | None = None,
+    exit_on_failure: bool | None = None,
+) -> bool:
+    if client.wait_for_health(timeout_s=timeout_s):
         return True
-    except requests.RequestException:
-        print("❌ Nie można połączyć się z API. Uruchom: docker compose up -d")
-        return False
+    timeout = timeout_s
+    if timeout is None:
+        timeout = float(os.environ.get("NLP2DSL_HEALTH_TIMEOUT", "120"))
+    print(
+        f"❌ Usługi nlp2dsl nie odpowiadają po {timeout:.0f}s.\n"
+        "   Uruchom: docker compose up -d\n"
+        f"   Backend: {client.backend_url}/health\n"
+        f"   NLP:     {client.nlp_service_url}/health\n"
+        f"   Worker:  {client.worker_url}/health"
+    )
+    if exit_on_failure is None:
+        exit_on_failure = os.environ.get("NLP2DSL_ENSURE_SERVICES_NO_EXIT", "").strip().lower() not in (
+            "1",
+            "true",
+            "yes",
+        )
+    if exit_on_failure:
+        raise SystemExit(1)
+    return False

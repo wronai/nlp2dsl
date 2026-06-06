@@ -13,4 +13,4 @@ __all__ = [
     "step_to_propact_block",
 ]
 
-__version__ = "0.0.25"
+__version__ = "0.0.26"

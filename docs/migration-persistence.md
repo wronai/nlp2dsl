@@ -334,7 +334,7 @@ curl http://localhost:8010/workflow/history
 ### Test 3: Health check — typ store
 
 ```bash
-curl http://localhost:8002/health
+curl http://localhost:8012/health
 # Z REDIS_URL:    "conversation_store": "RedisConversationStore"
 # Bez REDIS_URL:  "conversation_store": "MemoryConversationStore"
 ```
@@ -346,5 +346,6 @@ curl http://localhost:8002/health
 uvicorn app.main:app --port 8002
 
 curl http://localhost:8002/health
+# W Dockerze (host): http://localhost:8012/health — NLP2DSL_NLP_HOST_PORT
 # "conversation_store": "MemoryConversationStore" ← automatyczny fallback
 ```

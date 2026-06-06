@@ -576,19 +576,6 @@ sprints:
     model_hints:
       planning: balanced
       implementation: balanced
-  - id: ticket-eb8d37d9
-    name: Fix string-concat issues
-    description: Resolve 1 string-concat issues in nlp-service/app/conversation/responses.py
-    task_type: prefactor
-    priority: medium
-    estimate: 1d
-    files:
-    - nlp-service/app/conversation/responses.py
-    rule_id: string-concat
-    count: 1
-    model_hints:
-      planning: balanced
-      implementation: balanced
   - id: ticket-4412b3a3
     name: Fix unused-imports issues
     description: Resolve 2 unused-imports issues in nlp-service/app/conversation/responses.py
@@ -1312,6 +1299,19 @@ sprints:
     estimate: 1d
     files:
     - packages/nlp2cmd-planner/src/nlp2cmd_planner/router.py
+    rule_id: unused-imports
+    count: 2
+    model_hints:
+      planning: balanced
+      implementation: balanced
+  - id: ticket-59eadd57
+    name: Fix unused-imports issues
+    description: Resolve 2 unused-imports issues in backend/app/attachment_validation.py
+    task_type: prefactor
+    priority: medium
+    estimate: 1d
+    files:
+    - backend/app/attachment_validation.py
     rule_id: unused-imports
     count: 2
     model_hints:

@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-05T18:23:38.150169+00:00",
-  "examples": 1,
-  "passed": 1,
+  "generated_at": "2026-06-06T09:15:45.868793+00:00",
+  "examples": 13,
+  "passed": 13,
   "failed": 0,
   "warning": 0,
   "results": [
@@ -9,11 +9,11 @@
       "run_id": "examples/01-invoice",
       "example_id": "01-invoice",
       "status": "passed",
-      "generated_at": "2026-06-05T18:23:38.150182+00:00",
+      "generated_at": "2026-06-06T09:15:45.868813+00:00",
       "checks_total": 8,
-      "checks_passed": 7,
+      "checks_passed": 6,
       "checks_failed": 0,
-      "checks_skipped": 1,
+      "checks_skipped": 2,
       "checks": [
         {
           "id": "check.testql.commands_dry_run",
@@ -23,16 +23,9 @@
         },
         {
           "id": "check.testql.ir_parse",
-          "status": "passed",
-          "summary": "IR plan: 4 steps, type=cli",
-          "details": {
-            "step_kinds": [
-              "commands",
-              "commands",
-              "commands",
-              "commands"
-            ]
-          }
+          "status": "skipped",
+          "summary": "testql adapter not installed",
+          "details": {}
         },
         {
           "id": "check.artifact.pipeline.1",
@@ -63,19 +56,79 @@
         },
         {
           "id": "check.conversation.dry_run",
-          "status": "passed",
-          "summary": "structural dry-run: 4 steps, endpoints=chatstart,chatmessage",
+          "status": "skipped",
+          "summary": "testql not installed",
           "details": {
-            "step_kinds": [
-              "nlp_dsl",
-              "assert_json",
-              "nlp_dsl",
-              "assert_json"
-            ],
-            "endpoints": [
-              "chatstart",
-              "chatmessage"
-            ]
+            "issues": []
+          }
+        },
+        {
+          "id": "check.conversation.transcript",
+          "status": "passed",
+          "summary": "1 turns in transcript",
+          "details": {
+            "path": "conversation.transcript.md"
+          }
+        }
+      ],
+      "findings": [],
+      "actions": []
+    },
+    {
+      "run_id": "examples/02-email",
+      "example_id": "02-email",
+      "status": "passed",
+      "generated_at": "2026-06-06T09:15:45.868822+00:00",
+      "checks_total": 8,
+      "checks_passed": 5,
+      "checks_failed": 0,
+      "checks_skipped": 3,
+      "checks": [
+        {
+          "id": "check.testql.commands_dry_run",
+          "status": "passed",
+          "summary": "commands.testql.toon.yaml parses and dry-runs",
+          "details": {}
+        },
+        {
+          "id": "check.testql.ir_parse",
+          "status": "skipped",
+          "summary": "testql adapter not installed",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.1",
+          "status": "passed",
+          "summary": "pipeline present: wyślij-email-do-teamfirmapl-z-tematem-status-dzi",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.1",
+          "status": "passed",
+          "summary": "process present: wyślij-email-do-teamfirmapl-z-tematem-status-dzi",
+          "details": {}
+        },
+        {
+          "id": "check.nlp2dsl.query.Wyślij-email-do-teamfirma.pl-z-tematem-",
+          "status": "passed",
+          "summary": "offline artifact ok (status=executed): Wyślij email do team@firma.pl z tematem Status dzienny. Treść: Wszystk",
+          "details": {
+            "source": "pipeline/wyślij-email-do-teamfirmapl-z-tematem-status-dzi.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.conversation.generated",
+          "status": "passed",
+          "summary": "wrote conversation.testql.toon.yaml",
+          "details": {}
+        },
+        {
+          "id": "check.conversation.dry_run",
+          "status": "skipped",
+          "summary": "testql not installed",
+          "details": {
+            "issues": []
           }
         },
         {
@@ -83,6 +136,1841 @@
           "status": "skipped",
           "summary": "no conversation.transcript.md",
           "details": {}
+        }
+      ],
+      "findings": [],
+      "actions": []
+    },
+    {
+      "run_id": "examples/03-report-and-notify",
+      "example_id": "03-report-and-notify",
+      "status": "passed",
+      "generated_at": "2026-06-06T09:15:45.868829+00:00",
+      "checks_total": 8,
+      "checks_passed": 5,
+      "checks_failed": 0,
+      "checks_skipped": 3,
+      "checks": [
+        {
+          "id": "check.testql.commands_dry_run",
+          "status": "passed",
+          "summary": "commands.testql.toon.yaml parses and dry-runs",
+          "details": {}
+        },
+        {
+          "id": "check.testql.ir_parse",
+          "status": "skipped",
+          "summary": "testql adapter not installed",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.1",
+          "status": "passed",
+          "summary": "pipeline present: co-tydzień-generuj-raport-sprzedaży-pdf-wyślij-e",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.1",
+          "status": "passed",
+          "summary": "process present: co-tydzień-generuj-raport-sprzedaży-pdf-wyślij-e",
+          "details": {}
+        },
+        {
+          "id": "check.nlp2dsl.query.Co-tydzień-generuj-raport-sprzedaży-PDF,",
+          "status": "passed",
+          "summary": "offline artifact ok (status=executed): Co tydzień generuj raport sprzedaży PDF, wyślij email do manager@firma",
+          "details": {
+            "source": "pipeline/co-tydzień-generuj-raport-sprzedaży-pdf-wyślij-e.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.conversation.generated",
+          "status": "passed",
+          "summary": "wrote conversation.testql.toon.yaml",
+          "details": {}
+        },
+        {
+          "id": "check.conversation.dry_run",
+          "status": "skipped",
+          "summary": "testql not installed",
+          "details": {
+            "issues": []
+          }
+        },
+        {
+          "id": "check.conversation.transcript",
+          "status": "skipped",
+          "summary": "no conversation.transcript.md",
+          "details": {}
+        }
+      ],
+      "findings": [],
+      "actions": []
+    },
+    {
+      "run_id": "examples/04-scheduled-report",
+      "example_id": "04-scheduled-report",
+      "status": "passed",
+      "generated_at": "2026-06-06T09:15:45.868834+00:00",
+      "checks_total": 5,
+      "checks_passed": 2,
+      "checks_failed": 0,
+      "checks_skipped": 3,
+      "checks": [
+        {
+          "id": "check.testql.commands_dry_run",
+          "status": "passed",
+          "summary": "commands.testql.toon.yaml parses and dry-runs",
+          "details": {}
+        },
+        {
+          "id": "check.testql.ir_parse",
+          "status": "skipped",
+          "summary": "testql adapter not installed",
+          "details": {}
+        },
+        {
+          "id": "check.conversation.generated",
+          "status": "passed",
+          "summary": "wrote conversation.testql.toon.yaml",
+          "details": {}
+        },
+        {
+          "id": "check.conversation.dry_run",
+          "status": "skipped",
+          "summary": "no queries in manifest",
+          "details": {}
+        },
+        {
+          "id": "check.conversation.transcript",
+          "status": "skipped",
+          "summary": "no conversation.transcript.md",
+          "details": {}
+        }
+      ],
+      "findings": [],
+      "actions": []
+    },
+    {
+      "run_id": "examples/05-conversation-flow",
+      "example_id": "05-conversation-flow",
+      "status": "passed",
+      "generated_at": "2026-06-06T09:15:45.868838+00:00",
+      "checks_total": 20,
+      "checks_passed": 18,
+      "checks_failed": 0,
+      "checks_skipped": 2,
+      "checks": [
+        {
+          "id": "check.testql.commands_dry_run",
+          "status": "passed",
+          "summary": "commands.testql.toon.yaml parses and dry-runs",
+          "details": {}
+        },
+        {
+          "id": "check.testql.ir_parse",
+          "status": "skipped",
+          "summary": "testql adapter not installed",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.1",
+          "status": "passed",
+          "summary": "pipeline present: wyślij-fakturę-na-500-pln-do-testfirmapl",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.1",
+          "status": "passed",
+          "summary": "process present: wyślij-fakturę-na-500-pln-do-testfirmapl",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.2",
+          "status": "passed",
+          "summary": "pipeline present: powiadom-devops-backup-gotowy",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.2",
+          "status": "passed",
+          "summary": "process present: powiadom-devops-backup-gotowy",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.3",
+          "status": "passed",
+          "summary": "pipeline present: znajdź-pliki-py-w-src",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.3",
+          "status": "passed",
+          "summary": "process present: znajdź-pliki-py-w-src",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.4",
+          "status": "passed",
+          "summary": "pipeline present: uruchom-testy-jednostkowe",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.4",
+          "status": "passed",
+          "summary": "process present: uruchom-testy-jednostkowe",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.5",
+          "status": "passed",
+          "summary": "pipeline present: pokaż-status-systemu",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.5",
+          "status": "passed",
+          "summary": "process present: pokaż-status-systemu",
+          "details": {}
+        },
+        {
+          "id": "check.nlp2dsl.query.Wyślij-fakturę-na-500-PLN-do-testfirma.",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Wyślij fakturę na 500 PLN do test@firma.pl",
+          "details": {
+            "source": "pipeline/wyślij-fakturę-na-500-pln-do-testfirmapl.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Powiadom-#devops:-backup-gotowy",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Powiadom #devops: backup gotowy",
+          "details": {
+            "source": "pipeline/powiadom-devops-backup-gotowy.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.znajdź-pliki-*.py-w-src",
+          "status": "passed",
+          "summary": "offline artifact ok (status=ir): znajdź pliki *.py w src",
+          "details": {
+            "source": "pipeline/znajdź-pliki-py-w-src.json",
+            "mode": "show"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.uruchom-testy-jednostkowe",
+          "status": "passed",
+          "summary": "offline artifact ok (status=ir): uruchom testy jednostkowe",
+          "details": {
+            "source": "pipeline/uruchom-testy-jednostkowe.json",
+            "mode": "show"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.pokaż-status-systemu",
+          "status": "passed",
+          "summary": "offline artifact ok (status=ir): pokaż status systemu",
+          "details": {
+            "source": "pipeline/pokaż-status-systemu.json",
+            "mode": "show"
+          }
+        },
+        {
+          "id": "check.conversation.generated",
+          "status": "passed",
+          "summary": "hand-authored conversation.testql.toon.yaml",
+          "details": {}
+        },
+        {
+          "id": "check.conversation.dry_run",
+          "status": "skipped",
+          "summary": "testql not installed",
+          "details": {
+            "issues": []
+          }
+        },
+        {
+          "id": "check.conversation.transcript",
+          "status": "passed",
+          "summary": "3 turns in transcript",
+          "details": {
+            "path": "conversation.transcript.md"
+          }
+        }
+      ],
+      "findings": [],
+      "actions": []
+    },
+    {
+      "run_id": "examples/06-interactive-chat",
+      "example_id": "06-interactive-chat",
+      "status": "passed",
+      "generated_at": "2026-06-06T09:15:45.868844+00:00",
+      "checks_total": 11,
+      "checks_passed": 9,
+      "checks_failed": 0,
+      "checks_skipped": 2,
+      "checks": [
+        {
+          "id": "check.testql.commands_dry_run",
+          "status": "passed",
+          "summary": "commands.testql.toon.yaml parses and dry-runs",
+          "details": {}
+        },
+        {
+          "id": "check.testql.ir_parse",
+          "status": "skipped",
+          "summary": "testql adapter not installed",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.1",
+          "status": "passed",
+          "summary": "pipeline present: wyślij-fakturę-na-500-pln-do-testfirmapl",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.1",
+          "status": "passed",
+          "summary": "process present: wyślij-fakturę-na-500-pln-do-testfirmapl",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.2",
+          "status": "passed",
+          "summary": "pipeline present: powiadom-devops-backup-gotowy",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.2",
+          "status": "passed",
+          "summary": "process present: powiadom-devops-backup-gotowy",
+          "details": {}
+        },
+        {
+          "id": "check.nlp2dsl.query.Wyślij-fakturę-na-500-PLN-do-testfirma.",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Wyślij fakturę na 500 PLN do test@firma.pl",
+          "details": {
+            "source": "pipeline/wyślij-fakturę-na-500-pln-do-testfirmapl.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Powiadom-#devops:-backup-gotowy",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Powiadom #devops: backup gotowy",
+          "details": {
+            "source": "pipeline/powiadom-devops-backup-gotowy.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.conversation.generated",
+          "status": "passed",
+          "summary": "hand-authored conversation.testql.toon.yaml",
+          "details": {}
+        },
+        {
+          "id": "check.conversation.dry_run",
+          "status": "skipped",
+          "summary": "testql not installed",
+          "details": {
+            "issues": []
+          }
+        },
+        {
+          "id": "check.conversation.transcript",
+          "status": "passed",
+          "summary": "2 turns in transcript",
+          "details": {
+            "path": "conversation.transcript.md"
+          }
+        }
+      ],
+      "findings": [],
+      "actions": []
+    },
+    {
+      "run_id": "examples/07-email-conversation",
+      "example_id": "07-email-conversation",
+      "status": "passed",
+      "generated_at": "2026-06-06T09:15:45.868849+00:00",
+      "checks_total": 8,
+      "checks_passed": 6,
+      "checks_failed": 0,
+      "checks_skipped": 2,
+      "checks": [
+        {
+          "id": "check.testql.commands_dry_run",
+          "status": "passed",
+          "summary": "commands.testql.toon.yaml parses and dry-runs",
+          "details": {}
+        },
+        {
+          "id": "check.testql.ir_parse",
+          "status": "skipped",
+          "summary": "testql adapter not installed",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.1",
+          "status": "passed",
+          "summary": "pipeline present: wyślij-email-do-janexamplecom-z-tematem-podsumow",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.1",
+          "status": "passed",
+          "summary": "process present: wyślij-email-do-janexamplecom-z-tematem-podsumow",
+          "details": {}
+        },
+        {
+          "id": "check.nlp2dsl.query.Wyślij-email-do-janexample.com-z-temate",
+          "status": "passed",
+          "summary": "offline artifact ok (status=incomplete): Wyślij email do jan@example.com z tematem Podsumowanie tygodnia",
+          "details": {
+            "source": "pipeline/wyślij-email-do-janexamplecom-z-tematem-podsumow.json",
+            "mode": "rules"
+          }
+        },
+        {
+          "id": "check.conversation.generated",
+          "status": "passed",
+          "summary": "hand-authored conversation.testql.toon.yaml",
+          "details": {}
+        },
+        {
+          "id": "check.conversation.dry_run",
+          "status": "skipped",
+          "summary": "testql not installed",
+          "details": {
+            "issues": []
+          }
+        },
+        {
+          "id": "check.conversation.transcript",
+          "status": "passed",
+          "summary": "3 turns in transcript",
+          "details": {
+            "path": "conversation.transcript.md"
+          }
+        }
+      ],
+      "findings": [],
+      "actions": []
+    },
+    {
+      "run_id": "examples/08-multi-object-benchmark",
+      "example_id": "08-multi-object-benchmark",
+      "status": "passed",
+      "generated_at": "2026-06-06T09:15:45.868853+00:00",
+      "checks_total": 125,
+      "checks_passed": 122,
+      "checks_failed": 0,
+      "checks_skipped": 3,
+      "checks": [
+        {
+          "id": "check.testql.commands_dry_run",
+          "status": "passed",
+          "summary": "commands.testql.toon.yaml parses and dry-runs",
+          "details": {}
+        },
+        {
+          "id": "check.testql.ir_parse",
+          "status": "skipped",
+          "summary": "testql adapter not installed",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.1",
+          "status": "passed",
+          "summary": "pipeline present: wystaw-fakturę-na-3200-pln-do-dostawcafirmapl",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.1",
+          "status": "passed",
+          "summary": "process present: wystaw-fakturę-na-3200-pln-do-dostawcafirmapl",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.2",
+          "status": "passed",
+          "summary": "pipeline present: invoice-for-890-usd-to-billingcorpcom",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.2",
+          "status": "passed",
+          "summary": "process present: invoice-for-890-usd-to-billingcorpcom",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.3",
+          "status": "passed",
+          "summary": "pipeline present: wyślij-powiadomienie-na-slack-devops-deploy-prod",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.3",
+          "status": "passed",
+          "summary": "process present: wyślij-powiadomienie-na-slack-devops-deploy-prod",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.4",
+          "status": "passed",
+          "summary": "pipeline present: notify-telegram-chat--1001234567890-serwer-api-n",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.4",
+          "status": "passed",
+          "summary": "process present: notify-telegram-chat--1001234567890-serwer-api-n",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.5",
+          "status": "passed",
+          "summary": "pipeline present: wyślij-na-microsoft-teams-kanał-general-spotkani",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.5",
+          "status": "passed",
+          "summary": "process present: wyślij-na-microsoft-teams-kanał-general-spotkani",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.6",
+          "status": "passed",
+          "summary": "pipeline present: zaktualizuj-lead-w-crm-firma-acme-status-qualifi",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.6",
+          "status": "passed",
+          "summary": "process present: zaktualizuj-lead-w-crm-firma-acme-status-qualifi",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.7",
+          "status": "passed",
+          "summary": "pipeline present: generuj-raport-marketingowy-w-csv",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.7",
+          "status": "passed",
+          "summary": "process present: generuj-raport-marketingowy-w-csv",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.8",
+          "status": "passed",
+          "summary": "pipeline present: co-tydzień-raport-hr-w-formacie-xlsx",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.8",
+          "status": "passed",
+          "summary": "process present: co-tydzień-raport-hr-w-formacie-xlsx",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.9",
+          "status": "passed",
+          "summary": "pipeline present: wyślij-fakturę-1500-pln-do-klientfirmapl-i-powia",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.9",
+          "status": "passed",
+          "summary": "process present: wyślij-fakturę-1500-pln-do-klientfirmapl-i-powia",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.10",
+          "status": "passed",
+          "summary": "pipeline present: miesięczny-raport-finansów-pdf-i-wyślij-email-do",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.10",
+          "status": "passed",
+          "summary": "process present: miesięczny-raport-finansów-pdf-i-wyślij-email-do",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.11",
+          "status": "passed",
+          "summary": "pipeline present: napisz-w-pythonie-funkcję-obliczającą-medianę-li",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.11",
+          "status": "passed",
+          "summary": "process present: napisz-w-pythonie-funkcję-obliczającą-medianę-li",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.12",
+          "status": "passed",
+          "summary": "pipeline present: pokaż-status-systemu-i-wersję",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.12",
+          "status": "passed",
+          "summary": "process present: pokaż-status-systemu-i-wersję",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.13",
+          "status": "passed",
+          "summary": "pipeline present: jakie-akcje-biznesowe-są-dostępne",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.13",
+          "status": "passed",
+          "summary": "process present: jakie-akcje-biznesowe-są-dostępne",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.14",
+          "status": "passed",
+          "summary": "pipeline present: przypomnij-devfirmapl-o-code-review-pr-442",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.14",
+          "status": "passed",
+          "summary": "process present: przypomnij-devfirmapl-o-code-review-pr-442",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.15",
+          "status": "passed",
+          "summary": "pipeline present: powiadom-kanał-sales-o-podpisaniu-umowy-z-klient",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.15",
+          "status": "passed",
+          "summary": "process present: powiadom-kanał-sales-o-podpisaniu-umowy-z-klient",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.16",
+          "status": "passed",
+          "summary": "pipeline present: raport-kwartalny-sprzedaży-csv-i-wyślij-go-na-an",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.16",
+          "status": "passed",
+          "summary": "process present: raport-kwartalny-sprzedaży-csv-i-wyślij-go-na-an",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.17",
+          "status": "passed",
+          "summary": "pipeline present: dodaj-kontakt-do-crm-typ-contact-z-emailem-annaf",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.17",
+          "status": "passed",
+          "summary": "process present: dodaj-kontakt-do-crm-typ-contact-z-emailem-annaf",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.18",
+          "status": "passed",
+          "summary": "pipeline present: przygotuj-raport-finansowy-pdf-na-koniec-miesiąc",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.18",
+          "status": "passed",
+          "summary": "process present: przygotuj-raport-finansowy-pdf-na-koniec-miesiąc",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.19",
+          "status": "passed",
+          "summary": "pipeline present: napisz-do-hrfirmapl-wniosek-urlopowy-został-zaak",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.19",
+          "status": "passed",
+          "summary": "process present: napisz-do-hrfirmapl-wniosek-urlopowy-został-zaak",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.20",
+          "status": "passed",
+          "summary": "pipeline present: pełny-flow-faktura-12000-pln-do-enterprisecorpco",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.20",
+          "status": "passed",
+          "summary": "process present: pełny-flow-faktura-12000-pln-do-enterprisecorpco",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.21",
+          "status": "passed",
+          "summary": "pipeline present: wystaw-fakturę-na-3200-pln-do-dostawcafirmapl",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.21",
+          "status": "passed",
+          "summary": "process present: wystaw-fakturę-na-3200-pln-do-dostawcafirmapl",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.22",
+          "status": "passed",
+          "summary": "pipeline present: invoice-for-890-usd-to-billingcorpcom",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.22",
+          "status": "passed",
+          "summary": "process present: invoice-for-890-usd-to-billingcorpcom",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.23",
+          "status": "passed",
+          "summary": "pipeline present: wyślij-powiadomienie-na-slack-devops-deploy-prod",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.23",
+          "status": "passed",
+          "summary": "process present: wyślij-powiadomienie-na-slack-devops-deploy-prod",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.24",
+          "status": "passed",
+          "summary": "pipeline present: notify-telegram-chat--1001234567890-serwer-api-n",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.24",
+          "status": "passed",
+          "summary": "process present: notify-telegram-chat--1001234567890-serwer-api-n",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.25",
+          "status": "passed",
+          "summary": "pipeline present: wyślij-na-microsoft-teams-kanał-general-spotkani",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.25",
+          "status": "passed",
+          "summary": "process present: wyślij-na-microsoft-teams-kanał-general-spotkani",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.26",
+          "status": "passed",
+          "summary": "pipeline present: zaktualizuj-lead-w-crm-firma-acme-status-qualifi",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.26",
+          "status": "passed",
+          "summary": "process present: zaktualizuj-lead-w-crm-firma-acme-status-qualifi",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.27",
+          "status": "passed",
+          "summary": "pipeline present: generuj-raport-marketingowy-w-csv",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.27",
+          "status": "passed",
+          "summary": "process present: generuj-raport-marketingowy-w-csv",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.28",
+          "status": "passed",
+          "summary": "pipeline present: co-tydzień-raport-hr-w-formacie-xlsx",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.28",
+          "status": "passed",
+          "summary": "process present: co-tydzień-raport-hr-w-formacie-xlsx",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.29",
+          "status": "passed",
+          "summary": "pipeline present: wyślij-fakturę-1500-pln-do-klientfirmapl-i-powia",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.29",
+          "status": "passed",
+          "summary": "process present: wyślij-fakturę-1500-pln-do-klientfirmapl-i-powia",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.30",
+          "status": "passed",
+          "summary": "pipeline present: miesięczny-raport-finansów-pdf-i-wyślij-email-do",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.30",
+          "status": "passed",
+          "summary": "process present: miesięczny-raport-finansów-pdf-i-wyślij-email-do",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.31",
+          "status": "passed",
+          "summary": "pipeline present: napisz-w-pythonie-funkcję-obliczającą-medianę-li",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.31",
+          "status": "passed",
+          "summary": "process present: napisz-w-pythonie-funkcję-obliczającą-medianę-li",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.32",
+          "status": "passed",
+          "summary": "pipeline present: pokaż-status-systemu-i-wersję",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.32",
+          "status": "passed",
+          "summary": "process present: pokaż-status-systemu-i-wersję",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.33",
+          "status": "passed",
+          "summary": "pipeline present: jakie-akcje-biznesowe-są-dostępne",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.33",
+          "status": "passed",
+          "summary": "process present: jakie-akcje-biznesowe-są-dostępne",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.34",
+          "status": "passed",
+          "summary": "pipeline present: przypomnij-devfirmapl-o-code-review-pr-442",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.34",
+          "status": "passed",
+          "summary": "process present: przypomnij-devfirmapl-o-code-review-pr-442",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.35",
+          "status": "passed",
+          "summary": "pipeline present: powiadom-kanał-sales-o-podpisaniu-umowy-z-klient",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.35",
+          "status": "passed",
+          "summary": "process present: powiadom-kanał-sales-o-podpisaniu-umowy-z-klient",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.36",
+          "status": "passed",
+          "summary": "pipeline present: raport-kwartalny-sprzedaży-csv-i-wyślij-go-na-an",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.36",
+          "status": "passed",
+          "summary": "process present: raport-kwartalny-sprzedaży-csv-i-wyślij-go-na-an",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.37",
+          "status": "passed",
+          "summary": "pipeline present: dodaj-kontakt-do-crm-typ-contact-z-emailem-annaf",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.37",
+          "status": "passed",
+          "summary": "process present: dodaj-kontakt-do-crm-typ-contact-z-emailem-annaf",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.38",
+          "status": "passed",
+          "summary": "pipeline present: przygotuj-raport-finansowy-pdf-na-koniec-miesiąc",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.38",
+          "status": "passed",
+          "summary": "process present: przygotuj-raport-finansowy-pdf-na-koniec-miesiąc",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.39",
+          "status": "passed",
+          "summary": "pipeline present: napisz-do-hrfirmapl-wniosek-urlopowy-został-zaak",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.39",
+          "status": "passed",
+          "summary": "process present: napisz-do-hrfirmapl-wniosek-urlopowy-został-zaak",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.40",
+          "status": "passed",
+          "summary": "pipeline present: pełny-flow-faktura-12000-pln-do-enterprisecorpco",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.40",
+          "status": "passed",
+          "summary": "process present: pełny-flow-faktura-12000-pln-do-enterprisecorpco",
+          "details": {}
+        },
+        {
+          "id": "check.nlp2dsl.query.Wystaw-fakturę-na-3200-PLN-do-dostawcaf",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Wystaw fakturę na 3200 PLN do dostawca@firma.pl",
+          "details": {
+            "source": "pipeline/wystaw-fakturę-na-3200-pln-do-dostawcafirmapl.json",
+            "mode": "rules"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Invoice-for-890-USD-to-billingcorp.com",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Invoice for 890 USD to billing@corp.com",
+          "details": {
+            "source": "pipeline/invoice-for-890-usd-to-billingcorpcom.json",
+            "mode": "rules"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Wyślij-powiadomienie-na-Slack-#devops:-d",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Wyślij powiadomienie na Slack #devops: deploy produkcji zakończony",
+          "details": {
+            "source": "pipeline/wyślij-powiadomienie-na-slack-devops-deploy-prod.json",
+            "mode": "rules"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Notify-Telegram-chat--1001234567890:-ser",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Notify Telegram chat -1001234567890: serwer API nie odpowiada",
+          "details": {
+            "source": "pipeline/notify-telegram-chat--1001234567890-serwer-api-n.json",
+            "mode": "rules"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Wyślij-na-Microsoft-Teams-kanał-general:",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Wyślij na Microsoft Teams kanał general: spotkanie sprint review jutro",
+          "details": {
+            "source": "pipeline/wyślij-na-microsoft-teams-kanał-general-spotkani.json",
+            "mode": "rules"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Zaktualizuj-lead-w-CRM:-firma-ACME,-stat",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Zaktualizuj lead w CRM: firma ACME, status qualified, owner Jan Kowals",
+          "details": {
+            "source": "pipeline/zaktualizuj-lead-w-crm-firma-acme-status-qualifi.json",
+            "mode": "rules"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Generuj-raport-marketingowy-w-CSV",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Generuj raport marketingowy w CSV",
+          "details": {
+            "source": "pipeline/generuj-raport-marketingowy-w-csv.json",
+            "mode": "rules"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Co-tydzień-raport-HR-w-formacie-xlsx",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Co tydzień raport HR w formacie xlsx",
+          "details": {
+            "source": "pipeline/co-tydzień-raport-hr-w-formacie-xlsx.json",
+            "mode": "rules"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Wyślij-fakturę-1500-PLN-do-klientfirma.",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Wyślij fakturę 1500 PLN do klient@firma.pl i powiadom #billing na Slac",
+          "details": {
+            "source": "pipeline/wyślij-fakturę-1500-pln-do-klientfirmapl-i-powia.json",
+            "mode": "rules"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Miesięczny-raport-finansów-PDF-i-wyślij-",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Miesięczny raport finansów PDF i wyślij email do cfo@firma.pl",
+          "details": {
+            "source": "pipeline/miesięczny-raport-finansów-pdf-i-wyślij-email-do.json",
+            "mode": "rules"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Napisz-w-Pythonie-funkcję-obliczającą-me",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Napisz w Pythonie funkcję obliczającą medianę listy liczb z testami",
+          "details": {
+            "source": "pipeline/napisz-w-pythonie-funkcję-obliczającą-medianę-li.json",
+            "mode": "rules"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Pokaż-status-systemu-i-wersję",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Pokaż status systemu i wersję",
+          "details": {
+            "source": "pipeline/pokaż-status-systemu-i-wersję.json",
+            "mode": "rules"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Jakie-akcje-biznesowe-są-dostępne?",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Jakie akcje biznesowe są dostępne?",
+          "details": {
+            "source": "pipeline/jakie-akcje-biznesowe-są-dostępne.json",
+            "mode": "rules"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Przypomnij-devfirma.pl-o-code-review-PR",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Przypomnij dev@firma.pl o code review PR-442",
+          "details": {
+            "source": "pipeline/przypomnij-devfirmapl-o-code-review-pr-442.json",
+            "mode": "rules"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Powiadom-kanał-#sales-o-podpisaniu-umowy",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Powiadom kanał #sales o podpisaniu umowy z klientem Beta Corp",
+          "details": {
+            "source": "pipeline/powiadom-kanał-sales-o-podpisaniu-umowy-z-klient.json",
+            "mode": "rules"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Raport-kwartalny-sprzedaży-CSV-i-wyślij-",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Raport kwartalny sprzedaży CSV i wyślij go na #analytics",
+          "details": {
+            "source": "pipeline/raport-kwartalny-sprzedaży-csv-i-wyślij-go-na-an.json",
+            "mode": "rules"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Dodaj-kontakt-do-CRM-typ-contact-z-email",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Dodaj kontakt do CRM typ contact z emailem anna@firma.pl",
+          "details": {
+            "source": "pipeline/dodaj-kontakt-do-crm-typ-contact-z-emailem-annaf.json",
+            "mode": "rules"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Przygotuj-raport-finansowy-PDF-na-koniec",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Przygotuj raport finansowy PDF na koniec miesiąca",
+          "details": {
+            "source": "pipeline/przygotuj-raport-finansowy-pdf-na-koniec-miesiąc.json",
+            "mode": "rules"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Napisz-do-hrfirma.pl:-wniosek-urlopowy-",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Napisz do hr@firma.pl: wniosek urlopowy został zaakceptowany",
+          "details": {
+            "source": "pipeline/napisz-do-hrfirmapl-wniosek-urlopowy-został-zaak.json",
+            "mode": "rules"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Pełny-flow:-faktura-12000-PLN-do-enterpr",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Pełny flow: faktura 12000 PLN do enterprise@corp.com, email do ksiegow",
+          "details": {
+            "source": "pipeline/pełny-flow-faktura-12000-pln-do-enterprisecorpco.json",
+            "mode": "rules"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Wystaw-fakturę-na-3200-PLN-do-dostawcaf",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Wystaw fakturę na 3200 PLN do dostawca@firma.pl",
+          "details": {
+            "source": "pipeline/wystaw-fakturę-na-3200-pln-do-dostawcafirmapl.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Invoice-for-890-USD-to-billingcorp.com",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Invoice for 890 USD to billing@corp.com",
+          "details": {
+            "source": "pipeline/invoice-for-890-usd-to-billingcorpcom.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Wyślij-powiadomienie-na-Slack-#devops:-d",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Wyślij powiadomienie na Slack #devops: deploy produkcji zakończony",
+          "details": {
+            "source": "pipeline/wyślij-powiadomienie-na-slack-devops-deploy-prod.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Notify-Telegram-chat--1001234567890:-ser",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Notify Telegram chat -1001234567890: serwer API nie odpowiada",
+          "details": {
+            "source": "pipeline/notify-telegram-chat--1001234567890-serwer-api-n.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Wyślij-na-Microsoft-Teams-kanał-general:",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Wyślij na Microsoft Teams kanał general: spotkanie sprint review jutro",
+          "details": {
+            "source": "pipeline/wyślij-na-microsoft-teams-kanał-general-spotkani.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Zaktualizuj-lead-w-CRM:-firma-ACME,-stat",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Zaktualizuj lead w CRM: firma ACME, status qualified, owner Jan Kowals",
+          "details": {
+            "source": "pipeline/zaktualizuj-lead-w-crm-firma-acme-status-qualifi.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Generuj-raport-marketingowy-w-CSV",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Generuj raport marketingowy w CSV",
+          "details": {
+            "source": "pipeline/generuj-raport-marketingowy-w-csv.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Co-tydzień-raport-HR-w-formacie-xlsx",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Co tydzień raport HR w formacie xlsx",
+          "details": {
+            "source": "pipeline/co-tydzień-raport-hr-w-formacie-xlsx.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Wyślij-fakturę-1500-PLN-do-klientfirma.",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Wyślij fakturę 1500 PLN do klient@firma.pl i powiadom #billing na Slac",
+          "details": {
+            "source": "pipeline/wyślij-fakturę-1500-pln-do-klientfirmapl-i-powia.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Miesięczny-raport-finansów-PDF-i-wyślij-",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Miesięczny raport finansów PDF i wyślij email do cfo@firma.pl",
+          "details": {
+            "source": "pipeline/miesięczny-raport-finansów-pdf-i-wyślij-email-do.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Napisz-w-Pythonie-funkcję-obliczającą-me",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Napisz w Pythonie funkcję obliczającą medianę listy liczb z testami",
+          "details": {
+            "source": "pipeline/napisz-w-pythonie-funkcję-obliczającą-medianę-li.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Pokaż-status-systemu-i-wersję",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Pokaż status systemu i wersję",
+          "details": {
+            "source": "pipeline/pokaż-status-systemu-i-wersję.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Jakie-akcje-biznesowe-są-dostępne?",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Jakie akcje biznesowe są dostępne?",
+          "details": {
+            "source": "pipeline/jakie-akcje-biznesowe-są-dostępne.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Przypomnij-devfirma.pl-o-code-review-PR",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Przypomnij dev@firma.pl o code review PR-442",
+          "details": {
+            "source": "pipeline/przypomnij-devfirmapl-o-code-review-pr-442.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Powiadom-kanał-#sales-o-podpisaniu-umowy",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Powiadom kanał #sales o podpisaniu umowy z klientem Beta Corp",
+          "details": {
+            "source": "pipeline/powiadom-kanał-sales-o-podpisaniu-umowy-z-klient.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Raport-kwartalny-sprzedaży-CSV-i-wyślij-",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Raport kwartalny sprzedaży CSV i wyślij go na #analytics",
+          "details": {
+            "source": "pipeline/raport-kwartalny-sprzedaży-csv-i-wyślij-go-na-an.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Dodaj-kontakt-do-CRM-typ-contact-z-email",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Dodaj kontakt do CRM typ contact z emailem anna@firma.pl",
+          "details": {
+            "source": "pipeline/dodaj-kontakt-do-crm-typ-contact-z-emailem-annaf.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Przygotuj-raport-finansowy-PDF-na-koniec",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Przygotuj raport finansowy PDF na koniec miesiąca",
+          "details": {
+            "source": "pipeline/przygotuj-raport-finansowy-pdf-na-koniec-miesiąc.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Napisz-do-hrfirma.pl:-wniosek-urlopowy-",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Napisz do hr@firma.pl: wniosek urlopowy został zaakceptowany",
+          "details": {
+            "source": "pipeline/napisz-do-hrfirmapl-wniosek-urlopowy-został-zaak.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Pełny-flow:-faktura-12000-PLN-do-enterpr",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Pełny flow: faktura 12000 PLN do enterprise@corp.com, email do ksiegow",
+          "details": {
+            "source": "pipeline/pełny-flow-faktura-12000-pln-do-enterprisecorpco.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.conversation.generated",
+          "status": "passed",
+          "summary": "wrote conversation.testql.toon.yaml",
+          "details": {}
+        },
+        {
+          "id": "check.conversation.dry_run",
+          "status": "skipped",
+          "summary": "testql not installed",
+          "details": {
+            "issues": []
+          }
+        },
+        {
+          "id": "check.conversation.transcript",
+          "status": "skipped",
+          "summary": "no conversation.transcript.md",
+          "details": {}
+        }
+      ],
+      "findings": [],
+      "actions": []
+    },
+    {
+      "run_id": "examples/09-execution-smoke",
+      "example_id": "09-execution-smoke",
+      "status": "passed",
+      "generated_at": "2026-06-06T09:15:45.868871+00:00",
+      "checks_total": 11,
+      "checks_passed": 8,
+      "checks_failed": 0,
+      "checks_skipped": 3,
+      "checks": [
+        {
+          "id": "check.testql.commands_dry_run",
+          "status": "passed",
+          "summary": "commands.testql.toon.yaml parses and dry-runs",
+          "details": {}
+        },
+        {
+          "id": "check.testql.ir_parse",
+          "status": "skipped",
+          "summary": "testql adapter not installed",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.1",
+          "status": "passed",
+          "summary": "pipeline present: wyślij-fakturę-na-500-pln-do-testfirmapl",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.1",
+          "status": "passed",
+          "summary": "process present: wyślij-fakturę-na-500-pln-do-testfirmapl",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.2",
+          "status": "passed",
+          "summary": "pipeline present: powiadom-devops-backup-gotowy",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.2",
+          "status": "passed",
+          "summary": "process present: powiadom-devops-backup-gotowy",
+          "details": {}
+        },
+        {
+          "id": "check.nlp2dsl.query.Wyślij-fakturę-na-500-PLN-do-testfirma.",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Wyślij fakturę na 500 PLN do test@firma.pl",
+          "details": {
+            "source": "pipeline/wyślij-fakturę-na-500-pln-do-testfirmapl.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Powiadom-#devops:-backup-gotowy",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Powiadom #devops: backup gotowy",
+          "details": {
+            "source": "pipeline/powiadom-devops-backup-gotowy.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.conversation.generated",
+          "status": "passed",
+          "summary": "wrote conversation.testql.toon.yaml",
+          "details": {}
+        },
+        {
+          "id": "check.conversation.dry_run",
+          "status": "skipped",
+          "summary": "testql not installed",
+          "details": {
+            "issues": []
+          }
+        },
+        {
+          "id": "check.conversation.transcript",
+          "status": "skipped",
+          "summary": "no conversation.transcript.md",
+          "details": {}
+        }
+      ],
+      "findings": [],
+      "actions": []
+    },
+    {
+      "run_id": "examples/10-llm-benchmark",
+      "example_id": "10-llm-benchmark",
+      "status": "passed",
+      "generated_at": "2026-06-06T09:15:45.868876+00:00",
+      "checks_total": 11,
+      "checks_passed": 8,
+      "checks_failed": 0,
+      "checks_skipped": 3,
+      "checks": [
+        {
+          "id": "check.testql.commands_dry_run",
+          "status": "passed",
+          "summary": "commands.testql.toon.yaml parses and dry-runs",
+          "details": {}
+        },
+        {
+          "id": "check.testql.ir_parse",
+          "status": "skipped",
+          "summary": "testql adapter not installed",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.1",
+          "status": "passed",
+          "summary": "pipeline present: wyślij-fakturę-na-500-pln-do-testfirmapl",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.1",
+          "status": "passed",
+          "summary": "process present: wyślij-fakturę-na-500-pln-do-testfirmapl",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.2",
+          "status": "passed",
+          "summary": "pipeline present: powiadom-devops-backup-gotowy",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.2",
+          "status": "passed",
+          "summary": "process present: powiadom-devops-backup-gotowy",
+          "details": {}
+        },
+        {
+          "id": "check.nlp2dsl.query.Wyślij-fakturę-na-500-PLN-do-testfirma.",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Wyślij fakturę na 500 PLN do test@firma.pl",
+          "details": {
+            "source": "pipeline/wyślij-fakturę-na-500-pln-do-testfirmapl.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Powiadom-#devops:-backup-gotowy",
+          "status": "passed",
+          "summary": "offline artifact ok (status=complete): Powiadom #devops: backup gotowy",
+          "details": {
+            "source": "pipeline/powiadom-devops-backup-gotowy.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.conversation.generated",
+          "status": "passed",
+          "summary": "wrote conversation.testql.toon.yaml",
+          "details": {}
+        },
+        {
+          "id": "check.conversation.dry_run",
+          "status": "skipped",
+          "summary": "testql not installed",
+          "details": {
+            "issues": []
+          }
+        },
+        {
+          "id": "check.conversation.transcript",
+          "status": "skipped",
+          "summary": "no conversation.transcript.md",
+          "details": {}
+        }
+      ],
+      "findings": [],
+      "actions": []
+    },
+    {
+      "run_id": "examples/11-notify-quality",
+      "example_id": "11-notify-quality",
+      "status": "passed",
+      "generated_at": "2026-06-06T09:15:45.868881+00:00",
+      "checks_total": 17,
+      "checks_passed": 14,
+      "checks_failed": 0,
+      "checks_skipped": 3,
+      "checks": [
+        {
+          "id": "check.testql.commands_dry_run",
+          "status": "passed",
+          "summary": "commands.testql.toon.yaml parses and dry-runs",
+          "details": {}
+        },
+        {
+          "id": "check.testql.ir_parse",
+          "status": "skipped",
+          "summary": "testql adapter not installed",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.1",
+          "status": "passed",
+          "summary": "pipeline present: powiadom-oncall",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.1",
+          "status": "passed",
+          "summary": "process present: powiadom-oncall",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.2",
+          "status": "passed",
+          "summary": "pipeline present: wyślij-powiadomienie-na-slack-devops-deploy-zako",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.2",
+          "status": "passed",
+          "summary": "process present: wyślij-powiadomienie-na-slack-devops-deploy-zako",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.3",
+          "status": "passed",
+          "summary": "pipeline present: powiadom-kanał-sales-o-podpisaniu-umowy-z-beta-c",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.3",
+          "status": "passed",
+          "summary": "process present: powiadom-kanał-sales-o-podpisaniu-umowy-z-beta-c",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.4",
+          "status": "passed",
+          "summary": "pipeline present: notify-telegram-chat--1001234567890-api-timeout",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.4",
+          "status": "passed",
+          "summary": "process present: notify-telegram-chat--1001234567890-api-timeout",
+          "details": {}
+        },
+        {
+          "id": "check.nlp2dsl.query.Powiadom-#oncall",
+          "status": "passed",
+          "summary": "offline artifact ok (status=incomplete): Powiadom #oncall",
+          "details": {
+            "source": "pipeline/powiadom-oncall.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Wyślij-powiadomienie-na-Slack-#devops:-d",
+          "status": "passed",
+          "summary": "offline artifact ok (status=executed): Wyślij powiadomienie na Slack #devops: deploy zakończony",
+          "details": {
+            "source": "pipeline/wyślij-powiadomienie-na-slack-devops-deploy-zako.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Powiadom-kanał-#sales-o-podpisaniu-umowy",
+          "status": "passed",
+          "summary": "offline artifact ok (status=executed): Powiadom kanał #sales o podpisaniu umowy z Beta Corp",
+          "details": {
+            "source": "pipeline/powiadom-kanał-sales-o-podpisaniu-umowy-z-beta-c.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Notify-Telegram-chat--1001234567890:-API",
+          "status": "passed",
+          "summary": "offline artifact ok (status=executed): Notify Telegram chat -1001234567890: API timeout na produkcji",
+          "details": {
+            "source": "pipeline/notify-telegram-chat--1001234567890-api-timeout.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.conversation.generated",
+          "status": "passed",
+          "summary": "wrote conversation.testql.toon.yaml",
+          "details": {}
+        },
+        {
+          "id": "check.conversation.dry_run",
+          "status": "skipped",
+          "summary": "testql not installed",
+          "details": {
+            "issues": []
+          }
+        },
+        {
+          "id": "check.conversation.transcript",
+          "status": "skipped",
+          "summary": "no conversation.transcript.md",
+          "details": {}
+        }
+      ],
+      "findings": [],
+      "actions": []
+    },
+    {
+      "run_id": "examples/12-ir-show",
+      "example_id": "12-ir-show",
+      "status": "passed",
+      "generated_at": "2026-06-06T09:15:45.868886+00:00",
+      "checks_total": 20,
+      "checks_passed": 17,
+      "checks_failed": 0,
+      "checks_skipped": 3,
+      "checks": [
+        {
+          "id": "check.testql.commands_dry_run",
+          "status": "passed",
+          "summary": "commands.testql.toon.yaml parses and dry-runs",
+          "details": {}
+        },
+        {
+          "id": "check.testql.ir_parse",
+          "status": "skipped",
+          "summary": "testql adapter not installed",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.1",
+          "status": "passed",
+          "summary": "pipeline present: wyślij-fakturę-na-500-pln-do-testfirmapl",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.1",
+          "status": "passed",
+          "summary": "process present: wyślij-fakturę-na-500-pln-do-testfirmapl",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.2",
+          "status": "passed",
+          "summary": "pipeline present: powiadom-devops-backup-gotowy",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.2",
+          "status": "passed",
+          "summary": "process present: powiadom-devops-backup-gotowy",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.3",
+          "status": "passed",
+          "summary": "pipeline present: znajdź-pliki-py-w-src",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.3",
+          "status": "passed",
+          "summary": "process present: znajdź-pliki-py-w-src",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.4",
+          "status": "passed",
+          "summary": "pipeline present: uruchom-testy-jednostkowe",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.4",
+          "status": "passed",
+          "summary": "process present: uruchom-testy-jednostkowe",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.5",
+          "status": "passed",
+          "summary": "pipeline present: pokaż-status-systemu",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.5",
+          "status": "passed",
+          "summary": "process present: pokaż-status-systemu",
+          "details": {}
+        },
+        {
+          "id": "check.nlp2dsl.query.Wyślij-fakturę-na-500-PLN-do-testfirma.",
+          "status": "passed",
+          "summary": "offline artifact ok (status=executed): Wyślij fakturę na 500 PLN do test@firma.pl",
+          "details": {
+            "source": "pipeline/wyślij-fakturę-na-500-pln-do-testfirmapl.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.Powiadom-#devops:-backup-gotowy",
+          "status": "passed",
+          "summary": "offline artifact ok (status=executed): Powiadom #devops: backup gotowy",
+          "details": {
+            "source": "pipeline/powiadom-devops-backup-gotowy.json",
+            "mode": "auto"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.znajdź-pliki-*.py-w-src",
+          "status": "passed",
+          "summary": "offline artifact ok (status=ir): znajdź pliki *.py w src",
+          "details": {
+            "source": "pipeline/znajdź-pliki-py-w-src.json",
+            "mode": "show"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.uruchom-testy-jednostkowe",
+          "status": "passed",
+          "summary": "offline artifact ok (status=ir): uruchom testy jednostkowe",
+          "details": {
+            "source": "pipeline/uruchom-testy-jednostkowe.json",
+            "mode": "show"
+          }
+        },
+        {
+          "id": "check.nlp2dsl.query.pokaż-status-systemu",
+          "status": "passed",
+          "summary": "offline artifact ok (status=ir): pokaż status systemu",
+          "details": {
+            "source": "pipeline/pokaż-status-systemu.json",
+            "mode": "show"
+          }
+        },
+        {
+          "id": "check.conversation.generated",
+          "status": "passed",
+          "summary": "wrote conversation.testql.toon.yaml",
+          "details": {}
+        },
+        {
+          "id": "check.conversation.dry_run",
+          "status": "skipped",
+          "summary": "testql not installed",
+          "details": {
+            "issues": []
+          }
+        },
+        {
+          "id": "check.conversation.transcript",
+          "status": "skipped",
+          "summary": "no conversation.transcript.md",
+          "details": {}
+        }
+      ],
+      "findings": [],
+      "actions": []
+    },
+    {
+      "run_id": "examples/13-autonomous-invoice-stack",
+      "example_id": "13-autonomous-invoice-stack",
+      "status": "passed",
+      "generated_at": "2026-06-06T09:15:45.868892+00:00",
+      "checks_total": 8,
+      "checks_passed": 6,
+      "checks_failed": 0,
+      "checks_skipped": 2,
+      "checks": [
+        {
+          "id": "check.testql.commands_dry_run",
+          "status": "passed",
+          "summary": "commands.testql.toon.yaml parses and dry-runs",
+          "details": {}
+        },
+        {
+          "id": "check.testql.ir_parse",
+          "status": "skipped",
+          "summary": "testql adapter not installed",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.pipeline.1",
+          "status": "passed",
+          "summary": "pipeline present: autonomous-invoice-stack",
+          "details": {}
+        },
+        {
+          "id": "check.artifact.process.1",
+          "status": "passed",
+          "summary": "process present: autonomous-invoice-stack",
+          "details": {}
+        },
+        {
+          "id": "check.nlp2dsl.query.autonomous-invoice-stack",
+          "status": "passed",
+          "summary": "offline artifact ok (status=cached): autonomous-invoice-stack",
+          "details": {
+            "source": "pipeline/autonomous-invoice-stack.json",
+            "mode": "stack"
+          }
+        },
+        {
+          "id": "check.conversation.generated",
+          "status": "passed",
+          "summary": "wrote conversation.testql.toon.yaml",
+          "details": {}
+        },
+        {
+          "id": "check.conversation.dry_run",
+          "status": "skipped",
+          "summary": "testql not installed",
+          "details": {
+            "issues": []
+          }
+        },
+        {
+          "id": "check.conversation.transcript",
+          "status": "passed",
+          "summary": "1 turns in transcript",
+          "details": {
+            "path": "conversation.transcript.md"
+          }
         }
       ],
       "findings": [],

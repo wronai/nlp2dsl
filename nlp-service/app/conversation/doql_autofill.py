@@ -64,11 +64,9 @@ def _nested_generate_invoice(state: ConversationState, ctx: DoqlTaskContext) -> 
     amount_label = int(amount) if float(amount) == int(float(amount)) else amount
     filename = f"INV-{stamp}-{amount_label}-{currency}.pdf"
     out_path = out_dir / filename
-    body = (
-        f"FAKTURA\nOdbiorca: {to_addr}\nKwota: {amount} {currency}\n"
-        f"Wygenerowano: {datetime.now(UTC).isoformat()}\n"
-    )
-    out_path.write_text(body, encoding="utf-8")
+    from app.validation.invoice_pdf import write_invoice_pdf
+
+    write_invoice_pdf(out_path, to=str(to_addr), amount=amount, currency=str(currency))
     stored = store_attachment_path(out_path, ex_root)
     log.info("Nested generate_invoice → %s (stored as %s)", out_path, stored)
     ctx.data["send_invoice.attachment_path"] = stored

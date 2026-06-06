@@ -11,9 +11,10 @@ from typing import Any, Mapping, Optional, Sequence
 import requests
 
 DEFAULT_BACKEND_URL = "http://localhost:8010"
-DEFAULT_NLP_SERVICE_URL = "http://localhost:8002"
+DEFAULT_NLP_SERVICE_URL = "http://localhost:8012"
 DEFAULT_WORKER_URL = "http://localhost:8004"
 DEFAULT_TIMEOUT_SECONDS = 30.0
+DEFAULT_HEALTH_WAIT_SECONDS = 120.0
 _RETRYABLE_STATUS_CODES = frozenset({429, 500, 502, 503, 504})
 _DEFAULT_HTTP_RETRIES = 3
 
@@ -127,6 +128,26 @@ class NLP2DSLClient:
             "nlp_service": self.nlp_service_health(),
             "worker": self.worker_health(),
         }
+
+    def wait_for_health(
+        self,
+        *,
+        timeout_s: float | None = None,
+        interval_s: float = 2.0,
+    ) -> bool:
+        """Poll backend, nlp-service and worker until all respond or timeout."""
+        deadline = time.monotonic() + float(
+            timeout_s
+            if timeout_s is not None
+            else os.getenv("NLP2DSL_HEALTH_TIMEOUT", str(DEFAULT_HEALTH_WAIT_SECONDS))
+        )
+        while time.monotonic() < deadline:
+            try:
+                self.health()
+                return True
+            except requests.RequestException:
+                time.sleep(interval_s)
+        return False
 
     def workflow_from_text(self, text: str, execute: bool = False, mode: str = "auto") -> dict[str, Any]:
         payload = {"text": text, "execute": execute, "mode": mode}
@@ -514,6 +535,9 @@ class ConversationFlow:
         import os
 
         from .artifact_layout import current_run_id, ensure_layout
+        from .preview import ensure_services
+
+        ensure_services(self.client)
 
         example_dir = os.environ.get("NLP2DSL_EXAMPLE_DIR", "").strip()
         if example_dir:
@@ -559,6 +583,9 @@ class ConversationFlow:
         endpoint: str,
         response: dict[str, Any],
     ) -> None:
+        from .attachment_validation import enrich_chat_response
+
+        enrich_chat_response(response)
         self._last_response = response
         self.api_trace.append({
             "role": role,
@@ -609,6 +636,9 @@ class ConversationFlow:
         import os
 
         reflection = data.get("reflection")
+        if isinstance(reflection, dict) and data.get("status") == "executed":
+            # Server reflection is dsl_ready; executed reflection is computed client-side.
+            reflection = None
         if isinstance(reflection, dict):
             self.reflections.append(reflection)
             if self._reflect:
@@ -729,6 +759,7 @@ class ConversationFlow:
     def _handle_ready_response(self, data: dict[str, Any], message: str) -> None:
         """Handle ready status response."""
         print(f"🤖 System: {message}")
+        self._print_attachment_validation(data)
         dsl = data.get("dsl")
         if dsl:
             print(f"📝 Workflow: {dsl['name']} ({len(dsl['steps'])} kroków)")
@@ -744,18 +775,71 @@ class ConversationFlow:
         if message:
             print(f"🤖 System: {message}")
         execution = data.get("execution") or data.get("result")
+        attachment_validation = data.get("attachment_validation")
         if execution:
             print("✅ Wynik wykonania:")
             for step in execution.get("steps", []):
                 if step.get("status") == "completed":
                     result = step.get("result", {})
                     print(f"   • {step.get('action', '')}: {result}")
+                    step_av = result.get("attachment_validation")
+                    if step_av and not attachment_validation:
+                        attachment_validation = step_av
                 elif step.get("error"):
                     print(f"   ❌ {step.get('action', '')}: {step['error']}")
             auto_steps = data.get("autonomous_steps")
             if auto_steps:
                 print(f"   🔄 Autonomiczne kroki: {', '.join(auto_steps)}")
-            print()
+        if attachment_validation:
+            from .attachment_validation import format_attachment_validation
+
+            av_line = format_attachment_validation(attachment_validation)
+            if av_line:
+                print(f"   {av_line}")
+        print()
+        if self._reflect and data.get("status") == "executed":
+            self._reflect_executed_turn(data)
+
+    def _print_attachment_validation(self, data: dict[str, Any]) -> None:
+        av = data.get("attachment_validation")
+        if not av:
+            return
+        from .attachment_validation import format_attachment_validation
+
+        line = format_attachment_validation(av)
+        if line:
+            print(f"   {line}")
+
+    def _reflect_executed_turn(self, data: dict[str, Any]) -> None:
+        """Reflection after backend execute (nlp-service only reflects dsl_ready)."""
+        import os
+
+        from .reflection import format_reflection_summary, reflect_from_doql_path
+        from .doql_context import resolve_doql_context_path
+
+        path = resolve_doql_context_path()
+        if path is None:
+            return
+        try:
+            report = reflect_from_doql_path(path, data, "executed")
+            if report is None:
+                return
+            payload = report.model_dump()
+            self.reflections.append(payload)
+            print(format_reflection_summary(payload) + "\n")
+            example_dir = os.environ.get("NLP2DSL_EXAMPLE_DIR", "").strip()
+            if example_dir:
+                from .artifact_layout import write_reflection_snapshot
+
+                write_reflection_snapshot(
+                    Path(example_dir) / ".nlp2dsl",
+                    turn=self._turn_index,
+                    phase="executed",
+                    report=payload,
+                    run_id=self._run_id,
+                )
+        except OSError:
+            pass
 
     def _handle_error_response(self, message: str) -> None:
         """Handle error status response."""
@@ -764,10 +848,13 @@ class ConversationFlow:
     def run_demo(self) -> None:
         print("=== Demonstracja Konwersacyjnego Flow ===\n")
 
-        try:
-            self.client.health()
-        except requests.RequestException:
-            print("❌ Nie można połączyć się z API. Uruchom: docker compose up -d")
+        if not self.client.wait_for_health():
+            timeout = os.getenv("NLP2DSL_HEALTH_TIMEOUT", str(DEFAULT_HEALTH_WAIT_SECONDS))
+            print(
+                f"❌ Usługi nlp2dsl nie odpowiadają po {timeout}s.\n"
+                "   Uruchom: docker compose up -d\n"
+                "   Sprawdź: docker compose ps && curl -s http://localhost:8010/health"
+            )
             return
 
         print("🚀 Krok 1: Inicjalizacja konwersacji")

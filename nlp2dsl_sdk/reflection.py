@@ -134,68 +134,16 @@ def build_target_plan(
 
 
 def _parse_validation_issue(raw: str) -> ReflectionIssue | None:
-    if raw.startswith("brak wymaganego pola:"):
-        field = raw.split(":", 1)[1].strip()
-        return ReflectionIssue(
-            phase="validate",
-            kind="missing",
-            field=field,
-            message=raw,
-            resolution="ask_user",
-        )
-    if raw.startswith("brak pola jakości:"):
-        field = raw.split(":", 1)[1].strip()
-        return ReflectionIssue(
-            phase="validate",
-            kind="missing",
-            field=field,
-            message=raw,
-            resolution="ask_user",
-        )
-    if "attachment_path" in raw:
-        resolution: Resolution = "fix_format"
-        if "nie istnieje" in raw:
-            resolution = "generate"
-        else:
-            resolution = "ask_user"
-        return ReflectionIssue(
-            phase="validate",
-            kind="invalid_format" if "≠" in raw or "FAKTURA" in raw or "PDF" in raw else "missing",
-            field="attachment_path",
-            message=raw,
-            resolution=resolution,
-            source_hint="generate_invoice" if "nie istnieje" in raw else None,
-        )
-    if raw.startswith("to:"):
-        return ReflectionIssue(
-            phase="validate",
-            kind="invalid_format",
-            field="to",
-            message=raw,
-            resolution="fix_format",
-        )
-    if raw.startswith("amount:"):
-        return ReflectionIssue(
-            phase="validate",
-            kind="invalid_format",
-            field="amount",
-            message=raw,
-            resolution="fix_format",
-        )
-    if raw.startswith("unknown_action:"):
-        return ReflectionIssue(
-            phase="validate",
-            kind="unknown_action",
-            field="action",
-            message=raw,
-            resolution="blocked",
-        )
+    from .validation.messages import legacy_message_to_issue
+
+    vi = legacy_message_to_issue(raw, phase_str="validate")
     return ReflectionIssue(
         phase="validate",
-        kind="mismatch",
-        field="",
-        message=raw,
-        resolution="ask_user",
+        kind=vi.kind,
+        field=vi.field_name,
+        message=vi.message or vi.to_legacy_message(),
+        resolution=vi.resolution,
+        source_hint=vi.source_hint,
     )
 
 

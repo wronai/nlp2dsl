@@ -131,6 +131,7 @@ class ConversationPolicyIR(BaseModel):
     attachment_required: bool = False
     generate_invoice_if_missing: bool = True
     sync_auto_execute: bool = False
+    strict_pdf: bool = False
 
 
 class ProcessAccessScopeIR(BaseModel):
@@ -203,6 +204,15 @@ class DeploySpecIR(BaseModel):
     cron_image: str = "mcuadros/ofelia:latest"
 
 
+class ProfileValidationIR(BaseModel):
+    """Example-profile acceptance check — maps example-profiles.yaml validations → runtime codes."""
+
+    code: str = Field(description="Stable code, e.g. profile.dsl_action")
+    action: str = ""
+    status: str = ""
+    path: str = ""
+
+
 class SystemMapIR(BaseModel):
     """
     nlp2dsl.system_map.v1 — canonical map of available system capabilities.
@@ -228,6 +238,7 @@ class SystemMapIR(BaseModel):
     schedules: list[ScheduleSpecIR] = Field(default_factory=list)
     deploy: DeploySpecIR | None = None
     generated_services: list[GeneratedServiceIR] = Field(default_factory=list)
+    validations: list[ProfileValidationIR] = Field(default_factory=list)
     metadata: dict[str, Any] = Field(default_factory=dict)
 
     def command(self, name: str) -> CommandSchemaIR | None:

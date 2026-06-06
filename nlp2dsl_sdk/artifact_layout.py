@@ -124,6 +124,7 @@ def write_turn_snapshot(
         "autofill_applied": response.get("autofill_applied"),
         "dsl": response.get("dsl"),
         "execution": response.get("execution"),
+        "attachment_validation": response.get("attachment_validation"),
     }
     if registry_path and registry_path.is_file():
         payload["registry_path"] = str(registry_path.name)

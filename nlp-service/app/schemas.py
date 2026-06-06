@@ -106,13 +106,14 @@ class ConversationState(BaseModel):
     entities: dict = {}
     missing: list[str] = []
     dsl: WorkflowDSL | None = None
-    status: str = "in_progress"   # in_progress | ready | done | error
+    status: str = "in_progress"   # in_progress | ready | executed | done | error
     history: list[dict] = []      # [{"role": "user"|"assistant", "text": "..."}]
     doql_context_path: str | None = None
     doql_inline: dict = {}
     autofill_applied: list[str] = []
     attachment_required: bool = False
     autonomous_steps: list[str] = []
+    execution: dict | None = None
 
 
 # ── Schema-driven UI ─────────────────────────────────────────
@@ -145,3 +146,5 @@ class ConversationResponse(BaseModel):
     reflection: dict | None = None  # ReflectionReport — target vs current after each decision
     autonomous_steps: list[str] = []
     auto_execute: bool = False
+    execution: dict | None = None
+    attachment_validation: dict | None = None

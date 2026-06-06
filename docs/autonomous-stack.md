@@ -32,6 +32,8 @@ To **nie** jest jeszcze proces biznesowy — tylko środowisko.
 | Harmonogram | Ofelia + `run-process-docker.sh` | cron w `autonomous-invoice-stack-cron` |
 | Python (dev) | `python3 main.py` w `examples/…` | host → API platformy |
 
+SDK `wait_for_health()` czeka na backend `:8010`, nlp `:8012`, worker `:8004` przed scenariuszem.
+
 ### Jednorazowo (host)
 
 ```bash

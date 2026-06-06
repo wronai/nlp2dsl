@@ -122,6 +122,34 @@ async def test_preflight_blocks_process_scope_deny() -> None:
     assert "process_access" in resp.message or "mullm:rag" in resp.message
 
 
+@pytest.mark.asyncio
+async def test_preflight_blocks_intract_clarification() -> None:
+    ctx = DoqlTaskContext(
+        process=DoqlProcessPolicy(
+            intract_enforce_clarification=True,
+            nlp_confidence_min=0.5,
+        ),
+    )
+    state = ConversationState(id="clarify1")
+    state.intent = "unknown"
+
+    decision = IntentDecision(
+        action="unknown",
+        intent="unknown",
+        source="test",
+        confidence=0.3,
+        authorized=True,
+    )
+
+    with patch("app.conversation.process_agent.load_context_for_state", return_value=ctx):
+        with patch("app.conversation.process_agent.sync_autofill_from_doql", new_callable=AsyncMock):
+            resp = await preflight_turn(state, decision)
+
+    assert resp is not None
+    assert resp.status == "blocked"
+    assert "doprecyzowania" in resp.message
+
+
 def test_required_fields_for_action_helper() -> None:
     set_doql_context(
         DoqlTaskContext(commands=[DoqlCommand(name="send_email", required=["to"])])

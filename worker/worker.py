@@ -21,6 +21,11 @@ from fastapi import FastAPI, HTTPException
 import httpx
 
 try:
+    from .attachment_validation import resolve_worker_attachment_path, validate_invoice_attachment
+except ImportError:
+    from attachment_validation import resolve_worker_attachment_path, validate_invoice_attachment
+
+try:
     from .logging_setup import RequestIDMiddleware, setup_logging
 except ImportError:
     from logging_setup import RequestIDMiddleware, setup_logging
@@ -86,14 +91,20 @@ async def handle_send_invoice(config: dict) -> dict:
         config.get("amount", "?"),
         attachment or "(brak)",
     )
+    validation = validate_invoice_attachment(attachment, config)
     await asyncio.sleep(0.5)  # symulacja
     invoice_id = f"INV-{datetime.now(UTC).strftime('%Y%m%d%H%M%S')}"
     log.info("✅ Invoice %s created", invoice_id)
     result: dict[str, Any] = {"invoice_id": invoice_id, "sent_to": config.get("to")}
     if attachment:
         result["attachment_path"] = attachment
-        result["attachment_used"] = True
+        result["attachment_used"] = validation["status"] == "ok"
+        result["attachment_validation"] = validation
     return result
+
+
+def _resolve_attachment_path(raw: str) -> str:
+    return resolve_worker_attachment_path(raw)
 
 
 @action("generate_invoice")
@@ -109,10 +120,9 @@ async def handle_generate_invoice(config: dict) -> dict:
         output_path = str(out_dir / f"INV-{stamp}-{amount}-{currency}.pdf")
     path = Path(output_path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        f"FAKTURA\nOdbiorca: {to_addr}\nKwota: {amount} {currency}\n",
-        encoding="utf-8",
-    )
+    from invoice_pdf import write_invoice_pdf
+
+    write_invoice_pdf(path, to=str(to_addr), amount=amount, currency=str(currency))
     log.info("✅ Invoice file generated: %s", path)
     return {"attachment_path": str(path), "amount": amount, "to": to_addr, "currency": currency}
 

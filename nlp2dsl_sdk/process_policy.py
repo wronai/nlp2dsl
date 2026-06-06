@@ -127,44 +127,87 @@ def process_policy_from_profile_block(raw: Mapping[str, Any] | None) -> ProcessP
 
     mode = str(raw.get("mode") or "balanced")
     preset = dict(_MODE_PRESETS.get(mode, _MODE_PRESETS["balanced"]))
-
-    nlp = raw.get("nlp") or {}
-    if isinstance(nlp, Mapping):
-        if nlp.get("parser"):
-            preset["nlp_parser"] = str(nlp["parser"])
-        if "confidence_min" in nlp:
-            preset["nlp_confidence_min"] = float(nlp["confidence_min"])
-        if "enrich_missing" in nlp:
-            preset["nlp_enrich_missing"] = bool(nlp["enrich_missing"])
-
-    autonomous = raw.get("autonomous") or {}
-    if isinstance(autonomous, Mapping):
-        if "enabled" in autonomous:
-            preset["autonomous_enabled"] = bool(autonomous["enabled"])
-        if "max_rounds" in autonomous:
-            preset["autonomous_max_rounds"] = int(autonomous["max_rounds"])
-        if autonomous.get("ask_user"):
-            preset["ask_user"] = str(autonomous["ask_user"])
-
-    llm = raw.get("llm") or {}
-    llm_temperature: float | None = None
-    if isinstance(llm, Mapping):
-        if llm.get("reasoning"):
-            preset["llm_reasoning"] = str(llm["reasoning"])
-        if "temperature" in llm:
-            llm_temperature = float(llm["temperature"])
-
-    intract = raw.get("intract") or {}
-    intract_gate = bool(intract.get("gate", False)) if isinstance(intract, Mapping) else False
-    intract_clarify = (
-        bool(intract.get("enforce_clarification", False)) if isinstance(intract, Mapping) else False
-    )
+    _apply_nlp_policy(preset, _mapping_block(raw, "nlp"))
+    _apply_autonomous_policy(preset, _mapping_block(raw, "autonomous"))
+    llm_temperature = _apply_llm_policy(preset, _mapping_block(raw, "llm"))
+    intract_gate, intract_clarify = _intract_flags(_mapping_block(raw, "intract"))
 
     access = _merge_access(raw.get("access") if isinstance(raw.get("access"), Mapping) else None)
     paths = _merge_paths(raw.get("paths") if isinstance(raw.get("paths"), Mapping) else None)
 
+    return _process_policy_from_parts(
+        mode=_normalized_mode(mode),
+        preset=preset,
+        llm_temperature=llm_temperature,
+        intract_gate=intract_gate,
+        intract_clarify=intract_clarify,
+        access=access,
+        paths=paths,
+    )
+
+
+def _mapping_block(raw: Mapping[str, Any], key: str) -> Mapping[str, Any] | None:
+    value = raw.get(key)
+    return value if isinstance(value, Mapping) else None
+
+
+def _apply_nlp_policy(preset: dict[str, Any], nlp: Mapping[str, Any] | None) -> None:
+    if not nlp:
+        return
+    if nlp.get("parser"):
+        preset["nlp_parser"] = str(nlp["parser"])
+    if "confidence_min" in nlp:
+        preset["nlp_confidence_min"] = float(nlp["confidence_min"])
+    if "enrich_missing" in nlp:
+        preset["nlp_enrich_missing"] = bool(nlp["enrich_missing"])
+
+
+def _apply_autonomous_policy(preset: dict[str, Any], autonomous: Mapping[str, Any] | None) -> None:
+    if not autonomous:
+        return
+    if "enabled" in autonomous:
+        preset["autonomous_enabled"] = bool(autonomous["enabled"])
+    if "max_rounds" in autonomous:
+        preset["autonomous_max_rounds"] = int(autonomous["max_rounds"])
+    if autonomous.get("ask_user"):
+        preset["ask_user"] = str(autonomous["ask_user"])
+
+
+def _apply_llm_policy(preset: dict[str, Any], llm: Mapping[str, Any] | None) -> float | None:
+    if not llm:
+        return None
+    if llm.get("reasoning"):
+        preset["llm_reasoning"] = str(llm["reasoning"])
+    if "temperature" in llm:
+        return float(llm["temperature"])
+    return None
+
+
+def _intract_flags(intract: Mapping[str, Any] | None) -> tuple[bool, bool]:
+    if not intract:
+        return False, False
+    return (
+        bool(intract.get("gate", False)),
+        bool(intract.get("enforce_clarification", False)),
+    )
+
+
+def _normalized_mode(mode: str) -> str:
+    return mode if mode in _MODE_PRESETS else "balanced"
+
+
+def _process_policy_from_parts(
+    *,
+    mode: str,
+    preset: Mapping[str, Any],
+    llm_temperature: float | None,
+    intract_gate: bool,
+    intract_clarify: bool,
+    access: ProcessAccessScopeIR,
+    paths: ProcessPathsIR,
+) -> ProcessPolicyIR:
     return ProcessPolicyIR(
-        mode=mode if mode in _MODE_PRESETS else "balanced",
+        mode=mode,
         nlp_parser=preset["nlp_parser"],
         nlp_confidence_min=float(preset["nlp_confidence_min"]),
         nlp_enrich_missing=bool(preset["nlp_enrich_missing"]),
@@ -185,7 +228,7 @@ def _merge_conversation_from_profile(ir: SystemMapIR, raw: Mapping[str, Any]) ->
     if not isinstance(conv, Mapping):
         return
     updates: dict[str, Any] = {}
-    for key in ("autofill", "attachment_required", "generate_invoice_if_missing", "sync_auto_execute"):
+    for key in ("autofill", "attachment_required", "generate_invoice_if_missing", "sync_auto_execute", "strict_pdf"):
         if key in conv:
             updates[key] = bool(conv[key])
     if updates:
@@ -226,6 +269,10 @@ def apply_process_policies(
     if merged:
         ir.process = process_policy_from_profile_block(merged)
         _merge_conversation_from_profile(ir, merged)
+
+    from .validation.profile_checks import apply_profile_validations
+
+    apply_profile_validations(ir, dict(profile) if profile else None)
 
 
 def effective_nlp_parser_mode(process: ProcessPolicyIR | None) -> str:

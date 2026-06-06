@@ -7,6 +7,7 @@ from typing import Any, Optional
 
 from nlp2dsl_sdk.client import ConversationFlow, NLP2DSLClient
 from nlp2dsl_sdk.conversation_artifacts import write_conversation_artifacts
+from nlp2dsl_sdk.preview import ensure_services
 
 
 HELP = """
@@ -20,8 +21,10 @@ Komendy w trybie interaktywnym:
 
 def run_demo(client: Optional[NLP2DSLClient] = None) -> dict[str, Any]:
     """Krótka demonstracja bez input() — do run-all.sh."""
-    flow = ConversationFlow(client)
+    client = client or NLP2DSLClient.from_env()
     print("=== Przykład: Interaktywny chat (demo skryptowane) ===\n")
+    ensure_services(client)
+    flow = ConversationFlow(client)
     print("💡 Pełny tryb interaktywny: python3 main.py --interactive\n")
 
     flow.start("Wyślij email do team@firma.pl z tematem Status projektu")
