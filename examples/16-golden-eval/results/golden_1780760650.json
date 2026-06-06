@@ -1,0 +1,288 @@
+{
+  "total": 12,
+  "passed": 12,
+  "pass_rate": 100.0,
+  "by_focus": {
+    "attachment_validation": {
+      "total": 1,
+      "passed": 1,
+      "pass_rate": 100.0
+    },
+    "dsl_mapping": {
+      "total": 4,
+      "passed": 4,
+      "pass_rate": 100.0
+    },
+    "entity_extraction": {
+      "total": 5,
+      "passed": 5,
+      "pass_rate": 100.0
+    },
+    "unnecessary_clarification": {
+      "total": 2,
+      "passed": 2,
+      "pass_rate": 100.0
+    }
+  },
+  "by_action": {
+    "crm_update": {
+      "total": 1,
+      "passed": 1,
+      "pass_rate": 100.0
+    },
+    "email": {
+      "total": 1,
+      "passed": 1,
+      "pass_rate": 100.0
+    },
+    "generate_report": {
+      "total": 3,
+      "passed": 3,
+      "pass_rate": 100.0
+    },
+    "notify_slack": {
+      "total": 1,
+      "passed": 1,
+      "pass_rate": 100.0
+    },
+    "send_email": {
+      "total": 1,
+      "passed": 1,
+      "pass_rate": 100.0
+    },
+    "send_invoice": {
+      "total": 5,
+      "passed": 5,
+      "pass_rate": 100.0
+    }
+  },
+  "by_outcome": {
+    "success": 12
+  },
+  "rows": [
+    {
+      "case_id": "g-entity-invoice-pl",
+      "focus": "entity_extraction",
+      "category": "invoice",
+      "mode": "rules",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_actions": [
+        "send_invoice"
+      ],
+      "actual_actions": [
+        "send_invoice"
+      ],
+      "passed": true,
+      "outcome_class": "success",
+      "missing": [],
+      "notes": ""
+    },
+    {
+      "case_id": "g-entity-invoice-en",
+      "focus": "entity_extraction",
+      "category": "invoice",
+      "mode": "rules",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_actions": [
+        "send_invoice"
+      ],
+      "actual_actions": [
+        "send_invoice"
+      ],
+      "passed": true,
+      "outcome_class": "success",
+      "missing": [],
+      "notes": ""
+    },
+    {
+      "case_id": "g-entity-email-reminder",
+      "focus": "entity_extraction",
+      "category": "email",
+      "mode": "rules",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_actions": [
+        "send_email"
+      ],
+      "actual_actions": [
+        "send_email"
+      ],
+      "passed": true,
+      "outcome_class": "success",
+      "missing": [],
+      "notes": ""
+    },
+    {
+      "case_id": "g-entity-crm-lead",
+      "focus": "entity_extraction",
+      "category": "crm",
+      "mode": "rules",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_actions": [
+        "crm_update"
+      ],
+      "actual_actions": [
+        "crm_update"
+      ],
+      "passed": true,
+      "outcome_class": "success",
+      "missing": [],
+      "notes": ""
+    },
+    {
+      "case_id": "g-dsl-composite-invoice-slack",
+      "focus": "dsl_mapping",
+      "category": "composite",
+      "mode": "rules",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_actions": [
+        "send_invoice",
+        "notify_slack"
+      ],
+      "actual_actions": [
+        "send_invoice",
+        "notify_slack"
+      ],
+      "passed": true,
+      "outcome_class": "success",
+      "missing": [],
+      "notes": ""
+    },
+    {
+      "case_id": "g-dsl-report-email",
+      "focus": "dsl_mapping",
+      "category": "composite",
+      "mode": "rules",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_actions": [
+        "generate_report",
+        "send_email"
+      ],
+      "actual_actions": [
+        "generate_report",
+        "send_email"
+      ],
+      "passed": true,
+      "outcome_class": "success",
+      "missing": [],
+      "notes": ""
+    },
+    {
+      "case_id": "g-dsl-full-report-flow",
+      "focus": "dsl_mapping",
+      "category": "composite",
+      "mode": "rules",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_actions": [
+        "generate_report",
+        "send_email",
+        "notify_slack"
+      ],
+      "actual_actions": [
+        "generate_report",
+        "send_email",
+        "notify_slack"
+      ],
+      "passed": true,
+      "outcome_class": "success",
+      "missing": [],
+      "notes": ""
+    },
+    {
+      "case_id": "g-dsl-report-slack",
+      "focus": "dsl_mapping",
+      "category": "composite",
+      "mode": "rules",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_actions": [
+        "generate_report",
+        "notify_slack"
+      ],
+      "actual_actions": [
+        "generate_report",
+        "notify_slack"
+      ],
+      "passed": true,
+      "outcome_class": "success",
+      "missing": [],
+      "notes": ""
+    },
+    {
+      "case_id": "g-clarify-invoice-complete",
+      "focus": "unnecessary_clarification",
+      "category": "invoice",
+      "mode": "rules",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_actions": [
+        "send_invoice"
+      ],
+      "actual_actions": [
+        "send_invoice"
+      ],
+      "passed": true,
+      "outcome_class": "success",
+      "missing": [],
+      "notes": "All required invoice fields present — must not stay incomplete."
+    },
+    {
+      "case_id": "g-clarify-slack-complete",
+      "focus": "unnecessary_clarification",
+      "category": "slack",
+      "mode": "rules",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_actions": [
+        "notify_slack"
+      ],
+      "actual_actions": [
+        "notify_slack"
+      ],
+      "passed": true,
+      "outcome_class": "success",
+      "missing": [],
+      "notes": ""
+    },
+    {
+      "case_id": "g-clarify-email-missing-body",
+      "focus": "entity_extraction",
+      "category": "email",
+      "mode": "rules",
+      "expected_status": "incomplete",
+      "actual_status": "incomplete",
+      "expected_actions": [],
+      "actual_actions": [],
+      "passed": true,
+      "outcome_class": "success",
+      "missing": [
+        "send_email.body"
+      ],
+      "notes": "Body is quality-required — incomplete is correct."
+    },
+    {
+      "case_id": "g-attach-invoice-with-amount",
+      "focus": "attachment_validation",
+      "category": "invoice",
+      "mode": "rules",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_actions": [
+        "send_invoice"
+      ],
+      "actual_actions": [
+        "send_invoice"
+      ],
+      "passed": true,
+      "outcome_class": "success",
+      "missing": [],
+      "notes": "Attachment may be autogenerated via nested generate_invoice."
+    }
+  ]
+}

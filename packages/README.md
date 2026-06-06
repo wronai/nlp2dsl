@@ -1,6 +1,35 @@
-# NLP2DSL integration packages
+# NLP2DSL packages
 
-Wspólne pakiety dla integracji **nlp2cmd** (NL → plan → wykonanie) z **Propact** (pact → wykonanie).
+Monorepo `packages/` — wydzielone biblioteki SDK platformy MVP oraz pakiety integracji **nlp2cmd** ↔ **Propact**.
+
+## Pakiety SDK (artefakty + walidacja)
+
+| Pakiet | Import | Artefakty / rola |
+|--------|--------|------------------|
+| [`dsl-contracts`](dsl-contracts/) | `dsl_contracts` | `ActionContract`, registry, drafty LLM → `.nlp2dsl/generated/contracts/` |
+| [`workflow-export`](workflow-export/) | `workflow_export` | markpact README + pactown ecosystem YAML |
+| [`nlp2dsl-stack`](nlp2dsl-stack/) | `nlp2dsl_stack` | `docker-compose.stack.yaml`, cron, `stack.manifest.yaml` |
+| [`testql-conversations`](testql-conversations/) | `testql_conversations` | walidacja `.testql.toon.yaml`, `conversation.transcript.md` |
+| [`nlp2dsl-artifacts`](nlp2dsl-artifacts/) | `nlp2dsl_artifacts` | `manifest.yaml`, `pipeline/`, `process/`, `commands.testql.toon.yaml` |
+| [`dsl-validate`](dsl-validate/) | `dsl_validate` | `ValidationIssue`, pipeline faz walidacji (bez plików — runtime) |
+
+Zewnętrzna zależność mapy środowiska: **[`env2llm`](../../../semcod/env2llm)** (`environment.doql.less`, `SystemMapIR`).
+
+`nlp2dsl_sdk` zachowuje **shimy** (`nlp2dsl_sdk.contracts` → `dsl_contracts`, itd.) — istniejący kod i testy działają bez zmian importów.
+
+```python
+# Bezpośrednio z pakietu (zalecane w nowym kodzie)
+from dsl_contracts import ActionContract, contract_from_registry_entry
+from dsl_validate import ValidationIssue, validate_step_issues
+from nlp2dsl_artifacts import ExampleArtifactWriter, build_process_trace
+from testql_conversations import validate_conversation_scenario
+
+# Legacy — nadal działa
+from nlp2dsl_sdk.contracts import ActionContract
+from nlp2dsl_sdk.validation import ValidationIssue
+```
+
+## Pakiety IR (nlp2cmd ↔ Propact)
 
 | Pakiet | Import / CLI | Rola |
 |--------|--------------|------|
@@ -38,12 +67,24 @@ Podgląd tras: `nlp2cmd plan "…" --explain` lub `--json` (pole `execution_rout
 
 ## Instalacja (dev)
 
+`env2llm` i pakiety `packages/*` **nie są na PyPI** — `pip install -e .` samo nie wystarczy.
+
 ```bash
 cd /path/to/nlp2dsl
+
+# pip (project.sh, run-all.sh)
+bash scripts/install-local-deps.sh && pip install -e .
+
+# pełny dev (nlp2cmd integration)
 ./scripts/setup-dev.sh
+
+# uv (rozwiązuje [tool.uv.sources] automatycznie)
+uv sync
 
 export NLP2CMD_INTEGRATION=1
 ```
+
+Wymaga sklonowanego [`env2llm`](../../../semcod/env2llm) obok (`../../semcod/env2llm` od roota nlp2dsl) lub `ENV2LLM_DIR=/ścieżka/do/env2llm`.
 
 ## Przykłady
 
@@ -69,6 +110,29 @@ NLP2CMD_SHOW_STRUCTURE=1 nlp2cmd -q "znajdz pliki *.py w src" --explain
 ```
 
 ## Kolejność zależności
+
+### SDK (artefakty)
+
+```mermaid
+flowchart TB
+    E2L[env2llm — semcod/env2llm]
+    DC[dsl-contracts]
+    WE[workflow-export]
+    DV[dsl-validate]
+    NS[nlp2dsl-stack]
+    NA[nlp2dsl-artifacts]
+    TQ[testql-conversations]
+
+    E2L --> NS
+    E2L --> NA
+    E2L --> DV
+    DC --> WE
+    DC --> DV
+```
+
+Kolejność `install-dev.sh`: `dsl-contracts` → `workflow-export` → `nlp2dsl-stack` → `testql-conversations` → `nlp2dsl-artifacts` → `dsl-validate` → pakiety IR.
+
+### IR (nlp2cmd)
 
 ```mermaid
 flowchart TB

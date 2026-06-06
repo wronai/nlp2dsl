@@ -12,8 +12,9 @@ ensure_nlp2dsl_sdk() {
     py="$root/venv/bin/python3"
   fi
 
-  if ! "$py" -c "import pydantic" 2>/dev/null; then
-    echo "==> Brak pydantic — instaluję nlp2dsl (editable) w: $py" >&2
+  if ! "$py" -c "import env2llm, nlp2dsl_sdk" 2>/dev/null; then
+    echo "==> Brak env2llm/nlp2dsl — instaluję lokalne zależności w: $py" >&2
+    PYTHON="$py" bash "$root/scripts/install-local-deps.sh"
     "$py" -m pip install -e "$root" -q
   fi
 

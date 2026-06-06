@@ -27,13 +27,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Checkout env2llm
+        uses: actions/checkout@v4
+        with:
+          repository: semcod/env2llm
+          path: vendor/env2llm
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
       - name: Install nlp2dsl + test deps
+        env:
+          ENV2LLM_DIR: ${{ github.workspace }}/vendor/env2llm
         run: |
           python -m pip install --upgrade pip
+          bash scripts/install-local-deps.sh
           pip install -e ".[dev]"
 
       - name: Unit tests (SDK gates)
@@ -66,13 +75,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Checkout env2llm
+        uses: actions/checkout@v4
+        with:
+          repository: semcod/env2llm
+          path: vendor/env2llm
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
       - name: Install backend test deps
+        env:
+          ENV2LLM_DIR: ${{ github.workspace }}/vendor/env2llm
         run: |
           python -m pip install --upgrade pip
+          bash scripts/install-local-deps.sh
           pip install -e .
           pip install pytest pytest-asyncio httpx
 

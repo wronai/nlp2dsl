@@ -45,11 +45,20 @@ Indeks dokumentacji platformy MVP (NLP → DSL → CMD → Docker).
 | [REFACTOR-PLAN.md](REFACTOR-PLAN.md) | Plan refaktoryzacji (Mullm, moduły, walidacja) |
 | [migration-persistence.md](migration-persistence.md) | Postgres, Redis, historia workflow |
 
-## Pakiety IR (nlp2cmd)
+## Pakiety SDK i IR
 
 | Dokument | Opis |
 |----------|------|
-| [packages/README.md](../packages/README.md) | IntentIR, ExecutionPlanIR, nlp2cmd plan |
+| [packages/README.md](../packages/README.md) | Indeks wszystkich pakietów w `packages/` |
+| [packages/dsl-contracts/README.md](../packages/dsl-contracts/README.md) | Kontrakty akcji, drafty |
+| [packages/dsl-validate/README.md](../packages/dsl-validate/README.md) | Pipeline walidacji |
+| [packages/nlp2dsl-artifacts/README.md](../packages/nlp2dsl-artifacts/README.md) | Artefakty `.nlp2dsl/` |
+| [packages/workflow-export/README.md](../packages/workflow-export/README.md) | Eksport markpact + pactown |
+| [packages/nlp2dsl-stack/README.md](../packages/nlp2dsl-stack/README.md) | Compose stack + cron |
+| [packages/testql-conversations/README.md](../packages/testql-conversations/README.md) | Scenariusze TestTOON |
+| [env2llm](../../../semcod/env2llm/README.md) | Mapa środowiska DOQL (repo semcod) |
+
+Pakiety IR (nlp2cmd): `pact-ir`, `nlp2cmd-intent`, `nlp2cmd-planner`, `nlp2cmd-propact`, `nlp2dsl-show` — szczegóły w [packages/README.md](../packages/README.md).
 
 ## Porty Docker (domyślne)
 

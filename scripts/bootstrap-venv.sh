@@ -17,7 +17,8 @@ if [[ ! -x "$VENV/bin/python3" ]]; then
   uv venv "$VENV"
 fi
 
-echo "==> Installing nlp2dsl + services into $VENV"
+echo "==> Installing local deps + nlp2dsl into $VENV"
+PYTHON="$VENV/bin/python3" bash "$ROOT/scripts/install-local-deps.sh"
 uv pip install --python "$VENV/bin/python3" \
   -e "$ROOT[dev]" \
   -e "$ROOT/backend" \

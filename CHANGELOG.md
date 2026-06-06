@@ -5,6 +5,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+- Wydzielono moduły SDK do `packages/`: `dsl-contracts`, `workflow-export`, `nlp2dsl-stack`, `testql-conversations`, `nlp2dsl-artifacts`, `dsl-validate`
+- Mapa środowiska DOQL (`env2llm`) — zewnętrzne repo `semcod/env2llm`; `nlp2dsl_sdk` zachowuje shimy dla kompatybilności wstecznej
+- Zaktualizowano dokumentację: `README.md`, `packages/README.md`, `docs/artifacts.md`, `docs/validation.md`, `docs/autonomous-stack.md`
+- Dodano `scripts/install-local-deps.sh` — instalacja `env2llm` + `packages/` przed `pip install -e .` (`project.sh`, CI, `run-all.sh`)
+
+## [0.0.38] - 2026-06-06
+
+### Docs
+- Update CHANGELOG.md
+- Update README.md
+- Update docs/README.md
+- Update docs/artifacts.md
+- Update docs/autonomous-stack.md
+- Update docs/system-status-examples-01-14.md
+- Update docs/validation.md
+- Update packages/README.md
+- Update packages/dsl-contracts/README.md
+- Update packages/dsl-validate/README.md
+- ... and 6 more files
+
+### Other
+- Update examples/08-multi-object-benchmark/results/benchmark_1780760454.json
+- Update examples/16-golden-eval/results/golden_1780760650.json
+- Update examples/run-all.sh
+- Update examples/testql-results.json
+- Update nlp2dsl_sdk/artifact_layout.py
+- Update nlp2dsl_sdk/artifacts.py
+- Update nlp2dsl_sdk/compose_generator.py
+- Update nlp2dsl_sdk/contracts/__init__.py
+- Update nlp2dsl_sdk/contracts/action.py
+- Update nlp2dsl_sdk/contracts/draft.py
+- ... and 106 more files
+
 ## [0.1.10] - 2026-06-05
 
 ### Fixed

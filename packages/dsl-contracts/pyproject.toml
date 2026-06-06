@@ -1,0 +1,24 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "dsl-contracts"
+version = "0.1.0"
+description = "Action contract models, registry adapters, and LLM draft workflow for NLP2DSL"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+dependencies = [
+    "pydantic>=2.0",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/dsl_contracts"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -29,7 +29,7 @@ flowchart TD
 | Warstwa | Plik / moduł | Rola |
 |---------|--------------|------|
 | **Mapa systemu** | `environment.doql.less` | `commands.required`, `conversation.*`, `process.paths` |
-| **SystemMapIR** | `nlp2dsl_sdk/system_map_ir.py` | Pydantic — docelowe źródło prawdy |
+| **SystemMapIR** | [`env2llm`](../../../semcod/env2llm) (`env2llm.ir`) | Pydantic — źródło prawdy mapy |
 | **Registry** | `nlp-service/app/registry.py` | Fallback required/quality (w trakcie migracji do DOQL) |
 | **Walidatory** | `step_validator`, `step_validation`, `attachment_validation` | Format pól, PDF, path scope |
 | **Reflection** | `nlp2dsl_sdk/reflection.py` | issues → `context_queries` + resolution |
@@ -108,35 +108,23 @@ SDK (`ensure_services`, `wait_for_health`) czeka na wszystkie trzy endpointy `/h
 
 ## Pliki implementacji (stan bieżący)
 
-| Pakiet | Moduł |
-|--------|--------|
-| **SDK (canonical)** | `nlp2dsl_sdk/validation/` — `issue.py`, `context.py`, `pipeline.py`, `messages.py`, `rules/` |
-| SDK shim | `nlp2dsl_sdk/step_validation.py` → deleguje do pipeline |
-| DOQL split | `nlp2dsl_sdk/doql/models.py` (+ `doql_context.py` re-export) |
-| nlp-service | `app/validation/step_validator.py` → adapter SDK + `path_policy` |
-| backend | `app/step_validator.py` → adapter SDK (`Phase.PRE_EXECUTE`) |
-| worker | `step_validator.py`, `attachment_validation.py` → adapter SDK (`Phase.POST_EXECUTE`) |
-| reflection | `legacy_message_to_issue()` w `validation/messages.py` |
+| Warstwa | Pakiet / moduł |
+|---------|----------------|
+| **Canonical** | [`dsl-validate`](../packages/dsl-validate/) — `issue`, `context`, `pipeline`, `rules/`, `profile_checks` |
+| **Kontrakty** | [`dsl-contracts`](../packages/dsl-contracts/) — `ActionContract`, drafty LLM |
+| **Shim SDK** | `nlp2dsl_sdk/validation/` → re-export z `dsl_validate` |
+| **Mapa DOQL** | `env2llm` — `SystemMapIR`, profile validations |
+| nlp-service | `app/validation/step_validator.py` → adapter + `path_policy` |
+| backend | `app/step_validator.py` → adapter (`Phase.PRE_EXECUTE`) |
+| worker | `step_validator.py`, `attachment_validation.py` → adapter (`Phase.POST_EXECUTE`) |
+| reflection | `legacy_message_to_issue()` w `dsl_validate.messages` |
 
-## Docelowy moduł (`nlp2dsl_sdk/validation/`)
-
-Plan refaktoryzacji — jeden pipeline zamiast 3–4 kopii:
-
-```
-nlp2dsl_sdk/validation/
-  issue.py          # ValidationIssue + kody (attachment.invalid_pdf, …)
-  context.py        # ValidationContext(phase, SystemMapIR, config)
-  pipeline.py       # run(phase) → list[ValidationIssue]
-  registry.py       # @register_rule
-  resolutions.py    # issue → generate | autofill | ask_user
-  rules/
-    required.py
-    attachment_pdf.py
-    path_scope.py
-    runtime_health.py
+```python
+from dsl_validate import ValidationIssue, validate_step_issues, ValidationContext
+from dsl_contracts import ActionContract
 ```
 
-Szczegóły faz: [`REFACTOR-PLAN.md`](REFACTOR-PLAN.md#faza-5--modułowa-walidacja-requestu).
+Szczegóły refaktoryzacji: [`REFACTOR-PLAN.md`](REFACTOR-PLAN.md#faza-5--modułowa-walidacja-requestu).
 
 ## Testowanie
 

@@ -1,0 +1,24 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "nlp2dsl-stack"
+version = "0.1.0"
+description = "Generate docker-compose stack and cron artifacts from SystemMapIR"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+dependencies = [
+    "env2llm>=0.1.0",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/nlp2dsl_stack"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

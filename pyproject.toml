@@ -4,16 +4,32 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nlp2dsl"
-version = "0.0.37"
+version = "0.0.38"
 description = "Reusable Python SDK for the NLP2DSL platform"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "Apache-2.0"
 dependencies = [
+    "env2llm>=0.1.0",
+    "dsl-contracts>=0.1.0",
+    "workflow-export>=0.1.0",
+    "nlp2dsl-stack>=0.1.0",
+    "testql-conversations>=0.1.0",
+    "nlp2dsl-artifacts>=0.1.0",
+    "dsl-validate>=0.1.0",
     "requests>=2.31.0",
     "pyyaml>=6.0",
     "pydantic>=2.0",
 ]
+
+[tool.uv.sources]
+env2llm = { path = "../../semcod/env2llm", editable = true }
+dsl-contracts = { path = "packages/dsl-contracts", editable = true }
+workflow-export = { path = "packages/workflow-export", editable = true }
+nlp2dsl-stack = { path = "packages/nlp2dsl-stack", editable = true }
+testql-conversations = { path = "packages/testql-conversations", editable = true }
+nlp2dsl-artifacts = { path = "packages/nlp2dsl-artifacts", editable = true }
+dsl-validate = { path = "packages/dsl-validate", editable = true }
 
 [dependency-groups]
 test = [

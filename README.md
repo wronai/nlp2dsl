@@ -3,11 +3,11 @@
 
 ## AI Cost Tracking
 
-![PyPI](https://img.shields.io/badge/pypi-costs-blue) ![Version](https://img.shields.io/badge/version-0.0.37-blue) ![Python](https://img.shields.io/badge/python-3.9+-blue) ![License](https://img.shields.io/badge/license-Apache--2.0-green)
-![AI Cost](https://img.shields.io/badge/AI%20Cost-$12.50-orange) ![Human Time](https://img.shields.io/badge/Human%20Time-19.7h-blue) ![Model](https://img.shields.io/badge/Model-openrouter%2Fqwen%2Fqwen3--coder--next-lightgrey)
+![PyPI](https://img.shields.io/badge/pypi-costs-blue) ![Version](https://img.shields.io/badge/version-0.0.38-blue) ![Python](https://img.shields.io/badge/python-3.9+-blue) ![License](https://img.shields.io/badge/license-Apache--2.0-green)
+![AI Cost](https://img.shields.io/badge/AI%20Cost-$12.56-orange) ![Human Time](https://img.shields.io/badge/Human%20Time-20.6h-blue) ![Model](https://img.shields.io/badge/Model-openrouter%2Fqwen%2Fqwen3--coder--next-lightgrey)
 
-- 🤖 **LLM usage:** $12.4950 (45 commits)
-- 👤 **Human dev:** ~$1969 (19.7h @ $100/h, 30min dedup)
+- 🤖 **LLM usage:** $12.5608 (46 commits)
+- 👤 **Human dev:** ~$2060 (20.6h @ $100/h, 30min dedup)
 
 Generated on 2026-06-06 using [openrouter/qwen/qwen3-coder-next](https://openrouter.ai/qwen/qwen3-coder-next)
 
@@ -49,7 +49,9 @@ Repozytorium zawiera dwa poziomy:
 | Warstwa | Lokalizacja | Rola |
 |---------|-------------|------|
 | **Platforma MVP** | `backend/`, `nlp-service/`, `worker/` | Workflow DSL (faktury, e-mail, raporty) w Docker |
-| **Pakiety IR** | `packages/` | IntentIR / ExecutionPlanIR — wspólny język z nlp2cmd i Propact |
+| **SDK (wydzielone)** | `packages/dsl-*`, `nlp2dsl-*`, `workflow-export`, `testql-conversations` | Kontrakty, walidacja, artefakty, eksport markpact/pactown |
+| **Mapa środowiska** | [`env2llm`](../../semcod/env2llm) (semcod) | `environment.doql.less`, `SystemMapIR`, registry |
+| **Pakiety IR** | `packages/pact-ir`, `nlp2cmd-*` | IntentIR / ExecutionPlanIR — wspólny język z nlp2cmd i Propact |
 
 ### Podział odpowiedzialności
 
@@ -115,8 +117,16 @@ Wyłączenie: `NLP2DSL_UTF8=0`
 
 ### Artefakty przykładów (NLP → DSL → CMD → process)
 
-`examples/NN-name/.nlp2dsl/` — DOQL env, testql, pipeline JSON/YAML, process trace.  
-Generowanie: `bash examples/run-all.sh` · docs: [`docs/artifacts.md`](docs/artifacts.md)
+`examples/NN-name/.nlp2dsl/` — DOQL env (`env2llm`), manifest/pipeline/process (`nlp2dsl-artifacts`), TestQL (`testql-conversations`).
+
+| Pakiet | Pliki |
+|--------|-------|
+| `env2llm` | `registry/environment.doql.less` |
+| `nlp2dsl-artifacts` | `manifest.yaml`, `pipeline/`, `process/`, `commands.testql.toon.yaml` |
+| `workflow-export` | `generated/markpact/`, `generated/pactown/` (examples 03, 04, 14) |
+| `nlp2dsl-stack` | `generated/docker-compose.stack.yaml`, cron (example 13) |
+
+Generowanie: `bash examples/run-all.sh` · docs: [`docs/artifacts.md`](docs/artifacts.md) · pakiety: [`packages/README.md`](packages/README.md)
 
 ## Szybki start
 
@@ -148,7 +158,9 @@ Szczegóły: [`docs/validation.md`](docs/validation.md) · [`docs/process-agent.
 Szczegóły (Intract vs MVP, walidacja, logi, dialog): **[`examples/README.md`](examples/README.md)**
 
 ```bash
-pip install -e .
+# env2llm nie jest na PyPI — najpierw lokalne pakiety (semcod/env2llm + packages/)
+bash scripts/install-local-deps.sh && pip install -e .
+# lub: ./scripts/setup-dev.sh
 docker compose up -d
 python3 examples/06-interactive-chat/main.py --interactive   # rozmowa w terminalu
 python3 examples/07-email-conversation/main.py               # e-mail + uzupełnianie body
@@ -484,7 +496,7 @@ done
 #### Szybki start z przykładami:
 
 ```bash
-pip install -e .
+bash scripts/install-local-deps.sh && pip install -e .
 docker compose up -d                        # backend + nlp-service + worker
 python3 examples/01-invoice/main.py       # czeka na /health (do 120 s)
 

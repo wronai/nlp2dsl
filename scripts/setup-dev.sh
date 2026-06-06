@@ -10,8 +10,8 @@ export PYTHONIOENCODING="${PYTHONIOENCODING:-utf-8}"
 export LANG="${LANG:-C.UTF-8}"
 export LC_CTYPE="${LC_CTYPE:-$LANG}"
 
-echo "==> nlp2dsl packages (pact-ir, intent, planner, propact, show)"
-"$ROOT/packages/install-dev.sh"
+echo "==> local deps (env2llm + packages/)"
+PYTHON="$PY" "$ROOT/scripts/install-local-deps.sh"
 
 echo "==> nlp2dsl SDK"
 "$PY" -m pip install -e "$ROOT"

@@ -5,17 +5,17 @@
 
 - **Project**: /home/tom/github/wronai/nlp2dsl
 - **Primary Language**: python
-- **Languages**: python: 275, json: 30, shell: 14, yaml: 12, toml: 10
+- **Languages**: python: 308, json: 30, shell: 16, toml: 16, yaml: 12
 - **Analysis Mode**: static
-- **Total Functions**: 1366
-- **Total Classes**: 159
-- **Modules**: 364
-- **Entry Points**: 501
+- **Total Functions**: 1227
+- **Total Classes**: 135
+- **Modules**: 405
+- **Entry Points**: 493
 
 ## Architecture by Module
 
 ### nlp2dsl_sdk.client
-- **Functions**: 63
+- **Functions**: 64
 - **Classes**: 2
 - **File**: `client.py`
 
@@ -28,10 +28,6 @@
 - **Classes**: 2
 - **File**: `keyword_detector.py`
 
-### nlp2dsl_sdk.doql.parse
-- **Functions**: 25
-- **File**: `parse.py`
-
 ### nlp-service.app.conversation.responses
 - **Functions**: 23
 - **File**: `responses.py`
@@ -40,14 +36,19 @@
 - **Functions**: 21
 - **File**: `serve-dist.js`
 
-### nlp2dsl_sdk.process_policy
-- **Functions**: 20
-- **File**: `process_policy.py`
-
-### nlp2dsl_sdk.validation.profile_checks
+### packages.dsl-validate.src.dsl_validate.profile_checks
 - **Functions**: 19
 - **Classes**: 1
 - **File**: `profile_checks.py`
+
+### backend.app.idempotency
+- **Functions**: 18
+- **Classes**: 6
+- **File**: `idempotency.py`
+
+### backend.app.routers.chat
+- **Functions**: 18
+- **File**: `chat.py`
 
 ### packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns
 - **Functions**: 18
@@ -58,49 +59,49 @@
 - **Functions**: 18
 - **File**: `preview.py`
 
-### nlp2dsl_sdk.system_map_render.blocks
-- **Functions**: 18
-- **File**: `blocks.py`
-
-### backend.app.routers.chat
-- **Functions**: 18
-- **File**: `chat.py`
-
-### backend.app.idempotency
-- **Functions**: 18
-- **Classes**: 6
-- **File**: `idempotency.py`
-
-### nlp2dsl_sdk.artifacts
-- **Functions**: 17
-- **Classes**: 1
-- **File**: `artifacts.py`
-
 ### nlp2dsl_sdk.reflection
 - **Functions**: 17
 - **Classes**: 4
 - **File**: `reflection.py`
 
-### nlp2dsl_sdk.compose_generator
-- **Functions**: 16
-- **Classes**: 1
-- **File**: `compose_generator.py`
+### backend.app.routers.workflow
+- **Functions**: 17
+- **File**: `workflow.py`
 
-### nlp2dsl_sdk.validation.pipeline
+### packages.dsl-validate.src.dsl_validate.pipeline
 - **Functions**: 16
 - **File**: `pipeline.py`
 
-### backend.app.routers.workflow
+### packages.nlp2dsl-stack.src.nlp2dsl_stack.compose
 - **Functions**: 16
-- **File**: `workflow.py`
-
-### nlp2dsl_sdk.doql.runtime
-- **Functions**: 15
-- **File**: `runtime.py`
+- **Classes**: 1
+- **File**: `compose.py`
 
 ### nlp-service.app.conversation.orchestrator
 - **Functions**: 15
 - **File**: `orchestrator.py`
+
+### nlp-service.app.conversation.system_map
+- **Functions**: 15
+- **File**: `system_map.py`
+
+### worker.worker
+- **Functions**: 15
+- **File**: `worker.py`
+
+### packages.nlp2dsl-artifacts.src.nlp2dsl_artifacts.writer
+- **Functions**: 15
+- **Classes**: 1
+- **File**: `writer.py`
+
+### nlp-service.app.governance.policy
+- **Functions**: 14
+- **Classes**: 2
+- **File**: `policy.py`
+
+### scripts._conversation_scenario
+- **Functions**: 14
+- **File**: `_conversation_scenario.py`
 
 ## Key Entry Points
 
@@ -113,7 +114,7 @@ Main execution flows into the system:
 - **Calls**: print, print, nlp2dsl_sdk.preview.preview_text_examples, print, sum, print, print, print
 
 ### examples.01-invoice.scenario.run
-- **Calls**: print, None.lower, examples.01-invoice.scenario._attachment_validation, nlp2dsl_sdk.artifacts.get_example_writer, NLP2DSLClient.from_env, nlp2dsl_sdk.preview.ensure_services, nlp2dsl_sdk.preview.preview_text_examples, nlp2dsl_sdk.preview.execute_from_text
+- **Calls**: print, None.lower, examples.01-invoice.scenario._attachment_validation, packages.nlp2dsl-artifacts.src.nlp2dsl_artifacts.writer.get_example_writer, NLP2DSLClient.from_env, nlp2dsl_sdk.preview.ensure_services, nlp2dsl_sdk.preview.preview_text_examples, nlp2dsl_sdk.preview.execute_from_text
 
 ### nlp2dsl_sdk.mullm.executor.execute_mullm_workflow
 > Run each Mullm step sequentially. Returns worker-shaped execution envelope.
@@ -123,10 +124,13 @@ Main execution flows into the system:
 - **Calls**: nlp-service.app.settings.SettingsManager.set, sorted, out.write_text, print, EXAMPLES.iterdir, print, None.isoformat, len
 
 ### examples.03-report-and-notify.scenario.run
-- **Calls**: print, nlp2dsl_sdk.preview.preview_text_examples, nlp2dsl_sdk.preview.execute_from_text, nlp2dsl_sdk.artifacts.get_example_writer, NLP2DSLClient.from_env, nlp2dsl_sdk.preview.ensure_services, isinstance, result.get
+- **Calls**: print, nlp2dsl_sdk.preview.preview_text_examples, nlp2dsl_sdk.preview.execute_from_text, packages.nlp2dsl-artifacts.src.nlp2dsl_artifacts.writer.get_example_writer, NLP2DSLClient.from_env, nlp2dsl_sdk.preview.ensure_services, isinstance, result.get
 
 ### examples.17-execution-policy.scenario.run
 - **Calls**: print, examples.17-execution-policy.scenario._invoice_workflow, client.workflow_validate, examples.17-execution-policy.scenario._print_policy_result, examples.17-execution-policy.scenario._invoice_workflow, client.workflow_validate, examples.17-execution-policy.scenario._print_policy_result, client.workflow_execute
+
+### examples.14-markpact-export.scenario.run
+- **Calls**: None.resolve, print, packages.workflow-export.src.workflow_export.publish.catalog_from_nlp_client, examples.14-markpact-export.scenario._dsl_from_client, print, print, print, packages.workflow-export.src.workflow_export.publish.export_workflow_publish_layer
 
 ### nlp-service.app.validation.path_resolve.resolve_attachment_path
 > Turn DOQL artifact refs (fixtures/faktura.pdf) into absolute paths when the file exists.
@@ -140,8 +144,8 @@ Search order:
 > Merge execution / entities into environment.doql.less (registry loop).
 - **Calls**: router.post, str, body.get, body.get, body.get, request.json, isinstance, body.get
 
-### examples.14-markpact-export.scenario.run
-- **Calls**: None.resolve, print, nlp2dsl_sdk.export.publish.catalog_from_nlp_client, examples.14-markpact-export.scenario._dsl_from_client, print, print, print, nlp2dsl_sdk.export.publish.export_workflow_publish_layer
+### examples.15-idempotency-replay.scenario.run
+- **Calls**: print, examples.15-idempotency-replay.scenario._try_clear_idempotency, examples.15-idempotency-replay.scenario._idempotency_key, print, client.workflow_from_text, first.get, nlp2dsl_sdk.preview.print_execution_result, print
 
 ### nlp2dsl_sdk.stack_flow.AutonomousStackFlow.run_phases
 - **Calls**: os.environ.setdefault, StackRunResult, self.bootstrap_registry, print, self._emit_compose, result.phases.append, print, print
@@ -149,14 +153,17 @@ Search order:
 ### nlp2dsl_sdk.cli.main
 - **Calls**: nlp2dsl_sdk.encoding.configure_utf8, argparse.ArgumentParser, parser.add_subparsers, sub.add_parser, show_parser.add_argument, show_parser.add_argument, sub.add_parser, run_parser.add_argument
 
-### examples.15-idempotency-replay.scenario.run
-- **Calls**: print, print, client.workflow_from_text, first.get, nlp2dsl_sdk.preview.print_execution_result, print, print, client.workflow_execute
+### examples.bootstrap.bootstrap
+> Call at the start of examples/*/main.py with Path(__file__).resolve().parent.
+
+Sets NLP2DSL_EXAMPLE_DIR so preview/scenarios write .nlp2dsl/ artifacts
+- **Calls**: None.resolve, examples.bootstrap._ensure_sdk_installed, nlp2dsl_sdk.encoding.configure_utf8, examples.bootstrap._should_clean_artifacts, os.environ.setdefault, str, os.environ.get, os.environ.setdefault
 
 ### nlp2dsl_sdk.stack_flow.AutonomousStackFlow._run_phase
 - **Calls**: ConversationFlow, conv.save_artifacts, str, StackPhaseResult, StackPhaseResult, AutonomousFlow, flow.run_task, flow.save_artifacts
 
 ### examples.12-ir-show.scenario.run
-- **Calls**: print, nlp2dsl_sdk.artifacts.get_example_writer, nlp2dsl_sdk.preview.ensure_services, print, NLP2DSLClient.from_env, print, print, print
+- **Calls**: print, packages.nlp2dsl-artifacts.src.nlp2dsl_artifacts.writer.get_example_writer, nlp2dsl_sdk.preview.ensure_services, print, NLP2DSLClient.from_env, print, print, print
 
 ### backend.app.routers.workflow.workflow_simulate
 > Simulate workflow execution without side effects.
@@ -165,7 +172,7 @@ Body: {"workflow": {...}} or {"dsl": {...}} or {"text": "...", "mode": "auto|rul
 - **Calls**: router.post, None.strip, body.get, backend.app.workflow_lifecycle.validation_report_for_workflow, nlp2dsl_sdk.workflow.simulate.simulate_workflow_payload, report.model_dump, nlp_resp.json, dsl_response.get
 
 ### examples.13-autonomous-invoice-stack.scenario.run
-- **Calls**: print, None.lower, AutonomousStackFlow, flow.run_phases, nlp2dsl_sdk.artifacts.get_example_writer, NLP2DSLClient.from_env, nlp2dsl_sdk.preview.ensure_services, tuple
+- **Calls**: print, None.lower, AutonomousStackFlow, flow.run_phases, packages.nlp2dsl-artifacts.src.nlp2dsl_artifacts.writer.get_example_writer, NLP2DSLClient.from_env, nlp2dsl_sdk.preview.ensure_services, tuple
 
 ### scripts.run-conversation-scenario.main
 - **Calls**: argparse.ArgumentParser, parser.add_argument, parser.add_argument, parser.add_argument, parser.add_argument, parser.parse_args, args.scenario.resolve, scenario_path.is_file
@@ -181,7 +188,7 @@ Body: {"workflow": {...}, "dry_run": false, "idempotency_key": "..."}.
 - **Calls**: router.post, backend.app.workflow_lifecycle.workflow_from_lifecycle_body, backend.app.workflow_lifecycle.validation_report_for_workflow, backend.app.workflow_execute.resolve_idempotency_key, bool, HTTPException, body.get, bool
 
 ### nlp2dsl_sdk.autonomous_flow.AutonomousFlow._start_with_extra
-- **Calls**: None.strip, print, dict, inline.update, nlp2dsl_sdk.doql.runtime.resolve_doql_context_path, self.history.append, self._record_turn, self._handle_response
+- **Calls**: None.strip, print, dict, inline.update, nlp-service.app.conversation.doql_context.resolve_doql_context_path, self.history.append, self._record_turn, self._handle_response
 
 ### examples.09-execution-smoke.scenario.run
 - **Calls**: print, sum, print, NLP2DSLClient.from_env, nlp2dsl_sdk.preview.ensure_services, print, client.workflow_from_text, preview.get
@@ -202,17 +209,14 @@ Body: {"workflow": {...}, "dry_run": false, "idempotency_key": "..."}.
 
 ### nlp-service.app.routing.parser.prompt_catalog.build_llm_system_prompt
 > Schemat intencji i pól generowany z rejestru (nie hardcoded).
-- **Calls**: nlp2dsl_sdk.contracts.registry.known_action_names, sorted, sorted, ACTIONS_REGISTRY.items, actions_lines.append, None.join, None.join, None.join
+- **Calls**: nlp-service.app.conversation.system_map.known_action_names, sorted, sorted, ACTIONS_REGISTRY.items, actions_lines.append, None.join, None.join, None.join
 
 ### nlp2dsl_sdk.client.ConversationFlow._handle_in_progress_response
 > Handle in_progress status response.
 - **Calls**: print, data.get, data.get, data.get, print, form.get, print, print
 
-### nlp2dsl_sdk.path_resolve.resolve_attachment_path
-- **Calls**: Path, path.is_file, None.strip, candidates.extend, str, Path, candidates.extend, nlp2dsl_sdk.path_resolve._examples_portable_candidates
-
 ### examples.02-email.scenario.run
-- **Calls**: print, nlp2dsl_sdk.preview.preview_text_examples, nlp2dsl_sdk.preview.execute_from_text, nlp2dsl_sdk.artifacts.get_example_writer, NLP2DSLClient.from_env, nlp2dsl_sdk.preview.ensure_services, result.get, result.get
+- **Calls**: print, nlp2dsl_sdk.preview.preview_text_examples, nlp2dsl_sdk.preview.execute_from_text, packages.nlp2dsl-artifacts.src.nlp2dsl_artifacts.writer.get_example_writer, NLP2DSLClient.from_env, nlp2dsl_sdk.preview.ensure_services, result.get, result.get
 
 ## Process Flows
 
@@ -255,12 +259,23 @@ chat_registry_observe [nlp-service.app.routers.chat]
 run_phases [nlp2dsl_sdk.stack_flow.AutonomousStackFlow]
 ```
 
-### Flow 7: _run_phase
+### Flow 7: bootstrap
+```
+bootstrap [examples.bootstrap]
+  └─> _ensure_sdk_installed
+  └─> _should_clean_artifacts
+  └─ →> configure_utf8
+      └─> _apply_utf8_locale_env
+          └─> _explicit_utf8_locale
+      └─> _reconfigure_stdio
+```
+
+### Flow 8: _run_phase
 ```
 _run_phase [nlp2dsl_sdk.stack_flow.AutonomousStackFlow]
 ```
 
-### Flow 8: workflow_simulate
+### Flow 9: workflow_simulate
 ```
 workflow_simulate [backend.app.routers.workflow]
   └─ →> validation_report_for_workflow
@@ -270,31 +285,17 @@ workflow_simulate [backend.app.routers.workflow]
   └─ →> simulate_workflow_payload
 ```
 
-### Flow 9: websocket_chat
+### Flow 10: websocket_chat
 ```
 websocket_chat [nlp-service.app.routers.ws]
   └─ →> is_stt_available
-```
-
-### Flow 10: workflow_execute
-```
-workflow_execute [backend.app.routers.workflow]
-  └─ →> workflow_from_lifecycle_body
-  └─ →> validation_report_for_workflow
-      └─ →> validation_report_from_issues
-          └─> _missing_fields_from_payloads
-          └─> _issue_to_payload
-  └─ →> resolve_idempotency_key
-      └─> workflow_has_side_effects
-      └─> derive_chat_idempotency_key
-          └─ →> workflow_fingerprint
 ```
 
 ## Key Classes
 
 ### nlp2dsl_sdk.client.NLP2DSLClient
 > Small reusable SDK for the NLP2DSL services.
-- **Methods**: 45
+- **Methods**: 46
 - **Key Methods**: nlp2dsl_sdk.client.NLP2DSLClient.__init__, nlp2dsl_sdk.client.NLP2DSLClient.from_env, nlp2dsl_sdk.client.NLP2DSLClient.close, nlp2dsl_sdk.client.NLP2DSLClient.__enter__, nlp2dsl_sdk.client.NLP2DSLClient.__exit__, nlp2dsl_sdk.client.NLP2DSLClient._request, nlp2dsl_sdk.client.NLP2DSLClient._backend, nlp2dsl_sdk.client.NLP2DSLClient._nlp_service, nlp2dsl_sdk.client.NLP2DSLClient._worker, nlp2dsl_sdk.client.NLP2DSLClient.backend_health
 
 ### packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector.KeywordIntentDetector
@@ -324,32 +325,32 @@ No LLM needed - uses predefined keyword pattern
 - **Methods**: 11
 - **Key Methods**: nlp-service.app.settings.SettingsManager.__new__, nlp-service.app.settings.SettingsManager.settings, nlp-service.app.settings.SettingsManager.get, nlp-service.app.settings.SettingsManager.get_section, nlp-service.app.settings.SettingsManager.get_all, nlp-service.app.settings.SettingsManager.set, nlp-service.app.settings.SettingsManager.update_section, nlp-service.app.settings.SettingsManager.reset, nlp-service.app.settings.SettingsManager._load, nlp-service.app.settings.SettingsManager._save
 
-### nlp-service.app.code_generator.CodeGenerator
-> Generates code in multiple programming languages using LLM.
-- **Methods**: 8
-- **Key Methods**: nlp-service.app.code_generator.CodeGenerator.__init__, nlp-service.app.code_generator.CodeGenerator._get_api_key, nlp-service.app.code_generator.CodeGenerator._build_prompt, nlp-service.app.code_generator.CodeGenerator.generate_code, nlp-service.app.code_generator.CodeGenerator._extract_class_name, nlp-service.app.code_generator.CodeGenerator._split_code_and_tests, nlp-service.app.code_generator.CodeGenerator.get_supported_languages, nlp-service.app.code_generator.CodeGenerator.get_language_info
-
-### backend.app.db.memory.MemoryWorkflowRepo
-- **Methods**: 8
-- **Key Methods**: backend.app.db.memory.MemoryWorkflowRepo.__init__, backend.app.db.memory.MemoryWorkflowRepo.save_run, backend.app.db.memory.MemoryWorkflowRepo.update_run_status, backend.app.db.memory.MemoryWorkflowRepo.get_run, backend.app.db.memory.MemoryWorkflowRepo.list_runs, backend.app.db.memory.MemoryWorkflowRepo.count_runs, backend.app.db.memory.MemoryWorkflowRepo.append_event, backend.app.db.memory.MemoryWorkflowRepo.list_events
-- **Inherits**: WorkflowRepo
-
 ### backend.app.idempotency.PostgresIdempotencyStore
 > Durable idempotency store backed by PostgreSQL.
 - **Methods**: 8
 - **Key Methods**: backend.app.idempotency.PostgresIdempotencyStore.__init__, backend.app.idempotency.PostgresIdempotencyStore._ensure_engine, backend.app.idempotency.PostgresIdempotencyStore._get_session_factory, backend.app.idempotency.PostgresIdempotencyStore._ensure_tables, backend.app.idempotency.PostgresIdempotencyStore.start, backend.app.idempotency.PostgresIdempotencyStore.finish, backend.app.idempotency.PostgresIdempotencyStore.clear, backend.app.idempotency.PostgresIdempotencyStore.close
 - **Inherits**: IdempotencyStore
 
-### nlp-service.app.store.redis_store.RedisConversationStore
-- **Methods**: 7
-- **Key Methods**: nlp-service.app.store.redis_store.RedisConversationStore.__init__, nlp-service.app.store.redis_store.RedisConversationStore._key, nlp-service.app.store.redis_store.RedisConversationStore.get, nlp-service.app.store.redis_store.RedisConversationStore.save, nlp-service.app.store.redis_store.RedisConversationStore.delete, nlp-service.app.store.redis_store.RedisConversationStore.count, nlp-service.app.store.redis_store.RedisConversationStore.close
-- **Inherits**: ConversationStore
+### backend.app.db.memory.MemoryWorkflowRepo
+- **Methods**: 8
+- **Key Methods**: backend.app.db.memory.MemoryWorkflowRepo.__init__, backend.app.db.memory.MemoryWorkflowRepo.save_run, backend.app.db.memory.MemoryWorkflowRepo.update_run_status, backend.app.db.memory.MemoryWorkflowRepo.get_run, backend.app.db.memory.MemoryWorkflowRepo.list_runs, backend.app.db.memory.MemoryWorkflowRepo.count_runs, backend.app.db.memory.MemoryWorkflowRepo.append_event, backend.app.db.memory.MemoryWorkflowRepo.list_events
+- **Inherits**: WorkflowRepo
+
+### nlp-service.app.code_generator.CodeGenerator
+> Generates code in multiple programming languages using LLM.
+- **Methods**: 8
+- **Key Methods**: nlp-service.app.code_generator.CodeGenerator.__init__, nlp-service.app.code_generator.CodeGenerator._get_api_key, nlp-service.app.code_generator.CodeGenerator._build_prompt, nlp-service.app.code_generator.CodeGenerator.generate_code, nlp-service.app.code_generator.CodeGenerator._extract_class_name, nlp-service.app.code_generator.CodeGenerator._split_code_and_tests, nlp-service.app.code_generator.CodeGenerator.get_supported_languages, nlp-service.app.code_generator.CodeGenerator.get_language_info
 
 ### backend.app.db.WorkflowRepo
 > Abstrakcja persystencji workflow.
 - **Methods**: 7
 - **Key Methods**: backend.app.db.WorkflowRepo.save_run, backend.app.db.WorkflowRepo.update_run_status, backend.app.db.WorkflowRepo.get_run, backend.app.db.WorkflowRepo.list_runs, backend.app.db.WorkflowRepo.count_runs, backend.app.db.WorkflowRepo.append_event, backend.app.db.WorkflowRepo.list_events
 - **Inherits**: ABC
+
+### nlp-service.app.store.redis_store.RedisConversationStore
+- **Methods**: 7
+- **Key Methods**: nlp-service.app.store.redis_store.RedisConversationStore.__init__, nlp-service.app.store.redis_store.RedisConversationStore._key, nlp-service.app.store.redis_store.RedisConversationStore.get, nlp-service.app.store.redis_store.RedisConversationStore.save, nlp-service.app.store.redis_store.RedisConversationStore.delete, nlp-service.app.store.redis_store.RedisConversationStore.count, nlp-service.app.store.redis_store.RedisConversationStore.close
+- **Inherits**: ConversationStore
 
 ### backend.app.workflow_events.WorkflowEventHub
 > In-memory broadcaster dla workflow lifecycle events.
@@ -380,6 +381,12 @@ Placeholder - requires WebSocket implementation.
 - **Key Methods**: nlp-service.app.store.memory.MemoryConversationStore.__init__, nlp-service.app.store.memory.MemoryConversationStore.get, nlp-service.app.store.memory.MemoryConversationStore.save, nlp-service.app.store.memory.MemoryConversationStore.delete, nlp-service.app.store.memory.MemoryConversationStore.count
 - **Inherits**: ConversationStore
 
+### backend.app.idempotency.MemoryIdempotencyStore
+> Process-local fallback idempotency store.
+- **Methods**: 4
+- **Key Methods**: backend.app.idempotency.MemoryIdempotencyStore.__init__, backend.app.idempotency.MemoryIdempotencyStore.start, backend.app.idempotency.MemoryIdempotencyStore.finish, backend.app.idempotency.MemoryIdempotencyStore.clear
+- **Inherits**: IdempotencyStore
+
 ### packages.nlp2cmd-propact.src.nlp2cmd_propact.runner.PropactRunner
 > Run ExecutionPlanIR through Propact CLI when available.
 - **Methods**: 4
@@ -390,17 +397,10 @@ Placeholder - requires WebSocket implementation.
 - **Methods**: 4
 - **Key Methods**: packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor.__init__, packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor.run, packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor._run_propact_step, packages.nlp2cmd-propact.src.nlp2cmd_propact.executor.HybridPlanExecutor._run_nlp2cmd_step
 
-### nlp2dsl_sdk.system_map_ir.SystemMapIR
-> nlp2dsl.system_map.v1 — canonical map of available system capabilities.
-
-Generated at runtime by Sys
+### nlp2dsl_sdk.mullm.client.MullmClient
+> Minimal Mullm task delegate client.
 - **Methods**: 4
-- **Key Methods**: nlp2dsl_sdk.system_map_ir.SystemMapIR.command, nlp2dsl_sdk.system_map_ir.SystemMapIR.runtime, nlp2dsl_sdk.system_map_ir.SystemMapIR.runtime_for_command, nlp2dsl_sdk.system_map_ir.SystemMapIR.validate_step_config
-- **Inherits**: BaseModel
-
-### nlp2dsl_sdk.doql.models.DoqlTaskContext
-- **Methods**: 4
-- **Key Methods**: nlp2dsl_sdk.doql.models.DoqlTaskContext.entity_values, nlp2dsl_sdk.doql.models.DoqlTaskContext.command, nlp2dsl_sdk.doql.models.DoqlTaskContext.required_fields_for, nlp2dsl_sdk.doql.models.DoqlTaskContext.runtime_for
+- **Key Methods**: nlp2dsl_sdk.mullm.client.MullmClient.__init__, nlp2dsl_sdk.mullm.client.MullmClient.create_task, nlp2dsl_sdk.mullm.client.MullmClient.simulate_task, nlp2dsl_sdk.mullm.client.MullmClient.ping
 
 ## Data Transformation Functions
 
@@ -410,16 +410,19 @@ Key functions that process and transform data:
 - **Output to**: json.dumps, time.strftime, _request_id.get, record.getMessage, self.formatException
 
 ### backend.app.step_validator.validate_step_config_issues
-- **Output to**: dict, nlp2dsl_sdk.validation.rules.step_config.validate_step, backend.app.step_validator._validation_context
+- **Output to**: dict, packages.dsl-validate.src.dsl_validate.rules.step_config.validate_step, backend.app.step_validator._validation_context
 
 ### backend.app.step_validator.validate_step_config
-- **Output to**: nlp2dsl_sdk.validation.issue.issues_to_messages, backend.app.step_validator.validate_step_config_issues
+- **Output to**: packages.dsl-contracts.src.dsl_contracts.issue.issues_to_messages, backend.app.step_validator.validate_step_config_issues
 
 ### backend.app.dsl_validation.validate_dsl_for_execution
-- **Output to**: nlp2dsl_sdk.validation.rules.dsl_contract.validate_dsl_contract
+- **Output to**: packages.dsl-validate.src.dsl_validate.rules.dsl_contract.validate_dsl_contract
 
 ### backend.app.dsl_validation.format_dsl_validation_message
 - **Output to**: lines.append, None.join, lines.append, issue.to_legacy_message
+
+### backend.app.execution_policy.validate_workflow_execution_policy
+- **Output to**: backend.app.action_catalog.load_action_field_catalog, backend.app.execution_policy.resolve_agent_id, backend.app.execution_policy.build_policy_context, packages.dsl-validate.src.dsl_validate.capability_policy.validate_capability_policy, backend.app.execution_policy.fetch_access_decisions
 
 ### packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.pattern_loaders.parse_domain_boosters
 - **Output to**: payload.get, boosters.items, isinstance, isinstance, isinstance
@@ -443,48 +446,44 @@ Key functions that process and transform data:
 ### packages.nlp2cmd-propact.src.nlp2cmd_propact.adapter._format_json_body
 - **Output to**: isinstance, json.dumps, value.strip
 
-### nlp2dsl_sdk.system_map_generator._parse_llm_json
-- **Output to**: raw.strip, text.startswith, json.loads, text.splitlines, None.join
-
-### nlp2dsl_sdk.artifacts.build_process_trace
-> NLP → DSL → CMD → process service layers from a workflow_from_text result.
-- **Output to**: steps_out.append, steps_out.append, None.get, steps_out.append, steps_out.append
-
-### nlp2dsl_sdk.system_map_models.validate_config_against_map
-> Validate config with dynamic model; raises ValidationError on failure.
-- **Output to**: ir.command, nlp2dsl_sdk.system_map_models.command_input_model, None.model_dump, ValueError, model.model_validate
-
 ### nlp2dsl_sdk.step_validation.validate_step_config_from_map
 - **Output to**: _validate_messages
 
 ### nlp2dsl_sdk.step_validation.validate_workflow_from_map
 - **Output to**: _validate_workflow
 
-### nlp2dsl_sdk.system_map_ir.SystemMapIR.validate_step_config
-> Return missing field names for action against this map.
-- **Output to**: self.command, config.get, missing.append, isinstance, val.strip
-
-### nlp2dsl_sdk.conversation_artifacts._format_transcript_header
-- **Output to**: trace.get, trace.get, trace.get, None.isoformat, datetime.now
-
-### nlp2dsl_sdk.conversation_artifacts._format_execution_steps
-- **Output to**: execution.get, step.get, step.get, step.get, lines.append
-
-### nlp2dsl_sdk.conversation_artifacts._format_turn
-- **Output to**: turn.get, turn.get, turn.get, lines.append, response.get
-
-### nlp2dsl_sdk.conversation_artifacts._format_validations
-- **Output to**: lines.append, lines.append, isinstance, v.get, v.get
-
-### nlp2dsl_sdk.conversation_artifacts.format_transcript
-> Render user ↔ nlp2dsl dialog with parser/LLM hints.
-- **Output to**: nlp2dsl_sdk.conversation_artifacts._format_transcript_header, enumerate, isinstance, trace.get, lines.extend
-
 ### nlp2dsl_sdk.attachment_validation.format_attachment_validation
 - **Output to**: None.strip, str, str, payload.get, str
 
-### nlp2dsl_sdk.system_map_bridge._process_from_ctx
-- **Output to**: getattr, isinstance, ProcessPolicyIR, ProcessPolicyIR, getattr
+### nlp2dsl_sdk.reflection._parse_validation_issue
+- **Output to**: packages.dsl-validate.src.dsl_validate.messages.legacy_message_to_issue, ReflectionIssue, vi.to_legacy_message
+
+### nlp2dsl_sdk.reflection.format_reflection_summary
+- **Output to**: None.join, isinstance, ReflectionReport.model_validate, lines.append, lines.append
+
+### nlp2dsl_sdk.workflow.lifecycle.parse_result_from_nlp
+> Adapt app-local NLPResult-like objects into a lifecycle ParseResult.
+- **Output to**: nlp2dsl_sdk.workflow.lifecycle._to_dict, nlp2dsl_sdk.workflow.lifecycle._get, str, nlp2dsl_sdk.workflow.lifecycle._float_or_default, nlp2dsl_sdk.workflow.lifecycle._get
+
+### nlp-service.app.logging_setup.JSONFormatter.format
+- **Output to**: json.dumps, time.strftime, _request_id.get, record.getMessage, self.formatException
+
+### nlp-service.app.execution.system._validate_file_path
+> Validate and resolve file path against allowed paths.
+- **Output to**: str, any, None.suffix.lower, None.resolve, PermissionError
+
+### nlp-service.app.conversation.runtime_gate.process_scope_blocked
+> Block when DOQL process_access denies the intent's resource area.
+- **Output to**: None.strip, nlp-service.app.settings.SettingsManager.set, nlp-service.app.settings.SettingsManager.set, action.startswith, deny.intersection
+
+### nlp-service.app.conversation.doql_registry._format_value
+- **Output to**: isinstance, isinstance, str, None.replace, val.replace
+
+### nlp-service.app.conversation.responses.format_system_result
+- **Output to**: result.get, _SYSTEM_RESULT_FORMATTERS.get, json.dumps, result.get, formatter
+
+### nlp-service.app.conversation.responses._format_system_status
+- **Output to**: inner.get, inner.get, inner.get, inner.get, inner.get
 
 ## Behavioral Patterns
 
@@ -502,46 +501,46 @@ Key functions that process and transform data:
 
 Functions exposed as public API (no underscore prefix):
 
-- `nlp2dsl_sdk.compose_generator.generate_stack_compose` - 79 calls
+- `packages.nlp2dsl-stack.src.nlp2dsl_stack.compose.generate_stack_compose` - 79 calls
 - `packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.fast_path_detection.run_domain_fast_path_after_exact` - 66 calls
 - `scripts.run-example-docker-e2e.process_example` - 65 calls
 - `scripts.run-example-docker-e2e.main` - 56 calls
-- `scripts.run-example-testql-results.process_example` - 52 calls
 - `backend.app.execution_policy.build_policy_context` - 52 calls
+- `scripts.run-example-testql-results.process_example` - 52 calls
 - `nlp2dsl_sdk.mullm.payloads.build_task_payload` - 50 calls
-- `nlp2dsl_sdk.validation.capability_policy.validate_capability_policy` - 41 calls
+- `packages.dsl-validate.src.dsl_validate.capability_policy.validate_capability_policy` - 41 calls
 - `examples.04-scheduled-report.scenario.run` - 38 calls
-- `nlp2dsl_sdk.system_map_render.render.render_system_map_doql` - 37 calls
 - `nlp-service.app.conversation.autonomous_loop.autonomous_resolve_turn` - 36 calls
-- `nlp2dsl_sdk.system_map_runtimes.build_runtimes_for_example` - 35 calls
 - `examples.01-invoice.scenario.run` - 34 calls
 - `scripts.run-execution-scenario.run_scenario` - 34 calls
 - `nlp2dsl_sdk.mullm.executor.execute_mullm_workflow` - 33 calls
 - `backend.app.routers.workflow.workflow_from_text` - 33 calls
-- `nlp2dsl_sdk.doql.parse.load_platform_map` - 32 calls
-- `nlp2dsl_sdk.doql.parse.collect_task_context` - 32 calls
 - `nlp-service.app.routing.resolve.resolve_intent` - 32 calls
 - `scripts.run-example-testql-results.main` - 31 calls
-- `nlp2dsl_sdk.system_map_bridge.task_context_to_system_map` - 30 calls
 - `nlp-service.app.routing.parser.enrich.enrich_entities` - 30 calls
-- `nlp2dsl_sdk.artifacts.build_process_trace` - 29 calls
-- `nlp2dsl_sdk.doql.render.render_doql_context` - 29 calls
-- `nlp2dsl_sdk.doql.parse.enrich_task_context_from_client` - 29 calls
 - `examples.03-report-and-notify.scenario.run` - 29 calls
 - `examples.17-execution-policy.scenario.run` - 29 calls
+- `packages.nlp2dsl-artifacts.src.nlp2dsl_artifacts.writer.build_process_trace` - 29 calls
+- `examples.14-markpact-export.scenario.run` - 28 calls
 - `nlp-service.app.validation.path_resolve.resolve_attachment_path` - 28 calls
 - `nlp-service.app.routers.chat.chat_registry_observe` - 28 calls
 - `scripts.run-conversation-scenario.run_scenario` - 28 calls
-- `examples.14-markpact-export.scenario.run` - 28 calls
+- `examples.15-idempotency-replay.scenario.run` - 28 calls
 - `nlp2dsl_sdk.stack_flow.AutonomousStackFlow.run_phases` - 27 calls
-- `nlp2dsl_sdk.contracts.registry.contract_from_registry_entry` - 27 calls
 - `nlp-service.app.routing.orientation.orient_query` - 27 calls
+- `packages.dsl-contracts.src.dsl_contracts.registry.contract_from_registry_entry` - 27 calls
 - `backend.app.path_resolve.resolve_attachment_path` - 26 calls
 - `nlp2dsl_sdk.cli.main` - 26 calls
-- `examples.15-idempotency-replay.scenario.run` - 26 calls
-- `nlp2dsl_sdk.export.markpact.export_markpact_bundle` - 25 calls
-- `nlp2dsl_sdk.validation.rules.post_execute.validate_execution_outcome` - 25 calls
+- `examples.bootstrap.bootstrap` - 26 calls
 - `examples.12-ir-show.scenario.run` - 25 calls
+- `packages.dsl-validate.src.dsl_validate.rules.post_execute.validate_execution_outcome` - 25 calls
+- `backend.app.routers.workflow.workflow_simulate` - 25 calls
+- `packages.workflow-export.src.workflow_export.markpact.export_markpact_bundle` - 25 calls
+- `examples.13-autonomous-invoice-stack.scenario.run` - 24 calls
+- `examples.08-multi-object-benchmark.scenario.run_benchmark` - 24 calls
+- `scripts.run-conversation-scenario.main` - 24 calls
+- `nlp2dsl_sdk.invoice_pdf.build_invoice_pdf_bytes` - 23 calls
+- `nlp2dsl_sdk.workflow.events.lifecycle_event_from_payload` - 23 calls
 
 ## System Interactions
 
@@ -574,11 +573,11 @@ graph TD
     run --> _invoice_workflow
     run --> workflow_validate
     run --> _print_policy_result
+    run --> resolve
+    run --> catalog_from_nlp_cli
+    run --> _dsl_from_client
     resolve_attachment_p --> Path
     resolve_attachment_p --> is_file
-    resolve_attachment_p --> get_example_dir
-    resolve_attachment_p --> strip
-    resolve_attachment_p --> extend
 ```
 
 ## Reverse Engineering Guidelines

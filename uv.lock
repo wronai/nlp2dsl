@@ -600,6 +600,63 @@ wheels = [
 ]
 
 [[package]]
+name = "dsl-contracts"
+version = "0.1.0"
+source = { editable = "packages/dsl-contracts" }
+dependencies = [
+    { name = "pydantic" },
+    { name = "pyyaml" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "pydantic", specifier = ">=2.0" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
+    { name = "pyyaml", specifier = ">=6.0" },
+]
+provides-extras = ["dev"]
+
+[[package]]
+name = "dsl-validate"
+version = "0.1.0"
+source = { editable = "packages/dsl-validate" }
+dependencies = [
+    { name = "dsl-contracts" },
+    { name = "env2llm" },
+    { name = "pyyaml" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "dsl-contracts", specifier = ">=0.1.0" },
+    { name = "env2llm", specifier = ">=0.1.0" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
+    { name = "pyyaml", specifier = ">=6.0" },
+]
+provides-extras = ["dev"]
+
+[[package]]
+name = "env2llm"
+version = "0.1.1"
+source = { editable = "../../semcod/env2llm" }
+dependencies = [
+    { name = "pydantic" },
+    { name = "pyyaml" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "costs", marker = "extra == 'dev'", specifier = ">=0.1.20" },
+    { name = "goal", marker = "extra == 'dev'", specifier = ">=2.1.0" },
+    { name = "litellm", marker = "extra == 'llm'", specifier = ">=1.0" },
+    { name = "pfix", marker = "extra == 'dev'", specifier = ">=0.1.60" },
+    { name = "pydantic", specifier = ">=2.0" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
+    { name = "pyyaml", specifier = ">=6.0" },
+]
+provides-extras = ["llm", "dev"]
+
+[[package]]
 name = "exceptiongroup"
 version = "1.3.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1556,12 +1613,19 @@ wheels = [
 
 [[package]]
 name = "nlp2dsl"
-version = "0.0.37"
+version = "0.0.38"
 source = { editable = "." }
 dependencies = [
+    { name = "dsl-contracts" },
+    { name = "dsl-validate" },
+    { name = "env2llm" },
+    { name = "nlp2dsl-artifacts" },
+    { name = "nlp2dsl-stack" },
     { name = "pydantic" },
     { name = "pyyaml" },
     { name = "requests" },
+    { name = "testql-conversations" },
+    { name = "workflow-export" },
 ]
 
 [package.optional-dependencies]
@@ -1584,13 +1648,20 @@ test = [
 [package.metadata]
 requires-dist = [
     { name = "costs", marker = "extra == 'goal'", specifier = ">=0.1.20" },
+    { name = "dsl-contracts", editable = "packages/dsl-contracts" },
+    { name = "dsl-validate", editable = "packages/dsl-validate" },
+    { name = "env2llm", editable = "../../semcod/env2llm" },
     { name = "goal", marker = "extra == 'goal'", specifier = ">=2.1.0" },
+    { name = "nlp2dsl-artifacts", editable = "packages/nlp2dsl-artifacts" },
+    { name = "nlp2dsl-stack", editable = "packages/nlp2dsl-stack" },
     { name = "pfix", marker = "extra == 'goal'", specifier = ">=0.1.60" },
     { name = "pydantic", specifier = ">=2.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24" },
     { name = "pyyaml", specifier = ">=6.0" },
     { name = "requests", specifier = ">=2.31.0" },
+    { name = "testql-conversations", editable = "packages/testql-conversations" },
+    { name = "workflow-export", editable = "packages/workflow-export" },
 ]
 provides-extras = ["dev", "goal"]
 
@@ -1599,6 +1670,40 @@ test = [
     { name = "pytest", specifier = ">=8.0" },
     { name = "pytest-asyncio", specifier = ">=0.24" },
 ]
+
+[[package]]
+name = "nlp2dsl-artifacts"
+version = "0.1.0"
+source = { editable = "packages/nlp2dsl-artifacts" }
+dependencies = [
+    { name = "env2llm" },
+    { name = "pyyaml" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "env2llm", specifier = ">=0.1.0" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
+    { name = "pyyaml", specifier = ">=6.0" },
+]
+provides-extras = ["dev"]
+
+[[package]]
+name = "nlp2dsl-stack"
+version = "0.1.0"
+source = { editable = "packages/nlp2dsl-stack" }
+dependencies = [
+    { name = "env2llm" },
+    { name = "pyyaml" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "env2llm", specifier = ">=0.1.0" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
+    { name = "pyyaml", specifier = ">=6.0" },
+]
+provides-extras = ["dev"]
 
 [[package]]
 name = "numpy"
@@ -3009,6 +3114,22 @@ wheels = [
 ]
 
 [[package]]
+name = "testql-conversations"
+version = "0.1.0"
+source = { editable = "packages/testql-conversations" }
+dependencies = [
+    { name = "pyyaml" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
+    { name = "pyyaml", specifier = ">=6.0" },
+    { name = "testql", marker = "extra == 'testql'", specifier = ">=0.1" },
+]
+provides-extras = ["testql", "dev"]
+
+[[package]]
 name = "tiktoken"
 version = "0.13.0"
 source = { registry = "https://pypi.org/simple" }
@@ -3280,6 +3401,23 @@ sdist = { url = "https://files.pythonhosted.org/packages/0b/02/ae6ceac1baeda5308
 wheels = [
     { url = "https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl", hash = "sha256:a0af1213f3c2226497a97e2b3aa01a7e4bee4f403f95be16fc9acd2947514a78", size = 11774, upload-time = "2017-04-05T20:21:32.581Z" },
 ]
+
+[[package]]
+name = "workflow-export"
+version = "0.1.0"
+source = { editable = "packages/workflow-export" }
+dependencies = [
+    { name = "dsl-contracts" },
+    { name = "pyyaml" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "dsl-contracts", specifier = ">=0.1.0" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
+    { name = "pyyaml", specifier = ">=6.0" },
+]
+provides-extras = ["dev"]
 
 [[package]]
 name = "yarg"

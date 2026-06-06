@@ -1,5 +1,5 @@
 flowchart TD
-%% generated in 0.15s
+%% generated in 0.06s
 
     %% Entry points (blue)
     classDef entry fill:#4dabf7,stroke:#1971c2,color:#fff
@@ -20,7 +20,7 @@ flowchart TD
         nlp2dsl_sdk__cli__main["main"]
         nlp2dsl_sdk__client__workflow_step["workflow_step"]
         nlp2dsl_sdk__client__NLP2DSLClient__from_env["from_env"]
-        ...["+59 more"]
+        ...["+60 more"]
     end
 
     subgraph Core
@@ -29,8 +29,6 @@ flowchart TD
         backend__app__logging_setup__JSONFormatter__format["format"]
         backend__app__logging_setup__RequestIDMiddleware__dispatch["dispatch"]
         backend__app__logging_setup__setup_logging["setup_logging"]
-        backend__app__step_validator__validate_step_config_issues["validate_step_config_issues"]
-        backend__app__step_validator__validate_step_config["validate_step_config"]
         backend__app__attachment_validation__ensure_attachment_validation{{ensure_attachment_validation CC=16}}
         backend__app__workflow_events__WorkflowEventHub__subscribe["subscribe"]
         backend__app__workflow_events__WorkflowEventHub__unsubscribe["unsubscribe"]
@@ -39,12 +37,14 @@ flowchart TD
         backend__app__main__health["health"]
         backend__app__path_resolve___examples_portable_candidates("_examples_portable_candidates CC=8")
         backend__app__path_resolve__resolve_attachment_path("resolve_attachment_path CC=13")
-        ...["+374 more"]
+        backend__app__idempotency__IdempotencyStore__start["start"]
+        backend__app__idempotency__IdempotencyStore__finish["finish"]
+        ...["+359 more"]
     end
 
     subgraph Exporters
-        nlp2dsl_sdk__export__publish__PublishValidationResult__to_dict["to_dict"]
-        nlp2dsl_sdk__export__publish__catalog_from_nlp_client["catalog_from_nlp_client"]
+        packages__workflow_export__src__workflow_export__publish__PublishValidationResult__to_dict["to_dict"]
+        packages__workflow_export__src__workflow_export__publish__catalog_from_nlp_client["catalog_from_nlp_client"]
     end
 
     class tauri_wrapper__src_tauri__build__main,tauri_wrapper__src_tauri__src__main__main,backend__app__logging_setup__JSONFormatter__format,backend__app__logging_setup__RequestIDMiddleware__dispatch,backend__app__logging_setup__setup_logging,backend__app__workflow_events__WorkflowEventHub__subscribe,backend__app__workflow_events__WorkflowEventHub__unsubscribe,backend__app__workflow_events__WorkflowEventHub__publish,backend__app__workflow_events__WorkflowEventHub__subscriber_count,backend__app__main__health entry

@@ -44,9 +44,18 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Checkout env2llm
+        uses: actions/checkout@v4
+        with:
+          repository: semcod/env2llm
+          path: vendor/env2llm
+
       - name: Install dependencies
+        env:
+          ENV2LLM_DIR: ${{ github.workspace }}/vendor/env2llm
         run: |
           python -m pip install --upgrade pip
+          bash scripts/install-local-deps.sh
           pip install -e .
           pip install -e vendor/testql
           pip install pyyaml
@@ -100,8 +109,19 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Checkout env2llm
+        uses: actions/checkout@v4
+        with:
+          repository: semcod/env2llm
+          path: vendor/env2llm
+
       - name: Install dependencies
-        run: pip install -e . pyyaml
+        env:
+          ENV2LLM_DIR: ${{ github.workspace }}/vendor/env2llm
+        run: |
+          python -m pip install --upgrade pip
+          bash scripts/install-local-deps.sh
+          pip install -e . pyyaml
 
       - name: Start Docker stack (LLM profile)
         run: |

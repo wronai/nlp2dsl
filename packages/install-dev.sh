@@ -13,7 +13,15 @@ install_one() {
   "$PY" -m pip install -e "$1" --upgrade
 }
 
+# env2llm is installed by scripts/install-local-deps.sh (sibling repo semcod/env2llm).
+
 install_one "$ROOT/pact-ir"
+install_one "$ROOT/dsl-contracts"
+install_one "$ROOT/workflow-export"
+install_one "$ROOT/nlp2dsl-stack"
+install_one "$ROOT/testql-conversations"
+install_one "$ROOT/nlp2dsl-artifacts"
+install_one "$ROOT/dsl-validate"
 install_one "$ROOT/nlp2cmd-intent"
 install_one "$ROOT/nlp2cmd-planner"
 install_one "$ROOT/nlp2cmd-propact"

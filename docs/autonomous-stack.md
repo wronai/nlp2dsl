@@ -1,5 +1,8 @@
 # Autonomiczny stack — dwie warstwy
 
+Generowanie plików w `.nlp2dsl/generated/`: pakiet **[`nlp2dsl-stack`](../packages/nlp2dsl-stack/)** (`generate_stack_compose`).  
+Orkiestracja multi-turn (client + autonomous flow): `nlp2dsl_sdk/stack_flow.py` (pozostaje w SDK).
+
 ## Warstwa 1 — infrastruktura (Docker Compose)
 
 **Cel:** uruchomić platformę NLP2DSL (serwisy, sieć, baza).

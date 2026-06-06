@@ -93,7 +93,7 @@ nlp2dsl_sdk/export/
 | `pactown.py` | `nlp2dsl-platform.pactown.yaml` + stub README serwisów |
 | `publish.py` | Wspólny helper dla przykładów i artefaktów: katalog akcji, export, walidacja, output |
 
-`pyproject.toml` zawiera `nlp2dsl_sdk.export`, więc moduł trafia do sdist/wheel.
+Eksport markpact/pactown: pakiet `workflow-export` (`nlp2dsl_sdk.export` = shim). Root `pyproject.toml` deklaruje zależności editable z `packages/`.
 
 ### 4. Przykład 14: markpact export
 

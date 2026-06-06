@@ -1,5 +1,8 @@
 # Artefakty przykładów (`.nlp2dsl/`)
 
+Implementacja: pakiet **[`nlp2dsl-artifacts`](../packages/nlp2dsl-artifacts/)** (mapa DOQL: **[`env2llm`](../../../semcod/env2llm)**).  
+`nlp2dsl_sdk.artifacts` to cienki shim — w nowym kodzie importuj `nlp2dsl_artifacts`.
+
 Każdy `examples/NN-name/` po uruchomieniu `main.py` zapisuje transparentny ślad pipeline:
 
 ```
@@ -71,6 +74,17 @@ python3 01-invoice/main.py
 python3 ../scripts/aggregate-example-testql.py
 # → testql-scenarios/generated-examples.testql.toon.yaml
 ```
+
+## Moduły
+
+| Plik artefaktu | Pakiet | Funkcja |
+|----------------|--------|---------|
+| `manifest.yaml`, `pipeline/`, `process/` | `nlp2dsl-artifacts` | `ExampleArtifactWriter`, `build_process_trace` |
+| `commands.testql.toon.yaml` | `nlp2dsl-artifacts` | `write_testql_commands` |
+| `registry/environment.doql.less` | `env2llm` | `generate_system_map`, `write_registry` |
+| `conversation.transcript.md` | `testql-conversations` | `write_conversation_artifacts` |
+| `generated/markpact/`, `generated/pactown/` | `workflow-export` | `export_workflow_publish_layer` |
+| `generated/docker-compose.stack.yaml` | `nlp2dsl-stack` | `generate_stack_compose` |
 
 ## `process/*.process.yaml`
 

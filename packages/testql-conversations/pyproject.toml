@@ -1,0 +1,24 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "testql-conversations"
+version = "0.1.0"
+description = "Validate conversation TestTOON scenarios and write conversation trace artifacts"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+dependencies = [
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+testql = ["testql>=0.1"]
+dev = ["pytest>=8.0"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/testql_conversations"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -20,11 +20,9 @@ else
   PY="${PYTHON:-python3}"
 fi
 
-echo "==> Installing nlp2dsl SDK + monorepo packages (editable)..."
+echo "==> Installing env2llm + packages + nlp2dsl SDK (editable)..."
+PYTHON="$PY" bash "$ROOT/scripts/install-local-deps.sh"
 "$PY" -m pip install -e . -q
-if [[ -x "$ROOT/packages/install-dev.sh" ]]; then
-  PYTHON="$PY" "$ROOT/packages/install-dev.sh"
-fi
 
 failed=0
 for dir in "$ROOT"/examples/*/; do

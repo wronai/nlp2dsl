@@ -1,0 +1,24 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "workflow-export"
+version = "0.1.0"
+description = "Export nlp2dsl workflows and contracts to markpact and pactown artifacts"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+dependencies = [
+    "dsl-contracts>=0.1.0",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/workflow_export"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

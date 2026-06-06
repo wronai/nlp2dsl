@@ -1,8 +1,8 @@
-"""DOQL system map — backward-compatible re-export shim (see nlp2dsl_sdk/doql/)."""
+"""DOQL system map — backward-compatible re-export shim (see :mod:`env2llm.doql`)."""
 
 from __future__ import annotations
 
-from .doql.models import (
+from env2llm.doql.models import (
     DoqlAccess,
     DoqlArtifact,
     DoqlCommand,
@@ -11,7 +11,7 @@ from .doql.models import (
     DoqlRuntime,
     DoqlTaskContext,
 )
-from .doql.parse import (
+from env2llm.doql.parse import (
     collect_task_context,
     enrich_task_context_from_client,
     load_commands_from_services_yaml,
@@ -19,8 +19,8 @@ from .doql.parse import (
     load_platform_map,
     parse_fixture_metadata,
 )
-from .doql.render import render_doql_context, write_doql_context
-from .doql.runtime import (
+from env2llm.doql.render import render_doql_context, write_doql_context
+from env2llm.doql.runtime import (
     autofill_entities,
     context_inline_payload,
     load_doql_inline_from_env,

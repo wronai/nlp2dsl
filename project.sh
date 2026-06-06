@@ -10,6 +10,8 @@ if [ ! -f "$PIP" ]; then
     python3 -m venv "$VENV"
 fi
 
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+PYTHON="$VENV/bin/python3" bash "$ROOT/scripts/install-local-deps.sh"
 $PIP install -e .
 $PIP install regix --upgrade --quiet
 #$PIP install pyqual --upgrade --quiet
