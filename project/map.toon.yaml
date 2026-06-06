@@ -1,25 +1,26 @@
-# nlp2dsl | 405f 49221L | yml:3,yaml:12,shell:16,json:30,rust:2,toml:16,javascript:2,txt:6,ini:1,python:308 | 2026-06-06
+# nlp2dsl | 376f 47397L | yml:3,yaml:13,shell:16,toml:18,json:26,rust:2,javascript:2,txt:7,ini:1,python:278 | 2026-06-06
 # generated in 0.04s
-# stats: 1227 func | 0 cls | 405 mod | CC̄=4.3 | critical:37 | cycles:0
-# alerts[5]: CC run_domain_fast_path_after_exact=69; fan-out generate_stack_compose=57; CC process_example=40; CC build_task_payload=39; fan-out process_example=37
-# hotspots[5]: generate_stack_compose fan=57; process_example fan=37; main fan=35; run_domain_fast_path_after_exact fan=26; run_scenario fan=24
-# evolution: CC̄ 4.2→4.3 (regressed +0.1)
+# stats: 1362 func | 0 cls | 376 mod | CC̄=4.0 | critical:16 | cycles:0
+# alerts[5]: fan-out generate_stack_compose=57; fan-out process_example=37; fan-out main=35; CC main=26; fan-out _execute_ready_dsl=23
+# hotspots[5]: generate_stack_compose fan=57; process_example fan=37; main fan=35; _execute_ready_dsl fan=23; run fan=23
+# evolution: CC̄ 3.9→4.0 (regressed +0.1)
 # Keys: M=modules, D=details, i=imports, e=exports, c=classes, f=functions, m=methods
-M[405]:
+M[376]:
   .pfix-test-wrapper.sh,16
   Makefile,104
   backend/Dockerfile,14
   backend/app/__init__.py,0
   backend/app/action_catalog.py,108
-  backend/app/attachment_validation.py,123
+  backend/app/attachment_validation.py,129
+  backend/app/audit.py,57
   backend/app/config.py,42
   backend/app/db/__init__.py,63
   backend/app/db/memory.py,51
   backend/app/db/postgres.py,230
   backend/app/dsl_validation.py,47
   backend/app/engine.py,314
-  backend/app/execution_policy.py,173
-  backend/app/idempotency.py,262
+  backend/app/execution_policy.py,184
+  backend/app/idempotency.py,290
   backend/app/logging_setup.py,100
   backend/app/main.py,50
   backend/app/mullm_execute.py,21
@@ -28,7 +29,7 @@ M[405]:
   backend/app/routers/settings.py,81
   backend/app/routers/system.py,29
   backend/app/routers/testql_compat.py,153
-  backend/app/routers/workflow.py,489
+  backend/app/routers/workflow.py,516
   backend/app/schemas.py,64
   backend/app/step_validator.py,51
   backend/app/workflow.py,22
@@ -38,7 +39,7 @@ M[405]:
   backend/pyproject.toml,52
   backend/pytest.ini,5
   backend/requirements.txt,11
-  docker-compose.yml,130
+  docker-compose.yml,161
   docker-compose.e2e.yml,41
   examples/01-invoice/Dockerfile,23
   examples/01-invoice/fixtures/invoice-request.txt,4
@@ -80,8 +81,7 @@ M[405]:
   examples/08-multi-object-benchmark/results/benchmark_1780739013.json,636
   examples/08-multi-object-benchmark/results/benchmark_1780741913.json,636
   examples/08-multi-object-benchmark/results/benchmark_1780751306.json,636
-  examples/08-multi-object-benchmark/results/benchmark_1780752985.json,636
-  examples/08-multi-object-benchmark/results/benchmark_1780760454.json,636
+  examples/08-multi-object-benchmark/results/benchmark_1780763810.json,636
   examples/08-multi-object-benchmark/scenario.py,137
   examples/09-execution-smoke/main.py,33
   examples/09-execution-smoke/scenario.py,44
@@ -100,19 +100,22 @@ M[405]:
   examples/15-idempotency-replay/scenario.py,82
   examples/16-golden-eval/main.py,33
   examples/16-golden-eval/results/golden_1780744032.json,288
-  examples/16-golden-eval/results/golden_1780751517.json,288
-  examples/16-golden-eval/results/golden_1780753164.json,288
-  examples/16-golden-eval/results/golden_1780760650.json,288
   examples/16-golden-eval/scenario.py,67
   examples/17-execution-policy/main.py,33
   examples/17-execution-policy/scenario.py,140
+  examples/18-trigger-webhook/main.py,33
+  examples/18-trigger-webhook/scenario.py,61
+  examples/19-real-smtp/main.py,33
+  examples/19-real-smtp/scenario.py,87
+  examples/20-pactown-deploy/main.py,33
+  examples/20-pactown-deploy/scenario.py,98
   examples/bootstrap.py,107
   examples/code_generation_examples.py,25
   examples/docker-compose.yml,58
   examples/docker-e2e-results.json,86
   examples/example-profiles.yaml,178
-  examples/run-all.sh,72
-  examples/testql-results.json,1817
+  examples/run-all.sh,76
+  examples/testql-results.json,1855
   examples/validate-contract-draft.sh,5
   goal.yaml,512
   intract.yaml,51
@@ -129,26 +132,28 @@ M[405]:
   nlp-service/app/config.py,60
   nlp-service/app/conversation/__init__.py,1
   nlp-service/app/conversation/attachment_gate.py,25
-  nlp-service/app/conversation/autonomous_loop.py,324
-  nlp-service/app/conversation/doql_autofill.py,135
+  nlp-service/app/conversation/autonomous_loop.py,363
+  nlp-service/app/conversation/doql_autofill.py,158
   nlp-service/app/conversation/doql_context.py,52
-  nlp-service/app/conversation/doql_registry.py,176
+  nlp-service/app/conversation/doql_registry.py,194
   nlp-service/app/conversation/invoice_paths.py,70
   nlp-service/app/conversation/invoice_policy.py,27
   nlp-service/app/conversation/merge.py,36
-  nlp-service/app/conversation/orchestrator.py,333
+  nlp-service/app/conversation/orchestrator.py,326
   nlp-service/app/conversation/process_agent.py,116
   nlp-service/app/conversation/reflection.py,137
-  nlp-service/app/conversation/responses.py,398
+  nlp-service/app/conversation/responses.py,418
   nlp-service/app/conversation/runtime_gate.py,90
   nlp-service/app/conversation/system_map.py,147
   nlp-service/app/dsl/__init__.py,4
   nlp-service/app/dsl/forms.py,89
-  nlp-service/app/dsl/mapper.py,246
+  nlp-service/app/dsl/mapper.py,262
   nlp-service/app/dsl/pipeline.py,58
   nlp-service/app/execution/__init__.py,21
-  nlp-service/app/execution/delegate.py,48
+  nlp-service/app/execution/delegate.py,21
   nlp-service/app/execution/system.py,343
+  nlp-service/app/executors/__init__.py,19
+  nlp-service/app/executors/router.py,102
   nlp-service/app/governance/__init__.py,14
   nlp-service/app/governance/bootstrap.py,78
   nlp-service/app/governance/config.py,165
@@ -176,7 +181,7 @@ M[405]:
   nlp-service/app/routing/intent.py,55
   nlp-service/app/routing/native.py,143
   nlp-service/app/routing/observability.py,57
-  nlp-service/app/routing/orientation.py,379
+  nlp-service/app/routing/orientation.py,389
   nlp-service/app/routing/parser/__init__.py,3
   nlp-service/app/routing/parser/enrich.py,158
   nlp-service/app/routing/parser/facade.py,20
@@ -184,8 +189,8 @@ M[405]:
   nlp-service/app/routing/parser/llm.py,145
   nlp-service/app/routing/parser/prompt_catalog.py,89
   nlp-service/app/routing/parser/resolve_mode.py,65
-  nlp-service/app/routing/parser/rules.py,586
-  nlp-service/app/routing/resolve.py,200
+  nlp-service/app/routing/parser/rules.py,622
+  nlp-service/app/routing/resolve.py,241
   nlp-service/app/schemas.py,150
   nlp-service/app/settings.py,251
   nlp-service/app/store/__init__.py,30
@@ -210,118 +215,74 @@ M[405]:
   nlp2dsl.yaml,204
   nlp2dsl_sdk/__init__.py,54
   nlp2dsl_sdk/__main__.py,45
-  nlp2dsl_sdk/artifact_layout.py,3
-  nlp2dsl_sdk/artifacts.py,3
   nlp2dsl_sdk/attachment_validation.py,130
   nlp2dsl_sdk/autonomous_flow.py,105
   nlp2dsl_sdk/cli.py,269
-  nlp2dsl_sdk/client.py,986
-  nlp2dsl_sdk/compose_generator.py,3
-  nlp2dsl_sdk/contracts/__init__.py,4
-  nlp2dsl_sdk/contracts/action.py,3
-  nlp2dsl_sdk/contracts/draft.py,3
-  nlp2dsl_sdk/contracts/registry.py,3
-  nlp2dsl_sdk/conversation_artifacts.py,3
-  nlp2dsl_sdk/conversation_testql.py,4
+  nlp2dsl_sdk/client.py,1008
+  nlp2dsl_sdk/contracts/action.py,0
+  nlp2dsl_sdk/contracts/registry.py,0
+  nlp2dsl_sdk/conversation_artifacts.py,0
+  nlp2dsl_sdk/conversation_testql.py,0
   nlp2dsl_sdk/demos.py,355
-  nlp2dsl_sdk/doql/__init__.py,4
-  nlp2dsl_sdk/doql/context_blocks.py,3
-  nlp2dsl_sdk/doql/models.py,3
-  nlp2dsl_sdk/doql/parse.py,3
-  nlp2dsl_sdk/doql/render.py,3
-  nlp2dsl_sdk/doql/runtime.py,3
-  nlp2dsl_sdk/doql_context.py,52
-  nlp2dsl_sdk/doql_registry.py,3
+  nlp2dsl_sdk/deploy/__init__.py,5
+  nlp2dsl_sdk/deploy/pactown_deploy.py,96
   nlp2dsl_sdk/encoding.py,93
   nlp2dsl_sdk/evaluation/__init__.py,13
   nlp2dsl_sdk/evaluation/data/golden_cases.yaml,107
   nlp2dsl_sdk/evaluation/golden.py,103
-  nlp2dsl_sdk/evaluation/metrics.py,210
-  nlp2dsl_sdk/example_bootstrap.py,29
+  nlp2dsl_sdk/evaluation/metrics.py,226
   nlp2dsl_sdk/example_loader.py,39
-  nlp2dsl_sdk/export/__init__.py,4
-  nlp2dsl_sdk/export/markpact.py,3
-  nlp2dsl_sdk/export/pactown.py,3
-  nlp2dsl_sdk/export/publish.py,3
+  nlp2dsl_sdk/export/__init__.py,0
   nlp2dsl_sdk/invoice_pdf.py,75
-  nlp2dsl_sdk/invoice_policy.py,3
   nlp2dsl_sdk/mullm/__init__.py,16
   nlp2dsl_sdk/mullm/client.py,81
-  nlp2dsl_sdk/mullm/executor.py,114
-  nlp2dsl_sdk/mullm/payloads.py,82
-  nlp2dsl_sdk/path_resolve.py,3
+  nlp2dsl_sdk/mullm/executor.py,137
+  nlp2dsl_sdk/mullm/payloads.py,131
   nlp2dsl_sdk/preview.py,347
-  nlp2dsl_sdk/process_policy.py,3
   nlp2dsl_sdk/reflection.py,371
   nlp2dsl_sdk/stack_flow.py,231
   nlp2dsl_sdk/step_validation.py,43
-  nlp2dsl_sdk/system_map_bridge.py,3
-  nlp2dsl_sdk/system_map_generator.py,3
-  nlp2dsl_sdk/system_map_ir.py,3
-  nlp2dsl_sdk/system_map_models.py,3
-  nlp2dsl_sdk/system_map_render/__init__.py,5
-  nlp2dsl_sdk/system_map_render/blocks.py,3
-  nlp2dsl_sdk/system_map_render/helpers.py,3
-  nlp2dsl_sdk/system_map_render/render.py,3
-  nlp2dsl_sdk/system_map_runtimes.py,3
-  nlp2dsl_sdk/validation/__init__.py,4
-  nlp2dsl_sdk/validation/capability_policy.py,4
-  nlp2dsl_sdk/validation/context.py,4
-  nlp2dsl_sdk/validation/contract_drift.py,4
-  nlp2dsl_sdk/validation/helpers.py,4
-  nlp2dsl_sdk/validation/issue.py,3
-  nlp2dsl_sdk/validation/messages.py,4
-  nlp2dsl_sdk/validation/pipeline.py,4
-  nlp2dsl_sdk/validation/profile_checks.py,4
-  nlp2dsl_sdk/validation/resolutions.py,4
-  nlp2dsl_sdk/validation/rules/attachment.py,4
-  nlp2dsl_sdk/validation/rules/dsl_contract.py,4
-  nlp2dsl_sdk/validation/rules/post_execute.py,4
-  nlp2dsl_sdk/validation/rules/runtime_health.py,4
-  nlp2dsl_sdk/validation/rules/step_config.py,4
+  nlp2dsl_sdk/validation/__init__.py,0
+  nlp2dsl_sdk/validation/context.py,0
+  nlp2dsl_sdk/validation/helpers.py,0
+  nlp2dsl_sdk/validation/issue.py,0
+  nlp2dsl_sdk/validation/messages.py,0
+  nlp2dsl_sdk/validation/resolutions.py,0
+  nlp2dsl_sdk/validation/rules/dsl_contract.py,0
+  nlp2dsl_sdk/validation/rules/runtime_health.py,0
+  nlp2dsl_sdk/validation/rules/step_config.py,0
   nlp2dsl_sdk/workflow/__init__.py,45
-  nlp2dsl_sdk/workflow/events.py,143
+  nlp2dsl_sdk/workflow/events.py,152
   nlp2dsl_sdk/workflow/lifecycle.py,284
   nlp2dsl_sdk/workflow/simulate.py,87
   packages/dsl-contracts/pyproject.toml,24
   packages/dsl-contracts/src/dsl_contracts/__init__.py,69
-  packages/dsl-contracts/src/dsl_contracts/action.py,97
   packages/dsl-contracts/src/dsl_contracts/draft.py,164
-  packages/dsl-contracts/src/dsl_contracts/issue.py,61
-  packages/dsl-contracts/src/dsl_contracts/registry.py,213
   packages/dsl-validate/pyproject.toml,25
-  packages/dsl-validate/src/dsl_validate/__init__.py,83
-  packages/dsl-validate/src/dsl_validate/capability_policy.py,249
-  packages/dsl-validate/src/dsl_validate/context.py,48
+  packages/dsl-validate/src/dsl_validate/capability_policy.py,405
   packages/dsl-validate/src/dsl_validate/contract_drift.py,160
-  packages/dsl-validate/src/dsl_validate/helpers.py,36
   packages/dsl-validate/src/dsl_validate/issue.py,3
-  packages/dsl-validate/src/dsl_validate/messages.py,169
   packages/dsl-validate/src/dsl_validate/path_resolve.py,56
   packages/dsl-validate/src/dsl_validate/pipeline.py,278
   packages/dsl-validate/src/dsl_validate/profile_checks.py,306
-  packages/dsl-validate/src/dsl_validate/resolutions.py,218
-  packages/dsl-validate/src/dsl_validate/rules/__init__.py,0
   packages/dsl-validate/src/dsl_validate/rules/attachment.py,115
-  packages/dsl-validate/src/dsl_validate/rules/dsl_contract.py,166
-  packages/dsl-validate/src/dsl_validate/rules/post_execute.py,71
-  packages/dsl-validate/src/dsl_validate/rules/runtime_health.py,136
-  packages/dsl-validate/src/dsl_validate/rules/step_config.py,162
-  packages/install-dev.sh,41
+  packages/dsl-validate/src/dsl_validate/rules/post_execute.py,90
+  packages/install-dev.sh,42
   packages/nlp2cmd-intent/pyproject.toml,24
   packages/nlp2cmd-intent/src/nlp2cmd_intent/__init__.py,31
   packages/nlp2cmd-intent/src/nlp2cmd_intent/clarification.py,37
   packages/nlp2cmd-intent/src/nlp2cmd_intent/data/fast_path_overrides.json,1043
   packages/nlp2cmd-intent/src/nlp2cmd_intent/data/keyword_intent_detector_config.json,215
   packages/nlp2cmd-intent/src/nlp2cmd_intent/data/patterns.json,2016
-  packages/nlp2cmd-intent/src/nlp2cmd_intent/data_files.py,67
+  packages/nlp2cmd-intent/src/nlp2cmd_intent/data_files.py,73
   packages/nlp2cmd-intent/src/nlp2cmd_intent/domain_mapping.py,43
   packages/nlp2cmd-intent/src/nlp2cmd_intent/facade.py,54
-  packages/nlp2cmd-intent/src/nlp2cmd_intent/input.py,34
+  packages/nlp2cmd-intent/src/nlp2cmd_intent/input.py,35
   packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/__init__.py,12
-  packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/fast_path_detection.py,476
+  packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/fast_path_detection.py,344
+  packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/fast_path_terms.py,340
   packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py,602
-  packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_patterns.py,181
+  packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_patterns.py,192
   packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/pattern_loaders.py,137
   packages/nlp2cmd-intent/src/nlp2cmd_intent/nlp2cmd_convert.py,47
   packages/nlp2cmd-intent/src/nlp2cmd_intent/normalize.py,16
@@ -342,8 +303,14 @@ M[405]:
   packages/nlp2cmd-propact/src/nlp2cmd_propact/runner.py,194
   packages/nlp2dsl-artifacts/pyproject.toml,24
   packages/nlp2dsl-artifacts/src/nlp2dsl_artifacts/__init__.py,28
-  packages/nlp2dsl-artifacts/src/nlp2dsl_artifacts/encoding.py,93
-  packages/nlp2dsl-artifacts/src/nlp2dsl_artifacts/writer.py,399
+  packages/nlp2dsl-artifacts/src/nlp2dsl_artifacts/writer.py,414
+  packages/nlp2dsl-mcp/pyproject.toml,19
+  packages/nlp2dsl-mcp/src/nlp2dsl_mcp/__init__.py,1
+  packages/nlp2dsl-mcp/src/nlp2dsl_mcp/server.py,98
+  packages/nlp2dsl-plugin/examples/smtp-plugin/plugin.yaml,10
+  packages/nlp2dsl-plugin/pyproject.toml,16
+  packages/nlp2dsl-plugin/src/nlp2dsl_plugin/__init__.py,5
+  packages/nlp2dsl-plugin/src/nlp2dsl_plugin/schema.py,46
   packages/nlp2dsl-show/pyproject.toml,29
   packages/nlp2dsl-show/src/nlp2dsl_show/__init__.py,3
   packages/nlp2dsl-show/src/nlp2dsl_show/cli.py,91
@@ -358,30 +325,28 @@ M[405]:
   packages/pact-ir/src/pact_ir/target_kind.py,34
   packages/testql-conversations/pyproject.toml,24
   packages/testql-conversations/src/testql_conversations/__init__.py,18
-  packages/testql-conversations/src/testql_conversations/artifacts.py,130
-  packages/testql-conversations/src/testql_conversations/validate.py,168
   packages/workflow-export/pyproject.toml,24
-  packages/workflow-export/src/workflow_export/__init__.py,46
   packages/workflow-export/src/workflow_export/markpact.py,234
-  packages/workflow-export/src/workflow_export/pactown.py,198
+  packages/workflow-export/src/workflow_export/pactown.py,213
   packages/workflow-export/src/workflow_export/publish.py,192
   planfile.yaml,1319
   prefact.yaml,82
   project.sh,61
-  pyproject.toml,103
+  pyproject.toml,109
   pyqual.yaml,41
   run-all-tests.sh,90
-  scripts/_conversation_scenario.py,201
+  scripts/_conversation_scenario.py,232
   scripts/_dotenv.py,23
   scripts/_ensure_nlp2dsl_sdk.sh,22
   scripts/aggregate-example-testql.py,49
   scripts/bootstrap-venv.sh,32
   scripts/install-local-deps.sh,32
+  scripts/migrate-direct-imports.py,100
   scripts/publish-all.sh,44
   scripts/run-conversation-scenario.py,126
-  scripts/run-example-docker-e2e.py,358
-  scripts/run-example-testql-results.py,524
-  scripts/run-execution-scenario.py,183
+  scripts/run-example-docker-e2e.py,373
+  scripts/run-example-testql-results.py,555
+  scripts/run-execution-scenario.py,130
   scripts/setup-dev.sh,43
   scripts/validate-contract-draft.sh,8
   scripts/validate-contract-drift.py,102
@@ -396,32 +361,30 @@ M[405]:
   tauri-wrapper/src-tauri/tauri.conf.json,43
   testql-scenarios/generated-api-smoke.testql.toon.yaml,39
   testql-scenarios/generated-cli-tests.testql.toon.yaml,20
-  testql-scenarios/generated-examples.testql.toon.yaml,352
+  testql-scenarios/generated-examples.testql.toon.yaml,40
   testql-scenarios/generated-from-pytests.testql.toon.yaml,128
   tree.sh,1
+  trigger-service/Dockerfile,9
+  trigger-service/app/__init__.py,1
+  trigger-service/app/main.py,70
+  trigger-service/requirements.txt,3
   worker/__init__.py,5
-  worker/Dockerfile,14
+  worker/Dockerfile,16
   worker/action_catalog.py,73
-  worker/attachment_validation.py,47
+  worker/attachment_validation.py,39
   worker/config.py,27
+  worker/connectors/__init__.py,8
+  worker/connectors/smtp.py,82
   worker/logging_setup.py,100
-  worker/path_resolve.py,27
+  worker/path_resolve.py,75
   worker/pyproject.toml,46
   worker/registry.py,53
   worker/requirements.txt,4
   worker/step_validator.py,51
-  worker/worker.py,286
+  worker/worker.py,313
 D:
-  packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/fast_path_detection.py:
-    e: FastPathHit,normalize_url,match_explicit_overrides,match_exact_commands,run_domain_fast_path_after_exact,fast_path_detect
-    FastPathHit:
-    normalize_url(raw)
-    match_explicit_overrides(overrides;text_normalized)
-    match_exact_commands(text_lower)
-    run_domain_fast_path_after_exact(text_lower;patterns)
-    fast_path_detect(text_lower;patterns)
   scripts/run-example-docker-e2e.py:
-    e: _py,_load_profiles,_health_ok,_collect_profiles,docker_up,docker_down,wait_platform,run_example_main,run_execution,run_conversation,process_example,main
+    e: _py,_load_profiles,_health_ok,_collect_profiles,docker_up,docker_down,wait_platform,run_example_main,_load_trace,_run_scenario,run_execution,run_conversation,_trace_passed,_append_trace_check,_load_e2e_response,_check_profile_validations,process_example,main
     _py()
     _load_profiles()
     _health_ok(base_url)
@@ -430,116 +393,16 @@ D:
     docker_down()
     wait_platform(base_url;timeout_s)
     run_example_main(example_dir)
+    _load_trace(trace_path;proc)
+    _run_scenario(example_dir;rel;base_url)
     run_execution(example_dir;rel;base_url)
     run_conversation(example_dir;rel;base_url)
+    _trace_passed(trace)
+    _append_trace_check(report)
+    _load_e2e_response(example_dir)
+    _check_profile_validations(report;example_dir;validations)
     process_example(example_id;entry)
     main(argv)
-  nlp2dsl_sdk/mullm/payloads.py:
-    e: is_mullm_action,_cfg,build_task_payload
-    is_mullm_action(action)
-    _cfg(step)
-    build_task_payload(step)
-  packages/dsl-validate/src/dsl_validate/capability_policy.py:
-    e: ExecutionPolicyContext,_workflow_steps,_step_config,_email_domain,_target_uri,_approval_granted,validate_capability_policy,access_decision_requires_approval,build_access_decision_params
-    ExecutionPolicyContext:  # Runtime policy envelope applied at pre-execute...
-    _workflow_steps(workflow)
-    _step_config(step)
-    _email_domain(address)
-    _target_uri(action;config)
-    _approval_granted(action;config;ctx)
-    validate_capability_policy(workflow;catalog;ctx)
-    access_decision_requires_approval(decision)
-    build_access_decision_params(action;config)
-  backend/app/execution_policy.py:
-    e: resolve_agent_id,build_policy_context,fetch_access_decisions,validate_workflow_execution_policy,policy_blocked_response,_as_str_list
-    resolve_agent_id(body)
-    build_policy_context(body)
-    fetch_access_decisions(workflow)
-    validate_workflow_execution_policy(workflow;body)
-    policy_blocked_response(dsl;issues)
-    _as_str_list(raw)
-  nlp-service/app/routing/parser/rules.py:
-    e: parse_rules,_detect_actions,_apply_context_filters,_action_alias_scores,_alias_in_text,_longest_alias_match,_actions_by_score,_dominant_overlap_action,_action_category,_top_system_action_wins,_second_system_action_wins,_resolve_intent,_extract_entities,_extract_amount,_extract_email,_extract_body_content_prefix,_extract_email_subject_and_body,_extract_reminder_subject,_extract_report_type,_extract_format,_extract_notification_channels,_extract_notification_message,_extract_param_aliases,_extract_system_entities,_extract_file_path_entity,_extract_setting_path_entity,_extract_model_setting_entity,_extract_numeric_setting_value,_extract_mode_setting_entity,_extract_fallback_recipient,_set_entity
-    parse_rules(text)
-    _detect_actions(text_lower)
-    _apply_context_filters(text_lower;scores)
-    _action_alias_scores(text_lower)
-    _alias_in_text(text_lower;alias_text)
-    _longest_alias_match(text_lower;aliases)
-    _actions_by_score(scores)
-    _dominant_overlap_action(sorted_actions;scores)
-    _action_category(action_name)
-    _top_system_action_wins(top_category;second_category;top_score;second_score)
-    _second_system_action_wins(top_category;second_category;top_score;second_score)
-    _resolve_intent(actions)
-    _extract_entities(text;text_lower)
-    _extract_amount(entities;text)
-    _extract_email(entities;text)
-    _extract_body_content_prefix(entities;text)
-    _extract_email_subject_and_body(entities;text)
-    _extract_reminder_subject(entities;text)
-    _extract_report_type(entities;text_lower)
-    _extract_format(entities;text_lower)
-    _extract_notification_channels(entities;text)
-    _extract_notification_message(entities;text)
-    _extract_param_aliases(entities;text_lower)
-    _extract_system_entities(entities;text;text_lower)
-    _extract_file_path_entity(entities;text)
-    _extract_setting_path_entity(entities;text)
-    _extract_model_setting_entity(entities;text_lower)
-    _extract_numeric_setting_value(entities;text_lower)
-    _extract_mode_setting_entity(entities;text_lower)
-    _extract_fallback_recipient(entities;text_lower)
-    _set_entity(entities;field;value)
-  nlp-service/app/dsl/mapper.py:
-    e: map_to_dsl,_resolve_actions,_build_config,_auto_notify_message,_get_field_mapping,_make_name,_build_prompt
-    map_to_dsl(nlp)
-    _resolve_actions(intent)
-    _build_config(action;entities)
-    _auto_notify_message(config;entities_dict)
-    _get_field_mapping(action)
-    _make_name(intent;actions)
-    _build_prompt(missing)
-  scripts/run-example-testql-results.py:
-    e: Check,ExampleReport,_load_manifest,_testql_dry_run,_testql_ir_parse,_nlp2dsl_run_query,_is_hand_authored_conversation,_generate_conversation_toon,_conversation_execute,_conversation_transcript_check,_conversation_dry_run,_manifest_consistency,_write_toon_report,process_example,main
-    Check:
-    ExampleReport: to_dict(0)
-    _load_manifest(path)
-    _testql_dry_run(commands_path)
-    _testql_ir_parse(commands_path)
-    _nlp2dsl_run_query(query_entry;artifact_root)
-    _is_hand_authored_conversation(path)
-    _generate_conversation_toon(example_id;manifest)
-    _conversation_execute(conversation_path;artifact_root)
-    _conversation_transcript_check(artifact_root)
-    _conversation_dry_run(conversation_path)
-    _manifest_consistency(manifest;artifact_root)
-    _write_toon_report(report)
-    process_example(example_dir)
-    main(argv)
-  nlp2dsl_sdk/mullm/executor.py:
-    e: _workflow_steps,workflow_has_mullm_steps,is_mullm_only_workflow,_delegate_mode,_should_simulate,execute_mullm_workflow
-    _workflow_steps(workflow)
-    workflow_has_mullm_steps(workflow)
-    is_mullm_only_workflow(workflow)
-    _delegate_mode()
-    _should_simulate(client)
-    execute_mullm_workflow(workflow)
-  nlp-service/app/conversation/autonomous_loop.py:
-    e: AutonomousResolveResult,_max_autonomous_rounds,_autonomous_enabled,_example_dir,_step_config_for_validation,_attachment_valid_ok,_maybe_delete_generated_attachment,_resolve_artifact_file,_try_fixture_attachment,_try_generate_attachment,_dialog_missing,_try_validation_fixes,autonomous_resolve_turn
-    AutonomousResolveResult:
-    _max_autonomous_rounds(ctx)
-    _autonomous_enabled(ctx)
-    _example_dir()
-    _step_config_for_validation(state)
-    _attachment_valid_ok(raw;ctx;state)
-    _maybe_delete_generated_attachment(raw;ctx)
-    _resolve_artifact_file(raw;ctx)
-    _try_fixture_attachment(state;ctx)
-    _try_generate_attachment(state;ctx)
-    _dialog_missing(state)
-    _try_validation_fixes(state;ctx)
-    autonomous_resolve_turn(state)
   examples/13-autonomous-invoice-stack/scenario.py:
     e: _example_dir,run
     _example_dir()
@@ -550,119 +413,92 @@ D:
     _run_autonomous(client)
     _attachment_validation(result)
     run(client)
-  nlp-service/app/conversation/doql_autofill.py:
-    e: load_context_for_state,_resolve_attachment_path,_nested_generate_invoice,sync_autofill_from_doql
-    load_context_for_state(state)
-    _resolve_attachment_path(raw;ctx)
-    _nested_generate_invoice(state;ctx)
-    sync_autofill_from_doql(state)
-  packages/dsl-validate/src/dsl_validate/rules/post_execute.py:
-    e: validate_execution_outcome
-    validate_execution_outcome(execution)
-  nlp2dsl_sdk/workflow/events.py:
-    e: WorkflowLifecycleEvent,normalize_event_type,lifecycle_event_from_payload,workflow_snapshot_from_events
-    WorkflowLifecycleEvent(BaseModel):  # Normalized audit event persisted alongside workflow runs...
-    normalize_event_type(event_type)
-    lifecycle_event_from_payload(payload)
-    workflow_snapshot_from_events(events)
-  nlp2dsl_sdk/evaluation/metrics.py:
-    e: GoldenRow,GoldenReport,_actions_match,_missing_match,_has_attachment_signal,classify_outcome,evaluate_golden_case,_bucket_stats,build_golden_report,primary_action_from_row,run_golden_evaluation
-    GoldenRow:
-    GoldenReport: to_dict(0)
-    _actions_match(expected;actual)
-    _missing_match(expected;actual)
-    _has_attachment_signal(result;missing)
-    classify_outcome(case;result)
-    evaluate_golden_case(case;result)
-    _bucket_stats(rows;key_fn)
-    build_golden_report(rows)
-    primary_action_from_row(row)
-    run_golden_evaluation(cases;results)
+  backend/app/audit.py:
+    e: build_audit_entries
+    build_audit_entries(repo)
   examples/04-scheduled-report/scenario.py:
     e: run
     run(client)
-  nlp-service/app/routing/resolve.py:
-    e: _parser_source,_intent_from_native,_intent_from_nlp,_apply_auth,_intent_from_orientation,resolve_intent
-    _parser_source(text)
-    _intent_from_native(native)
-    _intent_from_nlp(nlp;source)
-    _apply_auth(decision;auth)
-    _intent_from_orientation(text;orientation)
-    resolve_intent(text)
-  scripts/run-execution-scenario.py:
-    e: _load_yaml,_wait_health,_dsl_actions,_execution_completed,_check_expect,_run_validation,run_scenario,main
-    _load_yaml(path)
-    _wait_health(base_url;timeout_s)
-    _dsl_actions(result)
-    _execution_completed(result)
-    _check_expect(result;expect)
-    _run_validation(v;last)
-    run_scenario(scenario_path)
-    main(argv)
-  nlp-service/app/conversation/orchestrator.py:
-    e: _conversation_store,_apply_request_context,start_conversation,continue_conversation,get_conversation,mark_conversation_executed,_attach_routing,_entity_field_from_inline_key,_merge_inline_entities,_attach_autofill,_attach_reflection,_slot_fill_decision,_has_extracted_entities,_try_slot_fill_followup,_process_message
-    _conversation_store()
-    _apply_request_context(inline)
-    start_conversation(text)
-    continue_conversation(conversation_id;text)
-    get_conversation(conversation_id)
-    mark_conversation_executed(conversation_id;execution)
-    _attach_routing(resp;decision)
-    _entity_field_from_inline_key(key)
-    _merge_inline_entities(state;inline)
-    _attach_autofill(resp;state)
-    _attach_reflection(resp;state;phase)
-    _slot_fill_decision(state)
-    _has_extracted_entities(result)
-    _try_slot_fill_followup(state;text)
-    _process_message(state;text)
   scripts/run-conversation-scenario.py:
     e: run_scenario,main
     run_scenario(scenario_path)
     main(argv)
-  packages/nlp2dsl-artifacts/src/nlp2dsl_artifacts/writer.py:
-    e: ExampleArtifactWriter,example_artifact_root,_slugify,write_environment_doql,build_process_trace,_action_endpoint,_action_transport,write_query_artifacts,write_manifest,write_testql_commands,write_services_snapshot,_extract_actions,get_example_writer
-    ExampleArtifactWriter: __init__(1),record(2),finalize(1)  # Accumulates query results and flushes .nlp2dsl/ on finalize(...
-    example_artifact_root(example_dir)
-    _slugify(text)
-    write_environment_doql(artifact_root;example_name;env)
-    build_process_trace(query;result)
-    _action_endpoint(action)
-    _action_transport(action)
-    write_query_artifacts(artifact_root;query;result)
-    write_manifest(artifact_root)
-    write_testql_commands(artifact_root)
-    write_services_snapshot(artifact_root;actions)
-    _extract_actions(result)
-    get_example_writer()
-  backend/app/attachment_validation.py:
-    e: build_attachment_validation,_top_level_attachment_validation,_execution_attachment_validation,_attachment_from_dsl,validation_from_chat_result,ensure_attachment_validation
-    build_attachment_validation(raw_path)
-    _top_level_attachment_validation(result)
-    _execution_attachment_validation(execution)
-    _attachment_from_dsl(dsl)
-    validation_from_chat_result(result)
-    ensure_attachment_validation(result)
   examples/08-multi-object-benchmark/scenario.py:
     e: _extract_actions,_evaluate,run_benchmark,run
     _extract_actions(result)
     _evaluate(query;result)
     run_benchmark(client)
     run(client)
-  nlp-service/app/conversation/doql_registry.py:
-    e: _format_value,_render_block,_entities_to_data,_patch_doql_file,_try_sdk_refresh,refresh_registry_for_state,reload_context_after_refresh
-    _format_value(val)
-    _render_block(name;data)
-    _entities_to_data(intent;entities)
-    _patch_doql_file(path)
-    _try_sdk_refresh(path)
-    refresh_registry_for_state(state)
-    reload_context_after_refresh(state)
   nlp-service/app/validation/attachment_validation.py:
     e: build_attachment_validation
     build_attachment_validation(raw_path)
+  scripts/run-example-testql-results.py:
+    e: Check,ExampleReport,_load_manifest,_testql_dry_run,_testql_ir_parse,_nlp_env,_check_cached_pipeline,_run_nlp2dsl_show,_run_nlp2dsl_run,_nlp2dsl_run_query,_is_hand_authored_conversation,_generate_conversation_toon,_conversation_execute,_conversation_transcript_check,_conversation_dry_run,_manifest_consistency,_write_toon_report,process_example,main
+    Check:
+    ExampleReport: to_dict(0)
+    _load_manifest(path)
+    _testql_dry_run(commands_path)
+    _testql_ir_parse(commands_path)
+    _nlp_env()
+    _check_cached_pipeline(check_id;query)
+    _run_nlp2dsl_show(check_id;query)
+    _run_nlp2dsl_run(check_id;query)
+    _nlp2dsl_run_query(query_entry;artifact_root)
+    _is_hand_authored_conversation(path)
+    _generate_conversation_toon(example_id;manifest)
+    _conversation_execute(conversation_path;artifact_root)
+    _conversation_transcript_check(artifact_root)
+    _conversation_dry_run(conversation_path)
+    _manifest_consistency(manifest;artifact_root)
+    _write_toon_report(report)
+    process_example(example_dir)
+    main(argv)
+  scripts/_conversation_scenario.py:
+    e: load_yaml,wait_health,_dsl_from_payload,dsl_actions,workflow_execution_payload,execution_completed,_check_status,_check_missing,_check_dsl_actions,_check_routing_and_autofill,check_expect,_check_execution_routing,check_execution_expect,run_validation,prepare_doql_context,run_turn,turn_loop_action,finalize_trace
+    load_yaml(path)
+    wait_health(base_url;timeout_s)
+    _dsl_from_payload(payload)
+    dsl_actions(response)
+    workflow_execution_payload(response)
+    execution_completed(response)
+    _check_status(response;expect)
+    _check_missing(response;expect)
+    _check_dsl_actions(response;expect)
+    _check_routing_and_autofill(response;expect)
+    check_expect(response;expect)
+    _check_execution_routing(response;expect)
+    check_execution_expect(response;expect)
+    run_validation(v;last_response)
+    prepare_doql_context(scenario_path;scenario)
+    run_turn(flow;turn)
+    turn_loop_action(flow;turn)
+    finalize_trace(flow)
+  backend/app/execution_policy.py:
+    e: resolve_agent_id,_as_str_list,_policy_blocks,_approval_grants,_process_policy_from_block,_dry_run_only,build_policy_context,fetch_access_decisions,validate_workflow_execution_policy,policy_blocked_response
+    resolve_agent_id(body)
+    _as_str_list(raw)
+    _policy_blocks(body)
+    _approval_grants(body;policy_block)
+    _process_policy_from_block(process_block)
+    _dry_run_only(body;policy_block)
+    build_policy_context(body)
+    fetch_access_decisions(workflow)
+    validate_workflow_execution_policy(workflow;body)
+    policy_blocked_response(dsl;issues)
+  nlp2dsl_sdk/mullm/payloads.py:
+    e: is_mullm_action,_cfg,_shell_task_fields,_browser_task_fields,_db_query_fields,_select_agent_fields,_delegate_fields,_resolve_action_fields,_parse_auto_assign,build_task_payload
+    is_mullm_action(action)
+    _cfg(step)
+    _shell_task_fields(cfg)
+    _browser_task_fields(cfg)
+    _db_query_fields(cfg)
+    _select_agent_fields(cfg)
+    _delegate_fields(cfg)
+    _resolve_action_fields(action;cfg)
+    _parse_auto_assign(cfg)
+    build_task_payload(step)
   nlp-service/app/routing/orientation.py:
-    e: OrientationResult,_has_registry_hint,_has_host_hint,_is_file_list_query,_file_list_scope,_host_list_root,_normalize_orient_path,_resolve_project_host_path,_resolve_list_path_remainder,_resolve_file_list_host_command,orient_query
+    e: OrientationResult,_has_registry_hint,_has_host_hint,_is_file_list_query,_file_list_scope,_host_list_root,_normalize_orient_path,_resolve_project_host_path,_resolve_list_path_remainder,_resolve_file_list_host_command,_orient_file_list,_orient_shell_prefix,orient_query
     OrientationResult: to_dict(0)
     _has_registry_hint(text)
     _has_host_hint(text)
@@ -673,23 +509,9 @@ D:
     _resolve_project_host_path(project_name;root)
     _resolve_list_path_remainder(remainder;root)
     _resolve_file_list_host_command(text)
+    _orient_file_list(raw)
+    _orient_shell_prefix(raw)
     orient_query(text)
-  scripts/_conversation_scenario.py:
-    e: load_yaml,wait_health,dsl_actions,execution_completed,_check_status,_check_missing,_check_dsl_actions,_check_routing_and_autofill,check_expect,run_validation,prepare_doql_context,run_turn,turn_loop_action,finalize_trace
-    load_yaml(path)
-    wait_health(base_url;timeout_s)
-    dsl_actions(response)
-    execution_completed(response)
-    _check_status(response;expect)
-    _check_missing(response;expect)
-    _check_dsl_actions(response;expect)
-    _check_routing_and_autofill(response;expect)
-    check_expect(response;expect)
-    run_validation(v;last_response)
-    prepare_doql_context(scenario_path;scenario)
-    run_turn(flow;turn)
-    turn_loop_action(flow;turn)
-    finalize_trace(flow)
   nlp-service/app/routing/parser/enrich.py:
     e: is_enrich_enabled,get_enrichable_missing,can_enrich_missing,enrich_entities
     is_enrich_enabled()
@@ -699,11 +521,11 @@ D:
   backend/app/idempotency.py:
     e: IdempotencyRecord,IdempotencyStore,MemoryIdempotencyStore,Base,IdempotencyRecordModel,PostgresIdempotencyStore,workflow_fingerprint,normalize_workflow_for_fingerprint,create_idempotency_store
     IdempotencyRecord:
-    IdempotencyStore: start(2),finish(2),clear(0)  # Async idempotency store interface...
-    MemoryIdempotencyStore(IdempotencyStore): __init__(0),start(2),finish(2),clear(0)  # Process-local fallback idempotency store...
+    IdempotencyStore: start(2),finish(2),clear(0),purge_expired(1)  # Async idempotency store interface...
+    MemoryIdempotencyStore(IdempotencyStore): __init__(0),start(2),finish(2),clear(0),purge_expired(1)  # Process-local fallback idempotency store...
     Base(DeclarativeBase):
     IdempotencyRecordModel(Base):
-    PostgresIdempotencyStore(IdempotencyStore): __init__(1),_ensure_engine(0),_get_session_factory(0),_ensure_tables(0),start(2),finish(2),clear(0),close(0)  # Durable idempotency store backed by PostgreSQL...
+    PostgresIdempotencyStore(IdempotencyStore): __init__(1),_ensure_engine(0),_get_session_factory(0),_ensure_tables(0),start(2),finish(2),clear(0),purge_expired(1),close(0)  # Durable idempotency store backed by PostgreSQL...
     workflow_fingerprint(workflow)
     normalize_workflow_for_fingerprint(workflow)
     create_idempotency_store(postgres_url)
@@ -727,9 +549,65 @@ D:
     chat_start(request)
     chat_message(request)
     chat_get_state(conversation_id)
+  backend/app/routers/workflow.py:
+    e: _format_sse,_workflow_snapshot,orient_nlp,list_actions,run_workflow_endpoint,start_workflow_endpoint,get_history,get_workflow_audit,get_workflow,get_workflow_events,stream_workflow,workflow_catalog_drift,workflow_from_text,workflow_plan,workflow_validate,workflow_simulate,workflow_execute,clear_idempotency_store,purge_expired_idempotency
+    _format_sse(event;data)
+    _workflow_snapshot(run)
+    orient_nlp(body)
+    list_actions()
+    run_workflow_endpoint(req)
+    start_workflow_endpoint(req)
+    get_history()
+    get_workflow_audit(limit;offset;agent_id;action)
+    get_workflow(workflow_id)
+    get_workflow_events(workflow_id;limit;offset)
+    stream_workflow(workflow_id;request)
+    workflow_catalog_drift()
+    workflow_from_text(body)
+    workflow_plan(body)
+    workflow_validate(body)
+    workflow_simulate(body)
+    workflow_execute(body)
+    clear_idempotency_store()
+    purge_expired_idempotency(body)
+  nlp2dsl_sdk/conversation_artifacts.py:
+    e: _routing_summary,_format_transcript_header,_format_execution_steps,_format_turn,_format_validations,format_transcript,write_conversation_artifacts
+    _routing_summary(data)
+    _format_transcript_header(trace)
+    _format_execution_steps(execution)
+    _format_turn(idx;turn)
+    _format_validations(validations)
+    format_transcript(trace)
+    write_conversation_artifacts(artifact_root;trace)
+  nlp2dsl_sdk/client.py:
+    e: NLP2DSLClient,ConversationFlow,workflow_step
+    NLP2DSLClient: __init__(5),from_env(1),close(0),__enter__(0),__exit__(3),_request(3),_backend(2),_nlp_service(2),_worker(2),backend_health(0),nlp_service_health(0),worker_health(0),health(0),wait_for_health(0),workflow_from_text(3),workflow_simulate(1),workflow_validate(1),workflow_execute(1),run_workflow(4),workflow_actions(0),workflow_history(1),workflow_audit(0),purge_idempotency(1),workflow_action_schema(1),settings(0),settings_section(1),update_settings_section(2),set_setting(2),reset_settings(1),clear_idempotency(0),chat_start(2),chat_message(3),chat_state(1),nlp_chat_start(2),nlp_chat_message(3),nlp_chat_state(1),generate_code(4),supported_languages(0),worker_execute(3),worker_generate_code(5),send_invoice(5),send_email(5),generate_report(4),generate_report_and_notify(7),create_scheduled_report(7),notify_slack(4),crm_update(4),send_invoice_and_notify(7)  # Small reusable SDK for the NLP2DSL services...
+    ConversationFlow: __init__(1),start(2),send_message(2),_record_turn(4),save_artifacts(1),export_trace(0),_handle_response(1),_persist_reflection(1),_refresh_doql_registry(1),_handle_in_progress_response(2),_handle_ready_response(2),_handle_completed_response(2),_print_attachment_validation(1),_reflect_executed_turn(1),_handle_error_response(1),run_demo(0),run_interactive(0)  # Convenience helper for the conversational workflow example...
+    workflow_step(action)
   nlp-service/app/code_generator.py:
     e: CodeGenerator
     CodeGenerator: __init__(0),_get_api_key(0),_build_prompt(3),generate_code(4),_extract_class_name(1),_split_code_and_tests(2),get_supported_languages(0),get_language_info(1)  # Generates code in multiple programming languages using LLM...
+  nlp-service/app/conversation/autonomous_loop.py:
+    e: AutonomousResolveResult,_max_autonomous_rounds,_autonomous_enabled,_example_dir,_step_config_for_validation,_attachment_valid_ok,_maybe_delete_generated_attachment,_resolve_artifact_file,_try_attachment_candidate,_try_artifact_fixtures,_try_example_dir_fixtures,_try_fixture_attachment,_try_generate_attachment,_dialog_missing,_try_validation_fixes,_ready_autonomous_response,_autonomous_acquire_data,_refresh_autonomous_context,autonomous_resolve_turn
+    AutonomousResolveResult:
+    _max_autonomous_rounds(ctx)
+    _autonomous_enabled(ctx)
+    _example_dir()
+    _step_config_for_validation(state)
+    _attachment_valid_ok(raw;ctx;state)
+    _maybe_delete_generated_attachment(raw;ctx)
+    _resolve_artifact_file(raw;ctx)
+    _try_attachment_candidate(state;ctx;path)
+    _try_artifact_fixtures(state;ctx)
+    _try_example_dir_fixtures(state;ctx)
+    _try_fixture_attachment(state;ctx)
+    _try_generate_attachment(state;ctx)
+    _dialog_missing(state)
+    _try_validation_fixes(state;ctx)
+    _ready_autonomous_response(ready_resp;steps)
+    _autonomous_acquire_data(state;ctx;steps)
+    _refresh_autonomous_context(state;round_idx)
+    autonomous_resolve_turn(state)
   nlp-service/app/governance/bootstrap.py:
     e: _actions_from_yaml_areas,apply_yaml_actions,bootstrap_registry
     _actions_from_yaml_areas()
@@ -747,39 +625,6 @@ D:
     chat_message(conversation_id;text;audio;context_json)
     chat_state(conversation_id)
     chat_registry_observe(request)
-  backend/app/routers/workflow.py:
-    e: _format_sse,_workflow_snapshot,orient_nlp,list_actions,run_workflow_endpoint,start_workflow_endpoint,get_history,get_workflow,get_workflow_events,stream_workflow,workflow_catalog_drift,workflow_from_text,workflow_plan,workflow_validate,workflow_simulate,workflow_execute,clear_idempotency_store
-    _format_sse(event;data)
-    _workflow_snapshot(run)
-    orient_nlp(body)
-    list_actions()
-    run_workflow_endpoint(req)
-    start_workflow_endpoint(req)
-    get_history()
-    get_workflow(workflow_id)
-    get_workflow_events(workflow_id;limit;offset)
-    stream_workflow(workflow_id;request)
-    workflow_catalog_drift()
-    workflow_from_text(body)
-    workflow_plan(body)
-    workflow_validate(body)
-    workflow_simulate(body)
-    workflow_execute(body)
-    clear_idempotency_store()
-  packages/testql-conversations/src/testql_conversations/artifacts.py:
-    e: _routing_summary,_format_transcript_header,_format_execution_steps,_format_turn,_format_validations,format_transcript,write_conversation_artifacts
-    _routing_summary(data)
-    _format_transcript_header(trace)
-    _format_execution_steps(execution)
-    _format_turn(idx;turn)
-    _format_validations(validations)
-    format_transcript(trace)
-    write_conversation_artifacts(artifact_root;trace)
-  nlp2dsl_sdk/client.py:
-    e: NLP2DSLClient,ConversationFlow,workflow_step
-    NLP2DSLClient: __init__(5),from_env(1),close(0),__enter__(0),__exit__(3),_request(3),_backend(2),_nlp_service(2),_worker(2),backend_health(0),nlp_service_health(0),worker_health(0),health(0),wait_for_health(0),workflow_from_text(3),workflow_simulate(1),workflow_validate(1),workflow_execute(1),run_workflow(4),workflow_actions(0),workflow_history(1),workflow_action_schema(1),settings(0),settings_section(1),update_settings_section(2),set_setting(2),reset_settings(1),clear_idempotency(0),chat_start(2),chat_message(3),chat_state(1),nlp_chat_start(2),nlp_chat_message(3),nlp_chat_state(1),generate_code(4),supported_languages(0),worker_execute(3),worker_generate_code(5),send_invoice(5),send_email(5),generate_report(4),generate_report_and_notify(7),create_scheduled_report(7),notify_slack(4),crm_update(4),send_invoice_and_notify(7)  # Small reusable SDK for the NLP2DSL services...
-    ConversationFlow: __init__(1),start(2),send_message(2),_record_turn(4),save_artifacts(1),export_trace(0),_handle_response(1),_persist_reflection(1),_refresh_doql_registry(1),_handle_in_progress_response(2),_handle_ready_response(2),_handle_completed_response(2),_print_attachment_validation(1),_reflect_executed_turn(1),_handle_error_response(1),run_demo(0),run_interactive(0)  # Convenience helper for the conversational workflow example...
-    workflow_step(action)
   backend/app/engine.py:
     e: _workflow_steps_payload,_persist_workflow_snapshot,_publish_workflow_event,_execute_workflow,_track_background_task,run_workflow,start_workflow
     _workflow_steps_payload(result)
@@ -793,6 +638,56 @@ D:
     e: _examples_portable_candidates,resolve_attachment_path
     _examples_portable_candidates(raw)
     resolve_attachment_path(raw)
+  nlp2dsl_sdk/contracts/registry.py:
+    e: _optional_defaults,_string_list,_string_dict,_execution_contract,_compatibility_contract,contract_from_registry_entry,contract_from_catalog_entry,action_contracts_from_registry,action_contracts_from_catalog,action_catalog_payload,action_info_config_schema,required_fields_for_action,quality_fields_for_action,known_action_names
+    _optional_defaults(raw)
+    _string_list(raw)
+    _string_dict(raw)
+    _execution_contract(name;meta)
+    _compatibility_contract(meta)
+    contract_from_registry_entry(name;meta)
+    contract_from_catalog_entry(name;meta)
+    action_contracts_from_registry(registry)
+    action_contracts_from_catalog(catalog)
+    action_catalog_payload(contracts)
+    action_info_config_schema(contract)
+    required_fields_for_action(action)
+    quality_fields_for_action(action)
+    known_action_names()
+  nlp2dsl_sdk/validation/rules/step_config.py:
+    e: validate_step,_format_issues,validate_workflow_steps
+    validate_step(ctx)
+    _format_issues(ctx)
+    validate_workflow_steps(contexts)
+  packages/nlp2dsl-stack/src/nlp2dsl_stack/compose.py:
+    e: ComposeGenerationResult,_default_deploy,_default_schedules,_default_generated_services,enrich_ir_for_stack,_wait_for_backend_shell,_run_script_content,_run_process_host_script,_run_process_docker_script,_up_platform_script,_run_process_wrapper_script,_process_shell_dockerfile,_cron_sidecar_dockerfile,_crontab_content,_stack_compose_dict,_runner_dockerfile,generate_stack_compose
+    ComposeGenerationResult:
+    _default_deploy(example_id;profile)
+    _default_schedules(example_id)
+    _default_generated_services(example_id)
+    enrich_ir_for_stack(ir)
+    _wait_for_backend_shell()
+    _run_script_content()
+    _run_process_host_script()
+    _run_process_docker_script()
+    _up_platform_script(repo_root)
+    _run_process_wrapper_script(repo_root;stack_rel)
+    _process_shell_dockerfile()
+    _cron_sidecar_dockerfile()
+    _crontab_content(schedules)
+    _stack_compose_dict(ir)
+    _runner_dockerfile()
+    generate_stack_compose(ir)
+  packages/workflow-export/src/workflow_export/publish.py:
+    e: PublishExportBundle,PublishValidationResult,catalog_from_nlp_client,export_workflow_publish_layer,validate_publish_layer_result,validate_publish_layer,assert_publish_layer_valid,print_publish_summary
+    PublishExportBundle:
+    PublishValidationResult: to_dict(0)
+    catalog_from_nlp_client(client)
+    export_workflow_publish_layer(artifact_root;dsl;catalog)
+    validate_publish_layer_result(bundle)
+    validate_publish_layer(bundle)
+    assert_publish_layer_valid(bundle)
+    print_publish_summary(bundle)
   nlp2dsl_sdk/cli.py:
     e: _detect_example_dir,_doql_context_label,_analyze,_display,show,_client,_health,_run_with_doql,_run,_actions,_chat_start,_demo,main
     _detect_example_dir()
@@ -828,63 +723,11 @@ D:
     execute_text_examples(client;title;examples)
     finalize_example_artifacts(client)
     ensure_services(client)
-  examples/12-ir-show/scenario.py:
-    e: _run_show,run
-    _run_show(query)
-    run(client)
-  nlp-service/app/conversation/merge.py:
-    e: merge_into_state
-    merge_into_state(state;nlp)
-  packages/dsl-contracts/src/dsl_contracts/registry.py:
-    e: _optional_defaults,_string_list,_string_dict,_execution_contract,_compatibility_contract,contract_from_registry_entry,contract_from_catalog_entry,action_contracts_from_registry,action_contracts_from_catalog,action_catalog_payload,action_info_config_schema,required_fields_for_action,quality_fields_for_action,known_action_names
-    _optional_defaults(raw)
-    _string_list(raw)
-    _string_dict(raw)
-    _execution_contract(name;meta)
-    _compatibility_contract(meta)
-    contract_from_registry_entry(name;meta)
-    contract_from_catalog_entry(name;meta)
-    action_contracts_from_registry(registry)
-    action_contracts_from_catalog(catalog)
-    action_catalog_payload(contracts)
-    action_info_config_schema(contract)
-    required_fields_for_action(action)
-    quality_fields_for_action(action)
-    known_action_names()
-  packages/dsl-validate/src/dsl_validate/rules/step_config.py:
-    e: validate_step,_format_issues,validate_workflow_steps
-    validate_step(ctx)
-    _format_issues(ctx)
-    validate_workflow_steps(contexts)
-  packages/nlp2dsl-stack/src/nlp2dsl_stack/compose.py:
-    e: ComposeGenerationResult,_default_deploy,_default_schedules,_default_generated_services,enrich_ir_for_stack,_wait_for_backend_shell,_run_script_content,_run_process_host_script,_run_process_docker_script,_up_platform_script,_run_process_wrapper_script,_process_shell_dockerfile,_cron_sidecar_dockerfile,_crontab_content,_stack_compose_dict,_runner_dockerfile,generate_stack_compose
-    ComposeGenerationResult:
-    _default_deploy(example_id;profile)
-    _default_schedules(example_id)
-    _default_generated_services(example_id)
-    enrich_ir_for_stack(ir)
-    _wait_for_backend_shell()
-    _run_script_content()
-    _run_process_host_script()
-    _run_process_docker_script()
-    _up_platform_script(repo_root)
-    _run_process_wrapper_script(repo_root;stack_rel)
-    _process_shell_dockerfile()
-    _cron_sidecar_dockerfile()
-    _crontab_content(schedules)
-    _stack_compose_dict(ir)
-    _runner_dockerfile()
-    generate_stack_compose(ir)
-  packages/workflow-export/src/workflow_export/publish.py:
-    e: PublishExportBundle,PublishValidationResult,catalog_from_nlp_client,export_workflow_publish_layer,validate_publish_layer_result,validate_publish_layer,assert_publish_layer_valid,print_publish_summary
-    PublishExportBundle:
-    PublishValidationResult: to_dict(0)
-    catalog_from_nlp_client(client)
-    export_workflow_publish_layer(artifact_root;dsl;catalog)
-    validate_publish_layer_result(bundle)
-    validate_publish_layer(bundle)
-    assert_publish_layer_valid(bundle)
-    print_publish_summary(bundle)
+  nlp2dsl_sdk/deploy/pactown_deploy.py:
+    e: validate_pactown_bundle,deploy_instructions,deploy_instructions_json
+    validate_pactown_bundle(pactown_dir)
+    deploy_instructions()
+    deploy_instructions_json()
   examples/bootstrap.py:
     e: _ensure_sdk_installed,_should_clean_artifacts,_should_clear_idempotency,_try_clear_backend_idempotency,bootstrap
     _ensure_sdk_installed(repo_root)
@@ -892,6 +735,33 @@ D:
     _should_clear_idempotency()
     _try_clear_backend_idempotency(backend_url)
     bootstrap(example_dir)
+  examples/12-ir-show/scenario.py:
+    e: _run_show,run
+    _run_show(query)
+    run(client)
+  nlp-service/app/conversation/merge.py:
+    e: merge_into_state
+    merge_into_state(state;nlp)
+  scripts/migrate-direct-imports.py:
+    e: migrate_file,main
+    migrate_file(path)
+    main()
+  nlp2dsl_sdk/validation/resolutions.py:
+    e: ResolutionPlan,ResolutionEnvironment,plan_resolutions,_attachment_issues,_is_attachment_issue,_append_attachment_plans,_append_autofill_plans,_has_invalid_attachment,_should_generate_attachment,_attachment_source_hint,_is_autofill_issue,filter_plans_by_reflection_tokens,apply_resolution_plans,_append_plan
+    ResolutionPlan:
+    ResolutionEnvironment:  # Side-effect handlers injected by orchestrator / SDK flow...
+    plan_resolutions(issues)
+    _attachment_issues(issues)
+    _is_attachment_issue(issue)
+    _append_attachment_plans(plans;seen;attachment)
+    _append_autofill_plans(plans;seen;issues)
+    _has_invalid_attachment(issues)
+    _should_generate_attachment(issues)
+    _attachment_source_hint(issues)
+    _is_autofill_issue(issue)
+    filter_plans_by_reflection_tokens(plans;tokens)
+    apply_resolution_plans(plans;env)
+    _append_plan(plans;seen;plan)
   packages/nlp2cmd-propact/src/nlp2cmd_propact/adapter.py:
     e: _shell_block,_rest_block,_format_json_body,_mcp_block,_ws_block,_delegate_block,step_to_propact_block,plan_to_propact_markdown
     _shell_block(dsl)
@@ -925,6 +795,14 @@ D:
     reflect_from_chat_turn(ir;response;phase)
     reflect_from_doql_path(doql_path;response;phase)
     format_reflection_summary(report)
+  nlp2dsl_sdk/workflow/events.py:
+    e: WorkflowLifecycleEvent,normalize_event_type,lifecycle_event_from_payload,_normalize_lifecycle_events,_snapshot_status,workflow_snapshot_from_events
+    WorkflowLifecycleEvent(BaseModel):  # Normalized audit event persisted alongside workflow runs...
+    normalize_event_type(event_type)
+    lifecycle_event_from_payload(payload)
+    _normalize_lifecycle_events(events)
+    _snapshot_status(normalized)
+    workflow_snapshot_from_events(events)
   nlp-service/app/execution/system.py:
     e: _validate_file_path,_is_read_only,execute_system_action,_exec_settings_get,_exec_settings_set,_exec_settings_reset,_exec_file_read,_exec_file_write,_exec_file_list,_exec_registry_list,_exec_registry_add,_exec_registry_edit,_exec_status
     _validate_file_path(file_path)
@@ -945,22 +823,50 @@ D:
     runtime_unavailable_message(ctx;intent)
     process_scope_blocked(ctx)
     intract_clarification_blocked(ctx)
-  packages/dsl-validate/src/dsl_validate/resolutions.py:
-    e: ResolutionPlan,ResolutionEnvironment,plan_resolutions,_attachment_issues,_is_attachment_issue,_append_attachment_plans,_append_autofill_plans,_has_invalid_attachment,_should_generate_attachment,_attachment_source_hint,_is_autofill_issue,filter_plans_by_reflection_tokens,apply_resolution_plans,_append_plan
-    ResolutionPlan:
-    ResolutionEnvironment:  # Side-effect handlers injected by orchestrator / SDK flow...
-    plan_resolutions(issues)
-    _attachment_issues(issues)
-    _is_attachment_issue(issue)
-    _append_attachment_plans(plans;seen;attachment)
-    _append_autofill_plans(plans;seen;issues)
-    _has_invalid_attachment(issues)
-    _should_generate_attachment(issues)
-    _attachment_source_hint(issues)
-    _is_autofill_issue(issue)
-    filter_plans_by_reflection_tokens(plans;tokens)
-    apply_resolution_plans(plans;env)
-    _append_plan(plans;seen;plan)
+  nlp-service/app/routing/parser/rules.py:
+    e: parse_rules,_apply_intent_defaults,_detect_actions,_filter_crm_context,_filter_notify_context,_filter_code_context,_filter_email_context,_suppress_system_when_business,_apply_context_filters,_action_alias_scores,_alias_in_text,_longest_alias_match,_actions_by_score,_dominant_overlap_action,_action_category,_top_system_action_wins,_second_system_action_wins,_resolve_intent,_extract_entities,_extract_amount,_extract_email,_extract_body_content_prefix,_extract_email_subject_and_body,_extract_reminder_subject,_extract_report_type,_extract_format,_extract_notification_channels,_extract_notification_message,_extract_param_aliases,_extract_system_entities,_extract_file_path_entity,_extract_setting_path_entity,_extract_model_setting_entity,_extract_numeric_setting_value,_extract_mode_setting_entity,_extract_fallback_recipient,_set_entity
+    parse_rules(text)
+    _apply_intent_defaults(intent_name;entities;text;text_lower)
+    _detect_actions(text_lower)
+    _filter_crm_context(text_lower;filtered)
+    _filter_notify_context(text_lower;filtered)
+    _filter_code_context(text_lower;filtered)
+    _filter_email_context(text_lower;filtered)
+    _suppress_system_when_business(filtered)
+    _apply_context_filters(text_lower;scores)
+    _action_alias_scores(text_lower)
+    _alias_in_text(text_lower;alias_text)
+    _longest_alias_match(text_lower;aliases)
+    _actions_by_score(scores)
+    _dominant_overlap_action(sorted_actions;scores)
+    _action_category(action_name)
+    _top_system_action_wins(top_category;second_category;top_score;second_score)
+    _second_system_action_wins(top_category;second_category;top_score;second_score)
+    _resolve_intent(actions)
+    _extract_entities(text;text_lower)
+    _extract_amount(entities;text)
+    _extract_email(entities;text)
+    _extract_body_content_prefix(entities;text)
+    _extract_email_subject_and_body(entities;text)
+    _extract_reminder_subject(entities;text)
+    _extract_report_type(entities;text_lower)
+    _extract_format(entities;text_lower)
+    _extract_notification_channels(entities;text)
+    _extract_notification_message(entities;text)
+    _extract_param_aliases(entities;text_lower)
+    _extract_system_entities(entities;text;text_lower)
+    _extract_file_path_entity(entities;text)
+    _extract_setting_path_entity(entities;text)
+    _extract_model_setting_entity(entities;text_lower)
+    _extract_numeric_setting_value(entities;text_lower)
+    _extract_mode_setting_entity(entities;text_lower)
+    _extract_fallback_recipient(entities;text_lower)
+    _set_entity(entities;field;value)
+  scripts/run-execution-scenario.py:
+    e: _run_query,run_scenario,main
+    _run_query(client;q)
+    run_scenario(scenario_path)
+    main(argv)
   tauri-wrapper/scripts/dev.js:
     e: main,server,npmCommand,child,shuttingDown,shutdown,exitCode,exitCode
     main()
@@ -971,6 +877,43 @@ D:
     shutdown()
     exitCode()
     exitCode()
+  backend/app/attachment_validation.py:
+    e: build_attachment_validation,_top_level_attachment_validation,_execution_attachment_validation,_attachment_from_dsl,validation_from_chat_result,_append_post_execute_issues,_propagate_attachment_validation,ensure_attachment_validation
+    build_attachment_validation(raw_path)
+    _top_level_attachment_validation(result)
+    _execution_attachment_validation(execution)
+    _attachment_from_dsl(dsl)
+    validation_from_chat_result(result)
+    _append_post_execute_issues(result)
+    _propagate_attachment_validation(result;av)
+    ensure_attachment_validation(result)
+  packages/dsl-validate/src/dsl_validate/profile_checks.py:
+    e: ProfileCheckContext,_parse_profile_validation_by_code,_parse_profile_validation_by_type,_parse_profile_validation_shorthand,parse_profile_validation,parse_profile_validations,load_profile_validations,apply_profile_validations,dsl_actions_from_response,execution_completed,conversation_executed,_resolve_artifact_path,check_profile_validation,run_profile_validation_checks,validate_profile_expectations,response_from_e2e_trace,run_validations_from_raw,_validation_id,_pass_summary,_failed
+    ProfileCheckContext:  # Runtime payload for profile validation checks...
+    _parse_profile_validation_by_code(raw)
+    _parse_profile_validation_by_type(raw)
+    _parse_profile_validation_shorthand(raw)
+    parse_profile_validation(raw)
+    parse_profile_validations(raw_list)
+    load_profile_validations(example_id;repo_root)
+    apply_profile_validations(ir;profile)
+    dsl_actions_from_response(response)
+    execution_completed(response)
+    conversation_executed(response)
+    _resolve_artifact_path(path;example_dir)
+    check_profile_validation(spec;ctx)
+    run_profile_validation_checks(specs;ctx)
+    validate_profile_expectations(ir;response)
+    response_from_e2e_trace(trace)
+    run_validations_from_raw(raw_list;response)
+    _validation_id(spec;index)
+    _pass_summary(spec)
+    _failed(spec;phase;message)
+  packages/dsl-validate/src/dsl_validate/rules/attachment.py:
+    e: _resolve_path,validate_attachment_path,attachment_issues_for_config
+    _resolve_path(ctx;path_str)
+    validate_attachment_path(ctx;path_str)
+    attachment_issues_for_config(ctx)
   packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_detector.py:
     e: DetectionResult,KeywordIntentDetector,_get_query_normalizer,_get_polish_support,_get_fuzzy_schema_matcher,_get_ml_classifier,_get_semantic_matcher,_get_spacy_model,_normalize_url,_super_fast_browser_override
     DetectionResult: __post_init__(0)  # Result of intent detection...
@@ -994,6 +937,41 @@ No LLM ...
     parse_priority_intents(payload)
     parse_fast_path_settings(payload)
     parse_explicit_overrides(payload)
+  packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/fast_path_detection.py:
+    e: FastPathHit,normalize_url,match_explicit_overrides,match_exact_commands,_term_hit,_match_sql_exact,_match_docker,_k8s_entities,_match_k8s,_shell_find_entities,_shell_intent_entities,_match_shell,_sql_nl_table_entities,_sql_nl_entities,_match_sql_nl,_browser_url_entities,_match_browser_phrases,_match_browser_complex,_match_url_navigate,_match_browser_keywords,_match_search_keywords,run_domain_fast_path_after_exact,fast_path_detect
+    FastPathHit:
+    normalize_url(raw)
+    match_explicit_overrides(overrides;text_normalized)
+    match_exact_commands(text_lower)
+    _term_hit(text_lower;terms)
+    _match_sql_exact(text_lower)
+    _match_docker(text_lower)
+    _k8s_entities(text_lower;intent)
+    _match_k8s(text_lower)
+    _shell_find_entities(text_lower)
+    _shell_intent_entities(text_lower;intent)
+    _match_shell(text_lower)
+    _sql_nl_table_entities(text_lower;kw)
+    _sql_nl_entities(text_lower;kw)
+    _match_sql_nl(text_lower)
+    _browser_url_entities(text_lower)
+    _match_browser_phrases(text_lower)
+    _match_browser_complex(text_lower)
+    _match_url_navigate(text_lower)
+    _match_browser_keywords(text_lower;patterns)
+    _match_search_keywords(text_lower;patterns)
+    run_domain_fast_path_after_exact(text_lower;patterns)
+    fast_path_detect(text_lower;patterns)
+  packages/workflow-export/src/workflow_export/markpact.py:
+    e: MarkpactExportBundle,contract_to_yaml_dict,contract_to_yaml_string,composite_workflow_spec,_yaml_file_block,_contracts_section,workflow_dsl_to_markpact_readme,export_markpact_bundle
+    MarkpactExportBundle:  # Paths written by export_markpact_bundle...
+    contract_to_yaml_dict(contract)
+    contract_to_yaml_string(contract)
+    composite_workflow_spec(dsl)
+    _yaml_file_block(path;body)
+    _contracts_section(contracts)
+    workflow_dsl_to_markpact_readme(dsl;contracts)
+    export_markpact_bundle(out_dir;dsl;catalog)
   nlp2dsl_sdk/attachment_validation.py:
     e: format_attachment_validation,build_attachment_validation,_attachment_from_dsl,_prefer_local_validation,_apply_attachment_to_execution,enrich_chat_response
     format_attachment_validation(payload)
@@ -1002,6 +980,10 @@ No LLM ...
     _prefer_local_validation(remote;local)
     _apply_attachment_to_execution(execution;av)
     enrich_chat_response(data)
+  examples/19-real-smtp/scenario.py:
+    e: _mailhog_available,run
+    _mailhog_available()
+    run()
   examples/17-execution-policy/scenario.py:
     e: _invoice_workflow,_mullm_workflow,_policy_layer_active,_print_policy_result,run
     _invoice_workflow()
@@ -1009,8 +991,33 @@ No LLM ...
     _policy_layer_active(client)
     _print_policy_result(label;payload)
     run(client)
+  nlp-service/app/conversation/orchestrator.py:
+    e: _conversation_store,_apply_request_context,start_conversation,continue_conversation,get_conversation,mark_conversation_executed,_attach_routing,_entity_field_from_inline_key,_merge_inline_entities,_attach_autofill,_attach_reflection,_finalize_turn,_deny_unresolved_intent,_apply_sync_auto_execute,_slot_fill_decision,_has_extracted_entities,_try_slot_fill_followup,_process_message
+    _conversation_store()
+    _apply_request_context(inline)
+    start_conversation(text)
+    continue_conversation(conversation_id;text)
+    get_conversation(conversation_id)
+    mark_conversation_executed(conversation_id;execution)
+    _attach_routing(resp;decision)
+    _entity_field_from_inline_key(key)
+    _merge_inline_entities(state;inline)
+    _attach_autofill(resp;state)
+    _attach_reflection(resp;state;phase)
+    _finalize_turn(resp;state;decision)
+    _deny_unresolved_intent(state;decision)
+    _apply_sync_auto_execute(response;ctx)
+    _slot_fill_decision(state)
+    _has_extracted_entities(result)
+    _try_slot_fill_followup(state;text)
+    _process_message(state;text)
+  nlp-service/app/routing/parser/resolve_mode.py:
+    e: _detect_provider,_parse_llm,parse_with_mode
+    _detect_provider()
+    _parse_llm(text)
+    parse_with_mode(text;mode)
   nlp-service/app/conversation/responses.py:
-    e: deny_message,_execute_keyword_in_text,_is_execute_or_continue,check_execute_keyword,handle_unknown_intent,handle_system_action,_missing_from_validation_failures,_resolve_workflow_attachment_paths,_ready_workflow_message,_attachment_validation_for_workflow,build_and_check_dsl,build_incomplete_response,_nlp_from_state,format_system_result,_format_system_status,_format_settings_get,_format_settings_set,_format_settings_reset,_format_file_read,_format_file_write,_format_file_list,_format_registry_list,_format_registry_update
+    e: deny_message,_execute_keyword_in_text,_is_execute_or_continue,check_execute_keyword,handle_unknown_intent,handle_system_action,_missing_from_validation_failures,_resolve_workflow_attachment_paths,_ready_workflow_message,_attachment_validation_for_workflow,_validation_in_progress_response,_resolve_auto_execute,_ready_dsl_response,build_and_check_dsl,build_incomplete_response,_nlp_from_state,format_system_result,_format_system_status,_format_settings_get,_format_settings_set,_format_settings_reset,_format_file_read,_format_file_write,_format_file_list,_format_registry_list,_format_registry_update
     deny_message(decision)
     _execute_keyword_in_text(text_lower;keyword)
     _is_execute_or_continue(text)
@@ -1021,6 +1028,9 @@ No LLM ...
     _resolve_workflow_attachment_paths(workflow)
     _ready_workflow_message(workflow)
     _attachment_validation_for_workflow(workflow;intent)
+    _validation_in_progress_response(state;validation_failures)
+    _resolve_auto_execute(state;ctx)
+    _ready_dsl_response(state;workflow)
     build_and_check_dsl(state)
     build_incomplete_response(state)
     _nlp_from_state(state)
@@ -1034,58 +1044,37 @@ No LLM ...
     _format_file_list(inner)
     _format_registry_list(inner)
     _format_registry_update(inner)
-  nlp-service/app/routing/parser/resolve_mode.py:
-    e: _detect_provider,_parse_llm,parse_with_mode
-    _detect_provider()
-    _parse_llm(text)
-    parse_with_mode(text;mode)
-  worker/attachment_validation.py:
-    e: build_attachment_validation,validate_invoice_attachment
-    build_attachment_validation(raw_path)
-    validate_invoice_attachment(raw_path;config)
-  packages/dsl-validate/src/dsl_validate/rules/attachment.py:
-    e: _resolve_path,validate_attachment_path,attachment_issues_for_config
-    _resolve_path(ctx;path_str)
-    validate_attachment_path(ctx;path_str)
-    attachment_issues_for_config(ctx)
-  packages/dsl-validate/src/dsl_validate/profile_checks.py:
-    e: ProfileCheckContext,_parse_profile_validation_by_code,_parse_profile_validation_by_type,_parse_profile_validation_shorthand,parse_profile_validation,parse_profile_validations,load_profile_validations,apply_profile_validations,dsl_actions_from_response,execution_completed,conversation_executed,_resolve_artifact_path,check_profile_validation,run_profile_validation_checks,validate_profile_expectations,response_from_e2e_trace,run_validations_from_raw,_validation_id,_pass_summary,_failed
-    ProfileCheckContext:  # Runtime payload for profile validation checks...
-    _parse_profile_validation_by_code(raw)
-    _parse_profile_validation_by_type(raw)
-    _parse_profile_validation_shorthand(raw)
-    parse_profile_validation(raw)
-    parse_profile_validations(raw_list)
-    load_profile_validations(example_id;repo_root)
-    apply_profile_validations(ir;profile)
-    dsl_actions_from_response(response)
-    execution_completed(response)
-    conversation_executed(response)
-    _resolve_artifact_path(path;example_dir)
-    check_profile_validation(spec;ctx)
-    run_profile_validation_checks(specs;ctx)
-    validate_profile_expectations(ir;response)
-    response_from_e2e_trace(trace)
-    run_validations_from_raw(raw_list;response)
-    _validation_id(spec;index)
-    _pass_summary(spec)
-    _failed(spec;phase;message)
-  packages/workflow-export/src/workflow_export/markpact.py:
-    e: MarkpactExportBundle,contract_to_yaml_dict,contract_to_yaml_string,composite_workflow_spec,_yaml_file_block,_contracts_section,workflow_dsl_to_markpact_readme,export_markpact_bundle
-    MarkpactExportBundle:  # Paths written by export_markpact_bundle...
-    contract_to_yaml_dict(contract)
-    contract_to_yaml_string(contract)
-    composite_workflow_spec(dsl)
-    _yaml_file_block(path;body)
-    _contracts_section(contracts)
-    workflow_dsl_to_markpact_readme(dsl;contracts)
-    export_markpact_bundle(out_dir;dsl;catalog)
   backend/app/workflow_execute.py:
     e: workflow_has_side_effects,derive_chat_idempotency_key,resolve_idempotency_key,run_idempotent_workflow
     workflow_has_side_effects(workflow)
     derive_chat_idempotency_key(conversation_id;workflow)
     resolve_idempotency_key()
     run_idempotent_workflow(workflow)
+  packages/dsl-validate/src/dsl_validate/pipeline.py:
+    e: validate_step_issues,validate_step_messages,validate_dsl_contract_issues,validate_dsl_contract_messages,validate_step_config_from_map,validate_step_config_from_map_issues,validate_workflow_from_map,validate_workflow_from_map_issues,validate_post_execute_issues,validate_post_execute_from_map,validate_post_execute_workflow_from_map_issues,validate_post_health_issues,validate_post_health_for_intent,validate_post_health_from_map,validate_post_execute_execution,_context_from_map
+    validate_step_issues(ctx)
+    validate_step_messages(ctx)
+    validate_dsl_contract_issues(dsl)
+    validate_dsl_contract_messages(dsl)
+    validate_step_config_from_map(ir;action;config)
+    validate_step_config_from_map_issues(ir;action;config)
+    validate_workflow_from_map(ir;steps)
+    validate_workflow_from_map_issues(ir;steps)
+    validate_post_execute_issues(ctx)
+    validate_post_execute_from_map(ir;action;config)
+    validate_post_execute_workflow_from_map_issues(ir;steps)
+    validate_post_health_issues(runtimes;runtime_id)
+    validate_post_health_for_intent(runtimes;intent)
+    validate_post_health_from_map(ir;intent)
+    validate_post_execute_execution(execution)
+    _context_from_map(ir;action;config)
+  nlp2dsl_sdk/validation/rules/runtime_health.py:
+    e: runtime_id_for_intent,probe_health_endpoint,_runtime_field,validate_runtime_health,validate_runtime_health_for_intent
+    runtime_id_for_intent(intent)
+    probe_health_endpoint(url)
+    _runtime_field(rt;name;default)
+    validate_runtime_health(runtimes;runtime_id)
+    validate_runtime_health_for_intent(runtimes;intent)
   packages/nlp2cmd-intent/src/nlp2cmd_intent/nlp2cmd_convert.py:
     e: detection_to_intent_ir
     detection_to_intent_ir(result)
@@ -1115,6 +1104,15 @@ No LLM ...
     _pseudo_response(state)
     _resolve_doql_path(state)
     reflection_from_state(state;phase)
+  nlp-service/app/conversation/doql_autofill.py:
+    e: load_context_for_state,_resolve_attachment_path,_nested_generate_invoice,_dialog_for_autofill,_needs_generated_attachment,_try_nested_invoice_attachment,sync_autofill_from_doql
+    load_context_for_state(state)
+    _resolve_attachment_path(raw;ctx)
+    _nested_generate_invoice(state;ctx)
+    _dialog_for_autofill(state;ctx)
+    _needs_generated_attachment(missing;ctx;state)
+    _try_nested_invoice_attachment(state;ctx;missing)
+    sync_autofill_from_doql(state)
   nlp-service/app/routers/ws.py:
     e: websocket_chat,chat_ui
     websocket_chat(websocket;conversation_id)
@@ -1124,31 +1122,109 @@ No LLM ...
     parse_llm(text)
     _detect_provider()
     _parse_json_response(raw)
-  packages/dsl-validate/src/dsl_validate/pipeline.py:
-    e: validate_step_issues,validate_step_messages,validate_dsl_contract_issues,validate_dsl_contract_messages,validate_step_config_from_map,validate_step_config_from_map_issues,validate_workflow_from_map,validate_workflow_from_map_issues,validate_post_execute_issues,validate_post_execute_from_map,validate_post_execute_workflow_from_map_issues,validate_post_health_issues,validate_post_health_for_intent,validate_post_health_from_map,validate_post_execute_execution,_context_from_map
-    validate_step_issues(ctx)
-    validate_step_messages(ctx)
-    validate_dsl_contract_issues(dsl)
-    validate_dsl_contract_messages(dsl)
-    validate_step_config_from_map(ir;action;config)
-    validate_step_config_from_map_issues(ir;action;config)
-    validate_workflow_from_map(ir;steps)
-    validate_workflow_from_map_issues(ir;steps)
-    validate_post_execute_issues(ctx)
-    validate_post_execute_from_map(ir;action;config)
-    validate_post_execute_workflow_from_map_issues(ir;steps)
-    validate_post_health_issues(runtimes;runtime_id)
-    validate_post_health_for_intent(runtimes;intent)
-    validate_post_health_from_map(ir;intent)
-    validate_post_execute_execution(execution)
-    _context_from_map(ir;action;config)
-  packages/dsl-validate/src/dsl_validate/rules/runtime_health.py:
-    e: runtime_id_for_intent,probe_health_endpoint,_runtime_field,validate_runtime_health,validate_runtime_health_for_intent
-    runtime_id_for_intent(intent)
-    probe_health_endpoint(url)
-    _runtime_field(rt;name;default)
-    validate_runtime_health(runtimes;runtime_id)
-    validate_runtime_health_for_intent(runtimes;intent)
+  worker/worker.py:
+    e: action,_deliver_notification,handle_send_invoice,_resolve_attachment_path,handle_generate_invoice,handle_send_email,handle_generate_report,handle_crm_update,handle_notify_slack,handle_notify_telegram,handle_notify_teams,handle_generate_code,execute_step,health,_validate_action_registry_on_startup
+    action(name)
+    _deliver_notification(provider;config;payload;env_var)
+    handle_send_invoice(config)
+    _resolve_attachment_path(raw)
+    handle_generate_invoice(config)
+    handle_send_email(config)
+    handle_generate_report(config)
+    handle_crm_update(config)
+    handle_notify_slack(config)
+    handle_notify_telegram(config)
+    handle_notify_teams(config)
+    handle_generate_code(config)
+    execute_step(step)
+    health()
+    _validate_action_registry_on_startup()
+  worker/connectors/smtp.py:
+    e: SmtpConfig,send_smtp_message
+    SmtpConfig: from_env(0)
+    send_smtp_message()
+  nlp-service/app/dsl/mapper.py:
+    e: _unknown_intent_response,_collect_workflow_steps,map_to_dsl,_resolve_actions,_entity_value,_fill_required_config,_enrich_send_email_config,_append_quality_missing,_build_config,_auto_notify_message,_get_field_mapping,_make_name,_build_prompt
+    _unknown_intent_response(intent)
+    _collect_workflow_steps(actions;entities)
+    map_to_dsl(nlp)
+    _resolve_actions(intent)
+    _entity_value(field;entities_dict;field_mapping)
+    _fill_required_config(action;entities_dict)
+    _enrich_send_email_config(config;entities_dict)
+    _append_quality_missing(action;config;missing)
+    _build_config(action;entities)
+    _auto_notify_message(config;entities_dict)
+    _get_field_mapping(action)
+    _make_name(intent;actions)
+    _build_prompt(missing)
+  packages/dsl-validate/src/dsl_validate/capability_policy.py:
+    e: ExecutionPolicyContext,_workflow_steps,_step_config,_email_domain,_target_uri,_approval_granted,_blocked_issue,_scope_issue,_dry_run_issue,_approval_issue,_access_denied_issue,_recipient_issue,_channel_issue,_check_process_scope,_check_dry_run,_check_approval,_check_access_decision,_check_email_domain,_check_notify_channel,_validate_step_policy,validate_capability_policy,access_decision_requires_approval,build_access_decision_params
+    ExecutionPolicyContext:  # Runtime policy envelope applied at pre-execute...
+    _workflow_steps(workflow)
+    _step_config(step)
+    _email_domain(address)
+    _target_uri(action;config)
+    _approval_granted(action;config;ctx)
+    _blocked_issue()
+    _scope_issue()
+    _dry_run_issue()
+    _approval_issue()
+    _access_denied_issue()
+    _recipient_issue()
+    _channel_issue()
+    _check_process_scope()
+    _check_dry_run()
+    _check_approval()
+    _check_access_decision()
+    _check_email_domain()
+    _check_notify_channel()
+    _validate_step_policy()
+    validate_capability_policy(workflow;catalog;ctx)
+    access_decision_requires_approval(decision)
+    build_access_decision_params(action;config)
+  packages/dsl-validate/src/dsl_validate/path_resolve.py:
+    e: _examples_portable_candidates,resolve_attachment_path
+    _examples_portable_candidates(raw)
+    resolve_attachment_path(raw)
+  packages/dsl-validate/src/dsl_validate/rules/post_execute.py:
+    e: _invalid_steps_payload,_failed_step_issues,_dsl_attachment_issues,validate_execution_outcome
+    _invalid_steps_payload()
+    _failed_step_issues(steps)
+    _dsl_attachment_issues(dsl)
+    validate_execution_outcome(execution)
+  nlp2dsl_sdk/conversation_testql.py:
+    e: ConversationValidation,_is_nlp_kind,_endpoints_from_text,_missing_type_header,_parse_plan,_endpoints_from_steps,_structural_issues,_validation_result,validate_conversation_scenario_text,validate_conversation_scenario,dry_run_conversation_scenario
+    ConversationValidation:
+    _is_nlp_kind(kind)
+    _endpoints_from_text(text)
+    _missing_type_header(text)
+    _parse_plan(path)
+    _endpoints_from_steps(plan;text)
+    _structural_issues(kinds;endpoints;text)
+    _validation_result(passed;summary)
+    validate_conversation_scenario_text(text)
+    validate_conversation_scenario(path)
+    dry_run_conversation_scenario(path)
+  packages/nlp2dsl-artifacts/src/nlp2dsl_artifacts/writer.py:
+    e: ExampleArtifactWriter,example_artifact_root,_slugify,write_environment_doql,_nlp_trace_layer,_dsl_trace_layer,_cmd_trace_layer,_process_trace_layer,build_process_trace,_action_endpoint,_action_transport,write_query_artifacts,write_manifest,write_testql_commands,write_services_snapshot,_extract_actions,get_example_writer
+    ExampleArtifactWriter: __init__(1),record(2),finalize(1)  # Accumulates query results and flushes .nlp2dsl/ on finalize(...
+    example_artifact_root(example_dir)
+    _slugify(text)
+    write_environment_doql(artifact_root;example_name;env)
+    _nlp_trace_layer(query;result)
+    _dsl_trace_layer(dsl)
+    _cmd_trace_layer(dsl)
+    _process_trace_layer(result)
+    build_process_trace(query;result)
+    _action_endpoint(action)
+    _action_transport(action)
+    write_query_artifacts(artifact_root;query;result)
+    write_manifest(artifact_root)
+    write_testql_commands(artifact_root)
+    write_services_snapshot(artifact_root;actions)
+    _extract_actions(result)
+    get_example_writer()
   nlp2dsl_sdk/workflow/simulate.py:
     e: _preview_result,simulate_workflow_payload
     _preview_result(action;config)
@@ -1162,6 +1238,22 @@ No LLM ...
     extract_actions(result)
     extract_missing(result)
     primary_action(case)
+  nlp2dsl_sdk/evaluation/metrics.py:
+    e: GoldenRow,GoldenReport,_actions_match,_missing_match,_has_attachment_signal,_classify_success,_classify_safety,_classify_clarification,classify_outcome,evaluate_golden_case,_bucket_stats,build_golden_report,primary_action_from_row,run_golden_evaluation
+    GoldenRow:
+    GoldenReport: to_dict(0)
+    _actions_match(expected;actual)
+    _missing_match(expected;actual)
+    _has_attachment_signal(result;missing)
+    _classify_success(case;status;actions;missing)
+    _classify_safety(case;status)
+    _classify_clarification(case;status)
+    classify_outcome(case;result)
+    evaluate_golden_case(case;result)
+    _bucket_stats(rows;key_fn)
+    build_golden_report(rows)
+    primary_action_from_row(row)
+    run_golden_evaluation(cases;results)
   examples/09-execution-smoke/scenario.py:
     e: run
     run(client)
@@ -1175,6 +1267,17 @@ Placeholder ...
     stt_audio(audio_bytes;language)
     stt_file(file_path;language)
     is_stt_available()
+  nlp-service/app/conversation/doql_registry.py:
+    e: _format_value,_render_block,_entities_to_data,_patch_doql_file,_try_sdk_refresh,_history_patch_from_state,_merge_invoice_ids_from_execution,refresh_registry_for_state,reload_context_after_refresh
+    _format_value(val)
+    _render_block(name;data)
+    _entities_to_data(intent;entities)
+    _patch_doql_file(path)
+    _try_sdk_refresh(path)
+    _history_patch_from_state(state)
+    _merge_invoice_ids_from_execution(execution)
+    refresh_registry_for_state(state)
+    reload_context_after_refresh(state)
   nlp-service/app/conversation/invoice_policy.py:
     e: is_invoice_example,invoice_attachment_policy_active
     is_invoice_example(name)
@@ -1204,6 +1307,11 @@ Placeholder ...
   nlp-service/app/routing/parser/prompt_catalog.py:
     e: build_llm_system_prompt
     build_llm_system_prompt()
+  worker/path_resolve.py:
+    e: _examples_portable_candidates,resolve_attachment_path,resolve_worker_attachment_path
+    _examples_portable_candidates(raw)
+    resolve_attachment_path(raw)
+    resolve_worker_attachment_path(raw)
   scripts/_dotenv.py:
     e: load_dotenv
     load_dotenv(path)
@@ -1211,23 +1319,12 @@ Placeholder ...
     e: _sample_catalog,main
     _sample_catalog()
     main()
-  packages/dsl-validate/src/dsl_validate/path_resolve.py:
-    e: _examples_portable_candidates,resolve_attachment_path
-    _examples_portable_candidates(raw)
-    resolve_attachment_path(raw)
-  packages/testql-conversations/src/testql_conversations/validate.py:
-    e: ConversationValidation,_is_nlp_kind,_endpoints_from_text,_missing_type_header,_parse_plan,_endpoints_from_steps,_structural_issues,_validation_result,validate_conversation_scenario_text,validate_conversation_scenario,dry_run_conversation_scenario
-    ConversationValidation:
-    _is_nlp_kind(kind)
-    _endpoints_from_text(text)
-    _missing_type_header(text)
-    _parse_plan(path)
-    _endpoints_from_steps(plan;text)
-    _structural_issues(kinds;endpoints;text)
-    _validation_result(passed;summary)
-    validate_conversation_scenario_text(text)
-    validate_conversation_scenario(path)
-    dry_run_conversation_scenario(path)
+  packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_patterns.py:
+    e: KeywordPatterns,_find_data_files,_normalize_polish_text,_dedupe_case_insensitive
+    KeywordPatterns: __init__(1),_pattern_files(1),_load_patterns_from_json(1),_apply_detector_config(1),_load_detector_config_from_json(0),_load_fast_path_overrides_from_json(0),get_domain_patterns(1),get_intent_patterns(2),has_domain(1),has_intent(2),list_domains(0),list_intents(1),add_pattern(3),get_domain_boosters(1),get_priority_intents(1)  # Manages keyword patterns for intent detection...
+    _find_data_files()
+    _normalize_polish_text(text)
+    _dedupe_case_insensitive(items)
   tauri-wrapper/scripts/serve-dist.js:
     e: http,fs,path,HOST,PORT,ROOT_DIR,MIME_TYPES,contentType,isInsideRoot,relativePath,resolveRequestPath,safePath,candidate,stat,sendFile,fileContents,handleRequest,pathname,targetPath,startServer,server
     http()
@@ -1264,6 +1361,23 @@ Placeholder ...
     testql_chatmessage(body)
     testql_runworkflow(body)
     testql_workflow_from_text(body)
+  packages/dsl-contracts/src/dsl_contracts/draft.py:
+    e: ContractDraft,drafts_dir,draft_path,load_draft,save_draft,list_draft_files,load_drafts,validate_draft,draft_ready_for_activation,active_draft_contracts
+    ContractDraft(BaseModel): to_yaml_dict(0)  # Proposed action contract awaiting human or CI approval...
+    drafts_dir(root)
+    draft_path(name)
+    load_draft(path)
+    save_draft(draft;path)
+    list_draft_files()
+    load_drafts()
+    validate_draft(draft)
+    draft_ready_for_activation(draft)
+    active_draft_contracts()
+  nlp2dsl_sdk/validation/issue.py:
+    e: Phase,ValidationIssue,issues_to_messages
+    Phase(str,Enum):
+    ValidationIssue: to_dict(0),to_legacy_message(0)
+    issues_to_messages(issues)
   packages/nlp2cmd-propact/src/nlp2cmd_propact/runner.py:
     e: RunResult,PropactRunner,_propact_fallback_mode,_resolve_propact_bin,_propact_available,_is_shell_only,_requires_propact,_shell_command,_run_shell_steps
     RunResult:
@@ -1297,8 +1411,26 @@ Placeholder ...
     _float_or_default(raw;default)
     _issue_to_payload(issue)
     _missing_fields_from_payloads(payloads)
+  nlp2dsl_sdk/mullm/executor.py:
+    e: _workflow_steps,workflow_has_mullm_steps,is_mullm_only_workflow,_delegate_mode,_should_simulate,_require_mullm_only_steps,_run_mullm_step,_execution_envelope,execute_mullm_workflow
+    _workflow_steps(workflow)
+    workflow_has_mullm_steps(workflow)
+    is_mullm_only_workflow(workflow)
+    _delegate_mode()
+    _should_simulate(client)
+    _require_mullm_only_steps(steps)
+    _run_mullm_step(step)
+    _execution_envelope(workflow)
+    execute_mullm_workflow(workflow)
   examples/11-notify-quality/scenario.py:
     e: run
+    run(client)
+  examples/18-trigger-webhook/scenario.py:
+    e: run
+    run()
+  examples/20-pactown-deploy/scenario.py:
+    e: _dsl_from_client,run
+    _dsl_from_client(client)
     run(client)
   nlp-service/app/conversation/attachment_gate.py:
     e: workflow_needs_attachment
@@ -1333,23 +1465,20 @@ Placeholder ...
     _looks_like_invoice_send(text;result)
     _has_amount_signal(text;result)
     _matches_any(text;patterns)
-  packages/dsl-contracts/src/dsl_contracts/issue.py:
-    e: Phase,ValidationIssue,issues_to_messages
-    Phase(str,Enum):
-    ValidationIssue: to_dict(0),to_legacy_message(0)
-    issues_to_messages(issues)
-  packages/dsl-contracts/src/dsl_contracts/draft.py:
-    e: ContractDraft,drafts_dir,draft_path,load_draft,save_draft,list_draft_files,load_drafts,validate_draft,draft_ready_for_activation,active_draft_contracts
-    ContractDraft(BaseModel): to_yaml_dict(0)  # Proposed action contract awaiting human or CI approval...
-    drafts_dir(root)
-    draft_path(name)
-    load_draft(path)
-    save_draft(draft;path)
-    list_draft_files()
-    load_drafts()
-    validate_draft(draft)
-    draft_ready_for_activation(draft)
-    active_draft_contracts()
+  trigger-service/app/main.py:
+    e: health,_post_backend,webhook_trigger,event_trigger
+    health()
+    _post_backend(path;payload)
+    webhook_trigger(trigger_id;body)
+    event_trigger(body)
+  nlp2dsl_sdk/validation/rules/dsl_contract.py:
+    e: validate_dsl_contract,_validate_step,_validate_optional_text_field,_issue,_is_non_empty_string,_type_name
+    validate_dsl_contract(dsl)
+    _validate_step(index;step)
+    _validate_optional_text_field(dsl;field;issues;phase)
+    _issue(code;field;message;phase)
+    _is_non_empty_string(value)
+    _type_name(value)
   packages/nlp2cmd-intent/src/nlp2cmd_intent/domain_mapping.py:
     e: domain_to_target_kind,intent_to_execution_risk
     domain_to_target_kind(domain)
@@ -1381,17 +1510,13 @@ Placeholder ...
     e: _field_schema,get_action_form
     _field_schema(field_name)
     get_action_form(action)
+  worker/attachment_validation.py:
+    e: build_attachment_validation,validate_invoice_attachment
+    build_attachment_validation(raw_path)
+    validate_invoice_attachment(raw_path;config)
   scripts/aggregate-example-testql.py:
     e: main
     main()
-  packages/dsl-validate/src/dsl_validate/rules/dsl_contract.py:
-    e: validate_dsl_contract,_validate_step,_validate_optional_text_field,_issue,_is_non_empty_string,_type_name
-    validate_dsl_contract(dsl)
-    _validate_step(index;step)
-    _validate_optional_text_field(dsl;field;issues;phase)
-    _issue(code;field;message;phase)
-    _is_non_empty_string(value)
-    _type_name(value)
   backend/app/action_catalog.py:
     e: _default_nlp_service_url,nlp_actions_to_action_info,fetch_action_catalog,load_action_field_catalog,required_fields_for_action,quality_fields_for_action,known_action_names_from_catalog
     _default_nlp_service_url()
@@ -1408,12 +1533,27 @@ Placeholder ...
     workflow_from_lifecycle_body(body)
     run_request_from_workflow(workflow)
     attach_validation_to_plan(plan)
-  packages/nlp2cmd-intent/src/nlp2cmd_intent/data_files.py:
-    e: get_user_config_dir,_package_data_dir,_nlp2cmd_data_dir,find_data_files
-    get_user_config_dir()
-    _package_data_dir()
-    _nlp2cmd_data_dir()
-    find_data_files()
+  nlp2dsl_sdk/validation/messages.py:
+    e: legacy_message_to_issue,_missing_required_issue,_quality_missing_issue,_attachment_missing_issue,_attachment_issue,_field_format_issue,_unknown_action_issue,_missing_action_issue,_field_after_colon,_invalid_field_issue,_attachment_resolution,_attachment_kind,_attachment_code,_other_issue
+    legacy_message_to_issue(raw)
+    _missing_required_issue(raw)
+    _quality_missing_issue(raw)
+    _attachment_missing_issue(raw)
+    _attachment_issue(raw)
+    _field_format_issue(raw)
+    _unknown_action_issue(raw)
+    _missing_action_issue(raw)
+    _field_after_colon(raw)
+    _invalid_field_issue(raw)
+    _attachment_resolution(raw)
+    _attachment_kind(raw)
+    _attachment_code(raw)
+    _other_issue(raw)
+  packages/nlp2dsl-plugin/src/nlp2dsl_plugin/schema.py:
+    e: PluginManifest,load_plugin_manifest,plugin_layout_valid
+    PluginManifest(BaseModel):
+    load_plugin_manifest(path)
+    plugin_layout_valid(plugin_root)
   nlp2dsl_sdk/demos.py:
     e: DemoSpec,_print_code_generation_preview,run_crm_update_demo,run_action_catalog_demo,run_automation_gallery_demo,run_code_generation_demo,_run_direct_code_generation,_get_supported_languages,_run_workflow_code_examples,_run_conversation_code_example,_run_worker_code_generation,list_available_demos
     DemoSpec:  # Metadata for a runnable demo exposed by the package CLI...
@@ -1428,6 +1568,11 @@ Placeholder ...
     _run_conversation_code_example(client)
     _run_worker_code_generation(client)
     list_available_demos()
+  examples/15-idempotency-replay/scenario.py:
+    e: _idempotency_key,_try_clear_idempotency,run
+    _idempotency_key()
+    _try_clear_idempotency(client)
+    run(client)
   nlp-service/app/registry.py:
     e: get_action_by_alias,get_trigger,get_required_fields,get_defaults,get_quality_required_fields,get_action_contract,get_action_contracts
     get_action_by_alias(text)
@@ -1496,36 +1641,33 @@ Placeholder ...
     required_fields_for_action(action)
     quality_fields_for_action(action)
     known_action_names_from_catalog()
-  worker/path_resolve.py:
-    e: resolve_worker_attachment_path
-    resolve_worker_attachment_path(raw)
   scripts/validate-contract-drift.py:
     e: _nlp_catalog,_worker_handlers,_backend_fallback_catalog,main
     _nlp_catalog()
     _worker_handlers()
     _backend_fallback_catalog()
     main()
-  packages/dsl-validate/src/dsl_validate/messages.py:
-    e: legacy_message_to_issue,_missing_required_issue,_quality_missing_issue,_attachment_missing_issue,_attachment_issue,_field_format_issue,_unknown_action_issue,_missing_action_issue,_field_after_colon,_invalid_field_issue,_attachment_resolution,_attachment_kind,_attachment_code,_other_issue
-    legacy_message_to_issue(raw)
-    _missing_required_issue(raw)
-    _quality_missing_issue(raw)
-    _attachment_missing_issue(raw)
-    _attachment_issue(raw)
-    _field_format_issue(raw)
-    _unknown_action_issue(raw)
-    _missing_action_issue(raw)
-    _field_after_colon(raw)
-    _invalid_field_issue(raw)
-    _attachment_resolution(raw)
-    _attachment_kind(raw)
-    _attachment_code(raw)
-    _other_issue(raw)
-  examples/15-idempotency-replay/scenario.py:
-    e: _idempotency_key,_try_clear_idempotency,run
-    _idempotency_key()
-    _try_clear_idempotency(client)
-    run(client)
+  packages/nlp2cmd-intent/src/nlp2cmd_intent/data_files.py:
+    e: get_user_config_dir,_package_data_dir,_nlp2cmd_data_dir,bundled_data_file,find_data_files
+    get_user_config_dir()
+    _package_data_dir()
+    _nlp2cmd_data_dir()
+    bundled_data_file(filename)
+    find_data_files()
+  nlp-service/app/routing/resolve.py:
+    e: _parser_source,_intent_from_native,_intent_from_nlp,_apply_auth,_intent_from_orientation,_empty_intent_decision,_record_and_return,_authorize_decision,_resolve_oriented,_resolve_native,_resolve_parsed,resolve_intent
+    _parser_source(text)
+    _intent_from_native(native)
+    _intent_from_nlp(nlp;source)
+    _apply_auth(decision;auth)
+    _intent_from_orientation(text;orientation)
+    _empty_intent_decision(agent_id)
+    _record_and_return(decision;nlp)
+    _authorize_decision(decision)
+    _resolve_oriented(text;orientation)
+    _resolve_native(text)
+    _resolve_parsed(text)
+    resolve_intent(text)
   backend/app/dsl_validation.py:
     e: validate_dsl_for_execution,validation_issue_payloads,missing_fields_from_issues,format_dsl_validation_message,dsl_validation_response
     validate_dsl_for_execution(dsl)
@@ -1533,6 +1675,15 @@ Placeholder ...
     missing_fields_from_issues(issues)
     format_dsl_validation_message(issues)
     dsl_validation_response(dsl;issues)
+  packages/dsl-validate/src/dsl_validate/contract_drift.py:
+    e: CatalogDriftIssue,CatalogDriftReport,worker_eligible_actions,validate_handler_drift,_field_sets,validate_catalog_field_drift,build_catalog_drift_report
+    CatalogDriftIssue: to_dict(0)
+    CatalogDriftReport: to_dict(0)
+    worker_eligible_actions(catalog)
+    validate_handler_drift(handler_names;catalog_names)
+    _field_sets(catalog;action)
+    validate_catalog_field_drift(primary;secondary)
+    build_catalog_drift_report()
   nlp2dsl_sdk/__main__.py:
     e: main
     main()
@@ -1540,13 +1691,6 @@ Placeholder ...
     e: MullmClientError,MullmClient
     MullmClientError(RuntimeError): __init__(1)  # Mullm API call failed...
     MullmClient: __init__(1),create_task(1),simulate_task(1),ping(0)  # Minimal Mullm task delegate client...
-  nlp-service/app/execution/delegate.py:
-    e: is_delegated_to_mullm,execution_backend_for_runtime,execution_backend_for_intent,mullm_action_names,delegate_payload
-    is_delegated_to_mullm(intent)
-    execution_backend_for_runtime(runtime_id)
-    execution_backend_for_intent(intent)
-    mullm_action_names()
-    delegate_payload(action;config)
   nlp-service/app/governance/policy.py:
     e: AccessDecision,_ActionContext,get_agent_id,_grant_matches,_grant_action_matches,_grant_target_matches,_area_selector_match,_uri_selector_match,authorize_action,_action_context,_scheme_decision,_effect_decision,_unknown_agent_decision,_matched_effect,_decision
     AccessDecision: to_dict(0)
@@ -1564,6 +1708,17 @@ Placeholder ...
     _unknown_agent_decision(agent_id;action_name)
     _matched_effect(grants)
     _decision(allowed;effect;reason;agent_id;action_name;resource_area;uri)
+  nlp-service/app/executors/router.py:
+    e: ExecutionRoute,is_delegated_to_mullm,execution_backend_for_runtime,execution_backend_for_intent,route_action,route_workflow_steps,mullm_action_names,delegate_payload,_default_runtime_for_backend
+    ExecutionRoute: to_dict(0)  # Resolved execution target for a single DSL step...
+    is_delegated_to_mullm(intent)
+    execution_backend_for_runtime(runtime_id)
+    execution_backend_for_intent(intent)
+    route_action(action)
+    route_workflow_steps(steps)
+    mullm_action_names()
+    delegate_payload(action;config)
+    _default_runtime_for_backend(backend)
   nlp-service/integrations/loader.py:
     e: _integration_names,load_integration_registries,apply_integrations
     _integration_names()
@@ -1574,32 +1729,6 @@ Placeholder ...
     worker_eligible_catalog_actions(catalog)
     validate_handlers_against_catalog(handlers;catalog)
     fetch_nlp_action_names()
-  worker/worker.py:
-    e: action,_deliver_notification,handle_send_invoice,_resolve_attachment_path,handle_generate_invoice,handle_send_email,handle_generate_report,handle_crm_update,handle_notify_slack,handle_notify_telegram,handle_notify_teams,handle_generate_code,execute_step,health,_validate_action_registry_on_startup
-    action(name)
-    _deliver_notification(provider;config;payload;env_var)
-    handle_send_invoice(config)
-    _resolve_attachment_path(raw)
-    handle_generate_invoice(config)
-    handle_send_email(config)
-    handle_generate_report(config)
-    handle_crm_update(config)
-    handle_notify_slack(config)
-    handle_notify_telegram(config)
-    handle_notify_teams(config)
-    handle_generate_code(config)
-    execute_step(step)
-    health()
-    _validate_action_registry_on_startup()
-  packages/dsl-validate/src/dsl_validate/contract_drift.py:
-    e: CatalogDriftIssue,CatalogDriftReport,worker_eligible_actions,validate_handler_drift,_field_sets,validate_catalog_field_drift,build_catalog_drift_report
-    CatalogDriftIssue: to_dict(0)
-    CatalogDriftReport: to_dict(0)
-    worker_eligible_actions(catalog)
-    validate_handler_drift(handler_names;catalog_names)
-    _field_sets(catalog;action)
-    validate_catalog_field_drift(primary;secondary)
-    build_catalog_drift_report()
   backend/app/db/postgres.py:
     e: Base,WorkflowRunModel,WorkflowEventModel,PostgresWorkflowRepo
     Base(DeclarativeBase):
@@ -1617,12 +1746,6 @@ Placeholder ...
     KeywordIntentAdapter: __init__(1),detect(1)  # Wrap KeywordIntentDetector to satisfy IntentDetector protoco...
     IntentPipeline: __init__(0),run(1)  # normalize → entities → intent...
     default_intent_detector()
-  packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/keyword_patterns.py:
-    e: KeywordPatterns,_find_data_files,_normalize_polish_text,_dedupe_case_insensitive
-    KeywordPatterns: __init__(1),_pattern_files(1),_load_patterns_from_json(1),_apply_detector_config(1),_load_detector_config_from_json(0),_load_fast_path_overrides_from_json(0),get_domain_patterns(1),get_intent_patterns(2),has_domain(1),has_intent(2),list_domains(0),list_intents(1),add_pattern(3),get_domain_boosters(1),get_priority_intents(1)  # Manages keyword patterns for intent detection...
-    _find_data_files()
-    _normalize_polish_text(text)
-    _dedupe_case_insensitive(items)
   packages/nlp2cmd-planner/src/nlp2cmd_planner/workflow_backend.py:
     e: workflow_backend_enabled,workflow_backend_url,workflow_run_path,fetch_workflow_from_text
     workflow_backend_enabled()
@@ -1654,16 +1777,6 @@ Placeholder ...
   nlp-service/app/store/factory.py:
     e: get_conversation_store
     get_conversation_store()
-  packages/nlp2dsl-artifacts/src/nlp2dsl_artifacts/encoding.py:
-    e: utf8_auto_enabled,_explicit_utf8_locale,_apply_utf8_locale_env,_reconfigure_stdio,_set_utf8_locale,configure_utf8,_auto_configure_once,utf8_open
-    utf8_auto_enabled()
-    _explicit_utf8_locale()
-    _apply_utf8_locale_env()
-    _reconfigure_stdio()
-    _set_utf8_locale()
-    configure_utf8()
-    _auto_configure_once()
-    utf8_open(path;mode)
   backend/app/logging_setup.py:
     e: JSONFormatter,RequestIDMiddleware,get_request_id,setup_logging
     JSONFormatter(logging.Formatter): __init__(1),format(1)  # Emit log records as single-line JSON objects...
@@ -1676,9 +1789,15 @@ Placeholder ...
     e: WorkflowEvent,WorkflowEventHub
     WorkflowEvent: to_dict(0)
     WorkflowEventHub: __init__(0),subscribe(1),unsubscribe(2),publish(1),subscriber_count(1)  # In-memory broadcaster dla workflow lifecycle events...
-  packages/nlp2cmd-intent/src/nlp2cmd_intent/input.py:
-    e: analyze_query
-    analyze_query(query)
+  nlp2dsl_sdk/validation/helpers.py:
+    e: is_empty,parse_amount,pdf_structure_issues,pdf_amount_mismatch
+    is_empty(val)
+    parse_amount(val)
+    pdf_structure_issues(data)
+    pdf_amount_mismatch(data;expected_amount)
+  nlp2dsl_sdk/validation/context.py:
+    e: ValidationContext
+    ValidationContext: from_map(0)
   packages/nlp2cmd-planner/src/nlp2cmd_planner/router.py:
     e: UnsupportedIntentError,PlanRouter
     UnsupportedIntentError(ValueError): __init__(1)  # No planning strategy supports the given intent...
@@ -1686,6 +1805,13 @@ Placeholder ...
   packages/nlp2cmd-planner/src/nlp2cmd_planner/pipeline.py:
     e: PlanningPipeline
     PlanningPipeline: __init__(0),run(1)
+  packages/workflow-export/src/workflow_export/pactown.py:
+    e: PactownExportBundle,platform_service_readme,nlp2dsl_platform_ecosystem,ecosystem_to_yaml,export_pactown_bundle
+    PactownExportBundle:
+    platform_service_readme()
+    nlp2dsl_platform_ecosystem()
+    ecosystem_to_yaml(ecosystem)
+    export_pactown_bundle(out_dir)
   nlp2dsl_sdk/invoice_pdf.py:
     e: _pdf_escape,build_invoice_pdf_bytes,write_invoice_pdf
     _pdf_escape(text)
@@ -1754,22 +1880,9 @@ Placeholder ...
 - ...
     get_request_id()
     setup_logging(service;level)
-  packages/dsl-validate/src/dsl_validate/helpers.py:
-    e: is_empty,parse_amount,pdf_structure_issues,pdf_amount_mismatch
-    is_empty(val)
-    parse_amount(val)
-    pdf_structure_issues(data)
-    pdf_amount_mismatch(data;expected_amount)
-  packages/workflow-export/src/workflow_export/pactown.py:
-    e: PactownExportBundle,platform_service_readme,nlp2dsl_platform_ecosystem,ecosystem_to_yaml,export_pactown_bundle
-    PactownExportBundle:
-    platform_service_readme()
-    nlp2dsl_platform_ecosystem()
-    ecosystem_to_yaml(ecosystem)
-    export_pactown_bundle(out_dir)
-  packages/dsl-validate/src/dsl_validate/context.py:
-    e: ValidationContext
-    ValidationContext: from_map(0)
+  packages/nlp2cmd-intent/src/nlp2cmd_intent/input.py:
+    e: analyze_query
+    analyze_query(query)
   tauri-wrapper/src-tauri/src/main.rs:
     e: main
     main()
@@ -1802,9 +1915,29 @@ Placeholder ...
     Ambiguity(BaseModel):
     EntityBag(BaseModel): get(2)  # Named entities extracted from NL...
     IntentIR(BaseModel): needs_clarification(0)  # Standardized intent representation (nlp2cmd.intent_ir.v1)...
+  packages/dsl-contracts/src/dsl_contracts/__init__.py:
+    e: __getattr__
+    __getattr__(name)
+  nlp2dsl_sdk/contracts/action.py:
+    e: FieldContract,ExecutionContract,CompatibilityContract,ActionContract
+    FieldContract(BaseModel):  # Single input field expected by an action...
+    ExecutionContract(BaseModel):  # How an action is executed once the DSL has been validated...
+    CompatibilityContract(BaseModel):  # Version matrix for contract, executor and event consumers...
+    ActionContract(BaseModel): to_catalog_entry(0)  # Source-of-truth description of an action...
+  nlp2dsl_sdk/validation/__init__.py:
+    e: __getattr__
+    __getattr__(name)
   packages/nlp2cmd-intent/src/nlp2cmd_intent/normalize.py:
     e: QueryNormalizer
     QueryNormalizer: normalize(1)  # Lightweight normalizer; full Polish support migrates from nl...
+  packages/nlp2dsl-mcp/src/nlp2dsl_mcp/server.py:
+    e: _client,_plan_workflow,_validate_workflow,_execute_workflow,build_mcp,main
+    _client()
+    _plan_workflow(text;mode)
+    _validate_workflow(workflow)
+    _execute_workflow(workflow)
+    build_mcp()
+    main()
   examples/05-conversation-flow/scenario.py:
     e: _save_conversation_artifacts,run_demo,run_interactive,run
     _save_conversation_artifacts(flow;example_dir)
@@ -1830,18 +1963,6 @@ Placeholder ...
     _validation_context(action;config)
     validate_step_config_issues(action;config)
     validate_step_config(action;config)
-  packages/dsl-validate/src/dsl_validate/__init__.py:
-    e: __getattr__
-    __getattr__(name)
-  packages/dsl-contracts/src/dsl_contracts/__init__.py:
-    e: __getattr__
-    __getattr__(name)
-  packages/dsl-contracts/src/dsl_contracts/action.py:
-    e: FieldContract,ExecutionContract,CompatibilityContract,ActionContract
-    FieldContract(BaseModel):  # Single input field expected by an action...
-    ExecutionContract(BaseModel):  # How an action is executed once the DSL has been validated...
-    CompatibilityContract(BaseModel):  # Version matrix for contract, executor and event consumers...
-    ActionContract(BaseModel): to_catalog_entry(0)  # Source-of-truth description of an action...
   tauri-wrapper/src-tauri/build.rs:
     e: main
     main()
@@ -1878,9 +1999,6 @@ Placeholder ...
   nlp-service/app/store/__init__.py:
     e: ConversationStore
     ConversationStore(ABC): get(1),save(2),delete(1),count(0)  # Abstrakcja persystencji stanu konwersacji...
-  nlp2dsl_sdk/example_bootstrap.py:
-    e: ensure_doql_registry
-    ensure_doql_registry(example_dir)
   docker-compose.e2e.yml:
   goal.yaml:
   intract.yaml:
@@ -1896,8 +2014,10 @@ Placeholder ...
     _venv_ready()
     _py()
     run_tests()
+  pyproject.toml:
   tree.sh:
   prefact.yaml:
+  project.sh:
   tauri-wrapper/desktop.sh:
   tauri-wrapper/package.json:
   tauri-wrapper/src-tauri/Cargo.toml:
@@ -1919,31 +2039,60 @@ Placeholder ...
     ActionInfo(BaseModel):  # Opis dostępnej akcji (do listowania w GUI / API)...
   backend/app/__init__.py:
   backend/app/workflow.py:
+  packages/install-dev.sh:
+    e: install_one
+    install_one()
   packages/pact-ir/pyproject.toml:
   packages/pact-ir/src/pact_ir/target_kind.py:
     e: TargetKind,ExecutionRisk
     TargetKind(str,Enum):
     ExecutionRisk(str,Enum):
+  packages/pact-ir/src/pact_ir/__init__.py:
+  packages/dsl-contracts/pyproject.toml:
+  packages/dsl-validate/pyproject.toml:
+  packages/dsl-validate/src/dsl_validate/issue.py:
+  packages/nlp2dsl-plugin/pyproject.toml:
+  packages/nlp2dsl-plugin/examples/smtp-plugin/plugin.yaml:
+  packages/nlp2dsl-plugin/src/nlp2dsl_plugin/__init__.py:
   packages/nlp2cmd-intent/pyproject.toml:
+  packages/nlp2cmd-intent/src/nlp2cmd_intent/__init__.py:
   packages/nlp2cmd-intent/src/nlp2cmd_intent/data/patterns.json:
   packages/nlp2cmd-intent/src/nlp2cmd_intent/data/fast_path_overrides.json:
   packages/nlp2cmd-intent/src/nlp2cmd_intent/data/keyword_intent_detector_config.json:
+  packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/fast_path_terms.py:
   packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/__init__.py:
   packages/nlp2cmd-planner/pyproject.toml:
+  packages/nlp2cmd-planner/src/nlp2cmd_planner/__init__.py:
+  packages/nlp2dsl-stack/pyproject.toml:
+  packages/nlp2dsl-stack/src/nlp2dsl_stack/__init__.py:
   packages/nlp2dsl-show/pyproject.toml:
+  packages/nlp2dsl-show/src/nlp2dsl_show/__init__.py:
   packages/nlp2dsl-show/src/nlp2dsl_show/encoding.py:
+  packages/workflow-export/pyproject.toml:
+  nlp2dsl_sdk/export/__init__.py:
   packages/nlp2cmd-propact/pyproject.toml:
+  packages/nlp2cmd-propact/src/nlp2cmd_propact/__init__.py:
+  packages/testql-conversations/pyproject.toml:
+  packages/testql-conversations/src/testql_conversations/__init__.py:
+  packages/nlp2dsl-artifacts/pyproject.toml:
+  packages/nlp2dsl-artifacts/src/nlp2dsl_artifacts/__init__.py:
+  packages/nlp2dsl-mcp/pyproject.toml:
+  packages/nlp2dsl-mcp/src/nlp2dsl_mcp/__init__.py:
+  nlp2dsl_sdk/deploy/__init__.py:
   nlp2dsl_sdk/workflow/__init__.py:
   nlp2dsl_sdk/mullm/__init__.py:
   nlp2dsl_sdk/evaluation/__init__.py:
   nlp2dsl_sdk/evaluation/data/golden_cases.yaml:
   examples/example-profiles.yaml:
+  examples/run-all.sh:
   examples/docker-compose.yml:
+  examples/testql-results.json:
   examples/validate-contract-draft.sh:
   examples/docker-e2e-results.json:
   examples/13-autonomous-invoice-stack/main.py:
   examples/13-autonomous-invoice-stack/fixtures/stack-request.txt:
   examples/10-llm-benchmark/main.py:
+  examples/19-real-smtp/main.py:
   examples/09-execution-smoke/main.py:
   examples/05-conversation-flow/run.sh:
   examples/05-conversation-flow/requirements.txt:
@@ -1952,12 +2101,14 @@ Placeholder ...
   examples/04-scheduled-report/main.py:
   examples/04-scheduled-report/Dockerfile:
   examples/11-notify-quality/main.py:
+  examples/18-trigger-webhook/main.py:
   examples/16-golden-eval/main.py:
   examples/16-golden-eval/results/golden_1780744032.json:
   examples/01-invoice/main.py:
   examples/01-invoice/Dockerfile:
   examples/01-invoice/fixtures/invoice-request.txt:
   examples/12-ir-show/main.py:
+  examples/20-pactown-deploy/main.py:
   examples/14-markpact-export/main.py:
   examples/07-email-conversation/main.py:
   examples/03-report-and-notify/main.py:
@@ -1979,6 +2130,7 @@ Placeholder ...
   examples/08-multi-object-benchmark/results/benchmark_1780737026.json:
   examples/08-multi-object-benchmark/results/benchmark_1780668482.json:
   examples/08-multi-object-benchmark/results/benchmark_1780672619.json:
+  examples/08-multi-object-benchmark/results/benchmark_1780751306.json:
   examples/08-multi-object-benchmark/results/benchmark_1780668555.json:
   examples/08-multi-object-benchmark/results/benchmark_1780669461.json:
   examples/08-multi-object-benchmark/results/benchmark_1780669469.json:
@@ -1986,6 +2138,7 @@ Placeholder ...
   examples/08-multi-object-benchmark/results/benchmark_1780668530.json:
   examples/08-multi-object-benchmark/results/benchmark_1780739013.json:
   examples/08-multi-object-benchmark/results/benchmark_1780668647.json:
+  examples/08-multi-object-benchmark/results/benchmark_1780763810.json:
   nlp-service/requirements.txt:
   nlp-service/pyproject.toml:
   nlp-service/Dockerfile:
@@ -2012,6 +2165,7 @@ Placeholder ...
   nlp-service/app/orchestrator.py:
   nlp-service/app/main.py:
   nlp-service/app/system_executor.py:
+  nlp-service/app/execution/delegate.py:
   nlp-service/app/conversation/__init__.py:
   nlp-service/app/access/native.py:
   nlp-service/app/access/config.py:
@@ -2019,6 +2173,7 @@ Placeholder ...
   nlp-service/app/access/__init__.py:
   nlp-service/app/access/policy.py:
   nlp-service/app/governance/__init__.py:
+  nlp-service/app/executors/__init__.py:
   nlp-service/app/validation/__init__.py:
   nlp-service/app/routers/__init__.py:
   nlp-service/app/parsing/facade.py:
@@ -2038,97 +2193,23 @@ Placeholder ...
   worker/requirements.txt:
   worker/pyproject.toml:
   worker/Dockerfile:
+  worker/connectors/__init__.py:
+  scripts/_ensure_nlp2dsl_sdk.sh:
+    e: ensure_nlp2dsl_sdk
+    ensure_nlp2dsl_sdk()
   scripts/validate-contract-draft.sh:
   scripts/publish-all.sh:
     e: require_tool
     require_tool()
-  testql-scenarios/generated-from-pytests.testql.toon.yaml:
-  testql-scenarios/generated-cli-tests.testql.toon.yaml:
-  testql-scenarios/generated-api-smoke.testql.toon.yaml:
-  pyproject.toml:
-  project.sh:
-  packages/install-dev.sh:
-    e: install_one
-    install_one()
-  packages/dsl-validate/pyproject.toml:
-  packages/dsl-contracts/pyproject.toml:
-  packages/dsl-validate/src/dsl_validate/rules/__init__.py:
-  packages/pact-ir/src/pact_ir/__init__.py:
-  packages/nlp2dsl-stack/pyproject.toml:
-  packages/nlp2cmd-intent/src/nlp2cmd_intent/__init__.py:
-  packages/nlp2cmd-planner/src/nlp2cmd_planner/__init__.py:
-  packages/nlp2dsl-stack/src/nlp2dsl_stack/__init__.py:
-  packages/workflow-export/pyproject.toml:
-  packages/nlp2dsl-show/src/nlp2dsl_show/__init__.py:
-  packages/workflow-export/src/workflow_export/__init__.py:
-  packages/nlp2cmd-propact/src/nlp2cmd_propact/__init__.py:
-  packages/testql-conversations/pyproject.toml:
-  packages/testql-conversations/src/testql_conversations/__init__.py:
-  packages/nlp2dsl-artifacts/pyproject.toml:
-  packages/nlp2dsl-artifacts/src/nlp2dsl_artifacts/__init__.py:
-  nlp2dsl_sdk/system_map_generator.py:
-  nlp2dsl_sdk/artifacts.py:
-  nlp2dsl_sdk/system_map_runtimes.py:
-  nlp2dsl_sdk/system_map_models.py:
-  nlp2dsl_sdk/conversation_artifacts.py:
-  nlp2dsl_sdk/invoice_policy.py:
-  nlp2dsl_sdk/doql_context.py:
-  nlp2dsl_sdk/path_resolve.py:
-  nlp2dsl_sdk/compose_generator.py:
-  nlp2dsl_sdk/export/__init__.py:
-  nlp2dsl_sdk/artifact_layout.py:
-  nlp2dsl_sdk/conversation_testql.py:
-  nlp2dsl_sdk/export/publish.py:
-  nlp2dsl_sdk/export/pactown.py:
-  nlp2dsl_sdk/export/markpact.py:
-  nlp2dsl_sdk/system_map_render/render.py:
-  nlp2dsl_sdk/system_map_render/helpers.py:
-  nlp2dsl_sdk/system_map_render/__init__.py:
-  nlp2dsl_sdk/process_policy.py:
-  nlp2dsl_sdk/validation/helpers.py:
-  nlp2dsl_sdk/validation/__init__.py:
-  nlp2dsl_sdk/system_map_render/blocks.py:
-  nlp2dsl_sdk/validation/profile_checks.py:
-  nlp2dsl_sdk/validation/pipeline.py:
-  nlp2dsl_sdk/validation/messages.py:
-  nlp2dsl_sdk/validation/contract_drift.py:
-  nlp2dsl_sdk/validation/rules/attachment.py:
-  nlp2dsl_sdk/validation/rules/post_execute.py:
-  nlp2dsl_sdk/validation/rules/step_config.py:
-  nlp2dsl_sdk/validation/rules/runtime_health.py:
-  nlp2dsl_sdk/validation/rules/dsl_contract.py:
-  nlp2dsl_sdk/contracts/registry.py:
-  nlp2dsl_sdk/contracts/__init__.py:
-  nlp2dsl_sdk/doql/runtime.py:
-  nlp2dsl_sdk/doql/render.py:
-  nlp2dsl_sdk/doql/__init__.py:
-  nlp2dsl_sdk/doql/context_blocks.py:
-  packages/dsl-validate/src/dsl_validate/issue.py:
-  nlp2dsl_sdk/validation/issue.py:
-  examples/run-all.sh:
-  examples/testql-results.json:
-  examples/16-golden-eval/results/golden_1780751517.json:
-  examples/16-golden-eval/results/golden_1780760650.json:
-  examples/16-golden-eval/results/golden_1780753164.json:
-  examples/08-multi-object-benchmark/results/benchmark_1780751306.json:
-  examples/08-multi-object-benchmark/results/benchmark_1780752985.json:
-  examples/08-multi-object-benchmark/results/benchmark_1780760454.json:
-  scripts/_ensure_nlp2dsl_sdk.sh:
-    e: ensure_nlp2dsl_sdk
-    ensure_nlp2dsl_sdk()
   scripts/setup-dev.sh:
   scripts/install-local-deps.sh:
     e: install_one
     install_one()
   scripts/bootstrap-venv.sh:
   testql-scenarios/generated-examples.testql.toon.yaml:
-  nlp2dsl_sdk/validation/resolutions.py:
-  nlp2dsl_sdk/validation/context.py:
-  nlp2dsl_sdk/doql/parse.py:
-  nlp2dsl_sdk/doql/models.py:
-  nlp2dsl_sdk/system_map_bridge.py:
-  nlp2dsl_sdk/system_map_ir.py:
-  nlp2dsl_sdk/validation/capability_policy.py:
-  nlp2dsl_sdk/contracts/draft.py:
-  nlp2dsl_sdk/doql_registry.py:
-  nlp2dsl_sdk/contracts/action.py:
+  testql-scenarios/generated-from-pytests.testql.toon.yaml:
+  testql-scenarios/generated-cli-tests.testql.toon.yaml:
+  testql-scenarios/generated-api-smoke.testql.toon.yaml:
+  trigger-service/requirements.txt:
+  trigger-service/Dockerfile:
+  trigger-service/app/__init__.py:

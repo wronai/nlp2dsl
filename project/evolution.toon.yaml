@@ -1,46 +1,38 @@
-# code2llm/evolution | 1093 func | 169f | 2026-06-06
+# code2llm/evolution | 1212 func | 173f | 2026-06-06
 # generated in 0.00s
 
-NEXT[10] (ranked by impact):
-  [1] !! SPLIT-FUNC      run_domain_fast_path_after_exact  CC=69  fan=26
-      WHY: CC=69 exceeds 15
-      EFFORT: ~1h  IMPACT: 1794
-
-  [2] !! SPLIT-FUNC      validate_capability_policy  CC=34  fan=19
-      WHY: CC=34 exceeds 15
-      EFFORT: ~1h  IMPACT: 646
-
-  [3] !  SPLIT-FUNC      autonomous_resolve_turn  CC=21  fan=23
-      WHY: CC=21 exceeds 15
-      EFFORT: ~1h  IMPACT: 483
-
-  [4] !! SPLIT-FUNC      build_policy_context  CC=26  fan=17
-      WHY: CC=26 exceeds 15
-      EFFORT: ~1h  IMPACT: 442
-
-  [5] !  SPLIT-FUNC      sync_autofill_from_doql  CC=20  fan=20
-      WHY: CC=20 exceeds 15
-      EFFORT: ~1h  IMPACT: 400
-
-  [6] !  SPLIT-FUNC      execute_mullm_workflow  CC=21  fan=19
-      WHY: CC=21 exceeds 15
-      EFFORT: ~1h  IMPACT: 399
-
-  [7] !  SPLIT-FUNC      _build_config  CC=23  fan=17
-      WHY: CC=23 exceeds 15
-      EFFORT: ~1h  IMPACT: 391
-
-  [8] !  SPLIT-FUNC      resolve_intent  CC=18  fan=20
-      WHY: CC=18 exceeds 15
-      EFFORT: ~1h  IMPACT: 360
-
-  [9] !  SPLIT-FUNC      _process_message  CC=17  fan=20
-      WHY: CC=17 exceeds 15
-      EFFORT: ~1h  IMPACT: 340
-
-  [10] !  SPLIT-FUNC      enrich_entities  CC=15  fan=21
+NEXT[8] (ranked by impact):
+  [1] !  SPLIT-FUNC      enrich_entities  CC=15  fan=21
       WHY: CC=15 exceeds 15
       EFFORT: ~1h  IMPACT: 315
+
+  [2] !  SPLIT-FUNC      _resolve_file_list_host_command  CC=15  fan=17
+      WHY: CC=15 exceeds 15
+      EFFORT: ~1h  IMPACT: 255
+
+  [3] !  SPLIT-FUNC      build_audit_entries  CC=18  fan=12
+      WHY: CC=18 exceeds 15
+      EFFORT: ~1h  IMPACT: 216
+
+  [4] !  SPLIT-FUNC      build_attachment_validation  CC=16  fan=12
+      WHY: CC=16 exceeds 15
+      EFFORT: ~1h  IMPACT: 192
+
+  [5] !  SPLIT-FUNC      fetch_access_decisions  CC=15  fan=12
+      WHY: CC=15 exceeds 15
+      EFFORT: ~1h  IMPACT: 180
+
+  [6] !! SPLIT           packages/nlp2cmd-intent/src/nlp2cmd_intent/data/patterns.json
+      WHY: 2016L, 0 classes, max CC=0
+      EFFORT: ~4h  IMPACT: 0
+
+  [7] !! SPLIT           planfile.yaml
+      WHY: 1319L, 0 classes, max CC=0
+      EFFORT: ~4h  IMPACT: 0
+
+  [8] !! SPLIT           packages/nlp2cmd-intent/src/nlp2cmd_intent/data/fast_path_overrides.json
+      WHY: 1043L, 0 classes, max CC=0
+      EFFORT: ~4h  IMPACT: 0
 
 
 RISKS[3]:
@@ -49,10 +41,10 @@ RISKS[3]:
   ⚠ Splitting packages/nlp2cmd-intent/src/nlp2cmd_intent/data/fast_path_overrides.json may break 0 import paths
 
 METRICS-TARGET:
-  CC̄:          4.1 → ≤2.9
-  max-CC:      69 → ≤20
-  god-modules: 8 → 0
-  high-CC(≥15): 24 → ≤12
+  CC̄:          3.9 → ≤2.7
+  max-CC:      18 → ≤9
+  god-modules: 9 → 0
+  high-CC(≥15): 6 → ≤3
   hub-types:   0 → ≤0
 
 PATTERNS (language parser shared logic):
@@ -80,4 +72,4 @@ PATTERNS (language parser shared logic):
     - Standardized FunctionInfo/ClassInfo models
 
 HISTORY:
-  prev CC̄=4.2 → now CC̄=4.1
+  prev CC̄=3.9 → now CC̄=3.9

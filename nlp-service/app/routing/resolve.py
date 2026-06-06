@@ -112,6 +112,108 @@ def _intent_from_orientation(
     return decision
 
 
+def _empty_intent_decision(agent_id: str) -> IntentDecision:
+    return IntentDecision(
+        action=None,
+        intent="empty",
+        confidence=0.0,
+        source="unknown",
+        reason_codes=["empty_message"],
+        agent_id=agent_id,
+        authorized=False,
+        deny_reason="empty_message",
+    )
+
+
+def _record_and_return(
+    decision: IntentDecision,
+    nlp: NLPResult | None,
+) -> tuple[IntentDecision, NLPResult | None]:
+    record_intent_decision(decision)
+    return decision, nlp
+
+
+def _authorize_decision(
+    decision: IntentDecision,
+    *,
+    agent_id: str,
+    text: str,
+    action_meta: dict[str, Any] | None = None,
+    resource_area: str | None = None,
+    uri: str | None = None,
+    permission_action: str | None = None,
+) -> tuple[IntentDecision, NLPResult | None]:
+    auth = authorize_action(
+        agent_id,
+        decision.action or "",
+        resource_area=resource_area or decision.resource_area,
+        uri=uri or decision.uri,
+        permission_action=permission_action or decision.permission_action,
+        action_meta=action_meta,
+    )
+    decision = _apply_auth(decision, auth)
+    if not decision.authorized:
+        return _record_and_return(decision, None)
+    nlp = decision.to_nlp_result(text)
+    return _record_and_return(decision, nlp)
+
+
+def _resolve_oriented(
+    text: str,
+    orientation: OrientationResult,
+    *,
+    agent_id: str,
+) -> tuple[IntentDecision, NLPResult | None] | None:
+    oriented = _intent_from_orientation(text, orientation, agent_id=agent_id)
+    if not oriented or oriented.action not in DELEGATED_ACTIONS:
+        return None
+    decision, nlp = _authorize_decision(
+        oriented,
+        agent_id=agent_id,
+        text=text,
+        action_meta=command_meta(oriented.action or ""),
+    )
+    if nlp and orientation.shell_command:
+        nlp.entities = nlp.entities.model_copy(update={"shell_command": orientation.shell_command})
+    return decision, nlp
+
+
+def _resolve_native(text: str, *, agent_id: str) -> tuple[IntentDecision, NLPResult | None] | None:
+    native = resolve_native_intent(text)
+    if not native or native.get("source") != "native_routing":
+        return None
+    decision = _intent_from_native(native)
+    decision.agent_id = agent_id
+    return _authorize_decision(
+        decision,
+        agent_id=agent_id,
+        text=text,
+        action_meta=command_meta(decision.action or ""),
+        resource_area=decision.resource_area,
+        uri=decision.uri,
+        permission_action=decision.permission_action,
+    )
+
+
+async def _resolve_parsed(text: str, *, agent_id: str) -> tuple[IntentDecision, NLPResult | None]:
+    nlp = await parse_text(text, mode=effective_nlp_parser_mode())
+    decision = _intent_from_nlp(nlp, _parser_source(text))
+    decision.agent_id = agent_id
+
+    if decision.action in DELEGATED_ACTIONS:
+        auth = authorize_action(
+            agent_id,
+            decision.action or "",
+            action_meta=command_meta(decision.action or ""),
+        )
+        decision = _apply_auth(decision, auth)
+        if not decision.authorized:
+            return _record_and_return(decision, None)
+
+    decision.reason_codes.append("auth_skipped")
+    return _record_and_return(decision, nlp)
+
+
 async def resolve_intent(
     text: str,
     *,
@@ -128,73 +230,12 @@ async def resolve_intent(
     orientation = orient_query(text, connector=connector)
 
     if not text:
-        empty = IntentDecision(
-            action=None,
-            intent="empty",
-            confidence=0.0,
-            source="unknown",
-            reason_codes=["empty_message"],
-            agent_id=aid,
-            authorized=False,
-            deny_reason="empty_message",
-        )
-        record_intent_decision(empty)
-        return empty, None
+        return _record_and_return(_empty_intent_decision(aid), None)
 
-    oriented = _intent_from_orientation(text, orientation, agent_id=aid)
-    if oriented and oriented.action in DELEGATED_ACTIONS:
-        meta = command_meta(oriented.action or "")
-        auth = authorize_action(aid, oriented.action or "", action_meta=meta)
-        oriented = _apply_auth(oriented, auth)
-        if oriented.authorized:
-            record_intent_decision(oriented)
-            nlp = oriented.to_nlp_result(text)
-            if orientation.shell_command:
-                nlp.entities = nlp.entities.model_copy(
-                    update={"shell_command": orientation.shell_command}
-                )
-            return oriented, nlp
-        record_intent_decision(oriented)
-        return oriented, None
+    if oriented := _resolve_oriented(text, orientation, agent_id=aid):
+        return oriented
 
-    native = resolve_native_intent(text)
-    # Tylko trasy z nlp2dsl.yaml (native_routing) — aliasy z registry idą do parsera (entities)
-    if native and native.get("source") == "native_routing":
-        decision = _intent_from_native(native)
-        decision.agent_id = aid
-        meta = command_meta(decision.action or "")
-        auth = authorize_action(
-            aid,
-            decision.action or "",
-            resource_area=decision.resource_area,
-            uri=decision.uri,
-            permission_action=decision.permission_action,
-            action_meta=meta,
-        )
-        decision = _apply_auth(decision, auth)
-        if decision.authorized:
-            record_intent_decision(decision)
-            return decision, decision.to_nlp_result(text)
-        record_intent_decision(decision)
-        return decision, None
+    if native := _resolve_native(text, agent_id=aid):
+        return native
 
-    nlp = await parse_text(text, mode=effective_nlp_parser_mode())
-    source = _parser_source(text)
-    decision = _intent_from_nlp(nlp, source)
-    decision.agent_id = aid
-
-    if decision.action in DELEGATED_ACTIONS:
-        meta = command_meta(decision.action or "")
-        auth = authorize_action(
-            aid,
-            decision.action or "",
-            action_meta=meta,
-        )
-        decision = _apply_auth(decision, auth)
-        if not decision.authorized:
-            record_intent_decision(decision)
-            return decision, None
-
-    decision.reason_codes.append("auth_skipped")
-    record_intent_decision(decision)
-    return decision, nlp
+    return await _resolve_parsed(text, agent_id=aid)

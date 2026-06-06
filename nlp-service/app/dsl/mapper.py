@@ -26,47 +26,47 @@ log = logging.getLogger("nlp.mapper")
 # ── Public API ────────────────────────────────────────────────
 
 
+def _unknown_intent_response(intent: str) -> DialogResponse:
+    allowed = sorted(known_action_names())
+    return DialogResponse(
+        status="error",
+        prompt_user=(
+            f"Nie rozpoznano intencji '{intent}'. "
+            f"Dostępne akcje: {', '.join(allowed)}"
+        ),
+    )
+
+
+def _collect_workflow_steps(
+    actions: list[str],
+    entities: NLPEntities,
+) -> tuple[list[DSLStep], list[str]]:
+    steps: list[DSLStep] = []
+    all_missing: list[str] = []
+    for action_name in actions:
+        config, missing = _build_config(action_name, entities)
+        if missing:
+            all_missing.extend(f"{action_name}.{f}" for f in missing)
+        else:
+            steps.append(DSLStep(action=action_name, config=config))
+    return steps, all_missing
+
+
 def map_to_dsl(nlp: NLPResult) -> DialogResponse:
     """
     Konwertuje NLPResult → WorkflowDSL.
     Jeśli brakuje wymaganych pól — zwraca DialogResponse z pytaniem.
     """
     intent = nlp.intent.intent
-    entities = nlp.entities
-
-    # Resolve actions from intent
     actions = _resolve_actions(intent)
-
     if not actions:
-        allowed = sorted(known_action_names())
-        return DialogResponse(
-            status="error",
-            prompt_user=(
-                f"Nie rozpoznano intencji '{intent}'. "
-                f"Dostępne akcje: {', '.join(allowed)}"
-            ),
-        )
+        return _unknown_intent_response(intent)
 
-    # Build steps + collect missing fields
-    steps: list[DSLStep] = []
-    all_missing: list[str] = []
-
-    for action_name in actions:
-        config, missing = _build_config(action_name, entities)
-
-        if missing:
-            all_missing.extend(f"{action_name}.{f}" for f in missing)
-        else:
-            steps.append(DSLStep(action=action_name, config=config))
-
-    # Detect trigger
+    steps, all_missing = _collect_workflow_steps(actions, nlp.entities)
     trigger = get_trigger(nlp.raw_text) if nlp.raw_text else "manual"
-
-    # Generate workflow name
     name = _make_name(intent, actions)
 
     if all_missing:
-        # Return partial workflow + missing fields
         return DialogResponse(
             status="incomplete",
             workflow=WorkflowDSL(name=name, trigger=trigger, steps=steps) if steps else None,
@@ -75,7 +75,6 @@ def map_to_dsl(nlp: NLPResult) -> DialogResponse:
         )
 
     workflow = WorkflowDSL(name=name, trigger=trigger, steps=steps)
-
     log.info("✔ DSL built: %s (%d steps, trigger=%s)", name, len(steps), trigger)
     return DialogResponse(status="complete", workflow=workflow)
 

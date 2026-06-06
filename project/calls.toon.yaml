@@ -1,49 +1,49 @@
 # code2llm call graph | /home/tom/github/wronai/nlp2dsl
 # generated in 0.24s
-# nodes: 446 | edges: 500 | modules: 111
-# CC̄=4.3
+# nodes: 484 | edges: 500 | modules: 79
+# CC̄=4.0
 
 HUBS[20]:
   packages.nlp2dsl-stack.src.nlp2dsl_stack.compose.generate_stack_compose
     CC=13  in:1  out:79  total:80
-  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.fast_path_detection.run_domain_fast_path_after_exact
-    CC=69  in:1  out:66  total:67
-  backend.app.execution_policy.build_policy_context
-    CC=26  in:1  out:52  total:53
   backend.app.engine._execute_workflow
     CC=13  in:2  out:50  total:52
-  nlp2dsl_sdk.mullm.payloads.build_task_payload
-    CC=39  in:1  out:50  total:51
   nlp-service.app.settings.SettingsManager.set
     CC=4  in:34  out:11  total:45
-  packages.dsl-validate.src.dsl_validate.capability_policy.validate_capability_policy
-    CC=34  in:1  out:41  total:42
-  nlp-service.app.conversation.orchestrator._process_message
-    CC=17  in:2  out:38  total:40
-  examples.04-scheduled-report.scenario.run
-    CC=18  in:0  out:38  total:38
-  nlp-service.app.conversation.autonomous_loop.autonomous_resolve_turn
-    CC=21  in:2  out:36  total:38
-  packages.dsl-contracts.src.dsl_contracts.registry.contract_from_registry_entry
+  nlp2dsl_sdk.contracts.registry.contract_from_registry_entry
     CC=8  in:9  out:27  total:36
-  backend.app.path_resolve.resolve_attachment_path
-    CC=13  in:9  out:26  total:35
-  backend.app.routers.chat._execute_ready_dsl
-    CC=14  in:1  out:33  total:34
-  examples.01-invoice.scenario.run
-    CC=20  in:0  out:34  total:34
   backend.app.routers.workflow.workflow_from_text
     CC=14  in:1  out:33  total:34
-  nlp2dsl_sdk.mullm.executor.execute_mullm_workflow
-    CC=21  in:0  out:33  total:33
+  backend.app.path_resolve.resolve_attachment_path
+    CC=13  in:8  out:26  total:34
+  backend.app.routers.chat._execute_ready_dsl
+    CC=14  in:1  out:33  total:34
+  nlp2dsl_sdk.conversation_artifacts._format_turn
+    CC=14  in:1  out:32  total:33
   nlp2dsl_sdk.preview.ensure_services
-    CC=5  in:22  out:8  total:30
-  examples.17-execution-policy.scenario.run
-    CC=11  in:0  out:29  total:29
-  examples.03-report-and-notify.scenario.run
-    CC=9  in:0  out:29  total:29
-  nlp-service.app.conversation.system_map.command_meta
-    CC=5  in:12  out:16  total:28
+    CC=5  in:23  out:8  total:31
+  nlp2dsl_sdk.cli._display
+    CC=13  in:1  out:27  total:28
+  nlp-service.app.conversation.doql_context.resolve_doql_context_path
+    CC=8  in:16  out:11  total:27
+  nlp2dsl_sdk.validation.rules.step_config.validate_step
+    CC=13  in:9  out:18  total:27
+  packages.workflow-export.src.workflow_export.markpact.export_markpact_bundle
+    CC=8  in:1  out:25  total:26
+  nlp2dsl_sdk.cli.main
+    CC=7  in:0  out:26  total:26
+  backend.app.audit.build_audit_entries
+    CC=18  in:1  out:25  total:26
+  nlp2dsl_sdk.workflow.events.lifecycle_event_from_payload
+    CC=11  in:2  out:23  total:25
+  backend.app.routers.workflow.workflow_simulate
+    CC=9  in:0  out:25  total:25
+  backend.app.execution_policy.build_policy_context
+    CC=12  in:1  out:24  total:25
+  nlp2dsl_sdk.preview.print_run_context_hints
+    CC=13  in:4  out:20  total:24
+  packages.workflow-export.src.workflow_export.markpact.workflow_dsl_to_markpact_readme
+    CC=11  in:1  out:23  total:24
 
 MODULES:
   backend.app.action_catalog  [7 funcs]
@@ -54,13 +54,17 @@ MODULES:
     nlp_actions_to_action_info  CC=3  out:5
     quality_fields_for_action  CC=2  out:2
     required_fields_for_action  CC=2  out:2
-  backend.app.attachment_validation  [6 funcs]
+  backend.app.attachment_validation  [8 funcs]
+    _append_post_execute_issues  CC=7  out:10
     _attachment_from_dsl  CC=8  out:10
     _execution_attachment_validation  CC=7  out:6
+    _propagate_attachment_validation  CC=8  out:7
     _top_level_attachment_validation  CC=2  out:2
     build_attachment_validation  CC=11  out:11
-    ensure_attachment_validation  CC=16  out:20
+    ensure_attachment_validation  CC=3  out:5
     validation_from_chat_result  CC=5  out:5
+  backend.app.audit  [1 funcs]
+    build_audit_entries  CC=18  out:25
   backend.app.dsl_validation  [5 funcs]
     dsl_validation_response  CC=1  out:3
     format_dsl_validation_message  CC=2  out:4
@@ -75,8 +79,13 @@ MODULES:
     _workflow_steps_payload  CC=2  out:1
     run_workflow  CC=1  out:2
     start_workflow  CC=1  out:7
-  backend.app.execution_policy  [5 funcs]
-    build_policy_context  CC=26  out:52
+  backend.app.execution_policy  [10 funcs]
+    _approval_grants  CC=6  out:8
+    _as_str_list  CC=8  out:8
+    _dry_run_only  CC=3  out:5
+    _policy_blocks  CC=3  out:6
+    _process_policy_from_block  CC=6  out:13
+    build_policy_context  CC=12  out:24
     fetch_access_decisions  CC=15  out:16
     policy_blocked_response  CC=2  out:5
     resolve_agent_id  CC=6  out:7
@@ -122,14 +131,22 @@ MODULES:
     testql_chatstart  CC=5  out:9
     testql_runworkflow  CC=4  out:17
     testql_workflow_from_text  CC=1  out:2
-  backend.app.routers.workflow  [1 funcs]
-    workflow_from_text  CC=14  out:33
+  backend.app.routers.workflow  [14 funcs]
+    _format_sse  CC=5  out:6
+    _workflow_snapshot  CC=1  out:7
+    get_workflow_audit  CC=1  out:5
+    get_workflow_events  CC=2  out:7
+    list_actions  CC=2  out:6
+    run_workflow_endpoint  CC=1  out:2
+    start_workflow_endpoint  CC=1  out:2
+    stream_workflow  CC=2  out:22
+    workflow_catalog_drift  CC=5  out:19
+    workflow_execute  CC=8  out:23
   backend.app.step_validator  [3 funcs]
     _validation_context  CC=1  out:4
     validate_step_config  CC=1  out:2
     validate_step_config_issues  CC=2  out:3
-  backend.app.workflow_events  [3 funcs]
-    to_dict  CC=1  out:1
+  backend.app.workflow_events  [2 funcs]
     publish  CC=2  out:4
     subscriber_count  CC=1  out:3
   backend.app.workflow_execute  [4 funcs]
@@ -137,188 +154,26 @@ MODULES:
     resolve_idempotency_key  CC=6  out:4
     run_idempotent_workflow  CC=10  out:16
     workflow_has_side_effects  CC=6  out:4
-  backend.app.workflow_lifecycle  [3 funcs]
+  backend.app.workflow_lifecycle  [4 funcs]
     attach_validation_to_plan  CC=4  out:4
     validation_report_for_workflow  CC=1  out:2
+    workflow_from_lifecycle_body  CC=4  out:3
     workflow_validation_payload  CC=1  out:2
-  examples.01-invoice.scenario  [4 funcs]
-    _attachment_validation  CC=9  out:9
-    _example_dir  CC=1  out:2
-    _run_autonomous  CC=1  out:9
-    run  CC=20  out:34
-  examples.02-email.scenario  [1 funcs]
-    run  CC=7  out:19
-  examples.03-report-and-notify.scenario  [1 funcs]
-    run  CC=9  out:29
-  examples.04-scheduled-report.scenario  [1 funcs]
-    run  CC=18  out:38
-  examples.05-conversation-flow.scenario  [4 funcs]
-    _save_conversation_artifacts  CC=1  out:2
-    run  CC=2  out:2
-    run_demo  CC=2  out:18
-    run_interactive  CC=1  out:2
-  examples.06-interactive-chat.scenario  [3 funcs]
-    run  CC=2  out:2
-    run_demo  CC=4  out:15
-    run_interactive  CC=1  out:4
-  examples.07-email-conversation.scenario  [1 funcs]
-    run  CC=4  out:16
-  examples.08-multi-object-benchmark.scenario  [4 funcs]
-    _evaluate  CC=6  out:9
-    _extract_actions  CC=5  out:5
-    run  CC=5  out:15
-    run_benchmark  CC=16  out:24
-  examples.09-execution-smoke.scenario  [1 funcs]
-    run  CC=9  out:22
-  examples.10-llm-benchmark.scenario  [1 funcs]
-    run  CC=3  out:10
-  examples.11-notify-quality.scenario  [1 funcs]
-    run  CC=8  out:17
-  examples.12-ir-show.scenario  [1 funcs]
-    run  CC=13  out:25
-  examples.13-autonomous-invoice-stack.scenario  [1 funcs]
-    run  CC=20  out:24
-  examples.14-markpact-export.scenario  [2 funcs]
-    _dsl_from_client  CC=3  out:4
-    run  CC=4  out:28
-  examples.16-golden-eval.scenario  [2 funcs]
-    _print_report  CC=6  out:13
-    run  CC=7  out:22
-  examples.17-execution-policy.scenario  [5 funcs]
-    _invoice_workflow  CC=1  out:1
-    _mullm_workflow  CC=1  out:1
-    _policy_layer_active  CC=2  out:5
-    _print_policy_result  CC=8  out:15
-    run  CC=11  out:29
-  examples.code_generation_examples  [1 funcs]
-    main  CC=1  out:1
-  nlp-service.app.audio_parser  [3 funcs]
-    send_audio  CC=2  out:2
-    stt_audio  CC=9  out:14
-    stt_file  CC=2  out:4
-  nlp-service.app.conversation.attachment_gate  [1 funcs]
-    workflow_needs_attachment  CC=8  out:4
-  nlp-service.app.conversation.autonomous_loop  [12 funcs]
-    _attachment_valid_ok  CC=7  out:7
-    _autonomous_enabled  CC=3  out:1
-    _dialog_missing  CC=3  out:3
-    _example_dir  CC=3  out:5
-    _max_autonomous_rounds  CC=3  out:1
-    _maybe_delete_generated_attachment  CC=5  out:5
-    _resolve_artifact_file  CC=7  out:13
-    _step_config_for_validation  CC=4  out:2
-    _try_fixture_attachment  CC=16  out:20
-    _try_generate_attachment  CC=9  out:8
-  nlp-service.app.conversation.doql_autofill  [4 funcs]
-    _nested_generate_invoice  CC=5  out:16
-    _resolve_attachment_path  CC=1  out:2
-    load_context_for_state  CC=8  out:5
-    sync_autofill_from_doql  CC=20  out:22
   nlp-service.app.conversation.doql_context  [1 funcs]
     resolve_doql_context_path  CC=8  out:11
-  nlp-service.app.conversation.doql_registry  [7 funcs]
-    _entities_to_data  CC=5  out:4
-    _format_value  CC=4  out:5
-    _patch_doql_file  CC=5  out:16
-    _render_block  CC=2  out:5
-    _try_sdk_refresh  CC=4  out:7
-    refresh_registry_for_state  CC=16  out:21
-    reload_context_after_refresh  CC=1  out:2
-  nlp-service.app.conversation.invoice_paths  [2 funcs]
-    invoice_output_dir  CC=2  out:5
-    store_attachment_path  CC=5  out:11
-  nlp-service.app.conversation.invoice_policy  [2 funcs]
-    invoice_attachment_policy_active  CC=9  out:2
-    is_invoice_example  CC=2  out:1
-  nlp-service.app.conversation.merge  [1 funcs]
-    merge_into_state  CC=13  out:4
-  nlp-service.app.conversation.orchestrator  [8 funcs]
-    _apply_request_context  CC=4  out:3
-    _conversation_store  CC=2  out:1
-    _merge_inline_entities  CC=8  out:3
-    _process_message  CC=17  out:38
-    continue_conversation  CC=4  out:13
-    get_conversation  CC=2  out:3
-    mark_conversation_executed  CC=4  out:5
-    start_conversation  CC=4  out:12
-  nlp-service.app.conversation.reflection  [9 funcs]
-    _current_config  CC=3  out:2
-    _empty  CC=3  out:2
-    _intent_from_state  CC=4  out:0
-    _policies  CC=2  out:1
-    _pseudo_response  CC=2  out:1
-    _resolve_doql_path  CC=4  out:3
-    _target_config  CC=10  out:8
-    _validation_issues  CC=3  out:5
-    reflection_from_state  CC=8  out:17
-  nlp-service.app.conversation.responses  [12 funcs]
-    _attachment_validation_for_workflow  CC=5  out:5
-    _execute_keyword_in_text  CC=3  out:4
-    _is_execute_or_continue  CC=2  out:4
-    _nlp_from_state  CC=6  out:5
-    _ready_workflow_message  CC=4  out:2
-    _resolve_workflow_attachment_paths  CC=5  out:6
-    build_and_check_dsl  CC=11  out:18
-    build_incomplete_response  CC=6  out:9
-    check_execute_keyword  CC=11  out:11
-    format_system_result  CC=3  out:6
-  nlp-service.app.conversation.runtime_gate  [2 funcs]
-    process_scope_blocked  CC=12  out:7
-    runtime_unavailable_message  CC=7  out:2
-  nlp-service.app.conversation.system_map  [7 funcs]
-    command_meta  CC=5  out:16
-    get_doql_context  CC=1  out:1
-    known_action_names  CC=5  out:3
-    optional_defaults_for_action  CC=6  out:5
-    runtime_id_for_action  CC=2  out:2
-    scoped_action_registry  CC=3  out:3
-    set_doql_context  CC=1  out:1
-  nlp-service.app.dsl.forms  [1 funcs]
-    get_action_form  CC=7  out:14
-  nlp-service.app.dsl.pipeline  [1 funcs]
-    map_to_dsl_with_enrichment  CC=6  out:4
-  nlp-service.app.execution.delegate  [3 funcs]
-    execution_backend_for_intent  CC=5  out:4
-    execution_backend_for_runtime  CC=4  out:0
-    is_delegated_to_mullm  CC=2  out:1
-  nlp-service.app.execution.system  [5 funcs]
-    _exec_file_read  CC=9  out:18
-    _exec_file_write  CC=4  out:12
-    _exec_registry_list  CC=4  out:10
-    _is_read_only  CC=2  out:5
-    _validate_file_path  CC=5  out:9
-  nlp-service.app.parser_llm  [2 funcs]
-    __getattr__  CC=2  out:2
-    _llm_module  CC=2  out:0
-  nlp-service.app.registry  [7 funcs]
-    get_action_by_alias  CC=6  out:5
-    get_action_contract  CC=3  out:3
-    get_action_contracts  CC=3  out:3
-    get_defaults  CC=5  out:6
-    get_quality_required_fields  CC=2  out:4
-    get_required_fields  CC=5  out:5
-    get_trigger  CC=3  out:2
-  nlp-service.app.request_context  [2 funcs]
-    get_example_dir  CC=2  out:3
-    set_example_dir  CC=3  out:4
-  nlp-service.app.settings  [2 funcs]
+  nlp-service.app.settings  [1 funcs]
     set  CC=4  out:11
-    _coerce_type  CC=5  out:6
-  nlp-service.app.store.factory  [1 funcs]
-    get_conversation_store  CC=4  out:7
   nlp-service.app.store.memory  [1 funcs]
     delete  CC=1  out:1
-  nlp-service.app.validation.step_validator  [2 funcs]
-    format_validation_message  CC=3  out:3
-    validate_workflow_steps  CC=9  out:13
   nlp2dsl_sdk.__main__  [1 funcs]
     main  CC=5  out:10
-  nlp2dsl_sdk.attachment_validation  [5 funcs]
+  nlp2dsl_sdk.attachment_validation  [6 funcs]
     _apply_attachment_to_execution  CC=7  out:6
     _attachment_from_dsl  CC=8  out:10
     _prefer_local_validation  CC=4  out:2
     build_attachment_validation  CC=8  out:15
     enrich_chat_response  CC=11  out:12
+    format_attachment_validation  CC=10  out:8
   nlp2dsl_sdk.autonomous_flow  [1 funcs]
     _start_with_extra  CC=6  out:22
   nlp2dsl_sdk.cli  [12 funcs]
@@ -332,8 +187,46 @@ MODULES:
     _health  CC=2  out:6
     _run  CC=5  out:9
     _run_with_doql  CC=6  out:12
-  nlp2dsl_sdk.client  [1 funcs]
-    workflow_step  CC=1  out:1
+  nlp2dsl_sdk.client  [17 funcs]
+    _handle_completed_response  CC=14  out:22
+    _print_attachment_validation  CC=3  out:3
+    _record_turn  CC=1  out:2
+    _reflect_executed_turn  CC=5  out:10
+    _refresh_doql_registry  CC=13  out:15
+    save_artifacts  CC=2  out:4
+    start  CC=2  out:12
+    chat_message  CC=6  out:11
+    chat_start  CC=4  out:10
+    crm_update  CC=2  out:3
+  nlp2dsl_sdk.contracts.registry  [12 funcs]
+    _compatibility_contract  CC=7  out:12
+    _optional_defaults  CC=5  out:5
+    _string_list  CC=7  out:5
+    action_catalog_payload  CC=2  out:3
+    action_contracts_from_catalog  CC=3  out:4
+    action_contracts_from_registry  CC=3  out:4
+    action_info_config_schema  CC=2  out:1
+    contract_from_catalog_entry  CC=1  out:1
+    contract_from_registry_entry  CC=8  out:27
+    known_action_names  CC=2  out:3
+  nlp2dsl_sdk.conversation_artifacts  [6 funcs]
+    _format_transcript_header  CC=1  out:5
+    _format_turn  CC=14  out:32
+    _format_validations  CC=4  out:6
+    _routing_summary  CC=6  out:4
+    format_transcript  CC=6  out:11
+    write_conversation_artifacts  CC=1  out:13
+  nlp2dsl_sdk.conversation_testql  [10 funcs]
+    _endpoints_from_steps  CC=9  out:12
+    _endpoints_from_text  CC=2  out:3
+    _is_nlp_kind  CC=1  out:2
+    _missing_type_header  CC=2  out:0
+    _parse_plan  CC=3  out:2
+    _structural_issues  CC=6  out:7
+    _validation_result  CC=4  out:1
+    dry_run_conversation_scenario  CC=1  out:1
+    validate_conversation_scenario  CC=9  out:18
+    validate_conversation_scenario_text  CC=4  out:8
   nlp2dsl_sdk.demos  [10 funcs]
     _get_supported_languages  CC=3  out:6
     _print_code_generation_preview  CC=3  out:11
@@ -353,50 +246,23 @@ MODULES:
     _set_utf8_locale  CC=3  out:1
     configure_utf8  CC=3  out:4
     utf8_auto_enabled  CC=1  out:3
-  nlp2dsl_sdk.evaluation.golden  [5 funcs]
-    _data_path  CC=1  out:2
-    default_golden_cases  CC=1  out:1
-    extract_actions  CC=9  out:8
-    extract_missing  CC=6  out:4
-    load_golden_cases  CC=6  out:9
-  nlp2dsl_sdk.evaluation.metrics  [9 funcs]
-    _actions_match  CC=4  out:2
-    _bucket_stats  CC=5  out:5
-    _has_attachment_signal  CC=3  out:4
-    _missing_match  CC=4  out:2
-    build_golden_report  CC=5  out:9
-    classify_outcome  CC=19  out:8
-    evaluate_golden_case  CC=2  out:8
-    primary_action_from_row  CC=2  out:0
-    run_golden_evaluation  CC=2  out:3
-  nlp2dsl_sdk.example_bootstrap  [1 funcs]
-    ensure_doql_registry  CC=1  out:1
   nlp2dsl_sdk.invoice_pdf  [2 funcs]
     build_invoice_pdf_bytes  CC=3  out:23
     write_invoice_pdf  CC=1  out:4
-  nlp2dsl_sdk.mullm.executor  [6 funcs]
-    _delegate_mode  CC=2  out:3
-    _should_simulate  CC=3  out:2
-    _workflow_steps  CC=4  out:2
-    execute_mullm_workflow  CC=21  out:33
+  nlp2dsl_sdk.mullm.executor  [1 funcs]
     is_mullm_only_workflow  CC=4  out:6
-    workflow_has_mullm_steps  CC=3  out:5
-  nlp2dsl_sdk.mullm.payloads  [3 funcs]
-    _cfg  CC=4  out:4
-    build_task_payload  CC=39  out:50
-    is_mullm_action  CC=3  out:2
-  nlp2dsl_sdk.preview  [17 funcs]
+  nlp2dsl_sdk.preview  [10 funcs]
     _print_incomplete_run_outcome  CC=9  out:13
-    _print_incomplete_workflow_preview  CC=6  out:9
     _print_success_run_outcome  CC=9  out:20
     _print_workflow_dsl_summary  CC=1  out:5
-    _print_workflow_execution_summary  CC=9  out:14
     ensure_services  CC=5  out:8
     execute_from_text  CC=8  out:15
-    execute_text_examples  CC=8  out:9
     execution_payload  CC=3  out:3
-    finalize_example_artifacts  CC=2  out:2
-  nlp2dsl_sdk.reflection  [15 funcs]
+    preview_text_examples  CC=9  out:13
+    print_json  CC=1  out:2
+    print_run_context_hints  CC=13  out:20
+    print_run_outcome  CC=5  out:9
+  nlp2dsl_sdk.reflection  [16 funcs]
     _apply_invoice_attachment_hint  CC=6  out:4
     _config_from_command  CC=10  out:8
     _context_queries_from_issues  CC=9  out:4
@@ -411,66 +277,140 @@ MODULES:
     _emit_compose  CC=3  out:8
     bootstrap_registry  CC=1  out:6
   nlp2dsl_sdk.step_validation  [1 funcs]
-    validate_step_config_from_map  CC=1  out:1
-  nlp2dsl_sdk.workflow.events  [3 funcs]
-    lifecycle_event_from_payload  CC=11  out:23
-    normalize_event_type  CC=3  out:3
-    workflow_snapshot_from_events  CC=19  out:8
-  nlp2dsl_sdk.workflow.lifecycle  [12 funcs]
-    _compact_dict  CC=3  out:2
-    _float_or_default  CC=2  out:1
-    _get  CC=2  out:3
-    _issue_to_payload  CC=4  out:9
-    _missing_fields_from_payloads  CC=8  out:8
-    _string_list  CC=5  out:2
-    _to_dict  CC=5  out:10
-    clarification_from_dialog  CC=4  out:5
-    execution_request_from_workflow  CC=3  out:2
-    parse_result_from_nlp  CC=4  out:13
-  packages.dsl-contracts.src.dsl_contracts.issue  [1 funcs]
+    validate_workflow_from_map  CC=1  out:1
+  nlp2dsl_sdk.validation.helpers  [4 funcs]
+    is_empty  CC=3  out:2
+    parse_amount  CC=3  out:1
+    pdf_amount_mismatch  CC=3  out:5
+    pdf_structure_issues  CC=3  out:1
+  nlp2dsl_sdk.validation.issue  [1 funcs]
     issues_to_messages  CC=2  out:1
-  packages.dsl-contracts.src.dsl_contracts.registry  [3 funcs]
-    action_contracts_from_catalog  CC=3  out:4
-    action_info_config_schema  CC=2  out:1
-    contract_from_registry_entry  CC=8  out:27
-  packages.dsl-validate.src.dsl_validate.capability_policy  [2 funcs]
-    build_access_decision_params  CC=5  out:5
-    validate_capability_policy  CC=34  out:41
-  packages.dsl-validate.src.dsl_validate.messages  [1 funcs]
-    legacy_message_to_issue  CC=3  out:2
-  packages.dsl-validate.src.dsl_validate.pipeline  [2 funcs]
-    validate_post_execute_execution  CC=1  out:1
-    validate_post_health_for_intent  CC=1  out:2
-  packages.dsl-validate.src.dsl_validate.resolutions  [3 funcs]
-    apply_resolution_plans  CC=12  out:11
-    filter_plans_by_reflection_tokens  CC=12  out:7
+  nlp2dsl_sdk.validation.messages  [12 funcs]
+    _attachment_code  CC=4  out:0
+    _attachment_issue  CC=3  out:4
+    _attachment_kind  CC=5  out:0
+    _attachment_resolution  CC=6  out:0
+    _field_after_colon  CC=1  out:2
+    _field_format_issue  CC=4  out:6
+    _invalid_field_issue  CC=1  out:1
+    _missing_required_issue  CC=2  out:3
+    _other_issue  CC=1  out:1
+    _quality_missing_issue  CC=2  out:3
+  nlp2dsl_sdk.validation.resolutions  [9 funcs]
+    _append_attachment_plans  CC=4  out:11
+    _append_autofill_plans  CC=4  out:3
+    _append_plan  CC=2  out:2
+    _attachment_issues  CC=3  out:1
+    _has_invalid_attachment  CC=2  out:1
+    _is_attachment_issue  CC=3  out:1
+    _is_autofill_issue  CC=2  out:1
+    _should_generate_attachment  CC=2  out:1
     plan_resolutions  CC=2  out:4
-  packages.dsl-validate.src.dsl_validate.rules.attachment  [1 funcs]
-    validate_attachment_path  CC=11  out:17
-  packages.dsl-validate.src.dsl_validate.rules.dsl_contract  [1 funcs]
+  nlp2dsl_sdk.validation.rules.dsl_contract  [6 funcs]
+    _is_non_empty_string  CC=2  out:3
+    _issue  CC=1  out:1
+    _type_name  CC=2  out:1
+    _validate_optional_text_field  CC=5  out:5
+    _validate_step  CC=7  out:17
     validate_dsl_contract  CC=6  out:15
-  packages.dsl-validate.src.dsl_validate.rules.runtime_health  [1 funcs]
+  nlp2dsl_sdk.validation.rules.runtime_health  [5 funcs]
+    _runtime_field  CC=4  out:5
+    probe_health_endpoint  CC=9  out:11
     runtime_id_for_intent  CC=5  out:2
-  packages.dsl-validate.src.dsl_validate.rules.step_config  [1 funcs]
+    validate_runtime_health  CC=10  out:8
+    validate_runtime_health_for_intent  CC=1  out:2
+  nlp2dsl_sdk.validation.rules.step_config  [3 funcs]
+    _format_issues  CC=11  out:21
     validate_step  CC=13  out:18
+    validate_workflow_steps  CC=4  out:5
+  nlp2dsl_sdk.workflow.events  [2 funcs]
+    lifecycle_event_from_payload  CC=11  out:23
+    workflow_snapshot_from_events  CC=12  out:7
+  nlp2dsl_sdk.workflow.lifecycle  [1 funcs]
+    validation_report_from_issues  CC=3  out:3
+  nlp2dsl_sdk.workflow.simulate  [1 funcs]
+    simulate_workflow_payload  CC=8  out:12
+  packages.dsl-contracts.src.dsl_contracts.draft  [9 funcs]
+    active_draft_contracts  CC=4  out:3
+    draft_path  CC=2  out:4
+    draft_ready_for_activation  CC=2  out:1
+    drafts_dir  CC=2  out:2
+    list_draft_files  CC=2  out:4
+    load_draft  CC=3  out:6
+    load_drafts  CC=2  out:2
+    save_draft  CC=2  out:8
+    validate_draft  CC=8  out:17
+  packages.dsl-validate.src.dsl_validate.capability_policy  [21 funcs]
+    _access_denied_issue  CC=1  out:1
+    _approval_granted  CC=9  out:3
+    _approval_issue  CC=1  out:1
+    _blocked_issue  CC=1  out:1
+    _channel_issue  CC=1  out:3
+    _check_access_decision  CC=8  out:8
+    _check_approval  CC=5  out:2
+    _check_dry_run  CC=5  out:1
+    _check_email_domain  CC=7  out:5
+    _check_notify_channel  CC=8  out:5
+  packages.dsl-validate.src.dsl_validate.contract_drift  [5 funcs]
+    _field_sets  CC=1  out:4
+    build_catalog_drift_report  CC=2  out:8
+    validate_catalog_field_drift  CC=5  out:14
+    validate_handler_drift  CC=3  out:9
+    worker_eligible_actions  CC=5  out:2
+  packages.dsl-validate.src.dsl_validate.path_resolve  [2 funcs]
+    _examples_portable_candidates  CC=8  out:16
+    resolve_attachment_path  CC=9  out:19
+  packages.dsl-validate.src.dsl_validate.pipeline  [16 funcs]
+    _context_from_map  CC=3  out:5
+    validate_dsl_contract_issues  CC=1  out:1
+    validate_dsl_contract_messages  CC=1  out:2
+    validate_post_execute_execution  CC=1  out:1
+    validate_post_execute_from_map  CC=3  out:4
+    validate_post_execute_issues  CC=1  out:6
+    validate_post_execute_workflow_from_map_issues  CC=10  out:17
+    validate_post_health_for_intent  CC=1  out:2
+    validate_post_health_from_map  CC=1  out:2
+    validate_post_health_issues  CC=1  out:1
+  packages.dsl-validate.src.dsl_validate.profile_checks  [18 funcs]
+    _failed  CC=4  out:2
+    _parse_profile_validation_by_code  CC=4  out:8
+    _parse_profile_validation_by_type  CC=5  out:9
+    _parse_profile_validation_shorthand  CC=10  out:10
+    _pass_summary  CC=5  out:0
+    _resolve_artifact_path  CC=3  out:4
+    _validation_id  CC=5  out:3
+    apply_profile_validations  CC=3  out:2
+    check_profile_validation  CC=11  out:15
+    conversation_executed  CC=2  out:3
+  packages.dsl-validate.src.dsl_validate.rules.attachment  [3 funcs]
+    _resolve_path  CC=2  out:2
+    attachment_issues_for_config  CC=3  out:6
+    validate_attachment_path  CC=11  out:17
+  packages.dsl-validate.src.dsl_validate.rules.post_execute  [4 funcs]
+    _dsl_attachment_issues  CC=8  out:12
+    _failed_step_issues  CC=9  out:10
+    _invalid_steps_payload  CC=1  out:1
+    validate_execution_outcome  CC=5  out:6
   packages.nlp2cmd-intent.src.nlp2cmd_intent.clarification  [2 funcs]
     clarification_enforced  CC=1  out:3
     ensure_intent_clear  CC=4  out:3
-  packages.nlp2cmd-intent.src.nlp2cmd_intent.data_files  [3 funcs]
-    _nlp2cmd_data_dir  CC=2  out:3
-    _package_data_dir  CC=2  out:5
-    find_data_files  CC=6  out:17
   packages.nlp2cmd-intent.src.nlp2cmd_intent.facade  [3 funcs]
     __init__  CC=4  out:3
     detect  CC=2  out:4
     default_intent_detector  CC=1  out:1
   packages.nlp2cmd-intent.src.nlp2cmd_intent.input  [1 funcs]
     analyze_query  CC=3  out:8
-  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.fast_path_detection  [4 funcs]
-    fast_path_detect  CC=4  out:5
-    match_exact_commands  CC=2  out:2
-    match_explicit_overrides  CC=3  out:1
-    run_domain_fast_path_after_exact  CC=69  out:66
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.fast_path_detection  [22 funcs]
+    _browser_url_entities  CC=3  out:6
+    _k8s_entities  CC=8  out:4
+    _match_browser_complex  CC=4  out:4
+    _match_browser_keywords  CC=3  out:2
+    _match_browser_phrases  CC=3  out:3
+    _match_docker  CC=2  out:2
+    _match_k8s  CC=3  out:2
+    _match_search_keywords  CC=3  out:2
+    _match_shell  CC=6  out:4
+    _match_sql_exact  CC=3  out:2
   packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_detector  [19 funcs]
     _anti_networking_browser_override  CC=5  out:5
     _calculate_keyword_confidence  CC=6  out:5
@@ -482,24 +422,12 @@ MODULES:
     _tokenize_text  CC=11  out:15
     detect  CC=7  out:11
     detect_all  CC=8  out:10
-  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.keyword_patterns  [9 funcs]
-    __init__  CC=3  out:8
-    _apply_detector_config  CC=4  out:5
-    _load_detector_config_from_json  CC=3  out:5
-    _load_fast_path_overrides_from_json  CC=4  out:6
-    _load_patterns_from_json  CC=3  out:4
-    _pattern_files  CC=2  out:5
-    add_pattern  CC=3  out:3
-    _dedupe_case_insensitive  CC=3  out:4
-    _find_data_files  CC=1  out:2
-  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.pattern_loaders  [7 funcs]
+  packages.nlp2cmd-intent.src.nlp2cmd_intent.keywords.pattern_loaders  [5 funcs]
     clean_string_list  CC=4  out:4
     merge_patterns_payload  CC=11  out:13
     parse_domain_boosters  CC=6  out:6
-    parse_explicit_overrides  CC=7  out:17
     parse_fast_path_settings  CC=8  out:19
     parse_priority_intents  CC=6  out:6
-    read_json_object  CC=3  out:4
   packages.nlp2cmd-intent.src.nlp2cmd_intent.nlp2cmd_convert  [1 funcs]
     detection_to_intent_ir  CC=10  out:22
   packages.nlp2cmd-planner.src.nlp2cmd_planner.strategies.rest_workflow  [2 funcs]
@@ -537,21 +465,53 @@ MODULES:
     _resolve_propact_bin  CC=2  out:2
     _run_shell_steps  CC=7  out:19
     _shell_command  CC=3  out:3
-  packages.nlp2dsl-artifacts.src.nlp2dsl_artifacts.writer  [2 funcs]
-    example_artifact_root  CC=1  out:2
-    get_example_writer  CC=2  out:4
+  packages.nlp2dsl-artifacts.src.nlp2dsl_artifacts.writer  [16 funcs]
+    __init__  CC=3  out:5
+    finalize  CC=5  out:13
+    record  CC=1  out:6
+    _action_endpoint  CC=3  out:2
+    _action_transport  CC=3  out:1
+    _cmd_trace_layer  CC=3  out:6
+    _dsl_trace_layer  CC=5  out:5
+    _extract_actions  CC=4  out:5
+    _nlp_trace_layer  CC=2  out:5
+    _process_trace_layer  CC=9  out:6
+  packages.nlp2dsl-mcp.src.nlp2dsl_mcp.server  [3 funcs]
+    _validate_workflow  CC=1  out:7
+    build_mcp  CC=2  out:17
+    main  CC=1  out:2
+  packages.nlp2dsl-plugin.src.nlp2dsl_plugin.schema  [2 funcs]
+    load_plugin_manifest  CC=2  out:6
+    plugin_layout_valid  CC=6  out:8
   packages.nlp2dsl-show.src.nlp2dsl_show.cli  [1 funcs]
     main  CC=7  out:17
-  packages.nlp2dsl-stack.src.nlp2dsl_stack.compose  [2 funcs]
+  packages.nlp2dsl-stack.src.nlp2dsl_stack.compose  [10 funcs]
+    _default_deploy  CC=1  out:2
+    _default_generated_services  CC=2  out:2
+    _default_schedules  CC=1  out:1
+    _run_process_docker_script  CC=1  out:1
+    _run_process_host_script  CC=1  out:1
+    _run_script_content  CC=2  out:3
+    _stack_compose_dict  CC=8  out:10
+    _wait_for_backend_shell  CC=1  out:1
     enrich_ir_for_stack  CC=5  out:5
     generate_stack_compose  CC=13  out:79
-  packages.testql-conversations.src.testql_conversations.artifacts  [1 funcs]
-    write_conversation_artifacts  CC=1  out:13
-  packages.workflow-export.src.workflow_export.publish  [4 funcs]
+  packages.workflow-export.src.workflow_export.markpact  [7 funcs]
+    _contracts_section  CC=2  out:5
+    _yaml_file_block  CC=1  out:1
+    composite_workflow_spec  CC=9  out:10
+    contract_to_yaml_dict  CC=5  out:5
+    contract_to_yaml_string  CC=1  out:3
+    export_markpact_bundle  CC=8  out:25
+    workflow_dsl_to_markpact_readme  CC=11  out:23
+  packages.workflow-export.src.workflow_export.pactown  [1 funcs]
+    export_pactown_bundle  CC=3  out:16
+  packages.workflow-export.src.workflow_export.publish  [5 funcs]
+    assert_publish_layer_valid  CC=4  out:3
     catalog_from_nlp_client  CC=5  out:5
     export_workflow_publish_layer  CC=2  out:5
-    print_publish_summary  CC=5  out:5
     validate_publish_layer  CC=1  out:1
+    validate_publish_layer_result  CC=13  out:14
   tauri-wrapper.scripts.dev  [3 funcs]
     exitCode  CC=2  out:1
     main  CC=11  out:10
@@ -595,13 +555,13 @@ EDGES:
   backend.app.workflow_execute.run_idempotent_workflow → nlp2dsl_sdk.mullm.executor.is_mullm_only_workflow
   backend.app.workflow_execute.run_idempotent_workflow → backend.app.mullm_execute.execute_mullm_dsl
   backend.app.workflow_execute.run_idempotent_workflow → backend.app.engine.run_workflow
-  backend.app.action_catalog.nlp_actions_to_action_info → packages.dsl-contracts.src.dsl_contracts.registry.action_contracts_from_catalog
-  backend.app.action_catalog.nlp_actions_to_action_info → packages.dsl-contracts.src.dsl_contracts.registry.action_info_config_schema
+  backend.app.action_catalog.nlp_actions_to_action_info → nlp2dsl_sdk.contracts.registry.action_contracts_from_catalog
+  backend.app.action_catalog.nlp_actions_to_action_info → nlp2dsl_sdk.contracts.registry.action_info_config_schema
   backend.app.action_catalog.fetch_action_catalog → backend.app.action_catalog.nlp_actions_to_action_info
   backend.app.action_catalog.load_action_field_catalog → backend.app.action_catalog._default_nlp_service_url
   backend.app.action_catalog.required_fields_for_action → backend.app.action_catalog.load_action_field_catalog
   backend.app.action_catalog.quality_fields_for_action → backend.app.action_catalog.load_action_field_catalog
-  backend.app.action_catalog.known_action_names_from_catalog → nlp-service.app.conversation.system_map.known_action_names
+  backend.app.action_catalog.known_action_names_from_catalog → nlp2dsl_sdk.contracts.registry.known_action_names
   backend.app.action_catalog.known_action_names_from_catalog → backend.app.action_catalog.load_action_field_catalog
   backend.app.workflow_lifecycle.validation_report_for_workflow → nlp2dsl_sdk.workflow.lifecycle.validation_report_from_issues
   backend.app.workflow_lifecycle.validation_report_for_workflow → backend.app.dsl_validation.validate_dsl_for_execution
@@ -610,9 +570,9 @@ EDGES:
   backend.app.step_validator._validation_context → backend.app.action_catalog.required_fields_for_action
   backend.app.step_validator._validation_context → backend.app.action_catalog.quality_fields_for_action
   backend.app.step_validator._validation_context → backend.app.action_catalog.known_action_names_from_catalog
-  backend.app.step_validator.validate_step_config_issues → packages.dsl-validate.src.dsl_validate.rules.step_config.validate_step
+  backend.app.step_validator.validate_step_config_issues → nlp2dsl_sdk.validation.rules.step_config.validate_step
   backend.app.step_validator.validate_step_config_issues → backend.app.step_validator._validation_context
-  backend.app.step_validator.validate_step_config → packages.dsl-contracts.src.dsl_contracts.issue.issues_to_messages
+  backend.app.step_validator.validate_step_config → nlp2dsl_sdk.validation.issue.issues_to_messages
   backend.app.step_validator.validate_step_config → backend.app.step_validator.validate_step_config_issues
   backend.app.attachment_validation.build_attachment_validation → backend.app.path_resolve.resolve_attachment_path
   backend.app.attachment_validation.build_attachment_validation → backend.app.step_validator.validate_step_config_issues

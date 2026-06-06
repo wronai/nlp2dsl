@@ -1,12 +1,12 @@
-# redup/duplication | 48 groups | 308f 27453L | 2026-06-06
+# redup/duplication | 53 groups | 280f 29101L | 2026-06-06
 
 SUMMARY:
-  files_scanned: 308
-  total_lines:   27453
-  dup_groups:    48
-  dup_fragments: 106
-  saved_lines:   566
-  scan_ms:       4267
+  files_scanned: 280
+  total_lines:   29101
+  dup_groups:    53
+  dup_fragments: 117
+  saved_lines:   627
+  scan_ms:       3096
 
 HOTSPOTS[7] (files with most duplication):
   nlp2dsl_sdk/invoice_pdf.py  dup=65L  groups=3  frags=3  (0.2%)
@@ -14,10 +14,10 @@ HOTSPOTS[7] (files with most duplication):
   worker/invoice_pdf.py  dup=63L  groups=3  frags=3  (0.2%)
   nlp2dsl_sdk/encoding.py  dup=61L  groups=8  frags=8  (0.2%)
   packages/nlp2dsl-artifacts/src/nlp2dsl_artifacts/encoding.py  dup=61L  groups=8  frags=8  (0.2%)
+  packages/dsl-validate/src/dsl_validate/capability_policy.py  dup=58L  groups=3  frags=5  (0.2%)
   backend/app/logging_setup.py  dup=49L  groups=5  frags=5  (0.2%)
-  nlp-service/app/logging_setup.py  dup=49L  groups=5  frags=5  (0.2%)
 
-DUPLICATES[48] (ranked by impact):
+DUPLICATES[53] (ranked by impact):
   [2efbb7dcb6fc1905] ! EXAC  build_invoice_pdf_bytes  L=49 N=3 saved=98 sim=1.00
       nlp-service/app/validation/invoice_pdf.py:12-60  (build_invoice_pdf_bytes)
       nlp2dsl_sdk/invoice_pdf.py:12-61  (build_invoice_pdf_bytes)
@@ -26,6 +26,13 @@ DUPLICATES[48] (ranked by impact):
       backend/app/logging_setup.py:79-100  (setup_logging)
       nlp-service/app/logging_setup.py:79-100  (setup_logging)
       worker/logging_setup.py:79-100  (setup_logging)
+  [6c27c009f67df952] ! EXAC  _examples_portable_candidates  L=19 N=3 saved=38 sim=1.00
+      backend/app/path_resolve.py:9-27  (_examples_portable_candidates)
+      packages/dsl-validate/src/dsl_validate/path_resolve.py:9-27  (_examples_portable_candidates)
+      worker/path_resolve.py:9-27  (_examples_portable_candidates)
+  [bc3769e1428ed266]   EXAC  resolve_attachment_path  L=27 N=2 saved=27 sim=1.00
+      packages/dsl-validate/src/dsl_validate/path_resolve.py:30-56  (resolve_attachment_path)
+      worker/path_resolve.py:30-56  (resolve_attachment_path)
   [a58ac04d8adce867]   EXAC  format  L=12 N=3 saved=24 sim=1.00
       backend/app/logging_setup.py:40-51  (format)
       nlp-service/app/logging_setup.py:40-51  (format)
@@ -34,23 +41,20 @@ DUPLICATES[48] (ranked by impact):
       nlp-service/app/validation/invoice_pdf.py:63-73  (write_invoice_pdf)
       nlp2dsl_sdk/invoice_pdf.py:64-75  (write_invoice_pdf)
       worker/invoice_pdf.py:63-73  (write_invoice_pdf)
-  [d54d4c265bf6ceca]   STRU  run_execution  L=22 N=2 saved=22 sim=1.00
-      scripts/run-example-docker-e2e.py:99-120  (run_execution)
-      scripts/run-example-docker-e2e.py:123-145  (run_conversation)
   [8d8164856e051e29]   STRU  _process_shell_dockerfile  L=10 N=3 saved=20 sim=1.00
       packages/nlp2dsl-stack/src/nlp2dsl_stack/compose.py:176-185  (_process_shell_dockerfile)
       packages/nlp2dsl-stack/src/nlp2dsl_stack/compose.py:188-198  (_cron_sidecar_dockerfile)
       packages/nlp2dsl-stack/src/nlp2dsl_stack/compose.py:311-320  (_runner_dockerfile)
-  [6c27c009f67df952]   EXAC  _examples_portable_candidates  L=19 N=2 saved=19 sim=1.00
-      backend/app/path_resolve.py:9-27  (_examples_portable_candidates)
-      packages/dsl-validate/src/dsl_validate/path_resolve.py:9-27  (_examples_portable_candidates)
   [ffd95d6b2707ba43]   EXAC  dispatch  L=9 N=3 saved=18 sim=1.00
       backend/app/logging_setup.py:68-76  (dispatch)
       nlp-service/app/logging_setup.py:68-76  (dispatch)
       worker/logging_setup.py:68-76  (dispatch)
+  [0afaca022177ad67]   STRU  _recipient_issue  L=18 N=2 saved=18 sim=1.00
+      packages/dsl-validate/src/dsl_validate/capability_policy.py:159-176  (_recipient_issue)
+      packages/dsl-validate/src/dsl_validate/capability_policy.py:179-196  (_channel_issue)
   [0e7ee53c71a67a27]   EXAC  _ensure_engine  L=16 N=2 saved=16 sim=1.00
       backend/app/db/postgres.py:78-93  (_ensure_engine)
-      backend/app/idempotency.py:123-138  (_ensure_engine)
+      backend/app/idempotency.py:141-156  (_ensure_engine)
   [c6648715b2d43f45]   STRU  _validation_context  L=15 N=2 saved=15 sim=1.00
       backend/app/step_validator.py:18-32  (_validation_context)
       worker/step_validator.py:18-32  (_validation_context)
@@ -60,15 +64,15 @@ DUPLICATES[48] (ranked by impact):
   [fb00b5c7e2466139]   EXAC  configure_utf8  L=13 N=2 saved=13 sim=1.00
       nlp2dsl_sdk/encoding.py:62-74  (configure_utf8)
       packages/nlp2dsl-artifacts/src/nlp2dsl_artifacts/encoding.py:62-74  (configure_utf8)
-  [c1b2022e681131fd]   STRU  wait_health  L=12 N=2 saved=12 sim=1.00
-      scripts/_conversation_scenario.py:20-31  (wait_health)
-      scripts/run-execution-scenario.py:25-36  (_wait_health)
+  [287f6c954dacdf4e]   STRU  _match_k8s  L=13 N=2 saved=13 sim=1.00
+      packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/fast_path_detection.py:114-126  (_match_k8s)
+      packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/fast_path_detection.py:214-226  (_match_sql_nl)
   [7f9ec2529df6c8b0]   STRU  chat_start  L=11 N=2 saved=11 sim=1.00
       backend/app/routers/chat.py:243-253  (chat_start)
       backend/app/routers/chat.py:257-268  (chat_message)
   [fe1a465464777068]   STRU  handle_notify_slack  L=11 N=2 saved=11 sim=1.00
-      worker/worker.py:162-172  (handle_notify_slack)
-      worker/worker.py:176-186  (handle_notify_telegram)
+      worker/worker.py:189-199  (handle_notify_slack)
+      worker/worker.py:203-213  (handle_notify_telegram)
   [ecde4ca8c57e82fa]   EXAC  _apply_utf8_locale_env  L=10 N=2 saved=10 sim=1.00
       nlp2dsl_sdk/encoding.py:30-39  (_apply_utf8_locale_env)
       packages/nlp2dsl-artifacts/src/nlp2dsl_artifacts/encoding.py:30-39  (_apply_utf8_locale_env)
@@ -78,15 +82,12 @@ DUPLICATES[48] (ranked by impact):
   [cdcb9de5af04411d]   STRU  _missing_required_issue  L=10 N=2 saved=10 sim=1.00
       packages/dsl-validate/src/dsl_validate/messages.py:22-31  (_missing_required_issue)
       packages/dsl-validate/src/dsl_validate/messages.py:34-43  (_quality_missing_issue)
-  [05305e0063209898]   STRU  execution_completed  L=10 N=2 saved=10 sim=1.00
-      packages/dsl-validate/src/dsl_validate/profile_checks.py:112-121  (execution_completed)
-      scripts/run-execution-scenario.py:46-55  (_execution_completed)
   [4d53b8ef40942d9c]   EXAC  _reconfigure_stdio  L=9 N=2 saved=9 sim=1.00
       nlp2dsl_sdk/encoding.py:42-50  (_reconfigure_stdio)
       packages/nlp2dsl-artifacts/src/nlp2dsl_artifacts/encoding.py:42-50  (_reconfigure_stdio)
   [ce2845a8bd1a841c]   STRU  __init__  L=9 N=2 saved=9 sim=1.00
       backend/app/db/postgres.py:68-76  (__init__)
-      backend/app/idempotency.py:114-121  (__init__)
+      backend/app/idempotency.py:132-139  (__init__)
   [9f118bf042133ec5]   EXAC  validate_step_config_issues  L=8 N=2 saved=8 sim=1.00
       backend/app/step_validator.py:35-42  (validate_step_config_issues)
       worker/step_validator.py:35-42  (validate_step_config_issues)
@@ -95,7 +96,13 @@ DUPLICATES[48] (ranked by impact):
       packages/nlp2dsl-artifacts/src/nlp2dsl_artifacts/encoding.py:20-27  (_explicit_utf8_locale)
   [e96cb0946a562e33]   STRU  _ensure_tables  L=8 N=2 saved=8 sim=1.00
       backend/app/db/postgres.py:99-106  (_ensure_tables)
-      backend/app/idempotency.py:144-151  (_ensure_tables)
+      backend/app/idempotency.py:162-169  (_ensure_tables)
+  [a1df75c7b81dacde]   STRU  _dry_run_issue  L=8 N=2 saved=8 sim=1.00
+      packages/dsl-validate/src/dsl_validate/capability_policy.py:110-117  (_dry_run_issue)
+      packages/dsl-validate/src/dsl_validate/capability_policy.py:120-130  (_approval_issue)
+  [99d4eb0d82a66634]   STRU  run_execution  L=8 N=2 saved=8 sim=1.00
+      scripts/run-example-docker-e2e.py:133-140  (run_execution)
+      scripts/run-example-docker-e2e.py:143-150  (run_conversation)
   [5455dd13b8a9af98]   EXAC  validate_step_config  L=7 N=2 saved=7 sim=1.00
       backend/app/step_validator.py:45-51  (validate_step_config)
       worker/step_validator.py:45-51  (validate_step_config)
@@ -107,7 +114,7 @@ DUPLICATES[48] (ranked by impact):
       backend/app/routers/settings.py:47-53  (get_settings_section)
   [8aa06fa5f1348ed4]   STRU  _execute_keyword_in_text  L=7 N=2 saved=7 sim=1.00
       nlp-service/app/conversation/responses.py:56-62  (_execute_keyword_in_text)
-      nlp-service/app/routing/parser/rules.py:259-265  (_alias_in_text)
+      nlp-service/app/routing/parser/rules.py:295-301  (_alias_in_text)
   [1b0fbd753e0bed2c]   STRU  required_fields_for_action  L=7 N=2 saved=7 sim=1.00
       packages/dsl-contracts/src/dsl_contracts/registry.py:194-200  (required_fields_for_action)
       packages/dsl-contracts/src/dsl_contracts/registry.py:203-209  (quality_fields_for_action)
@@ -130,12 +137,12 @@ DUPLICATES[48] (ranked by impact):
       nlp2dsl_sdk/encoding.py:77-82  (_auto_configure_once)
       packages/nlp2dsl-artifacts/src/nlp2dsl_artifacts/encoding.py:77-82  (_auto_configure_once)
   [8af82767bfb2b892]   STRU  run_workflow_endpoint  L=3 N=3 saved=6 sim=1.00
-      backend/app/routers/workflow.py:94-96  (run_workflow_endpoint)
-      backend/app/routers/workflow.py:100-102  (start_workflow_endpoint)
+      backend/app/routers/workflow.py:95-97  (run_workflow_endpoint)
+      backend/app/routers/workflow.py:101-103  (start_workflow_endpoint)
       nlp-service/app/routers/nlp.py:30-32  (parse_text)
   [d8abcb97f9e3aea3]   STRU  _extract_report_type  L=6 N=2 saved=6 sim=1.00
-      nlp-service/app/routing/parser/rules.py:443-448  (_extract_report_type)
-      nlp-service/app/routing/parser/rules.py:451-456  (_extract_format)
+      nlp-service/app/routing/parser/rules.py:479-484  (_extract_report_type)
+      nlp-service/app/routing/parser/rules.py:487-492  (_extract_format)
   [8951737622f1cbb5]   STRU  __getattr__  L=6 N=2 saved=6 sim=1.00
       packages/dsl-contracts/src/dsl_contracts/__init__.py:36-41  (__getattr__)
       packages/dsl-validate/src/dsl_validate/__init__.py:42-47  (__getattr__)
@@ -145,21 +152,27 @@ DUPLICATES[48] (ranked by impact):
   [2ce1096adac6d1a4]   STRU  actions_schema  L=5 N=2 saved=5 sim=1.00
       backend/app/routers/settings.py:21-25  (actions_schema)
       backend/app/routers/settings.py:39-43  (get_settings)
+  [f42c6d0fd895eb71]   STRU  check_expect  L=5 N=2 saved=5 sim=1.00
+      scripts/_conversation_scenario.py:123-127  (check_expect)
+      scripts/_conversation_scenario.py:141-145  (check_execution_expect)
   [88c3564ed3834adc]   STRU  _extract_file_path_entity  L=4 N=2 saved=4 sim=1.00
-      nlp-service/app/routing/parser/rules.py:524-527  (_extract_file_path_entity)
-      nlp-service/app/routing/parser/rules.py:530-533  (_extract_setting_path_entity)
+      nlp-service/app/routing/parser/rules.py:560-563  (_extract_file_path_entity)
+      nlp-service/app/routing/parser/rules.py:566-569  (_extract_setting_path_entity)
   [7550e2ce33c1b027]   STRU  primary_action  L=4 N=2 saved=4 sim=1.00
       nlp2dsl_sdk/evaluation/golden.py:100-103  (primary_action)
-      nlp2dsl_sdk/evaluation/metrics.py:198-201  (primary_action_from_row)
+      nlp2dsl_sdk/evaluation/metrics.py:214-217  (primary_action_from_row)
   [e9c58db0c7a93da5]   STRU  _actions_match  L=4 N=2 saved=4 sim=1.00
       nlp2dsl_sdk/evaluation/metrics.py:82-85  (_actions_match)
       nlp2dsl_sdk/evaluation/metrics.py:88-91  (_missing_match)
+  [97e2f8b20cf37cc4]   STRU  _match_browser_keywords  L=4 N=2 saved=4 sim=1.00
+      packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/fast_path_detection.py:297-300  (_match_browser_keywords)
+      packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/fast_path_detection.py:303-306  (_match_search_keywords)
   [3468b349da70214e]   EXAC  _get_session_factory  L=3 N=2 saved=3 sim=1.00
       backend/app/db/postgres.py:95-97  (_get_session_factory)
-      backend/app/idempotency.py:140-142  (_get_session_factory)
+      backend/app/idempotency.py:158-160  (_get_session_factory)
   [eeac82146bd7ee35]   EXAC  close  L=3 N=2 saved=3 sim=1.00
       backend/app/db/postgres.py:228-230  (close)
-      backend/app/idempotency.py:210-212  (close)
+      backend/app/idempotency.py:238-240  (close)
   [264335fb5f6e313e]   EXAC  utf8_auto_enabled  L=3 N=2 saved=3 sim=1.00
       nlp2dsl_sdk/encoding.py:15-17  (utf8_auto_enabled)
       packages/nlp2dsl-artifacts/src/nlp2dsl_artifacts/encoding.py:15-17  (utf8_auto_enabled)
@@ -169,68 +182,71 @@ DUPLICATES[48] (ranked by impact):
   [2d7b9210c1b65241]   STRU  _should_clean_artifacts  L=3 N=2 saved=3 sim=1.00
       examples/bootstrap.py:21-23  (_should_clean_artifacts)
       examples/bootstrap.py:26-28  (_should_clear_idempotency)
+  [97ea79ad0d0e8b50]   STRU  _client  L=3 N=2 saved=3 sim=1.00
+      nlp2dsl_sdk/cli.py:91-93  (_client)
+      packages/nlp2dsl-mcp/src/nlp2dsl_mcp/server.py:15-18  (_client)
   [84727366a76e8ebd]   STRU  _cfg  L=3 N=2 saved=3 sim=1.00
-      nlp2dsl_sdk/mullm/payloads.py:23-25  (_cfg)
-      packages/dsl-validate/src/dsl_validate/capability_policy.py:37-39  (_step_config)
+      nlp2dsl_sdk/mullm/payloads.py:25-27  (_cfg)
+      packages/dsl-validate/src/dsl_validate/capability_policy.py:39-41  (_step_config)
 
-REFACTOR[48] (ranked by priority):
+REFACTOR[53] (ranked by priority):
   [1] ◐ extract_function   → utils/build_invoice_pdf_bytes.py
       WHY: 3 occurrences of 49-line block across 3 files — saves 98 lines
       FILES: nlp-service/app/validation/invoice_pdf.py, nlp2dsl_sdk/invoice_pdf.py, worker/invoice_pdf.py
   [2] ● extract_function   → utils/setup_logging.py
       WHY: 3 occurrences of 22-line block across 3 files — saves 44 lines
       FILES: backend/app/logging_setup.py, nlp-service/app/logging_setup.py, worker/logging_setup.py
-  [3] ● extract_class      → utils/format.py
+  [3] ● extract_function   → utils/_examples_portable_candidates.py
+      WHY: 3 occurrences of 19-line block across 3 files — saves 38 lines
+      FILES: backend/app/path_resolve.py, packages/dsl-validate/src/dsl_validate/path_resolve.py, worker/path_resolve.py
+  [4] ○ extract_function   → utils/resolve_attachment_path.py
+      WHY: 2 occurrences of 27-line block across 2 files — saves 27 lines
+      FILES: packages/dsl-validate/src/dsl_validate/path_resolve.py, worker/path_resolve.py
+  [5] ● extract_class      → utils/format.py
       WHY: 3 occurrences of 12-line block across 3 files — saves 24 lines
       FILES: backend/app/logging_setup.py, nlp-service/app/logging_setup.py, worker/logging_setup.py
-  [4] ● extract_function   → utils/write_invoice_pdf.py
+  [6] ● extract_function   → utils/write_invoice_pdf.py
       WHY: 3 occurrences of 11-line block across 3 files — saves 22 lines
       FILES: nlp-service/app/validation/invoice_pdf.py, nlp2dsl_sdk/invoice_pdf.py, worker/invoice_pdf.py
-  [5] ○ extract_function   → scripts/utils/run_execution.py
-      WHY: 2 occurrences of 22-line block across 1 files — saves 22 lines
-      FILES: scripts/run-example-docker-e2e.py
-  [6] ○ extract_function   → packages/nlp2dsl-stack/src/nlp2dsl_stack/utils/_process_shell_dockerfile.py
+  [7] ○ extract_function   → packages/nlp2dsl-stack/src/nlp2dsl_stack/utils/_process_shell_dockerfile.py
       WHY: 3 occurrences of 10-line block across 1 files — saves 20 lines
       FILES: packages/nlp2dsl-stack/src/nlp2dsl_stack/compose.py
-  [7] ○ extract_function   → utils/_examples_portable_candidates.py
-      WHY: 2 occurrences of 19-line block across 2 files — saves 19 lines
-      FILES: backend/app/path_resolve.py, packages/dsl-validate/src/dsl_validate/path_resolve.py
   [8] ● extract_class      → utils/dispatch.py
       WHY: 3 occurrences of 9-line block across 3 files — saves 18 lines
       FILES: backend/app/logging_setup.py, nlp-service/app/logging_setup.py, worker/logging_setup.py
-  [9] ○ extract_function   → backend/app/utils/_ensure_engine.py
+  [9] ○ extract_function   → packages/dsl-validate/src/dsl_validate/utils/_recipient_issue.py
+      WHY: 2 occurrences of 18-line block across 1 files — saves 18 lines
+      FILES: packages/dsl-validate/src/dsl_validate/capability_policy.py
+  [10] ○ extract_function   → backend/app/utils/_ensure_engine.py
       WHY: 2 occurrences of 16-line block across 2 files — saves 16 lines
       FILES: backend/app/db/postgres.py, backend/app/idempotency.py
-  [10] ○ extract_function   → utils/_validation_context.py
+  [11] ○ extract_function   → utils/_validation_context.py
       WHY: 2 occurrences of 15-line block across 2 files — saves 15 lines
       FILES: backend/app/step_validator.py, worker/step_validator.py
-  [11] ○ extract_function   → packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/utils/parse_domain_boosters.py
+  [12] ○ extract_function   → packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/utils/parse_domain_boosters.py
       WHY: 2 occurrences of 15-line block across 1 files — saves 15 lines
       FILES: packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/pattern_loaders.py
-  [12] ○ extract_function   → utils/configure_utf8.py
+  [13] ○ extract_function   → utils/configure_utf8.py
       WHY: 2 occurrences of 13-line block across 2 files — saves 13 lines
       FILES: nlp2dsl_sdk/encoding.py, packages/nlp2dsl-artifacts/src/nlp2dsl_artifacts/encoding.py
-  [13] ○ extract_function   → scripts/utils/wait_health.py
-      WHY: 2 occurrences of 12-line block across 2 files — saves 12 lines
-      FILES: scripts/_conversation_scenario.py, scripts/run-execution-scenario.py
-  [14] ○ extract_function   → backend/app/routers/utils/chat_start.py
+  [14] ○ extract_function   → packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/utils/_match_k8s.py
+      WHY: 2 occurrences of 13-line block across 1 files — saves 13 lines
+      FILES: packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/fast_path_detection.py
+  [15] ○ extract_function   → backend/app/routers/utils/chat_start.py
       WHY: 2 occurrences of 11-line block across 1 files — saves 11 lines
       FILES: backend/app/routers/chat.py
-  [15] ○ extract_function   → worker/utils/handle_notify_slack.py
+  [16] ○ extract_function   → worker/utils/handle_notify_slack.py
       WHY: 2 occurrences of 11-line block across 1 files — saves 11 lines
       FILES: worker/worker.py
-  [16] ○ extract_function   → utils/_apply_utf8_locale_env.py
+  [17] ○ extract_function   → utils/_apply_utf8_locale_env.py
       WHY: 2 occurrences of 10-line block across 2 files — saves 10 lines
       FILES: nlp2dsl_sdk/encoding.py, packages/nlp2dsl-artifacts/src/nlp2dsl_artifacts/encoding.py
-  [17] ○ extract_function   → utils/_attachment_from_dsl.py
+  [18] ○ extract_function   → utils/_attachment_from_dsl.py
       WHY: 2 occurrences of 10-line block across 2 files — saves 10 lines
       FILES: backend/app/attachment_validation.py, nlp2dsl_sdk/attachment_validation.py
-  [18] ○ extract_function   → packages/dsl-validate/src/dsl_validate/utils/_missing_required_issue.py
+  [19] ○ extract_function   → packages/dsl-validate/src/dsl_validate/utils/_missing_required_issue.py
       WHY: 2 occurrences of 10-line block across 1 files — saves 10 lines
       FILES: packages/dsl-validate/src/dsl_validate/messages.py
-  [19] ○ extract_function   → utils/execution_completed.py
-      WHY: 2 occurrences of 10-line block across 2 files — saves 10 lines
-      FILES: packages/dsl-validate/src/dsl_validate/profile_checks.py, scripts/run-execution-scenario.py
   [20] ○ extract_function   → utils/_reconfigure_stdio.py
       WHY: 2 occurrences of 9-line block across 2 files — saves 9 lines
       FILES: nlp2dsl_sdk/encoding.py, packages/nlp2dsl-artifacts/src/nlp2dsl_artifacts/encoding.py
@@ -246,102 +262,117 @@ REFACTOR[48] (ranked by priority):
   [24] ○ extract_function   → backend/app/utils/_ensure_tables.py
       WHY: 2 occurrences of 8-line block across 2 files — saves 8 lines
       FILES: backend/app/db/postgres.py, backend/app/idempotency.py
-  [25] ○ extract_function   → utils/validate_step_config.py
+  [25] ○ extract_function   → packages/dsl-validate/src/dsl_validate/utils/_dry_run_issue.py
+      WHY: 2 occurrences of 8-line block across 1 files — saves 8 lines
+      FILES: packages/dsl-validate/src/dsl_validate/capability_policy.py
+  [26] ○ extract_function   → scripts/utils/run_execution.py
+      WHY: 2 occurrences of 8-line block across 1 files — saves 8 lines
+      FILES: scripts/run-example-docker-e2e.py
+  [27] ○ extract_function   → utils/validate_step_config.py
       WHY: 2 occurrences of 7-line block across 2 files — saves 7 lines
       FILES: backend/app/step_validator.py, worker/step_validator.py
-  [26] ○ extract_function   → utils/_set_utf8_locale.py
+  [28] ○ extract_function   → utils/_set_utf8_locale.py
       WHY: 2 occurrences of 7-line block across 2 files — saves 7 lines
       FILES: nlp2dsl_sdk/encoding.py, packages/nlp2dsl-artifacts/src/nlp2dsl_artifacts/encoding.py
-  [27] ○ extract_function   → backend/app/routers/utils/action_schema.py
+  [29] ○ extract_function   → backend/app/routers/utils/action_schema.py
       WHY: 2 occurrences of 7-line block across 1 files — saves 7 lines
       FILES: backend/app/routers/settings.py
-  [28] ○ extract_function   → nlp-service/app/utils/_execute_keyword_in_text.py
+  [30] ○ extract_function   → nlp-service/app/utils/_execute_keyword_in_text.py
       WHY: 2 occurrences of 7-line block across 2 files — saves 7 lines
       FILES: nlp-service/app/conversation/responses.py, nlp-service/app/routing/parser/rules.py
-  [29] ○ extract_function   → packages/dsl-contracts/src/dsl_contracts/utils/required_fields_for_action.py
+  [31] ○ extract_function   → packages/dsl-contracts/src/dsl_contracts/utils/required_fields_for_action.py
       WHY: 2 occurrences of 7-line block across 1 files — saves 7 lines
       FILES: packages/dsl-contracts/src/dsl_contracts/registry.py
-  [30] ○ extract_function   → utils/worker_eligible_actions.py
+  [32] ○ extract_function   → utils/worker_eligible_actions.py
       WHY: 2 occurrences of 7-line block across 2 files — saves 7 lines
       FILES: packages/dsl-validate/src/dsl_validate/contract_drift.py, worker/registry.py
-  [31] ● extract_class      → utils/__init__.py
+  [33] ● extract_class      → utils/__init__.py
       WHY: 3 occurrences of 3-line block across 3 files — saves 6 lines
       FILES: backend/app/logging_setup.py, nlp-service/app/logging_setup.py, worker/logging_setup.py
-  [32] ● extract_class      → utils/__init__.py
+  [34] ● extract_class      → utils/__init__.py
       WHY: 3 occurrences of 3-line block across 3 files — saves 6 lines
       FILES: backend/app/logging_setup.py, nlp-service/app/logging_setup.py, worker/logging_setup.py
-  [33] ● extract_function   → utils/add.py
+  [35] ● extract_function   → utils/add.py
       WHY: 3 occurrences of 3-line block across 3 files — saves 6 lines
       FILES: nlp-service/app/validation/invoice_pdf.py, nlp2dsl_sdk/invoice_pdf.py, worker/invoice_pdf.py
-  [34] ○ extract_function   → utils/_auto_configure_once.py
+  [36] ○ extract_function   → utils/_auto_configure_once.py
       WHY: 2 occurrences of 6-line block across 2 files — saves 6 lines
       FILES: nlp2dsl_sdk/encoding.py, packages/nlp2dsl-artifacts/src/nlp2dsl_artifacts/encoding.py
-  [35] ○ extract_function   → utils/run_workflow_endpoint.py
+  [37] ○ extract_function   → utils/run_workflow_endpoint.py
       WHY: 3 occurrences of 3-line block across 2 files — saves 6 lines
       FILES: backend/app/routers/workflow.py, nlp-service/app/routers/nlp.py
-  [36] ○ extract_function   → nlp-service/app/routing/parser/utils/_extract_report_type.py
+  [38] ○ extract_function   → nlp-service/app/routing/parser/utils/_extract_report_type.py
       WHY: 2 occurrences of 6-line block across 1 files — saves 6 lines
       FILES: nlp-service/app/routing/parser/rules.py
-  [37] ○ extract_function   → packages/utils/__getattr__.py
+  [39] ○ extract_function   → packages/utils/__getattr__.py
       WHY: 2 occurrences of 6-line block across 2 files — saves 6 lines
       FILES: packages/dsl-contracts/src/dsl_contracts/__init__.py, packages/dsl-validate/src/dsl_validate/__init__.py
-  [38] ○ extract_function   → utils/utf8_open.py
+  [40] ○ extract_function   → utils/utf8_open.py
       WHY: 2 occurrences of 5-line block across 2 files — saves 5 lines
       FILES: nlp2dsl_sdk/encoding.py, packages/nlp2dsl-artifacts/src/nlp2dsl_artifacts/encoding.py
-  [39] ○ extract_function   → backend/app/routers/utils/actions_schema.py
+  [41] ○ extract_function   → backend/app/routers/utils/actions_schema.py
       WHY: 2 occurrences of 5-line block across 1 files — saves 5 lines
       FILES: backend/app/routers/settings.py
-  [40] ○ extract_function   → nlp-service/app/routing/parser/utils/_extract_file_path_entity.py
+  [42] ○ extract_function   → scripts/utils/check_expect.py
+      WHY: 2 occurrences of 5-line block across 1 files — saves 5 lines
+      FILES: scripts/_conversation_scenario.py
+  [43] ○ extract_function   → nlp-service/app/routing/parser/utils/_extract_file_path_entity.py
       WHY: 2 occurrences of 4-line block across 1 files — saves 4 lines
       FILES: nlp-service/app/routing/parser/rules.py
-  [41] ○ extract_function   → nlp2dsl_sdk/evaluation/utils/primary_action.py
+  [44] ○ extract_function   → nlp2dsl_sdk/evaluation/utils/primary_action.py
       WHY: 2 occurrences of 4-line block across 2 files — saves 4 lines
       FILES: nlp2dsl_sdk/evaluation/golden.py, nlp2dsl_sdk/evaluation/metrics.py
-  [42] ○ extract_function   → nlp2dsl_sdk/evaluation/utils/_actions_match.py
+  [45] ○ extract_function   → nlp2dsl_sdk/evaluation/utils/_actions_match.py
       WHY: 2 occurrences of 4-line block across 1 files — saves 4 lines
       FILES: nlp2dsl_sdk/evaluation/metrics.py
-  [43] ○ extract_function   → backend/app/utils/_get_session_factory.py
+  [46] ○ extract_function   → packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/utils/_match_browser_keywords.py
+      WHY: 2 occurrences of 4-line block across 1 files — saves 4 lines
+      FILES: packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/fast_path_detection.py
+  [47] ○ extract_function   → backend/app/utils/_get_session_factory.py
       WHY: 2 occurrences of 3-line block across 2 files — saves 3 lines
       FILES: backend/app/db/postgres.py, backend/app/idempotency.py
-  [44] ○ extract_function   → backend/app/utils/close.py
+  [48] ○ extract_function   → backend/app/utils/close.py
       WHY: 2 occurrences of 3-line block across 2 files — saves 3 lines
       FILES: backend/app/db/postgres.py, backend/app/idempotency.py
-  [45] ○ extract_function   → utils/utf8_auto_enabled.py
+  [49] ○ extract_function   → utils/utf8_auto_enabled.py
       WHY: 2 occurrences of 3-line block across 2 files — saves 3 lines
       FILES: nlp2dsl_sdk/encoding.py, packages/nlp2dsl-artifacts/src/nlp2dsl_artifacts/encoding.py
-  [46] ○ extract_function   → utils/_dsl_steps.py
+  [50] ○ extract_function   → utils/_dsl_steps.py
       WHY: 2 occurrences of 3-line block across 2 files — saves 3 lines
       FILES: backend/app/routers/chat.py, nlp2dsl_sdk/mullm/executor.py
-  [47] ○ extract_function   → examples/utils/_should_clean_artifacts.py
+  [51] ○ extract_function   → examples/utils/_should_clean_artifacts.py
       WHY: 2 occurrences of 3-line block across 1 files — saves 3 lines
       FILES: examples/bootstrap.py
-  [48] ○ extract_function   → utils/_cfg.py
+  [52] ○ extract_function   → utils/_client.py
+      WHY: 2 occurrences of 3-line block across 2 files — saves 3 lines
+      FILES: nlp2dsl_sdk/cli.py, packages/nlp2dsl-mcp/src/nlp2dsl_mcp/server.py
+  [53] ○ extract_function   → utils/_cfg.py
       WHY: 2 occurrences of 3-line block across 2 files — saves 3 lines
       FILES: nlp2dsl_sdk/mullm/payloads.py, packages/dsl-validate/src/dsl_validate/capability_policy.py
 
-QUICK_WINS[29] (low risk, high savings — do first):
-  [5] extract_function   saved=22L  → scripts/utils/run_execution.py
-      FILES: run-example-docker-e2e.py
-  [6] extract_function   saved=20L  → packages/nlp2dsl-stack/src/nlp2dsl_stack/utils/_process_shell_dockerfile.py
-      FILES: compose.py
-  [7] extract_function   saved=19L  → utils/_examples_portable_candidates.py
+QUICK_WINS[30] (low risk, high savings — do first):
+  [4] extract_function   saved=27L  → utils/resolve_attachment_path.py
       FILES: path_resolve.py, path_resolve.py
-  [9] extract_function   saved=16L  → backend/app/utils/_ensure_engine.py
+  [7] extract_function   saved=20L  → packages/nlp2dsl-stack/src/nlp2dsl_stack/utils/_process_shell_dockerfile.py
+      FILES: compose.py
+  [9] extract_function   saved=18L  → packages/dsl-validate/src/dsl_validate/utils/_recipient_issue.py
+      FILES: capability_policy.py
+  [10] extract_function   saved=16L  → backend/app/utils/_ensure_engine.py
       FILES: postgres.py, idempotency.py
-  [10] extract_function   saved=15L  → utils/_validation_context.py
+  [11] extract_function   saved=15L  → utils/_validation_context.py
       FILES: step_validator.py, step_validator.py
-  [11] extract_function   saved=15L  → packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/utils/parse_domain_boosters.py
+  [12] extract_function   saved=15L  → packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/utils/parse_domain_boosters.py
       FILES: pattern_loaders.py
-  [12] extract_function   saved=13L  → utils/configure_utf8.py
+  [13] extract_function   saved=13L  → utils/configure_utf8.py
       FILES: encoding.py, encoding.py
-  [13] extract_function   saved=12L  → scripts/utils/wait_health.py
-      FILES: _conversation_scenario.py, run-execution-scenario.py
-  [14] extract_function   saved=11L  → backend/app/routers/utils/chat_start.py
+  [14] extract_function   saved=13L  → packages/nlp2cmd-intent/src/nlp2cmd_intent/keywords/utils/_match_k8s.py
+      FILES: fast_path_detection.py
+  [15] extract_function   saved=11L  → backend/app/routers/utils/chat_start.py
       FILES: chat.py
-  [15] extract_function   saved=11L  → worker/utils/handle_notify_slack.py
+  [16] extract_function   saved=11L  → worker/utils/handle_notify_slack.py
       FILES: worker.py
 
-DEPENDENCY_RISK[26] (duplicates spanning multiple packages):
+DEPENDENCY_RISK[27] (duplicates spanning multiple packages):
   build_invoice_pdf_bytes  packages=3  files=3
       nlp-service/app/validation/invoice_pdf.py
       nlp2dsl_sdk/invoice_pdf.py
@@ -350,6 +381,10 @@ DEPENDENCY_RISK[26] (duplicates spanning multiple packages):
       backend/app/logging_setup.py
       nlp-service/app/logging_setup.py
       worker/logging_setup.py
+  _examples_portable_candidates  packages=3  files=3
+      backend/app/path_resolve.py
+      packages/dsl-validate/src/dsl_validate/path_resolve.py
+      worker/path_resolve.py
   format  packages=3  files=3
       backend/app/logging_setup.py
       nlp-service/app/logging_setup.py
@@ -366,24 +401,20 @@ DEPENDENCY_RISK[26] (duplicates spanning multiple packages):
       backend/app/logging_setup.py
       nlp-service/app/logging_setup.py
       worker/logging_setup.py
-  __init__  packages=3  files=3
-      backend/app/logging_setup.py
-      nlp-service/app/logging_setup.py
-      worker/logging_setup.py
 
-EFFORT_ESTIMATE (total ≈ 34.6h):
+EFFORT_ESTIMATE (total ≈ 37.9h):
   hard   build_invoice_pdf_bytes             saved=98L  ~588min
   hard   setup_logging                       saved=44L  ~176min
+  hard   _examples_portable_candidates       saved=38L  ~152min
+  hard   resolve_attachment_path             saved=27L  ~108min
   hard   format                              saved=24L  ~96min
   medium write_invoice_pdf                   saved=22L  ~88min
-  medium run_execution                       saved=22L  ~44min
   medium _process_shell_dockerfile           saved=20L  ~40min
-  medium _examples_portable_candidates       saved=19L  ~76min
   medium dispatch                            saved=18L  ~72min
+  medium _recipient_issue                    saved=18L  ~36min
   medium _ensure_engine                      saved=16L  ~32min
-  medium _validation_context                 saved=15L  ~60min
-  ... +38 more (~802min)
+  ... +43 more (~886min)
 
 METRICS-TARGET:
-  dup_groups:  48 → 0
-  saved_lines: 566 lines recoverable
+  dup_groups:  53 → 0
+  saved_lines: 627 lines recoverable

@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import nlp2cmd_intent.keywords as _keywords_pkg
-from nlp2cmd_intent.data_files import find_data_files as _find_data_files_default
+from nlp2cmd_intent.data_files import bundled_data_file, find_data_files as _find_data_files_default
 from nlp2cmd_intent.keywords.pattern_loaders import (
     clean_string_list,
     merge_patterns_payload,
@@ -135,10 +135,21 @@ class KeywordPatterns:
 
     def _load_fast_path_overrides_from_json(self) -> None:
         """Load high-priority substring overrides for fast-path detection."""
+        bundled = bundled_data_file("fast_path_overrides.json")
+        if bundled is not None:
+            payload = read_json_object(bundled)
+            if payload is not None:
+                loaded = parse_explicit_overrides(payload)
+                if loaded:
+                    self.explicit_overrides = loaded
+                    logger.debug("Loaded %d bundled fast-path overrides", len(loaded))
+
         for path in _find_data_files(
             explicit_path=os.environ.get("NLP2CMD_FAST_PATH_OVERRIDES_FILE"),
             default_filename="fast_path_overrides.json",
         ):
+            if bundled is not None and path == bundled:
+                continue
             payload = read_json_object(path)
             if payload is None:
                 continue

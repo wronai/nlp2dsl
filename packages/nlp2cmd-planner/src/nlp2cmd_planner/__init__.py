@@ -12,4 +12,4 @@ __all__ = [
     "RuleShellPlanStrategy",
 ]
 
-__version__ = "0.0.39"
+__version__ = "0.0.40"

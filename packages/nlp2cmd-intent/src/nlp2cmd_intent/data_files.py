@@ -32,6 +32,12 @@ def _nlp2cmd_data_dir() -> Path | None:
         return None
 
 
+def bundled_data_file(filename: str) -> Path | None:
+    """Return a bundled package data file path, independent of external discovery."""
+    path = _package_data_dir() / filename
+    return path if path.exists() else None
+
+
 def find_data_files(
     *,
     explicit_path: Optional[str],

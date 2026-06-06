@@ -6,88 +6,43 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
-from urllib.error import URLError
-from urllib.request import Request, urlopen
 
-import yaml
+from _conversation_scenario import (
+    check_execution_expect,
+    load_yaml,
+    run_validation,
+    wait_health,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def _load_yaml(path: Path) -> dict[str, Any]:
-    return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-
-
-def _wait_health(base_url: str, timeout_s: float = 120.0) -> bool:
-    deadline = time.monotonic() + timeout_s
-    url = f"{base_url.rstrip('/')}/health"
-    while time.monotonic() < deadline:
-        try:
-            with urlopen(Request(url), timeout=5) as resp:
-                if resp.status == 200:
-                    return True
-        except (URLError, OSError, TimeoutError):
-            pass
-        time.sleep(2)
-    return False
-
-
-def _dsl_actions(result: dict[str, Any]) -> list[str]:
-    dsl = result.get("dsl") or result.get("partial_workflow")
-    if not isinstance(dsl, dict):
-        return []
-    return [str(s.get("action", "")) for s in dsl.get("steps") or [] if isinstance(s, dict)]
-
-
-def _execution_completed(result: dict[str, Any]) -> bool:
-    execution = result.get("result") or result.get("execution")
-    if not isinstance(execution, dict):
-        return False
-    if execution.get("status") == "completed":
-        return True
-    steps = execution.get("steps") or []
-    return bool(steps) and all(
-        isinstance(s, dict) and s.get("status") == "completed" for s in steps
-    )
-
-
-def _check_expect(result: dict[str, Any], expect: dict[str, Any]) -> tuple[bool, str]:
-    status = str(result.get("status", ""))
-    if "status" in expect and status != expect["status"]:
-        return False, f"expected status={expect['status']!r}, got {status!r}"
-    if "status_in" in expect:
-        allowed = [str(s) for s in expect["status_in"]]
-        if status not in allowed:
-            return False, f"expected status in {allowed}, got {status!r}"
-    if "dsl_action" in expect:
-        action = str(expect["dsl_action"])
-        if action not in _dsl_actions(result):
-            return False, f"expected dsl action {action!r}, got {_dsl_actions(result)}"
-    if expect.get("execution_completed") and not _execution_completed(result):
-        return False, "expected completed execution"
-    routing = result.get("routing") or {}
-    if "routing_source" in expect:
-        source = str(routing.get("source") or routing.get("parser") or "")
-        wanted = str(expect["routing_source"])
-        if wanted not in source and source != wanted:
-            return False, f"expected routing source {wanted!r}, got {source!r}"
-    return True, "ok"
-
-
-def _run_validation(v: dict[str, Any], last: dict[str, Any]) -> dict[str, Any]:
-    from dsl_validate.profile_checks import parse_profile_validation, run_profile_validation_checks
-    from dsl_validate.profile_checks import ProfileCheckContext
-
-    spec = parse_profile_validation(v)
-    if spec is None:
-        vid = str(v.get("id", v.get("type", "validation")))
-        return {"id": vid, "passed": False, "summary": f"unknown validation entry {v!r}"}
-    results = run_profile_validation_checks([spec], ProfileCheckContext(response=last))
-    return results[0]
+def _run_query(
+    client: Any,
+    q: dict[str, Any],
+    *,
+    scenario: dict[str, Any],
+    idx: int,
+) -> tuple[dict[str, Any], str | None]:
+    text = str(q.get("query", "")).strip()
+    if not text:
+        return {"status": "error", "error": "empty query"}, f"query {idx}: empty"
+    mode = str(q.get("mode") or scenario.get("nlp_mode") or "auto")
+    execute = bool(q.get("execute", True))
+    try:
+        result = client.workflow_from_text(text, execute=execute, mode=mode)
+    except Exception as exc:
+        result = {"status": "error", "error": str(exc)}
+    entry = {"query": text, "mode": mode, "execute": execute, "result": result}
+    expect = q.get("expect") or {}
+    if expect:
+        ok, msg = check_execution_expect(result, expect)
+        if not ok:
+            return entry, f"query {idx}: {msg}"
+    return entry, None
 
 
 def run_scenario(
@@ -95,12 +50,12 @@ def run_scenario(
     *,
     base_url: str,
     artifact_root: Path | None = None,
-    wait_health: bool = True,
+    wait_health_flag: bool = True,
 ) -> dict[str, Any]:
     from nlp2dsl_sdk.client import NLP2DSLClient
 
-    scenario = _load_yaml(scenario_path)
-    if wait_health and not _wait_health(base_url):
+    scenario = load_yaml(scenario_path)
+    if wait_health_flag and not wait_health(base_url):
         raise RuntimeError(f"nlp2dsl not healthy at {base_url}")
 
     client = NLP2DSLClient(backend_url=base_url)
@@ -109,26 +64,17 @@ def run_scenario(
     last_result: dict[str, Any] = {}
 
     for idx, q in enumerate(scenario.get("queries") or [], start=1):
-        text = str(q.get("query", "")).strip()
-        if not text:
-            errors.append(f"query {idx}: empty")
-            continue
-        mode = str(q.get("mode") or scenario.get("nlp_mode") or "auto")
-        execute = bool(q.get("execute", True))
-        try:
-            result = client.workflow_from_text(text, execute=execute, mode=mode)
-        except Exception as exc:
-            result = {"status": "error", "error": str(exc)}
-        last_result = result
-        entry = {"query": text, "mode": mode, "execute": execute, "result": result}
+        entry, err = _run_query(client, q, scenario=scenario, idx=idx)
         queries_out.append(entry)
-        expect = q.get("expect") or {}
-        if expect:
-            ok, msg = _check_expect(result, expect)
-            if not ok:
-                errors.append(f"query {idx}: {msg}")
+        last_result = entry["result"]
+        if err:
+            errors.append(err)
 
-    validations = [_run_validation(v, last_result) for v in scenario.get("validations") or [] if isinstance(v, dict)]
+    validations = [
+        run_validation(v, last_result)
+        for v in scenario.get("validations") or []
+        if isinstance(v, dict)
+    ]
     trace = {
         "example_id": scenario.get("example_id", scenario_path.parent.parent.name),
         "scenario": scenario_path.name,
@@ -144,7 +90,8 @@ def run_scenario(
     out_root = artifact_root or scenario_path.parent
     out_root.mkdir(parents=True, exist_ok=True)
     (out_root / "execution.trace.json").write_text(
-        json.dumps(trace, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+        json.dumps(trace, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
     )
     return trace
 
@@ -163,7 +110,7 @@ def main(argv: list[str] | None = None) -> int:
         return 2
 
     try:
-        trace = run_scenario(scenario_path, base_url=args.base_url, wait_health=not args.no_wait)
+        trace = run_scenario(scenario_path, base_url=args.base_url, wait_health_flag=not args.no_wait)
     except Exception as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1

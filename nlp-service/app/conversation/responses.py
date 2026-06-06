@@ -219,6 +219,59 @@ def _attachment_validation_for_workflow(workflow, intent: str | None):
     )
 
 
+def _validation_in_progress_response(
+    state: ConversationState,
+    validation_failures: list[str],
+) -> ConversationResponse:
+    msg = format_validation_message(validation_failures)
+    state.missing = _missing_from_validation_failures(validation_failures)
+    state.history.append({"role": "assistant", "text": msg})
+    return ConversationResponse(
+        conversation_id=state.id,
+        status="in_progress",
+        message=msg,
+        missing=state.missing,
+    )
+
+
+def _resolve_auto_execute(state: ConversationState, ctx) -> bool:
+    auto_execute = bool(ctx and ctx.sync_auto_execute)
+    if state.doql_inline.get("sync_auto_execute") or state.doql_inline.get("auto_execute"):
+        return True
+    return auto_execute
+
+
+def _ready_dsl_response(
+    state: ConversationState,
+    workflow,
+    *,
+    ctx,
+) -> ConversationResponse:
+    state.dsl = workflow
+    state.status = "ready"
+    state.missing = []
+    backend = execution_backend_for_intent(state.intent)
+    auto_execute = _resolve_auto_execute(state, ctx)
+    msg = _ready_workflow_message(
+        workflow,
+        backend=backend,
+        auto_execute=auto_execute,
+        autofill_applied=state.autofill_applied,
+    )
+    attachment_validation = _attachment_validation_for_workflow(workflow, state.intent)
+    state.history.append({"role": "assistant", "text": msg})
+    response = ConversationResponse(
+        conversation_id=state.id,
+        status="ready",
+        message=msg,
+        dsl=workflow,
+        execution_backend=backend,
+    )
+    if attachment_validation is not None:
+        response.attachment_validation = attachment_validation
+    return response
+
+
 async def build_and_check_dsl(state: ConversationState) -> ConversationResponse | None:
     from app.conversation.doql_autofill import load_context_for_state
 
@@ -231,43 +284,10 @@ async def build_and_check_dsl(state: ConversationState) -> ConversationResponse 
 
     _resolve_workflow_attachment_paths(dialog.workflow)
 
-    validation_failures = validate_workflow_steps(dialog.workflow.steps)
-    if validation_failures:
-        msg = format_validation_message(validation_failures)
-        state.missing = _missing_from_validation_failures(validation_failures)
-        state.history.append({"role": "assistant", "text": msg})
-        return ConversationResponse(
-            conversation_id=state.id,
-            status="in_progress",
-            message=msg,
-            missing=state.missing,
-        )
+    if validation_failures := validate_workflow_steps(dialog.workflow.steps):
+        return _validation_in_progress_response(state, validation_failures)
 
-    state.dsl = dialog.workflow
-    state.status = "ready"
-    state.missing = []
-    backend = execution_backend_for_intent(state.intent)
-    auto_execute = bool(ctx and ctx.sync_auto_execute)
-    if state.doql_inline.get("sync_auto_execute") or state.doql_inline.get("auto_execute"):
-        auto_execute = True
-    msg = _ready_workflow_message(
-        dialog.workflow,
-        backend=backend,
-        auto_execute=auto_execute,
-        autofill_applied=state.autofill_applied,
-    )
-    attachment_validation = _attachment_validation_for_workflow(dialog.workflow, state.intent)
-    state.history.append({"role": "assistant", "text": msg})
-    response = ConversationResponse(
-        conversation_id=state.id,
-        status="ready",
-        message=msg,
-        dsl=dialog.workflow,
-        execution_backend=backend,
-    )
-    if attachment_validation is not None:
-        response.attachment_validation = attachment_validation
-    return response
+    return _ready_dsl_response(state, dialog.workflow, ctx=ctx)
 
 
 async def build_incomplete_response(state: ConversationState) -> ConversationResponse:

@@ -51,7 +51,7 @@ EMAIL_COLON_BODY_PATTERN = re.compile(
 )
 
 BODY_CONTENT_PATTERN = re.compile(
-    r"(?:treść(?:\s+wiadomości)?|body|message)\s*:\s*(.+)$",
+    r"(?:(?:z\s+)?treścią|treść(?:\s+wiadomości)?|body|message)\s*:\s*(.+)$",
     re.IGNORECASE,
 )
 

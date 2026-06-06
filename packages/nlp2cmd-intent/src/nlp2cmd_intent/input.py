@@ -15,7 +15,6 @@ def analyze_query(
 ) -> dict[str, Any]:
     """Build query structure: IntentIR and optional ExecutionPlanIR."""
     from nlp2cmd_intent import IntentPipeline
-    from nlp2cmd_planner import PlanningPipeline
 
     intent_pipeline = IntentPipeline()
     intent = intent_pipeline.run(query)
@@ -26,6 +25,8 @@ def analyze_query(
     }
     if include_plan:
         try:
+            from nlp2cmd_planner import PlanningPipeline
+
             plan = PlanningPipeline(intent_pipeline=intent_pipeline).run(query)
             out["execution_plan_ir"] = plan.model_dump(mode="json")
         except Exception as exc:

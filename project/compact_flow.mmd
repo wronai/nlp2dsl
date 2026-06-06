@@ -1,6 +1,6 @@
 flowchart TD
 %% generated in 0.06s
-    backend__app["backend.app<br/>157 funcs"]
+    backend__app["backend.app<br/>169 funcs"]
     examples__01_invoice["examples.01-invoice<br/>4 funcs"]
     examples__02_email["examples.02-email<br/>1 funcs"]
     examples__03_report_and_notify["examples.03-report-and-notify<br/>1 funcs"]
@@ -18,163 +18,172 @@ flowchart TD
     examples__15_idempotency_replay["examples.15-idempotency-replay<br/>3 funcs"]
     examples__16_golden_eval["examples.16-golden-eval<br/>2 funcs"]
     examples__17_execution_policy["examples.17-execution-policy<br/>5 funcs"]
+    examples__20_pactown_deploy["examples.20-pactown-deploy<br/>2 funcs"]
     examples__bootstrap["examples.bootstrap<br/>5 funcs"]
     examples__code_generation_examples["examples.code_generation_examples<br/>1 funcs"]
-    nlp_service__app["nlp-service.app<br/>356 funcs"]
+    nlp_service__app["nlp-service.app<br/>397 funcs"]
     nlp_service__integrations["nlp-service.integrations<br/>3 funcs"]
     nlp2dsl_sdk____main__["nlp2dsl_sdk.__main__<br/>1 funcs"]
     nlp2dsl_sdk__attachment_validation["nlp2dsl_sdk.attachment_validation<br/>6 funcs"]
     nlp2dsl_sdk__autonomous_flow["nlp2dsl_sdk.autonomous_flow<br/>5 funcs"]
     nlp2dsl_sdk__cli["nlp2dsl_sdk.cli<br/>13 funcs"]
-    nlp2dsl_sdk__client["nlp2dsl_sdk.client<br/>64 funcs"]
+    nlp2dsl_sdk__client["nlp2dsl_sdk.client<br/>66 funcs"]
+    nlp2dsl_sdk__contracts["nlp2dsl_sdk.contracts<br/>15 funcs"]
+    nlp2dsl_sdk__conversation_artifacts["nlp2dsl_sdk.conversation_artifacts<br/>7 funcs"]
+    nlp2dsl_sdk__conversation_testql["nlp2dsl_sdk.conversation_testql<br/>10 funcs"]
     nlp2dsl_sdk__demos["nlp2dsl_sdk.demos<br/>11 funcs"]
+    nlp2dsl_sdk__deploy["nlp2dsl_sdk.deploy<br/>3 funcs"]
     nlp2dsl_sdk__encoding["nlp2dsl_sdk.encoding<br/>8 funcs"]
-    nlp2dsl_sdk__evaluation["nlp2dsl_sdk.evaluation<br/>17 funcs"]
-    nlp2dsl_sdk__example_bootstrap["nlp2dsl_sdk.example_bootstrap<br/>1 funcs"]
+    nlp2dsl_sdk__evaluation["nlp2dsl_sdk.evaluation<br/>20 funcs"]
     nlp2dsl_sdk__invoice_pdf["nlp2dsl_sdk.invoice_pdf<br/>3 funcs"]
-    nlp2dsl_sdk__mullm["nlp2dsl_sdk.mullm<br/>14 funcs"]
+    nlp2dsl_sdk__mullm["nlp2dsl_sdk.mullm<br/>24 funcs"]
     nlp2dsl_sdk__preview["nlp2dsl_sdk.preview<br/>18 funcs"]
     nlp2dsl_sdk__reflection["nlp2dsl_sdk.reflection<br/>17 funcs"]
     nlp2dsl_sdk__stack_flow["nlp2dsl_sdk.stack_flow<br/>6 funcs"]
     nlp2dsl_sdk__step_validation["nlp2dsl_sdk.step_validation<br/>2 funcs"]
-    nlp2dsl_sdk__workflow["nlp2dsl_sdk.workflow<br/>17 funcs"]
-    packages__dsl_contracts["packages.dsl-contracts<br/>29 funcs"]
-    packages__dsl_validate["packages.dsl-validate<br/>102 funcs"]
-    packages__nlp2cmd_intent["packages.nlp2cmd-intent<br/>78 funcs"]
-    packages__nlp2dsl_artifacts["packages.nlp2dsl-artifacts<br/>23 funcs"]
+    nlp2dsl_sdk__validation["nlp2dsl_sdk.validation<br/>49 funcs"]
+    nlp2dsl_sdk__workflow["nlp2dsl_sdk.workflow<br/>19 funcs"]
+    packages__dsl_contracts["packages.dsl-contracts<br/>11 funcs"]
+    packages__dsl_validate["packages.dsl-validate<br/>73 funcs"]
+    packages__nlp2cmd_intent["packages.nlp2cmd-intent<br/>96 funcs"]
+    packages__nlp2dsl_artifacts["packages.nlp2dsl-artifacts<br/>19 funcs"]
+    packages__nlp2dsl_mcp["packages.nlp2dsl-mcp<br/>6 funcs"]
     packages__nlp2dsl_show["packages.nlp2dsl-show<br/>3 funcs"]
     packages__nlp2dsl_stack["packages.nlp2dsl-stack<br/>16 funcs"]
-    packages__testql_conversations["packages.testql-conversations<br/>17 funcs"]
     packages__workflow_export["packages.workflow-export<br/>18 funcs"]
-    scripts___conversation_scenario["scripts._conversation_scenario<br/>14 funcs"]
+    scripts___conversation_scenario["scripts._conversation_scenario<br/>18 funcs"]
     scripts___dotenv["scripts._dotenv<br/>1 funcs"]
     scripts__run_conversation_scenario["scripts.run-conversation-scenario<br/>2 funcs"]
-    scripts__run_example_docker_e2e["scripts.run-example-docker-e2e<br/>12 funcs"]
-    scripts__run_example_testql_results["scripts.run-example-testql-results<br/>14 funcs"]
-    scripts__run_execution_scenario["scripts.run-execution-scenario<br/>8 funcs"]
+    scripts__run_example_docker_e2e["scripts.run-example-docker-e2e<br/>18 funcs"]
+    scripts__run_example_testql_results["scripts.run-example-testql-results<br/>18 funcs"]
+    scripts__run_execution_scenario["scripts.run-execution-scenario<br/>3 funcs"]
     scripts__validate_contract_draft["scripts.validate-contract-draft<br/>1 funcs"]
     scripts__validate_contract_drift["scripts.validate-contract-drift<br/>4 funcs"]
     scripts__validate_publish_export["scripts.validate-publish-export<br/>2 funcs"]
     worker__action_catalog["worker.action_catalog<br/>5 funcs"]
     worker__attachment_validation["worker.attachment_validation<br/>2 funcs"]
-    worker__path_resolve["worker.path_resolve<br/>1 funcs"]
+    worker__path_resolve["worker.path_resolve<br/>3 funcs"]
     worker__registry["worker.registry<br/>3 funcs"]
     worker__step_validator["worker.step_validator<br/>3 funcs"]
     worker__worker["worker.worker<br/>15 funcs"]
+    packages__dsl_validate ==>|19| nlp2dsl_sdk__validation
+    nlp_service__app ==>|18| nlp2dsl_sdk__contracts
     nlp_service__app ==>|11| backend__app
-    packages__dsl_validate ==>|11| nlp_service__app
     nlp2dsl_sdk__demos ==>|10| nlp2dsl_sdk__preview
+    nlp_service__app ==>|10| nlp2dsl_sdk__validation
+    packages__dsl_validate ==>|8| nlp_service__app
     scripts__run_conversation_scenario ==>|8| scripts___conversation_scenario
     packages__nlp2cmd_intent ==>|7| nlp_service__app
-    backend__app ==>|6| packages__dsl_validate
-    nlp_service__app ==>|6| packages__dsl_validate
     backend__app ==>|5| nlp2dsl_sdk__workflow
     backend__app ==>|5| nlp_service__app
-    packages__dsl_validate ==>|5| packages__dsl_contracts
     nlp2dsl_sdk__client ==>|5| nlp_service__app
+    backend__app ==>|4| packages__dsl_validate
+    nlp2dsl_sdk__client ==>|4| nlp2dsl_sdk__reflection
     examples__04_scheduled_report ==>|4| nlp2dsl_sdk__preview
     examples__04_scheduled_report ==>|4| packages__workflow_export
     examples__14_markpact_export ==>|4| packages__workflow_export
     examples__03_report_and_notify ==>|4| packages__workflow_export
-    scripts__validate_contract_drift ==>|4| packages__dsl_contracts
-    scripts__validate_publish_export ==>|4| packages__dsl_contracts
-    nlp2dsl_sdk__client ==>|4| nlp2dsl_sdk__reflection
+    scripts__validate_contract_drift ==>|4| nlp2dsl_sdk__contracts
+    scripts__validate_publish_export ==>|4| nlp2dsl_sdk__contracts
+    scripts__run_execution_scenario ==>|4| scripts___conversation_scenario
     backend__app -->|3| nlp2dsl_sdk__mullm
-    backend__app -->|3| packages__dsl_contracts
+    backend__app -->|3| nlp2dsl_sdk__contracts
+    backend__app -->|3| nlp2dsl_sdk__validation
+    packages__dsl_validate -->|3| backend__app
+    nlp2dsl_sdk__client -->|3| nlp2dsl_sdk__attachment_validation
     nlp2dsl_sdk__stack_flow -->|3| packages__nlp2dsl_stack
     nlp2dsl_sdk__preview -->|3| packages__nlp2dsl_artifacts
     examples__11_notify_quality -->|3| nlp2dsl_sdk__preview
     examples__16_golden_eval -->|3| nlp2dsl_sdk__evaluation
     examples__01_invoice -->|3| nlp2dsl_sdk__preview
     examples__12_ir_show -->|3| nlp2dsl_sdk__preview
+    examples__20_pactown_deploy -->|3| packages__workflow_export
     examples__03_report_and_notify -->|3| nlp2dsl_sdk__preview
     examples__02_email -->|3| nlp2dsl_sdk__preview
-    nlp_service__app -->|3| packages__dsl_contracts
+    examples__15_idempotency_replay -->|3| nlp2dsl_sdk__preview
     nlp_service__app -->|3| nlp2dsl_sdk__workflow
     worker__step_validator -->|3| backend__app
-    scripts__run_example_docker_e2e -->|3| packages__dsl_validate
     scripts__validate_publish_export -->|3| packages__workflow_export
     scripts__validate_contract_draft -->|3| packages__dsl_contracts
-    packages__dsl_validate -->|3| backend__app
-    nlp2dsl_sdk__client -->|3| nlp2dsl_sdk__attachment_validation
-    examples__15_idempotency_replay -->|3| nlp2dsl_sdk__preview
+    packages__dsl_validate -->|2| nlp2dsl_sdk__contracts
+    packages__workflow_export -->|2| nlp2dsl_sdk__contracts
     nlp2dsl_sdk__attachment_validation -->|2| backend__app
-    nlp2dsl_sdk__attachment_validation -->|2| packages__dsl_validate
+    nlp2dsl_sdk__attachment_validation -->|2| nlp2dsl_sdk__validation
     examples__09_execution_smoke -->|2| nlp2dsl_sdk__preview
     examples__04_scheduled_report -->|2| packages__nlp2dsl_artifacts
+    examples__20_pactown_deploy -->|2| nlp2dsl_sdk__deploy
     examples__07_email_conversation -->|2| nlp2dsl_sdk__preview
     examples__03_report_and_notify -->|2| packages__nlp2dsl_artifacts
     examples__17_execution_policy -->|2| nlp2dsl_sdk__client
     worker__registry -->|2| nlp_service__app
     worker__registry -->|2| backend__app
+    worker__step_validator -->|2| nlp2dsl_sdk__validation
     worker__worker -->|2| worker__registry
-    scripts__run_execution_scenario -->|2| packages__dsl_validate
+    scripts__run_example_docker_e2e -->|2| packages__dsl_validate
     scripts___conversation_scenario -->|2| packages__dsl_validate
-    packages__workflow_export -->|2| packages__dsl_contracts
+    packages__dsl_contracts -->|1| nlp2dsl_sdk__contracts
+    nlp2dsl_sdk__validation -->|1| nlp_service__app
+    nlp2dsl_sdk__validation -->|1| packages__dsl_validate
+    packages__nlp2dsl_stack -->|1| nlp_service__app
     packages__nlp2dsl_show -->|1| nlp2dsl_sdk__encoding
     packages__nlp2dsl_show -->|1| packages__nlp2cmd_intent
+    packages__nlp2dsl_artifacts -->|1| nlp2dsl_sdk__encoding
     nlp2dsl_sdk__cli -->|1| packages__nlp2cmd_intent
     nlp2dsl_sdk__cli -->|1| nlp_service__app
     nlp2dsl_sdk__cli -->|1| nlp2dsl_sdk__preview
     nlp2dsl_sdk__cli -->|1| nlp2dsl_sdk__demos
     nlp2dsl_sdk__cli -->|1| nlp2dsl_sdk__encoding
+    nlp2dsl_sdk__step_validation -->|1| packages__nlp2dsl_mcp
+    nlp2dsl_sdk__client -->|1| nlp2dsl_sdk__preview
+    nlp2dsl_sdk__client -->|1| nlp2dsl_sdk__conversation_artifacts
     nlp2dsl_sdk____main__ -->|1| nlp2dsl_sdk__encoding
     nlp2dsl_sdk____main__ -->|1| nlp2dsl_sdk__demos
     nlp2dsl_sdk__attachment_validation -->|1| nlp_service__app
-    nlp2dsl_sdk__attachment_validation -->|1| packages__dsl_contracts
-    nlp2dsl_sdk__reflection -->|1| packages__dsl_validate
+    nlp2dsl_sdk__attachment_validation -->|1| packages__dsl_validate
+    nlp2dsl_sdk__reflection -->|1| nlp2dsl_sdk__validation
     nlp2dsl_sdk__reflection -->|1| nlp_service__app
-    nlp2dsl_sdk__reflection -->|1| nlp2dsl_sdk__step_validation
-    nlp2dsl_sdk__stack_flow -->|1| nlp2dsl_sdk__example_bootstrap
+    nlp2dsl_sdk__reflection -->|1| packages__dsl_validate
     nlp2dsl_sdk__stack_flow -->|1| nlp2dsl_sdk__preview
     nlp2dsl_sdk__autonomous_flow -->|1| nlp_service__app
     nlp2dsl_sdk__preview -->|1| nlp2dsl_sdk__reflection
     nlp2dsl_sdk__workflow -->|1| backend__app
     nlp2dsl_sdk__workflow -->|1| nlp_service__app
+    examples__bootstrap -->|1| nlp2dsl_sdk__encoding
     examples__code_generation_examples -->|1| nlp2dsl_sdk__demos
     examples__13_autonomous_invoice_stack -->|1| packages__nlp2dsl_artifacts
     examples__13_autonomous_invoice_stack -->|1| nlp2dsl_sdk__preview
     examples__10_llm_benchmark -->|1| examples__08_multi_object_benchmark
     examples__10_llm_benchmark -->|1| nlp2dsl_sdk__preview
-    examples__05_conversation_flow -->|1| packages__testql_conversations
+    examples__05_conversation_flow -->|1| nlp2dsl_sdk__conversation_artifacts
     examples__05_conversation_flow -->|1| nlp2dsl_sdk__preview
     examples__16_golden_eval -->|1| nlp2dsl_sdk__preview
-    examples__01_invoice -->|1| nlp2dsl_sdk__example_bootstrap
     examples__01_invoice -->|1| packages__nlp2dsl_artifacts
     examples__01_invoice -->|1| nlp2dsl_sdk__attachment_validation
     examples__12_ir_show -->|1| packages__nlp2dsl_artifacts
+    examples__20_pactown_deploy -->|1| nlp2dsl_sdk__preview
     examples__14_markpact_export -->|1| packages__nlp2dsl_artifacts
     examples__14_markpact_export -->|1| nlp2dsl_sdk__preview
-    examples__07_email_conversation -->|1| packages__testql_conversations
+    examples__07_email_conversation -->|1| nlp2dsl_sdk__conversation_artifacts
     examples__17_execution_policy -->|1| nlp2dsl_sdk__preview
     examples__02_email -->|1| packages__nlp2dsl_artifacts
     examples__06_interactive_chat -->|1| nlp2dsl_sdk__preview
-    examples__06_interactive_chat -->|1| packages__testql_conversations
+    examples__06_interactive_chat -->|1| nlp2dsl_sdk__conversation_artifacts
     examples__08_multi_object_benchmark -->|1| packages__nlp2dsl_artifacts
     examples__08_multi_object_benchmark -->|1| nlp2dsl_sdk__preview
+    nlp_service__app -->|1| packages__dsl_validate
     nlp_service__app -->|1| nlp2dsl_sdk__reflection
     nlp_service__app -->|1| nlp2dsl_sdk__invoice_pdf
     nlp_service__app -->|1| nlp_service__integrations
     nlp_service__app -->|1| packages__nlp2cmd_intent
     nlp_service__integrations -->|1| nlp_service__app
-    worker__action_catalog -->|1| nlp_service__app
-    worker__step_validator -->|1| packages__dsl_validate
-    worker__step_validator -->|1| packages__dsl_contracts
+    worker__action_catalog -->|1| nlp2dsl_sdk__contracts
     worker__attachment_validation -->|1| worker__path_resolve
-    worker__attachment_validation -->|1| backend__app
-    worker__path_resolve -->|1| backend__app
     worker__worker -->|1| worker__attachment_validation
     worker__worker -->|1| worker__path_resolve
     worker__worker -->|1| nlp2dsl_sdk__invoice_pdf
     scripts__validate_contract_drift -->|1| packages__dsl_validate
-    scripts__run_example_testql_results -->|1| packages__testql_conversations
+    scripts__run_example_testql_results -->|1| nlp2dsl_sdk__conversation_testql
     scripts__run_example_testql_results -->|1| nlp_service__app
     scripts__run_example_docker_e2e -->|1| nlp_service__app
     scripts__run_example_docker_e2e -->|1| scripts___dotenv
-    scripts__run_conversation_scenario -->|1| packages__testql_conversations
-    packages__nlp2dsl_artifacts -->|1| nlp2dsl_sdk__encoding
-    packages__nlp2dsl_artifacts -->|1| examples__08_multi_object_benchmark
-    packages__nlp2dsl_stack -->|1| nlp_service__app
-    nlp2dsl_sdk__client -->|1| nlp2dsl_sdk__preview
-    nlp2dsl_sdk__client -->|1| packages__testql_conversations
-    examples__bootstrap -->|1| nlp2dsl_sdk__encoding
+    scripts__run_conversation_scenario -->|1| nlp2dsl_sdk__conversation_artifacts

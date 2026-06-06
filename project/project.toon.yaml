@@ -1,27 +1,27 @@
-# nlp2dsl | 1227 func | 203f | 49221L | python | 2026-06-06
+# nlp2dsl | 1362 func | 211f | 47397L | python | 2026-06-06
 # generated in 0.00s
 
 HEALTH:
-  CC̄=4.3  critical=108 (limit:10)  dup=4  cycles=0
+  CC̄=4.0  critical=99 (limit:10)  dup=4  cycles=0
 
 ALERTS[20]:
-  !!! cc_exceeded      run_domain_fast_path_after_exact = 69 (limit:15)
   !!! high_fan_out     generate_stack_compose = 57 (limit:10)
-  !!! cc_exceeded      process_example = 40 (limit:15)
-  !!! cc_exceeded      build_task_payload = 39 (limit:15)
   !!! high_fan_out     process_example = 37 (limit:10)
   !!! high_fan_out     main = 35 (limit:10)
-  !!! cc_exceeded      validate_capability_policy = 34 (limit:15)
-  !!! cc_exceeded      build_policy_context = 26 (limit:15)
   !!! cc_exceeded      main = 26 (limit:15)
-  !!! high_fan_out     run_domain_fast_path_after_exact = 26 (limit:10)
+  !!! high_fan_out     _execute_ready_dsl = 23 (limit:10)
+  !!! high_fan_out     run = 23 (limit:10)
+  !!! high_fan_out     _try_validation_fixes = 23 (limit:10)
+  !!! high_fan_out     main = 23 (limit:10)
+  !!! high_fan_out     run_scenario = 23 (limit:10)
+  !!! high_fan_out     workflow_from_text = 22 (limit:10)
 
-MODULES[406] (top by size):
+MODULES[377] (top by size):
   M[packages/nlp2cmd-intent/src/nlp2cmd_intent/data/patterns.json] 2016L C:0 F:0 CC↑0 D:0 (json)
-  M[examples/testql-results.json] 1817L C:0 F:0 CC↑0 D:0 (json)
+  M[examples/testql-results.json] 1855L C:0 F:0 CC↑0 D:0 (json)
   M[planfile.yaml] 1319L C:0 F:0 CC↑0 D:0 (yaml)
   M[packages/nlp2cmd-intent/src/nlp2cmd_intent/data/fast_path_overrides.json] 1043L C:0 F:0 CC↑0 D:0 (json)
-  M[nlp2dsl_sdk/client.py] 986L C:2 F:64 CC↑14 D:1 (python)
+  M[nlp2dsl_sdk/client.py] 1008L C:2 F:66 CC↑14 D:1 (python)
   M[examples/08-multi-object-benchmark/results/benchmark_1780668530.json] 642L C:0 F:0 CC↑0 D:0 (json)
   M[examples/08-multi-object-benchmark/results/benchmark_1780672619.json] 636L C:0 F:0 CC↑0 D:0 (json)
   M[examples/08-multi-object-benchmark/results/benchmark_1780673613.json] 636L C:0 F:0 CC↑0 D:0 (json)
@@ -32,21 +32,21 @@ MODULES[406] (top by size):
   M[examples/08-multi-object-benchmark/results/benchmark_1780739013.json] 636L C:0 F:0 CC↑0 D:0 (json)
   M[examples/08-multi-object-benchmark/results/benchmark_1780741913.json] 636L C:0 F:0 CC↑0 D:0 (json)
   M[examples/08-multi-object-benchmark/results/benchmark_1780751306.json] 636L C:0 F:0 CC↑0 D:0 (json)
-  LANGS: python:309/json:30/shell:16/toml:16/yaml:12/other:9/txt:6/yml:3/javascript:2/rust:2/ini:1
+  LANGS: python:279/json:26/toml:18/shell:16/yaml:13/other:10/txt:7/yml:3/javascript:2/rust:2/ini:1
 
 HOTSPOTS[10]:
   ★ generate_stack_compose fan=57  // Emit transparent docker-compose stack + cron sidecar under .nlp2dsl/generated/.
   ★ process_example fan=37  // Analysis pipeline, 37 stages
   ★ main fan=35  // Orchestrates 35 calls
-  ★ run_domain_fast_path_after_exact fan=26  // Orchestrates 26 calls
-  ★ run_scenario fan=24  // Orchestrates 24 calls
+  ★ _execute_ready_dsl fan=23  // Orchestrates 23 calls
+  ★ run fan=23  // Orchestrates 23 calls
 
 REFACTOR[15]:
-  [1] H/L Split build_policy_context (CC=26)
-  [2] H/L Split run_domain_fast_path_after_exact (CC=69)
-  [3] H/L Split build_task_payload (CC=39)
-  [4] H/L Split process_example (CC=40)
-  [5] H/L Split main (CC=26)
+  [1] H/L Split main (CC=26)
+  [2] H/H Split god module scripts/run-example-testql-results.py (555L, 2 classes)
+  [3] H/H Split god module backend/app/routers/workflow.py (516L, 0 classes)
+  [4] H/H Split god module nlp2dsl_sdk/client.py (1008L, 2 classes)
+  [5] H/H Split god module packages/nlp2dsl-stack/src/nlp2dsl_stack/compose.py (512L, 1 classes)
 
 EVOLUTION:
-  2026-06-06 CC̄=4.3 crit=108 49221L // Automated analysis
+  2026-06-06 CC̄=4.0 crit=99 47397L // Automated analysis

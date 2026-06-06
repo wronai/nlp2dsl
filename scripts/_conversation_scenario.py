@@ -31,16 +31,29 @@ def wait_health(base_url: str, timeout_s: float = 120.0) -> bool:
     return False
 
 
+def _dsl_from_payload(payload: dict[str, Any]) -> dict[str, Any] | None:
+    dsl = payload.get("dsl") or payload.get("partial_workflow")
+    return dsl if isinstance(dsl, dict) else None
+
+
 def dsl_actions(response: dict[str, Any]) -> list[str]:
-    dsl = response.get("dsl")
-    if not isinstance(dsl, dict):
+    dsl = _dsl_from_payload(response)
+    if dsl is None:
         return []
     return [str(s.get("action", "")) for s in dsl.get("steps") or [] if isinstance(s, dict)]
 
 
-def execution_completed(response: dict[str, Any]) -> bool:
+def workflow_execution_payload(response: dict[str, Any]) -> dict[str, Any] | None:
     execution = response.get("execution")
-    if not isinstance(execution, dict):
+    if isinstance(execution, dict):
+        return execution
+    inner = response.get("result")
+    return inner if isinstance(inner, dict) else None
+
+
+def execution_completed(response: dict[str, Any]) -> bool:
+    execution = workflow_execution_payload(response)
+    if execution is None:
         return False
     if execution.get("status") == "completed":
         return True
@@ -109,6 +122,24 @@ def _check_routing_and_autofill(response: dict[str, Any], expect: dict[str, Any]
 
 def check_expect(response: dict[str, Any], expect: dict[str, Any]) -> tuple[bool, str]:
     for checker in (_check_status, _check_missing, _check_dsl_actions, _check_routing_and_autofill):
+        if err := checker(response, expect):
+            return False, err
+    return True, "ok"
+
+
+def _check_execution_routing(response: dict[str, Any], expect: dict[str, Any]) -> str | None:
+    if "routing_source" not in expect:
+        return None
+    routing = response.get("routing") or {}
+    source = str(routing.get("source") or routing.get("parser") or "")
+    wanted = str(expect["routing_source"])
+    if wanted not in source and source != wanted:
+        return f"expected routing source {wanted!r}, got {source!r}"
+    return None
+
+
+def check_execution_expect(response: dict[str, Any], expect: dict[str, Any]) -> tuple[bool, str]:
+    for checker in (_check_status, _check_dsl_actions, _check_routing_and_autofill, _check_execution_routing):
         if err := checker(response, expect):
             return False, err
     return True, "ok"
