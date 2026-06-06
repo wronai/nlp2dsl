@@ -44,7 +44,7 @@ from app.orchestrator import (
 )
 from app.parser_llm import LLM_MODEL, _detect_provider, parse_llm
 from app.parser_rules import parse_rules
-from app.registry import ACTIONS_REGISTRY
+from app.conversation.system_map import command_meta, known_action_names
 from app.schemas import (
     ActionFormSchema,
     ConversationResponse,
@@ -159,9 +159,8 @@ async def access_check(
 ) -> dict[str, Any]:
     """Sprawdź uprawnienie agenta (debug / integracja Mullm)."""
     from app.access.policy import authorize_action
-    from app.registry import ACTIONS_REGISTRY
 
-    meta = ACTIONS_REGISTRY.get(action, {})
+    meta = command_meta(action)
     decision = authorize_action(
         agent_id,
         action,
@@ -184,14 +183,18 @@ async def access_reload() -> dict[str, str]:
 
 @app.get("/nlp/actions")
 async def list_actions() -> dict[str, Any]:
-    """Zwraca rejestr akcji z aliasami (vocabulary DSL)."""
+    """Zwraca rejestr akcji z aliasami (vocabulary DSL) — w zakresie DOQL gdy aktywne."""
     result = {}
-    for name, meta in ACTIONS_REGISTRY.items():
+    for name in sorted(known_action_names()):
+        meta = command_meta(name)
+        if not meta:
+            continue
+        optional = meta.get("optional", {})
         result[name] = {
-            "description": meta["description"],
-            "required": meta["required"],
-            "optional": list(meta.get("optional", {}).keys()),
-            "aliases": meta["aliases"],
+            "description": meta.get("description", name),
+            "required": list(meta.get("required", [])),
+            "optional": list(optional.keys()) if isinstance(optional, dict) else list(optional),
+            "aliases": list(meta.get("aliases", [])),
         }
     return result
 
@@ -210,7 +213,7 @@ async def health() -> dict[str, Any]:
         "llm_model": LLM_MODEL if llm_provider != "none" else None,
         "conversation_store": type(store).__name__,
         "active_conversations": await store.count(),
-        "actions": list(ACTIONS_REGISTRY.keys()),
+        "actions": sorted(known_action_names()),
         "routing_metrics": routing_metrics_snapshot(),
     }
 
@@ -403,7 +406,7 @@ async def actions_schema() -> dict[str, Any]:
     Frontend generuje UI dynamicznie z tego schematu.
     """
     schemas = {}
-    for action_name in ACTIONS_REGISTRY:
+    for action_name in sorted(known_action_names()):
         form = get_action_form(action_name)
         if form:
             schemas[action_name] = form.model_dump()

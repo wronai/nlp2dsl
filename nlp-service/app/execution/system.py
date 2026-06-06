@@ -13,6 +13,7 @@ import logging
 import os
 from pathlib import Path
 
+from app.conversation.system_map import scoped_action_registry
 from app.registry import ACTIONS_REGISTRY, BUSINESS_ACTIONS, SYSTEM_ACTIONS
 from app.settings import settings_manager
 
@@ -223,7 +224,7 @@ def _exec_registry_list(config: dict) -> dict:
     category = config.get("category", "all")
 
     result = {}
-    for name, meta in ACTIONS_REGISTRY.items():
+    for name, meta in scoped_action_registry().items():
         action_cat = meta.get("category", "business")
         if category != "all" and action_cat != category:
             continue

@@ -272,3 +272,15 @@ class TestMergeIntoState:
         assert state.entities["amount"] == 500.0
         assert state.entities["to"] == "a@b.pl"
         assert state.entities["currency"] == "EUR"
+
+    def test_merge_preserves_intent_when_ready(self) -> None:
+        state = ConversationState(id="test", status="ready", intent="send_invoice")
+        state.entities = {"amount": 1500.0}
+        nlp = NLPResult(
+            intent=NLPIntent(intent="generate_invoice", confidence=0.9),
+            entities=NLPEntities(to="klient@firma.pl", currency="PLN"),
+        )
+        state.history = [{"role": "user", "text": "Chcę wysłać fakturę"}]
+        _merge_into_state(state, nlp)
+        assert state.intent == "send_invoice"
+        assert state.entities["to"] == "klient@firma.pl"

@@ -77,6 +77,9 @@ Mapowanie:
 - chat_id Telegram → numer lub @handle
 - description (generate_code) → pełne zadanie użytkownika
 - data (crm) → obiekt JSON z polami rekordu
+- Faktura z odbiorcą (email) i kwotą → send_invoice (wysyłka), NIE generate_invoice
+- generate_invoice tylko gdy użytkownik prosi wyłącznie o plik/PDF bez wysyłki (np. "wygeneruj plik faktury")
+- "Invoice for … to email@…" → send_invoice
 
 Schemat odpowiedzi:
 {{

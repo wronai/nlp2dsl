@@ -410,8 +410,15 @@ def get_trigger(text: str) -> str:
 
 def get_required_fields(action: str) -> list[str]:
     """Zwróć wymagane pola dla akcji (DOQL commands[] pierwsze)."""
-    from app.conversation.system_map import required_fields_for_action
+    from app.conversation.system_map import (
+        get_doql_context,
+        known_action_names,
+        required_fields_for_action,
+    )
 
+    ctx = get_doql_context()
+    if ctx and ctx.commands and action not in known_action_names():
+        return []
     doql_fields = required_fields_for_action(action)
     if doql_fields is not None:
         return doql_fields
@@ -421,8 +428,15 @@ def get_required_fields(action: str) -> list[str]:
 
 def get_defaults(action: str) -> dict:
     """Zwróć domyślne wartości opcjonalnych pól."""
-    from app.conversation.system_map import optional_defaults_for_action
+    from app.conversation.system_map import (
+        get_doql_context,
+        known_action_names,
+        optional_defaults_for_action,
+    )
 
+    ctx = get_doql_context()
+    if ctx and ctx.commands and action not in known_action_names():
+        return {}
     doql_defaults = optional_defaults_for_action(action)
     if doql_defaults is not None:
         return doql_defaults

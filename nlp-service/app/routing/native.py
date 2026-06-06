@@ -65,10 +65,10 @@ def resolve_native_intent(text: str) -> dict[str, Any] | None:
     if native_hit:
         return native_hit
 
-    # Domyślna trasa: akcje z YAML resource_areas (aliasy w actions)
-    from app.registry import ACTIONS_REGISTRY
+    # Domyślna trasa: akcje z YAML resource_areas (aliasy w actions, DOQL scope)
+    from app.conversation.system_map import scoped_action_registry
 
-    return _resolve_action_alias(text, ACTIONS_REGISTRY)
+    return _resolve_action_alias(text, scoped_action_registry())
 
 
 def _resolve_configured_route(

@@ -10,8 +10,12 @@ from app.routing.native import resolve_native_intent
 from app.routing.orientation import OrientationResult, orient_query
 from app.routing.parser import parse_text
 from app.routing.parser.rules import parse_rules
-from app.conversation.system_map import effective_nlp_confidence_min, effective_nlp_parser_mode
-from app.registry import ACTIONS_REGISTRY, DELEGATED_ACTIONS
+from app.conversation.system_map import (
+    command_meta,
+    effective_nlp_confidence_min,
+    effective_nlp_parser_mode,
+)
+from app.registry import DELEGATED_ACTIONS
 from app.routing.intent import IntentDecision
 from app.routing.observability import record_intent_decision
 from app.schemas import NLPResult
@@ -49,7 +53,7 @@ def _intent_from_native(native: dict[str, Any]) -> IntentDecision:
 
 def _intent_from_nlp(nlp: NLPResult, source: str) -> IntentDecision:
     action = nlp.intent.intent
-    meta = ACTIONS_REGISTRY.get(action, {})
+    meta = command_meta(action)
     return IntentDecision(
         action=action,
         intent=action,
@@ -101,7 +105,7 @@ def _intent_from_orientation(
         agent_id=agent_id,
         orientation=orientation.to_dict(),
     )
-    meta = ACTIONS_REGISTRY.get(action, {})
+    meta = command_meta(action)
     decision.resource_area = meta.get("resource_area")
     decision.permission_action = str(meta.get("permission_action") or "execute")
     decision.uri = meta.get("resource_uri")
@@ -139,7 +143,7 @@ async def resolve_intent(
 
     oriented = _intent_from_orientation(text, orientation, agent_id=aid)
     if oriented and oriented.action in DELEGATED_ACTIONS:
-        meta = ACTIONS_REGISTRY.get(oriented.action or "", {})
+        meta = command_meta(oriented.action or "")
         auth = authorize_action(aid, oriented.action or "", action_meta=meta)
         oriented = _apply_auth(oriented, auth)
         if oriented.authorized:
@@ -158,7 +162,7 @@ async def resolve_intent(
     if native and native.get("source") == "native_routing":
         decision = _intent_from_native(native)
         decision.agent_id = aid
-        meta = ACTIONS_REGISTRY.get(decision.action or "", {})
+        meta = command_meta(decision.action or "")
         auth = authorize_action(
             aid,
             decision.action or "",
@@ -180,7 +184,7 @@ async def resolve_intent(
     decision.agent_id = aid
 
     if decision.action in DELEGATED_ACTIONS:
-        meta = ACTIONS_REGISTRY.get(decision.action or "", {})
+        meta = command_meta(decision.action or "")
         auth = authorize_action(
             aid,
             decision.action or "",

@@ -22,7 +22,7 @@ def merge_into_state(state: ConversationState, nlp: NLPResult) -> None:
     if (
         state.intent
         and state.intent != "unknown"
-        and state.status == "in_progress"
+        and state.status in ("in_progress", "ready")
         and nlp.intent.intent != state.intent
     ):
         return

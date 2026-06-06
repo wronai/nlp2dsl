@@ -76,6 +76,20 @@ def optional_defaults_for_action(action: str) -> dict[str, Any] | None:
     return {field: registry_optional.get(field, "") for field in cmd.optional}
 
 
+def scoped_action_registry() -> dict[str, dict[str, Any]]:
+    """Action metadata visible in this request — DOQL scope when commands[] loaded."""
+    result: dict[str, dict[str, Any]] = {}
+    for name in sorted(known_action_names()):
+        meta = command_meta(name)
+        if meta:
+            result[name] = meta
+    return result
+
+
+def action_is_known(action: str) -> bool:
+    return action in known_action_names()
+
+
 def required_fields_for_action(action: str) -> list[str] | None:
     """Required fields from DOQL commands[] when map is active."""
     ctx = get_doql_context()
